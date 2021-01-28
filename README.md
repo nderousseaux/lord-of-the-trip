@@ -1,3 +1,3 @@
-# Lord of the Trip
+# Lord of the Trips
 
 
