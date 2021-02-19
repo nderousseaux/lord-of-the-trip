@@ -16,3 +16,7 @@ export const percentToPixels = (percent, totalPixels) => {
 export const pixelsToPercent = (pixels, totalPixels) => {
   return pixels * 100 / totalPixels;
 };
+
+export const randomInt = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
