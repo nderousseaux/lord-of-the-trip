@@ -28,3 +28,5 @@ development.ini
 *.pem
 *.sh
 *.perso
+
+env
