@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import image from './poudlard.jpg'
-import { degToRad, percentToPixels, pixelsToPercent } from './conversions.js'
+import image from '../images/poudlard.jpg'
+import { degToRad } from '../utils/utils.js'
 
 const CanvasStatic = () => {
   const canvasRef = useRef(null)
