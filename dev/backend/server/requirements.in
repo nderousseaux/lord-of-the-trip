@@ -1,0 +1,7 @@
+alembic
+cornice
+marshmallow
+pymysql
+pyramid
+sqlalchemy
+waitress
