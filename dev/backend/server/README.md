@@ -3,11 +3,12 @@
 ## Premier démarrage
 Les commandes suivantes sont à faire avec un virtualenv de définit.
 
-    pip install -r requirements.dev
-    pip install -r requirements.in
-    pip install -r requirements.txt
-    python setup.py develop
-    python setup.py install
+    env/bin/pip install -r requirements.dev
+    env/bin/pip install -r requirements.in
+    env/bin/pip install -r requirements.txt
+
+    env/bin/python setup.py develop && env/bin/python setup.py install
+    
     cp example.ini development.ini
     sed -i -e "s/user/{VOTRE USERNAME}/g" development.ini 
     sed -i -e "s/password/{VOTRE PASSWORD}/g" development.ini 
@@ -15,8 +16,8 @@ Les commandes suivantes sont à faire avec un virtualenv de définit.
     sed -i -e "s/base/{NOM DE LA BASE}/g" development.ini 
 
 
-
-
 ### Lancement :
 
-    pserve development.ini
+    env/bin/pserve development.ini --reload
+
+    env/bin/initialize_loftes_db development.ini
