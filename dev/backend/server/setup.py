@@ -24,7 +24,7 @@ setup(
             'main = loftes:main',
         ],
         'console_scripts': [
-            'initialize_loftes_db=loftes.scripts.initialize_db:main',
+            'initialize_loftes_db=loftes.initialize_db:main',
         ],
     },
 )
