@@ -1,7 +1,7 @@
 from loftes.cors import cors_policy
 
 from cornice import Service
-
+"""
 from loftes.models import Author, DBSession
 
 from loftes.schemas import AuthorSchema
@@ -38,6 +38,5 @@ def get_author_by_id(request):
 
     res = AuthorSchema().dump(auteur)
     return res
-
-    
+"""    
 
