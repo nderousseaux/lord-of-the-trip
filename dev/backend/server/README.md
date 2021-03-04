@@ -18,6 +18,9 @@ Les commandes suivantes sont à faire avec un virtualenv de définit.
 
 ### Lancement :
 
+    python setup.py develop
+    python setup.py install 
+
     env/bin/pserve development.ini --reload
 
     env/bin/initialize_loftes_db development.ini
