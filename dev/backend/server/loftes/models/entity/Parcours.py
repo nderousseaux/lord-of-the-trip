@@ -1,5 +1,7 @@
 from sqlalchemy import *
 
+from sqlalchemy.types import *
+
 from sqlalchemy.orm import relationship
 
 from loftes.models import Base
@@ -12,8 +14,8 @@ class Parcours(Base):
     description = Column(String(255), unique=False)
     urlMap = Column(String(255))
     level = Column(String(255))
-    segmentList = Column(ARRAY(Integer))
-    segmentList2 = Column(ARRAY(Integer, ForeignKey('Segment.idSegment')))
+    # segmentList = Column(ARRAY(Integer))
+    # segmentList2 = Column(ARRAY(Integer, ForeignKey('Segment.idSegment')))
     scalling = Column(Integer)
     startCrossingPoint = Column(Integer, ForeignKey('CrossingPoint.idCrossingPoint'))
     endCrossingPoint = Column(Integer, ForeignKey('CrossingPoint.idCrossingPoint'))
