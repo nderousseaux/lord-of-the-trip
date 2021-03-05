@@ -18,9 +18,23 @@ Les commandes suivantes sont à faire avec un virtualenv de définit.
 
 ### Lancement :
 
-    python setup.py develop
-    python setup.py install 
+    env/bin/python setup.py develop
+    env/bin/python setup.py install 
 
     env/bin/pserve development.ini --reload
 
     env/bin/initialize_loftes_db development.ini
+
+
+## Spécialement pour vous 
+
+    Pour éviter d'avoir à faire python setup.py develop/install à chaque fois, j'ai fais un script.
+
+    Lancer le serveur : 
+    `env/bin/server_start`
+
+    Créer la base : 
+    `env/bin/initialize_loftes_db development.ini`
+
+    Remplir la base avec les données :
+     `env/bin/fill_loftes_db development.ini`
