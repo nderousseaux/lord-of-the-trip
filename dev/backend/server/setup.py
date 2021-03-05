@@ -26,7 +26,8 @@ setup(
         'console_scripts': [
             'initialize_loftes_db=loftes.initialize_db:main',
             'fill_loftes_db=loftes.initialize_db:fill',
-            'server_start=loftes.server_start:main'
+            'server_start=loftes.server_start:main',
+            'dependencies=loftes.server_start:installDep'
         ],
     },
 )

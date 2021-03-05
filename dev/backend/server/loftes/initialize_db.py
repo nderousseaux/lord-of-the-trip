@@ -27,7 +27,7 @@ def usage(argv):
 
 
 def pre():
-    os.system("env/bin/python setup.py develop && env/bin/python setup.py install)
+    os.system("python setup.py develop && python setup.py install")
 
 def main(argv=sys.argv):
     if len(argv) != 2:
