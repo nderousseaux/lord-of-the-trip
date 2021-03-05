@@ -26,7 +26,7 @@ def usage(argv):
     sys.exit(1)
 
 
-def pre:
+def pre():
     os.system("env/bin/python setup.py develop && env/bin/python setup.py install)
 
 def main(argv=sys.argv):
@@ -58,8 +58,3 @@ def fill(argv=sys.argv):
         result='oui')
     session.add(q)
     session.commit()
-
-
-
-
-#TODO: develop install pré functions.

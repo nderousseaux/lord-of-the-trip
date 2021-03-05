@@ -12,7 +12,7 @@ def main(argv=sys.argv):
     if len(argv) != 2:
         usage(argv)
     config_uri = argv[1]
-    os.system("env/bin/python setup.py develop && env/bin/python setup.py install && env/bin/pserve " + config_uri)
+    os.system("env/bin/python setup.py develop && env/bin/python setup.py install && env/bin/pserve " + config_uri + " --reload")
     
 
 
