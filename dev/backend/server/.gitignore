@@ -26,7 +26,6 @@ development.ini
 *.http
 *.todo
 *.pem
-*.sh
 *.perso
 
 
