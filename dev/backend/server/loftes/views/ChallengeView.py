@@ -64,7 +64,7 @@ def create_challenge(request):
         logging.getLogger(__name__).warn('Returning: %s', str(e))
         DBSession.close()
 
-    return response
+    return ServiceInformations().build_response(exception.HTTPCreated, data)
 
 
 challenge_by_id = Service(name='challenge_by_id',

@@ -4,7 +4,6 @@ marshmallow
 pymysql
 pyramid
 sqlalchemy
-sqlalchemy_utils
 passlib
 waitress
 transaction

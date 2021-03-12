@@ -19,7 +19,6 @@ Data.fs*
 .DS_Store
 coverage
 test
-logs
 
 .idea
 .vscode*
@@ -31,3 +30,6 @@ development.ini
 
 
 env
+production.ini
+build
+logs
