@@ -26,10 +26,6 @@ development.ini
 *.http
 *.todo
 *.pem
-<<<<<<< HEAD
-*.sh
-=======
->>>>>>> 1aab4cbbef95588d6b6ad7e0ffe1e4c3bcb58de6
 *.perso
 
 
