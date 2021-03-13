@@ -2,9 +2,9 @@ from loftes.cors import cors_policy
 
 from cornice import Service
 
-from loftes.models.entity.Parcours import Parcours
+# from loftes.models.entity.Parcours import Parcours
 
-from loftes.models import DBSession
+from loftes.models import Parcours, DBSession
 
 from loftes.marshmallow_schema import ParcoursSchema
 
@@ -23,6 +23,22 @@ def get_parcours(request):
         raise exc.HTTPError("Pas de parcours")
 
     res = ParcoursSchema(many=True).dump(parcoursdata)
+    return res
+
+parcours_id = Service(name='parcours_id',
+                      path='/parcours/{id}',
+                      cors_policy=cors_policy)
+                
+@parcours_id.get()
+def get_parcours_by_id(request):
+
+    id = request.matchdict['id']
+    parcoursdata = DBSession.query(parcours).get(id)
+
+    if len(parcoursdata) == 0:
+        raise exc.HTTPError("Pas de parcours")
+
+    res = ParcoursSchema().dump(parcoursdata)
     return res
 
 

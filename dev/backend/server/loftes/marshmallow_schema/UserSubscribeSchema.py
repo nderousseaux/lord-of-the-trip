@@ -4,6 +4,9 @@ from marshmallow import (
     pre_dump
 )
 
+from loftes.marshmallow_schema.UserSchema import UserSchema
+from loftes.marshmallow_schema.ParcoursSchema import ParcoursSchema
+
 class UserSubscribeSchema(Schema):
     id_subscrbe = fields.Int()
     id_user_info = fields.Nested(lambda: UserSchema())

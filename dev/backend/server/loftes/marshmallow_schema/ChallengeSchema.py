@@ -4,6 +4,8 @@ from marshmallow import (
     pre_dump
 )
 
+from loftes.marshmallow_schema.ParcoursSchema import ParcoursSchema
+
 class ChallengeSchema(Schema):
     id_challenge = fields.Int()
     name_challenge = fields.Str()

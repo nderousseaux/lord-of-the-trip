@@ -4,6 +4,10 @@ from marshmallow import (
     pre_dump
 )
 
+from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
+from loftes.marshmallow_schema.ParcoursSchema import ParcoursSchema
+from loftes.marshmallow_schema.ObstacleSchema import ObstacleSchema
+
 class SegmentSchema(Schema):
     id_segment = fields.Int()
     name_segment = fields.Str()
