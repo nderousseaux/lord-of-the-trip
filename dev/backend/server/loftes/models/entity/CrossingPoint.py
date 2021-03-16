@@ -1,14 +1,13 @@
 from sqlalchemy import *
-
 from sqlalchemy.orm import relationship
 
 from loftes.models import Base
-#from models import Base
 
 class CrossingPoint(Base):
     __tablename__ = 'CrossingPoint'
-    idCrossingPoint = Column(Integer, primary_key=True)
-    nameCrossing = Column(String(255), unique=True)
-    xPosition = Column(Integer)
-    yPosition = Column(Integer) 
-    parcoursId = Column(Integer, ForeignKey('Parcours.idParcours'))
+    id_crossing_point = Column(Integer, primary_key=True)
+    name_crossing = Column(String(255), unique=True)
+    x_position = Column(Integer)
+    y_position = Column(Integer)
+    segment_id = Column(Integer, ForeignKey('Segment.id_segment'))
+    # parcours_id = Column(Integer, ForeignKey('Parcours.id_parcours'))

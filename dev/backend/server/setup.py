@@ -1,11 +1,9 @@
 from setuptools import setup, find_packages
-    
 requires = [
 
 ]
 
 tests_require = [
-    
 ]
 
 setup(

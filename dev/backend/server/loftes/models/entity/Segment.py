@@ -1,18 +1,15 @@
 from sqlalchemy import *
-
 from sqlalchemy.types import *
-
 from sqlalchemy.orm import relationship
 
 from loftes.models import Base
-#from models import Base
 
 class Segment(Base):
     __tablename__ = 'Segment'
-    idSegment = Column(Integer, primary_key=True)
-    nameSegment = Column(String(255), unique=True)
-    startCrossingPoint = Column(Integer, ForeignKey('CrossingPoint.idCrossingPoint'))
-    endCrossingPoint = Column(Integer, ForeignKey('CrossingPoint.idCrossingPoint')) 
+    id_segment = Column(Integer, primary_key=True)
+    name_segment = Column(String(255), unique=True)
+    start_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id_crossing_point'))
+    end_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id_crossing_point'))
     # listPoints  = Column(ARRAY(Integer))
-    parcoursId = Column(Integer, ForeignKey('Parcours.idParcours'))
-    listObstacle = relationship("Obstacle", backref="Segment")
+    parcours_id = Column(Integer, ForeignKey('Parcours.id_parcours'))
+    list_obstacle = relationship("Obstacle", backref="Segment")
