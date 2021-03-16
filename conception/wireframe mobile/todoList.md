@@ -13,6 +13,7 @@
 - Visualiser [les infos d'un challenge](#Détails d'un challenge)
 - Voir son avancée dans le challenge (carte)
 - S'inscrire à un challenge disponible
+- ~~Répondre à un défi~~
 - ~~Voir les challenges en cours~~
 
 **Enregistrement**
