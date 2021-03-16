@@ -2,11 +2,9 @@ from loftes.cors import cors_policy
 
 from cornice import Service
 
-# from loftes.models.entity.Parcours import Parcours
+from loftes.models import Parcours, Segment, DBSession
 
-from loftes.models import Parcours, DBSession
-
-from loftes.marshmallow_schema import ParcoursSchema
+from loftes.marshmallow_schema import ParcoursSchema, SegmentSchema
 
 import pyramid.httpexceptions as exc
 
@@ -20,7 +18,7 @@ def get_parcours(request):
     parcoursdata = DBSession.query(Parcours).all()
 
     if len(parcoursdata) == 0:
-        raise exc.HTTPError("Pas de parcours")
+        raise exc.HTTPError("Aucun parcours")
 
     res = ParcoursSchema(many=True).dump(parcoursdata)
     return res
@@ -28,56 +26,57 @@ def get_parcours(request):
 parcours_id = Service(name='parcours_id',
                       path='/parcours/{id}',
                       cors_policy=cors_policy)
-                
+  
+              
 @parcours_id.get()
 def get_parcours_by_id(request):
 
-    id = request.matchdict['id']
-    parcoursdata = DBSession.query(parcours).get(id)
+    # if 'id' in request.get:
+    #     raise exc.HTTPError("Aucun id de parcours")
 
-    if len(parcoursdata) == 0:
-        raise exc.HTTPError("Pas de parcours")
+    id = request.matchdict['id']
+
+    parcoursdata = DBSession.query(Parcours).get(id)
+    segmentdata  = DBSession.query(Segment).filter(Segment.parcours_id==id)
 
     res = ParcoursSchema().dump(parcoursdata)
+    # res = SegmentSchema().dump(segmentdata)
     return res
+   
+parcours_update = Service(name='parcours_update',
+                          path='/parcours/update',
+                          cors_policy=cors_policy)
 
+def is_id(request):
+    if not 'id' in request.body:
+        request.errors.add('query', 'id',
+                            'the id parameter is required')
 
-"""
-from loftes.models import Author, DBSession
-
-from loftes.schemas import AuthorSchema
-
-import pyramid.httpexceptions as exc
-
-author = Service(name='author',
-                path='/author',
-                cors_policy=cors_policy)
-                
-@author.get()
-def get_authors(request):
-
-    auteurs = DBSession.query(Author).all();
-
-    if auteurs.size() == 1:
-        raise exc.HTTPError("Pas d'auteurs")
-
-    res = AuthorSchema(many=True).dump(auteurs)
-    return res
-
+@parcours_update.put()
+def update_parcours(request):
     
-
-author_id = Service(name='author_id',
-                path='/author/{id}',
-                cors_policy=cors_policy)
-                
-@author_id.get()
-def get_author_by_id(request):
-
     id = request.matchdict['id']
-    auteur = DBSession.query(Author).get(id);
 
+    raise exc.HTTPError("ID OK")
+    
+    # if 'name' in request.get:
+    #     nameparcours = request.matchdict['name']
 
-    res = AuthorSchema().dump(auteur)
-    return res
-"""    
+    # if 'description' in request.get:
+    #     descriptionparcours = request.matchdict['description']
+    
+    # if 'urlmap' in request.get:
+    #     urlparcours = request.matchdict['urlmap']
+
+    # if 'level' in request.get:
+    #     levelparcours = request.matchdict['level']
+    
+    # if 'scalling' in request.get:
+    #     scallingparcours = request.matchdict['scalling']
+
+    # if 'startpoint' in request.get:
+    #     startparcours = request.matchdict['startpoint']
+    
+    # if 'endpoint' in request.get:
+    #     startparcours = request.matchdict['endpoint']
 
