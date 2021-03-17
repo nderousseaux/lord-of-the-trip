@@ -26,7 +26,7 @@ def get_parcours(request):
 parcours_id = Service(name='parcours_id',
                       path='/parcours/{id}',
                       cors_policy=cors_policy)
-  
+
               
 @parcours_id.get()
 def get_parcours_by_id(request):
@@ -46,11 +46,6 @@ def get_parcours_by_id(request):
 parcours_update = Service(name='parcours_update',
                           path='/parcours/update',
                           cors_policy=cors_policy)
-
-def is_id(request):
-    if not 'id' in request.body:
-        request.errors.add('query', 'id',
-                            'the id parameter is required')
 
 @parcours_update.put()
 def update_parcours(request):
