@@ -1,0 +1,6 @@
+autopep8
+ipython
+pep8
+pyflakes
+pylint
+pyramid_ipython
