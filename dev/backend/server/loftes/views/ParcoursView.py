@@ -4,9 +4,10 @@ from cornice import Service
 
 from loftes.models import Parcours, Segment, DBSession
 
-from loftes.marshmallow_schema import ParcoursSchema, SegmentSchema
+from loftes.marshmallow_schema import ParcoursSchema, ParcoursAddSchema
 
 import pyramid.httpexceptions as exc
+import transaction as transaction
 
 parcours = Service(name='parcours',
                    path='/parcours',
@@ -23,10 +24,11 @@ def get_parcours(request):
     res = ParcoursSchema(many=True).dump(parcoursdata)
     return res
 
+
+
 parcours_id = Service(name='parcours_id',
                       path='/parcours/{id}',
                       cors_policy=cors_policy)
-  
               
 @parcours_id.get()
 def get_parcours_by_id(request):
@@ -37,27 +39,61 @@ def get_parcours_by_id(request):
     id = request.matchdict['id']
 
     parcoursdata = DBSession.query(Parcours).get(id)
-    segmentdata  = DBSession.query(Segment).filter(Segment.parcours_id==id)
 
     res = ParcoursSchema().dump(parcoursdata)
     # res = SegmentSchema().dump(segmentdata)
     return res
-   
-parcours_update = Service(name='parcours_update',
-                          path='/parcours/update',
-                          cors_policy=cors_policy)
 
-def is_id(request):
-    if not 'id' in request.body:
-        request.errors.add('query', 'id',
-                            'the id parameter is required')
+@parcours_id.put()
+def parcours_add(request):
 
-@parcours_update.put()
-def update_parcours(request):
+    action = request.matchdict['id']
     
-    id = request.matchdict['id']
+    if action != 'update':
+        raise exc.HTTPError("Action non autorisé")
 
-    raise exc.HTTPError("ID OK")
+    #parcours = ParcoursAddSchema().load(request.json)
+
+# parcours_add = Service(name='parcours_add',
+#                        path='/parcours/add',
+#                        cors_policy=cors_policy)
+              
+# @parcours_add.post()
+# def parcours_add(request):
+
+#     parcours = ParcoursAddSchema().load(request.json)
+
+#     DBSession.add(parcours)
+#     transaction.commit()
+
+#     return exception.HTTPCreated()
+
+# @parcours.post()
+# def parcours_add(request):
+
+#     parcours = ParcoursAddSchema().load(request.json)
+
+#     DBSession.add(parcours)
+#     transaction.commit()
+
+#     return exception.HTTPCreated()
+
+
+# parcours_update = Service(name='parcours_update',
+#                           path='/parcours/update',
+#                           cors_policy=cors_policy)
+
+# def is_id(request):
+#     if not 'id' in request.body:
+#         request.errors.add('query', 'id',
+#                             'the id parameter is required')
+
+# @parcours_update.put()
+# def update_parcours(request):
+    
+#     id = request.matchdict['id']
+
+#     raise exc.HTTPError("ID OK")
     
     # if 'name' in request.get:
     #     nameparcours = request.matchdict['name']

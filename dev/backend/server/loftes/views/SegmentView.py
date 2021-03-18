@@ -25,7 +25,6 @@ def get_segment(request):
 segment_id = Service(name='segment_id',
                      path='/segment/{id}',
                      cors_policy=cors_policy)
-  
               
 @segment_id.get()
 def get_segment_by_id(request):

@@ -17,4 +17,3 @@ class ParcoursSchema(Schema):
     start_crossing_point = fields.Nested(lambda: CrossingPointSchema())
     end_crossing_point = fields.Nested(lambda: CrossingPointSchema())
     list_segment = fields.List(fields.Nested(lambda: SegmentSchema()))
-

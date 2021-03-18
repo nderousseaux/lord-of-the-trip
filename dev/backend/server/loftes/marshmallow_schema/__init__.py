@@ -6,3 +6,6 @@ from .QuestionSchema import QuestionSchema
 from .SegmentSchema import SegmentSchema
 from .UserSchema import UserSchema
 from .UserSubscribeSchema import UserSubscribeSchema
+
+from .schema_add.ChallengeAddSchema import ChallengeAddSchema
+from .schema_add.ParcoursSchema import ParcoursAddSchema
