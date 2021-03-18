@@ -1,7 +1,9 @@
+from loftes.models import Challenge
 from marshmallow import (
     Schema,
     fields,
-    pre_dump
+    pre_dump,
+    post_load
 )
 
 class ChallengeSchema(Schema):
@@ -11,3 +13,7 @@ class ChallengeSchema(Schema):
     end_date = fields.DateTime()
     alone_only = fields.Int()
     parcours_info = fields.Nested(lambda: ParcoursSchema())
+
+    @post_load
+    def make_challenge(self, data, **kwargs):
+        return Challenge(**data)
