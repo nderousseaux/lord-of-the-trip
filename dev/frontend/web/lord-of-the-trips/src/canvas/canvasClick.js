@@ -2,6 +2,11 @@ import React, { useState, useRef, useEffect } from 'react'
 import image from '../images/poudlard.jpg'
 import { randomInt } from '../utils/utils.js'
 
+// Canvas
+// https://developer.mozilla.org/fr/docs/Web/API/Canvas_API/Tutoriel_canvas/Utilisation_d'images
+// https://developer.mozilla.org/fr/docs/Apprendre/JavaScript/Client-side_web_APIs/Drawing_graphics
+// https://medium.com/@pdx.lucasm/canvas-with-react-js-32e133c05258
+
 const CanvasClick = () => {
   const canvasRef = useRef(null);
   // width of the image
