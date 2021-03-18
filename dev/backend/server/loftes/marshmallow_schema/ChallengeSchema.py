@@ -3,10 +3,11 @@ from marshmallow import (
     Schema,
     fields,
     pre_dump,
-    post_load
+    post_load,
+    pre_load
 )
 
-from loftes.marshmallow_schema.ParcoursSchema import ParcoursSchema
+import datetime
 
 class ChallengeSchema(Schema):
     id_challenge = fields.Int()
@@ -19,3 +20,9 @@ class ChallengeSchema(Schema):
     @post_load
     def make_challenge(self, data, **kwargs):
         return Challenge(**data)
+
+    @pre_load
+    def pre_load(self, data, many, **kwargs):
+        data['end_date'] = datetime.datetime.fromisoformat(data['end_date']).isoformat()
+
+        return data

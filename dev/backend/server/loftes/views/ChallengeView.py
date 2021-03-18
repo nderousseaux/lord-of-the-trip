@@ -52,16 +52,25 @@ def create_challenge(request):
     try:
         challenge = ChallengeSchema().load(request.json)
 
-        with transaction.manager as manager:
-            DBSession.add(challenge)
-            DBSession.flush()
+        DBSession.add(challenge)
+        DBSession.flush()
 
         response = exception.HTTPCreated()
-        #response.text = json.dumps(ChallengeSchema().dump(challenge))
+        response.text = json.dumps(ChallengeSchema().dump(challenge))
 
-    except:
+    except Exception as e:
         response = exception.HTTPNotImplemented()
-        response.text = json.dumps({"error":sys.exc_info()[0]})
-        manager.abort()
+        print(e)
+        #arr_errors = {'errors':e.messages}
+        #response.text = json.dumps({'error':e.message})
+
+    # challenge = ChallengeSchema().load(request.json)
+    # DBSession().add(challenge)
+    # DBSession().flush()
+    # DBSession().commit()
+    # response = exception.HTTPCreated()
+
+    #response.text = json.dumps(ChallengeSchema().dump(challenge))
+
 
     return response
