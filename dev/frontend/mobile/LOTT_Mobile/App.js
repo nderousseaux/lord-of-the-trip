@@ -80,7 +80,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={DrawerNavigator} />
+          <Stack.Screen name="Home" component={DrawerNavigator} options={{header: () => null}}/>
           <Stack.Screen name="Edit Profile" component={EditProfile} />
         </Stack.Navigator>
       </NavigationContainer>
