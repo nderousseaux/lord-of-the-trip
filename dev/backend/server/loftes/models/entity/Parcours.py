@@ -12,6 +12,7 @@ class Parcours(Base):
     url_map = Column(String(255))
     level = Column(String(255))
     scalling = Column(Integer)
+    draft = Column(Boolean,server_default=text("0"))
     start_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id_crossing_point'))
     end_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id_crossing_point'))
     list_segment = relationship("Segment")

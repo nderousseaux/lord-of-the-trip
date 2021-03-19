@@ -7,6 +7,7 @@ from marshmallow import (
     pre_load
 )
 
+from loftes.marshmallow_schema.ParcoursSchema import ParcoursSchema
 import datetime
 
 class ChallengeSchema(Schema):
@@ -15,8 +16,14 @@ class ChallengeSchema(Schema):
     description_challenge = fields.Str()
     end_date = fields.DateTime()
     alone_only = fields.Int()
-    parcours_info = fields.Nested(lambda: ParcoursSchema())
-
+    url_map = fields.Str()
+    level = fields.Str()
+    scalling = fields.Int()
+    id_admin = fields.Int()
+    start_crossing_point = fields.Nested(lambda: CrossingPointSchema())
+    end_crossing_point = fields.Nested(lambda: CrossingPointSchema())
+    list_segment = fields.List(fields.Nested(lambda: SegmentSchema()))
+    
     @post_load
     def make_challenge(self, data, **kwargs):
         return Challenge(**data)

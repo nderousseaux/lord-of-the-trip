@@ -11,5 +11,5 @@ class Segment(Base):
     start_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id_crossing_point'))
     end_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id_crossing_point'))
     # listPoints  = Column(ARRAY(Integer))
-    parcours_id = Column(Integer, ForeignKey('Parcours.id_parcours'))
+    challenge_id = Column(Integer, ForeignKey('Challenge.id_challenge'))
     list_obstacle = relationship("Obstacle", backref="Segment")

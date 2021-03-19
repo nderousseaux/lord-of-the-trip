@@ -1,7 +1,8 @@
 from marshmallow import (
     Schema,
     fields,
-    pre_dump
+    pre_dump,
+    post_load
 )
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
