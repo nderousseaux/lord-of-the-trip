@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { Text, View, Button, StyleSheet } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
 
 export default DrawerContent = (props) => {
@@ -10,9 +10,14 @@ export default DrawerContent = (props) => {
     return (
         <>
             <View style={styles.container}>
+                <Text>{"\n"}</Text>
                 <Button 
                     title="Edit profile"
-                    onPress={() => props.navigation.navigate('Edit Profile')}></Button>
+                    onPress={() => {
+                        props.navigation.navigate('Edit Profile');
+                        props.navigation.setOptions({ headerShown: false})
+                    }}>
+                </Button>
                 <DrawerContentScrollView {...props}>
                     <DrawerItemList state={newState} {...rest} />
                 </DrawerContentScrollView>
