@@ -9,7 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import DrawerContent from './src/Components/Drawer/DrawerContent';
 import SelectChallenge from './src/Components/Tab/SelectChallenge';
-import Pedometer from './src/Components/Tab/Pedometer';
+import GO from './src/Components/Tab/GO';
 import EditProfile from './src/Components/Stack/EditProfile';
 
 
@@ -46,7 +46,7 @@ const TabNavigator = (props) => {
             case 'Select Challenge':
               iconName = 'ios-list';
               break;
-            case 'Pedometer':
+            case 'GO !':
               iconName = 'ios-navigate-outline';
               break;
             default:
@@ -58,7 +58,7 @@ const TabNavigator = (props) => {
         }
       })}>
       <Tab.Screen name="Select Challenge" component={SelectChallenge} />
-      <Tab.Screen name="Pedometer" component={Pedometer} />
+      <Tab.Screen name="GO !" component={GO} />
     </Tab.Navigator>
   );
 }

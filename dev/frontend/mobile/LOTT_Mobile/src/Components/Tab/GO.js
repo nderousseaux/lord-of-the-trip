@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function Pedometer(props) {
+export default function GO(props) {
     return(
         <View style={styles.container}>
-            <Text>Pédomètre</Text>
+            <Text>Let's go !</Text>
         </View>
     )
 }
