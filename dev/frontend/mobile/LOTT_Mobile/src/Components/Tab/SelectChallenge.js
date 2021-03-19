@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ListItem } from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
 import Pedometer from './Pedometer';
+import ChallengeCard from './Challenges/ChallengeCard';
 
 function ChallengeList(props) {
 
@@ -50,7 +51,7 @@ export default function SelectChallenge(props) {
         <listStack.Navigator 
         initialRouteName="List">
             <listStack.Screen name="List" component={ChallengeList} />
-            <listStack.Screen name="Card" component={Pedometer} />
+            <listStack.Screen name="Card" component={ChallengeCard} />
         </listStack.Navigator>
     )
 }
