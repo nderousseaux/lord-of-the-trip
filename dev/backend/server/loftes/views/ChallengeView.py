@@ -3,15 +3,12 @@ from cornice.validators import marshmallow_body_validator
 
 from loftes.cors import cors_policy
 from loftes.models import Challenge, DBSession
+from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 
 import pyramid.httpexceptions as exception
 
-import transaction
-
-import json
-
-import sys
+from pyramid.response import Response
 
 challenge = Service(name='challenge',
                     path='/challenge',
@@ -23,11 +20,13 @@ def get_challenges(request):
     challenges = DBSession.query(Challenge).all()
 
     if len(challenges) == 0:
-        raise exception.HTTPNotFound()
+        return ServiceInformations().build_response(exception.HTTPNotFound(), None, None)
 
-    response = ChallengeSchema(many=True).dump(challenges)
+    data = {
+        'challenges' : ChallengeSchema(many=True).dump(challenges)
+    }
 
-    return response
+    return ServiceInformations().build_response(exception.HTTPOk, data, None)
 
 challenge_by_id = Service(name='challenge_by_id',
                           path='challenge/{id_challenge:\d+}',
@@ -40,11 +39,10 @@ def get_challenge(request):
     challenge = DBSession.query(Challenge).get(id_challenge)
 
     if challenge == None:
-        raise exception.HTTPNotFound()
+        return ServiceInformations().build_response(exception.HTTPNotFound(), None, None)
 
-    response = ChallengeSchema().dump(challenge)
+    return ServiceInformations().build_response(exception.HTTPOk, ChallengeSchema().dump(challenge), None)
 
-    return response
 
 @challenge.post()
 def create_challenge(request):
@@ -55,22 +53,22 @@ def create_challenge(request):
         DBSession.add(challenge)
         DBSession.flush()
 
-        response = exception.HTTPCreated()
-        response.text = json.dumps(ChallengeSchema().dump(challenge))
+        code = exception.HTTPCreated.code
+        content = ChallengeSchema().dump(challenge)
 
     except Exception as e:
-        response = exception.HTTPNotImplemented()
-        print(e)
-        #arr_errors = {'errors':e.messages}
-        #response.text = json.dumps({'error':e.message})
+        http_exception = exception.HTTPInternalServerError
+        code = http_exception.code
 
-    # challenge = ChallengeSchema().load(request.json)
-    # DBSession().add(challenge)
-    # DBSession().flush()
-    # DBSession().commit()
-    # response = exception.HTTPCreated()
+        content = {
+            'error' : {
+                'code' : http_exception.title.upper(),
+                'message' : str(e)
+            }
+        }
 
-    #response.text = json.dumps(ChallengeSchema().dump(challenge))
-
+    response = Response(content_type='application/json')
+    response.status_code = code
+    response.text = json.dumps(content)
 
     return response
