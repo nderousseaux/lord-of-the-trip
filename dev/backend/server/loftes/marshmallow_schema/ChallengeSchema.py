@@ -7,7 +7,8 @@ from marshmallow import (
     pre_load
 )
 
-from loftes.marshmallow_schema.ParcoursSchema import ParcoursSchema
+from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
+from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
 import datetime
 
 class ChallengeSchema(Schema):

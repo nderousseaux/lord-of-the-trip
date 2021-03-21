@@ -14,6 +14,5 @@ class SegmentSchema(Schema):
     name_segment = fields.Str()
     start_crossing_point = fields.Nested(lambda: CrossingPointSchema())
     end_crossing_point = fields.Nested(lambda: CrossingPointSchema())
-    # list_points  = fields.Int()
-    # parcours_info = fields.Nested(lambda: ParcoursSchema())
+    list_points  = fields.Str()
     list_obstacle = fields.Nested(lambda: ObstacleSchema())

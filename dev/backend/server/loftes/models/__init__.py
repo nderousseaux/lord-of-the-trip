@@ -11,13 +11,16 @@ DBSession = scoped_session(sessionmaker())
 register(DBSession)
 Base = declarative_base()
 
-from .entity.Parcours import Parcours
+# Challenge Data
+from .entity.Challenge import Challenge
 from .entity.CrossingPoint import CrossingPoint
 from .entity.Segment import Segment
 from .entity.Obstacle import Obstacle
 from .entity.Question import Question
-from .entity.Challenge import Challenge
+
+# User Data
 from .entity.User import User
 from .entity.UserSubscribe import UserSubscribe
+from .entity.Events import Events
 
 from .Root import Root

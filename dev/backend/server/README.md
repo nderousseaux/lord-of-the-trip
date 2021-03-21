@@ -7,7 +7,7 @@
     - Sur mac : `virtualenv env`
 - Activer l'environnement virutel : `source env/bin/activate`
 - Préparer les scripts que j'ai fait pour vous : `python setup.py develop && python setup.py install`
-- Installer les dependances : `dependencies`
+- Installer les dependances : `./dependencies.sh`
 - Lancer le serveur : `server_start`
 
 ## Base de donnée
