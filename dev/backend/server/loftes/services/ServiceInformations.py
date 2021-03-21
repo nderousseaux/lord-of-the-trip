@@ -31,8 +31,9 @@ class ServiceInformations:
         switcher = {
             400: "Bad Request",
             401: "Unauthorized",
-            403: "Requested resource is forbidden",
-            404: "Requested resource is not found"
+            403: "Requested resource is forbidden.",
+            404: "Requested resource is not found.",
+            500: "The server encountred an internal error and was unable to complete your request."
         }
 
         return switcher.get(code, "ERROR")

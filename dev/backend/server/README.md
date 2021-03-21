@@ -10,6 +10,6 @@
 - Installer les dependances : `./dependencies.sh`
 - Lancer le serveur : `server_start`
 
-## Base de donnée
+## Base de données
 - Créer la base de donnée : `initialize_loftes_db`
 - Remplir la base de donnée : `fill_loftes_db`

@@ -7,8 +7,7 @@ from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 
 import pyramid.httpexceptions as exception
-
-from pyramid.response import Response
+import logging
 
 challenge = Service(name='challenge',
                     path='/challenge',
@@ -20,13 +19,13 @@ def get_challenges(request):
     challenges = DBSession.query(Challenge).all()
 
     if len(challenges) == 0:
-        return ServiceInformations().build_response(exception.HTTPNotFound(), None, None)
+        return ServiceInformations().build_response(exception.HTTPNotFound())
 
     data = {
         'challenges' : ChallengeSchema(many=True).dump(challenges)
     }
 
-    return ServiceInformations().build_response(exception.HTTPOk, data, None)
+    return ServiceInformations().build_response(exception.HTTPOk, data)
 
 challenge_by_id = Service(name='challenge_by_id',
                           path='challenge/{id_challenge:\d+}',
@@ -39,36 +38,32 @@ def get_challenge(request):
     challenge = DBSession.query(Challenge).get(id_challenge)
 
     if challenge == None:
-        return ServiceInformations().build_response(exception.HTTPNotFound(), None, None)
+        return ServiceInformations().build_response(exception.HTTPNotFound())
 
-    return ServiceInformations().build_response(exception.HTTPOk, ChallengeSchema().dump(challenge), None)
+    return ServiceInformations().build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
 
 
 @challenge.post()
 def create_challenge(request):
 
+    service_informations = ServiceInformations()
+
     try:
-        challenge = ChallengeSchema().load(request.json)
+        challenge_schema = ChallengeSchema()
+        challenge = challenge_schema.load(request.json)
 
         DBSession.add(challenge)
         DBSession.flush()
 
-        code = exception.HTTPCreated.code
-        content = ChallengeSchema().dump(challenge)
+        response = service_informations.build_response(exception.HTTPOk, challenge_schema.dump(challenge))
+
+    except ValueError as ve:
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(ve))
+        DBSession.close()
 
     except Exception as e:
-        http_exception = exception.HTTPInternalServerError
-        code = http_exception.code
-
-        content = {
-            'error' : {
-                'code' : http_exception.title.upper(),
-                'message' : str(e)
-            }
-        }
-
-    response = Response(content_type='application/json')
-    response.status_code = code
-    response.text = json.dumps(content)
+        response = service_informations.build_response(exception.HTTPInternalServerError)
+        logging.getLogger(__name__).warn('Returning: %s', str(e))
+        DBSession.close()
 
     return response
