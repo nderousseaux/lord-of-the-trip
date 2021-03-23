@@ -3,7 +3,8 @@ import { Button, View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import { useEffect, useState } from 'react';
 import { ListItem } from 'react-native-elements';
 import { createStackNavigator } from '@react-navigation/stack';
-import Pedometer from './Pedometer';
+import GO from './GO';
+import api from '../../api/api';
 
 function ChallengeList(props) {
 
@@ -11,14 +12,8 @@ function ChallengeList(props) {
     const [challenges, setChallenges] = useState([]);
 
     useEffect(() => {
-        fetch("https://ada60e89-7082-4eb2-a257-753f102202d1.mock.pstmn.io/challenges", {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            },
-        })
-        .then((response) => response.json())
+        api.getChallenges()
+        .then((response) => response.data)
         .then((json) => setChallenges(json.challenges))
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
@@ -50,7 +45,7 @@ export default function SelectChallenge(props) {
         <listStack.Navigator 
         initialRouteName="List">
             <listStack.Screen name="List" component={ChallengeList} />
-            <listStack.Screen name="Card" component={Pedometer} />
+            <listStack.Screen name="Card" component={GO} />
         </listStack.Navigator>
     )
 }

@@ -11,11 +11,14 @@ import DrawerContent from './src/Components/Drawer/DrawerContent';
 import SelectChallenge from './src/Components/Tab/SelectChallenge';
 import GO from './src/Components/Tab/GO';
 import EditProfile from './src/Components/Stack/EditProfile';
-
-
+import api from './src/api/api'
+import {API_URL} from "@env"
 /* Exemple of how to connect the screens to Redux
 let NewJsxSyntax = connect(state => ({ main: state.main }))(JsxComponent);
 */
+
+//Initialise axios
+api.init(API_URL)
 
 // Create Reducer
 function mainReducer(state, action) {
