@@ -3,7 +3,7 @@ from marshmallow import (
     fields,
     pre_dump
     )
-    
+
 from .ChallengeSchema import ChallengeSchema
 from .CrossingPointSchema import CrossingPointSchema
 from .ObstacleSchema import ObstacleSchema
@@ -13,3 +13,5 @@ from .UserSchema import UserSchema
 from .UserSubscribeSchema import UserSubscribeSchema
 
 from .schema_add.SegmentSchemaAdd import SegmentSchemaAdd
+from .schema_add.ChallengeAddSchema import ChallengeAddSchema
+from .schema_add.ParcoursSchema import ParcoursAddSchema

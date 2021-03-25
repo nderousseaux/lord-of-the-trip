@@ -5,7 +5,7 @@ from loftes.models import Base
 
 class CrossingPoint(Base):
     __tablename__ = 'CrossingPoint'
-    id_crossing_point = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     name_crossing = Column(String(255), unique=True)
     x_position = Column(Float(precision=2))
     y_position = Column(Float(precision=2))

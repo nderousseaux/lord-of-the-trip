@@ -1,17 +1,17 @@
 from cornice import Service
 from cornice.validators import marshmallow_body_validator
 
+from marshmallow import ValidationError
+
+from sqlalchemy import exc
+
 from loftes.cors import cors_policy
 from loftes.models import Challenge, DBSession
+from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 
 import pyramid.httpexceptions as exception
-
-import transaction
-
-import json
-
-import sys
+import logging
 
 challenge = Service(name='challenge',
                     path='/challenge',
@@ -20,57 +20,83 @@ challenge = Service(name='challenge',
 @challenge.get()
 def get_challenges(request):
 
+    service_informations = ServiceInformations()
     challenges = DBSession.query(Challenge).all()
 
     if len(challenges) == 0:
-        raise exception.HTTPNotFound()
+        return service_informations.build_response(exception.HTTPNotFound())
 
-    response = ChallengeSchema(many=True).dump(challenges)
+    data = {
+        'challenges' : ChallengeSchema(many=True).dump(challenges)
+    }
 
-    return response
+    return service_informations.build_response(exception.HTTPOk, data)
 
 challenge_by_id = Service(name='challenge_by_id',
-                          path='challenge/{id_challenge:\d+}',
+                          path='challenge/{id:\d+}',
                           cors_policy=cors_policy)
 
 @challenge_by_id.get()
 def get_challenge(request):
 
-    id_challenge = request.matchdict['id_challenge']
-    challenge = DBSession.query(Challenge).get(id_challenge)
+    service_informations = ServiceInformations()
+
+    challenge = DBSession.query(Challenge).get(request.matchdict['id'])
 
     if challenge == None:
-        raise exception.HTTPNotFound()
+        return service_informations.build_response(exception.HTTPNotFound())
 
-    response = ChallengeSchema().dump(challenge)
+    return service_informations.build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
 
-    return response
 
 @challenge.post()
 def create_challenge(request):
 
+    service_informations = ServiceInformations()
+
     try:
-        challenge = ChallengeSchema().load(request.json)
+        challenge_schema = ChallengeSchema()
+        challenge = challenge_schema.load(request.json)
 
         DBSession.add(challenge)
         DBSession.flush()
 
-        response = exception.HTTPCreated()
-        response.text = json.dumps(ChallengeSchema().dump(challenge))
+        response = service_informations.build_response(exception.HTTPOk, challenge_schema.dump(challenge))
+
+    except ValidationError as validation_error:
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+        DBSession.close()
+
+    except ValueError as value_error:
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+        DBSession.close()
+
+    except PermissionError as pe:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+        DBSession.close()
 
     except Exception as e:
-        response = exception.HTTPNotImplemented()
+        response = service_informations.build_response(exception.HTTPInternalServerError)
+        logging.getLogger(__name__).warn('Returning: %s', str(e))
+        DBSession.close()
+
+    return response
+
+@challenge_by_id.put()
+def update_challenge(request):
+
+    service_informations = ServiceInformations()
+
+    try:
+        challenge = DBSession.query(Challenge).filter(Challenge.id == request.matchdict['id'])
+        challenge.update(request.json)
+
+        DBSession.flush()
+
+        response = service_informations.build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
+
+    except Exception as e:
+        response = exception.HTTPNotImplemented(e)
         print(e)
-        #arr_errors = {'errors':e.messages}
-        #response.text = json.dumps({'error':e.message})
-
-    # challenge = ChallengeSchema().load(request.json)
-    # DBSession().add(challenge)
-    # DBSession().flush()
-    # DBSession().commit()
-    # response = exception.HTTPCreated()
-
-    #response.text = json.dumps(ChallengeSchema().dump(challenge))
-
 
     return response
