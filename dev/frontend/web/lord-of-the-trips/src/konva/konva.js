@@ -100,6 +100,10 @@ const Konva = () => {
     setIdSegments(id => id + 1);
   };
 
+  const deleteSegment = (idSegment) => {
+    setSegments(current => current.filter(segment => segment.id !== idSegment));
+  };
+
   const startDrawingSegment = (e, idCrossingPoint) => {
     setDrawingSegment({ coordinates: [{ x: e.target.attrs.x, y: e.target.attrs.y }] });
   };
@@ -137,6 +141,22 @@ const Konva = () => {
     }
   };
 
+  // Click on a Segment
+  const onClickSegment = (e, idSegment) => {
+    if(radioButtonChecked === "5")
+    {
+      deleteSegment(idSegment);
+    }
+  };
+
+  // Click on the drawing Segment
+  const onClickDrawingSegment = (e) => {
+    if(radioButtonChecked === "5")
+    {
+      setDrawingSegment(false);
+    }
+  };
+
   // Click on Canvas
   const clickOnStage = (e) => {
     const pos = e.target.getStage().getPointerPosition();
@@ -149,7 +169,6 @@ const Konva = () => {
     {
       updateDrawingSegment(pos.x, pos.y);
     }
-    //else if(radioButtonChecked === "5") function for option 5
   };
 
   const formatSegmentPoints = (coordinates) => {
@@ -177,10 +196,11 @@ const Konva = () => {
     return <div>
       <p>Select an action to do on the Map</p>
       <label> <input type="radio" name="action" value="1" checked={radioButtonChecked === "1"} onChange={handleOptionChange} /> Nothing </label>
-      <label> <input type="radio" name="action" value="2" checked={radioButtonChecked === "2"} onChange={handleOptionChange} /> Add Crossing points on click </label>
-      <label> <input type="radio" name="action" value="3" checked={radioButtonChecked === "3"} onChange={handleOptionChange} /> Delete Crossing points on click (to code) </label>
+      <label> <input type="radio" name="action" value="2" checked={radioButtonChecked === "2"} onChange={handleOptionChange} /> Add Crossing points </label>
+      <label> <input type="radio" name="action" value="3" checked={radioButtonChecked === "3"} onChange={handleOptionChange} /> Delete Crossing points (to code) </label>
       <label> <input type="radio" name="action" value="4" checked={radioButtonChecked === "4"} onChange={handleOptionChange} /> Draw a segment </label>
-      <label> <input type="radio" name="action" value="5" checked={radioButtonChecked === "5"} onChange={handleOptionChange} /> Other stuff to code </label>
+      <label> <input type="radio" name="action" value="5" checked={radioButtonChecked === "5"} onChange={handleOptionChange} /> Delete a segment </label>
+      <label> <input type="radio" name="action" value="6" checked={radioButtonChecked === "6"} onChange={handleOptionChange} /> Other stuff to code </label>
     </div>
   };
 
@@ -190,23 +210,25 @@ const Konva = () => {
     <input type="file" accept="image/*" onChange={handleImageUpload} />
     {errorUpload ? <h3>Invalid file uploaded</h3> :
       loaded ?
-      <div>
-        <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
-          <Layer>
-            <Image image={image} />
-            {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.x} y={crossingPoint.y} radius={10} draggable
-                                                 fill={crossingPoint.isDragging ? "red" : "blue"}
-                                                 onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint.id)}
-                                                 onDragEnd={(e) => onDragEndCrossingPoint(e, crossingPoint.id)}
-                                                 onClick={(e) => onClickCrossingPoint(e, crossingPoint.id)} />)}
-            {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment.coordinates)} stroke="black" strokeWidth={5} />)}
-            {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment.coordinates)} stroke="red" strokeWidth={5} /> : null}
-          </Layer>
-        </Stage>
-        <Menu />
-        <br />
-        <button onClick={() => log()}>Log Data in Console</button>
-      </div>
+        <div>
+          <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
+            <Layer>
+              <Image image={image} />
+              {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment.coordinates)} stroke="black" strokeWidth={radioButtonChecked === "5" ? 10 : 5}
+                                        onClick={(e) => onClickSegment(e, segment.id)} />)}
+              {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment.coordinates)} stroke="red" strokeWidth={radioButtonChecked === "5" ? 10 : 5}
+                                          onClick={(e) => onClickDrawingSegment(e)} /> : null}
+              {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.x} y={crossingPoint.y} radius={10} draggable
+                                                   fill={crossingPoint.isDragging ? "red" : "blue"}
+                                                   onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint.id)}
+                                                   onDragEnd={(e) => onDragEndCrossingPoint(e, crossingPoint.id)}
+                                                   onClick={(e) => onClickCrossingPoint(e, crossingPoint.id)} />)}
+            </Layer>
+          </Stage>
+          <Menu />
+          <br />
+          <button onClick={() => log()}>Log Data in Console</button>
+        </div>
       : null}
   </>
 };
