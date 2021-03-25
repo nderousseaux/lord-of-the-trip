@@ -2,9 +2,8 @@ from loftes.cors import cors_policy
 
 from cornice import Service
 
-from loftes.models import Parcours, Segment, DBSession
-
-from loftes.marshmallow_schema import ParcoursSchema
+from loftes.models.entity import Segment
+from loftes.models import DBSession
 
 import pyramid.httpexceptions as exception
 
@@ -29,7 +28,7 @@ def get_parcours(request):
 
 @parcours.post()
 def add_parcours(request):
-    
+
     try:
         parcoursdata = ParcoursSchema().load(request.json)
 
@@ -42,13 +41,13 @@ def add_parcours(request):
     except Exception as e:
         response = exception.HTTPNotImplemented()
         print(e)
-    
+
     return response
 
 parcours_id = Service(name='parcours_id',
                       path='/parcours/{id}',
                       cors_policy=cors_policy)
-              
+
 @parcours_id.get()
 def get_parcours_by_id(request):
 
@@ -69,20 +68,20 @@ def modify_parcours(request):
 
         parcoursdata = DBSession.query(Parcours).filter(Parcours.id_parcours == id).update(request.json)
         DBSession.flush()
-        
+
         response = exception.HTTPCreated()
         response.text = json.dumps(ParcoursSchema().dump(parcoursdata))
 
     except Exception as e:
         response = exception.HTTPNotImplemented(e)
         print(e)
-    
+
     return response
 
 
 @parcours_id.delete()
 def delete_parcours(request):
-   
+
     try:
         id = request.matchdict['id']
 
@@ -93,7 +92,7 @@ def delete_parcours(request):
         #DBSession.flush()
 
         response = exception.HTTPAccepted
-        
+
     except Exception as e:
         response = exception.HTTPNotImplemented()
         print(e)

@@ -1,6 +1,8 @@
 from cornice import Service
 from cornice.validators import marshmallow_body_validator
 
+from marshmallow import ValidationError
+
 from loftes.cors import cors_policy
 from loftes.models import Challenge, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
@@ -16,16 +18,17 @@ challenge = Service(name='challenge',
 @challenge.get()
 def get_challenges(request):
 
+    service_informations = ServiceInformations()
     challenges = DBSession.query(Challenge).all()
 
     if len(challenges) == 0:
-        return ServiceInformations().build_response(exception.HTTPNotFound())
+        return service_informations.build_response(exception.HTTPNotFound())
 
     data = {
         'challenges' : ChallengeSchema(many=True).dump(challenges)
     }
 
-    return ServiceInformations().build_response(exception.HTTPOk, data)
+    return service_informations.build_response(exception.HTTPOk, data)
 
 challenge_by_id = Service(name='challenge_by_id',
                           path='challenge/{id_challenge:\d+}',
@@ -34,13 +37,14 @@ challenge_by_id = Service(name='challenge_by_id',
 @challenge_by_id.get()
 def get_challenge(request):
 
+    service_informations = ServiceInformations()
     id_challenge = request.matchdict['id_challenge']
     challenge = DBSession.query(Challenge).get(id_challenge)
 
     if challenge == None:
-        return ServiceInformations().build_response(exception.HTTPNotFound())
+        return service_informations.build_response(exception.HTTPNotFound())
 
-    return ServiceInformations().build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
+    return service_informations.build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
 
 
 @challenge.post()
@@ -57,8 +61,12 @@ def create_challenge(request):
 
         response = service_informations.build_response(exception.HTTPOk, challenge_schema.dump(challenge))
 
-    except ValueError as ve:
-        response = service_informations.build_response(exception.HTTPBadRequest, None, str(ve))
+    except ValidationError as validation_error:
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+        DBSession.close()
+
+    except ValueError as value_error:
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
         DBSession.close()
 
     except Exception as e:

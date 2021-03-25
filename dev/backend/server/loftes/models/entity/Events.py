@@ -7,10 +7,10 @@ from loftes.models.entity.EventTypeMove import EventTypeMove
 
 class Events(Base):
     __tablename__ = 'Events'
-    id_Event = Column(Integer, primary_key=True)
-    id_user_event = Column(Integer, ForeignKey('User.id_user'))
-    id_challenge = Column(Integer, ForeignKey('Challenge.id_challenge'))
-    id_segment = Column(Integer, ForeignKey('Segment.id_segment'))
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('User.id'))
+    challenge_id = Column(Integer, ForeignKey('Challenge.id'))
+    segment_id = Column(Integer, ForeignKey('Segment.id'))
     event_type = Column(Enum(EventType))
     move_type = Column(Enum(EventTypeMove))
     event_date = Column(DateTime(timezone=False))
