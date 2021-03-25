@@ -31,6 +31,7 @@ const Konva = () => {
   const [height, setHeight] = useState(0);
   // wrong file uploaded
   const [errorUpload, setErrorUpload] = useState(null);
+  // when image is loaded
   const [loaded, setLoaded] = useState(null);
 
   // array of crossing points
@@ -41,16 +42,29 @@ const Konva = () => {
   const [segments, setSegments] = useState([]);
   // id of segments, increment when we add one
   const [idSegments, setIdSegments] = useState(1);
-  // Id to know the segment that is currently drawn, else false
-  const [idDrawingSegment, setIdDrawingSegment] = useState(false);
+  // segment that is currently drawn, else false
+  const [drawingSegment, setDrawingSegment] = useState(false);
 
   // Value of the radio button checked in the Menu component
   const [radioButtonChecked, setRadioButtonChecked] = useState("1"); // first radio button checked by default
 
-  const handleImageUpload = e => {
-    setErrorUpload(false);
-    setLoaded(false);
+  const resetState = () => {
+    setFile(null);
+    setImage(null);
+    setWidth(0);
+    setHeight(0);
+    setErrorUpload(null);
+    setLoaded(null);
     setCrossingPoints([]);
+    setIdCrossingPoints(1);
+    setSegments([]);
+    setIdSegments(1);
+    setDrawingSegment(false);
+    setRadioButtonChecked("1");
+  };
+
+  const handleImageUpload = e => {
+    resetState();
     const file = e.target.files[0];
     if (file) {
       setFile(file);
@@ -69,64 +83,59 @@ const Konva = () => {
   };
 
   const addCrossingPoint = (x, y) => {
-      setCrossingPoints(current => [...current, { id: idCrossingPoints, x: x, y: y }]);
-      setIdCrossingPoints(id => id + 1);
+    setCrossingPoints(current => [...current, { id: idCrossingPoints, x: x, y: y, isDragging: false }]);
+    setIdCrossingPoints(id => id + 1);
   };
 
-  const updateCrossingPoint = (e, idCrossingPoint) => {
-    setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? cr : {...cr, x: e.target.attrs.x, y: e.target.attrs.y}));
+  const colorDraggingCrossingPoint = (idCrossingPoint) => {
+    setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? cr : { ...cr, isDragging: true }));
   };
 
-  const updateSegment = (x, y) => {
-    setSegments(current => current.map(segment => {
-      if(idDrawingSegment === segment.id) {
-        const obj = segment;
-        obj.coordinates.push({ x: x, y: y });
-        return obj;
-      }
-      else {
-        return segment;
-      }
-    }));
+  const updateCrossingPoint = (x, y, idCrossingPoint) => {
+    setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? cr : { ...cr, x: x, y: y, isDragging: false }));
   };
 
-  // On Click on a crossing point
-  const onMouseUpCrossingPoint = (e, idCrossingPoint) => {
-    //Draw a segment if menu option "draw" checked
-    if(radioButtonChecked === "4" && idDrawingSegment === false)
+  const addSegment = (segment) => {
+    setSegments(current => [...current, { id: idSegments, ...segment }]);
+    setIdSegments(id => id + 1);
+  };
+
+  const startDrawingSegment = (e, idCrossingPoint) => {
+    setDrawingSegment({ coordinates: [{ x: e.target.attrs.x, y: e.target.attrs.y }] });
+  };
+
+  const updateDrawingSegment = (x, y) => {
+    setDrawingSegment(segment => ({ coordinates: [...segment.coordinates, { x: x, y: y }] }));
+  };
+
+  const stopDrawingSegment = (e, idCrossingPoint) => {
+    setDrawingSegment(segment => {
+      segment.coordinates.push({ x: e.target.attrs.x, y: e.target.attrs.y })
+      return segment;
+    });
+    addSegment(drawingSegment);
+    setDrawingSegment(false);
+  };
+
+  const onDragStartCrossingPoint = (e, idCrossingPoint) => {
+    colorDraggingCrossingPoint(idCrossingPoint);
+  };
+
+  const onDragEndCrossingPoint = (e, idCrossingPoint) => {
+    updateCrossingPoint(e.target.attrs.x, e.target.attrs.y, idCrossingPoint);
+  };
+
+  // Click on a Crossing Point
+  const onClickCrossingPoint = (e, idCrossingPoint) => {
+    if(radioButtonChecked === "4" && drawingSegment === false)
     {
-      startDrawingNewSegment(e, idCrossingPoint);
+      startDrawingSegment(e, idCrossingPoint);
     }
-    else if(radioButtonChecked === "4" && idDrawingSegment !== false)
+    else if(radioButtonChecked === "4" && drawingSegment !== false)
     {
       stopDrawingSegment(e, idCrossingPoint);
     }
   };
-
-  const startDrawingNewSegment = (e, idCrossingPoint) => {
-    const id = idSegments;
-    setIdDrawingSegment(id);
-    const newSegment = {
-      id: id,
-      coordinates: [{x: e.target.attrs.x, y: e.target.attrs.y}],
-    };
-    setIdSegments(id => id + 1);
-    setSegments(current => [...current, newSegment]);
-  }
-
-  const stopDrawingSegment = (e, idCrossingPoint) => {
-    updateSegment(e.target.attrs.x, e.target.attrs.y)
-    setIdDrawingSegment(false);
-  }
-
-  const formatSegmentPoints = (coordinates) => {
-    const returnCoordinates = [];
-    coordinates.forEach((coordinate) => {
-      returnCoordinates.push(coordinate.x);
-      returnCoordinates.push(coordinate.y);
-    });
-    return returnCoordinates;
-  }
 
   // Click on Canvas
   const clickOnStage = (e) => {
@@ -136,11 +145,20 @@ const Konva = () => {
       addCrossingPoint(pos.x, pos.y);
     }
     // add Coordinates in the current drawn segment
-    else if(radioButtonChecked === "4" && idDrawingSegment !== false)
+    else if(radioButtonChecked === "4" && drawingSegment !== false)
     {
-      updateSegment(pos.x, pos.y);
+      updateDrawingSegment(pos.x, pos.y);
     }
     //else if(radioButtonChecked === "5") function for option 5
+  };
+
+  const formatSegmentPoints = (coordinates) => {
+    const returnCoordinates = [];
+    coordinates.forEach((coordinate) => {
+      returnCoordinates.push(coordinate.x);
+      returnCoordinates.push(coordinate.y);
+    });
+    return returnCoordinates;
   };
 
   const log = () => {
@@ -148,7 +166,9 @@ const Konva = () => {
     console.log(crossingPoints);
     console.log("segments");
     console.log(segments);
-  }
+    console.log("drawingSegment");
+    console.log(drawingSegment);
+  };
 
   const Menu = () => {
     const handleOptionChange = (e) => {
@@ -158,7 +178,7 @@ const Konva = () => {
       <p>Select an action to do on the Map</p>
       <label> <input type="radio" name="action" value="1" checked={radioButtonChecked === "1"} onChange={handleOptionChange} /> Nothing </label>
       <label> <input type="radio" name="action" value="2" checked={radioButtonChecked === "2"} onChange={handleOptionChange} /> Add Crossing points on click </label>
-      <label> <input type="radio" name="action" value="3" checked={radioButtonChecked === "3"} onChange={handleOptionChange} /> Move Crossing points on click </label>
+      <label> <input type="radio" name="action" value="3" checked={radioButtonChecked === "3"} onChange={handleOptionChange} /> Delete Crossing points on click (to code) </label>
       <label> <input type="radio" name="action" value="4" checked={radioButtonChecked === "4"} onChange={handleOptionChange} /> Draw a segment </label>
       <label> <input type="radio" name="action" value="5" checked={radioButtonChecked === "5"} onChange={handleOptionChange} /> Other stuff to code </label>
     </div>
@@ -171,13 +191,16 @@ const Konva = () => {
     {errorUpload ? <h3>Invalid file uploaded</h3> :
       loaded ?
       <div>
-        <Stage width={width} height={height} onClick={clickOnStage}>
+        <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
           <Layer>
             <Image image={image} />
-            {crossingPoints.map(crossingPoint => <Circle id={crossingPoint.id} x={crossingPoint.x} y={crossingPoint.y} radius={10} fill="green" draggable
-                                                 onDragEnd={(e) => updateCrossingPoint(e, crossingPoint.id)}
-                                                 onMouseUp={(e) => onMouseUpCrossingPoint(e, crossingPoint.id)} />)}
-            {segments.map(segment => <Line points={formatSegmentPoints(segment.coordinates)} stroke="black" strokeWidth={5} />)}
+            {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.x} y={crossingPoint.y} radius={10} draggable
+                                                 fill={crossingPoint.isDragging ? "red" : "blue"}
+                                                 onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint.id)}
+                                                 onDragEnd={(e) => onDragEndCrossingPoint(e, crossingPoint.id)}
+                                                 onClick={(e) => onClickCrossingPoint(e, crossingPoint.id)} />)}
+            {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment.coordinates)} stroke="black" strokeWidth={5} />)}
+            {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment.coordinates)} stroke="red" strokeWidth={5} /> : null}
           </Layer>
         </Stage>
         <Menu />
@@ -186,6 +209,6 @@ const Konva = () => {
       </div>
       : null}
   </>
-}
+};
 
 export default Konva;
