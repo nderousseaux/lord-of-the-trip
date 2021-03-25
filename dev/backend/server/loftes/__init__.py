@@ -6,11 +6,11 @@ from loftes.models import DBSession, Base
 
 
 def main(global_config, **settings):
+    config = Configurator(settings=settings)
+    config.include("pyramid_tm")
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
     Base.metadata.bind = engine
-
-    config = Configurator(settings=settings)
 
     json_renderer = JSON()
     config.add_renderer('json', json_renderer)
