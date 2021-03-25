@@ -4,6 +4,8 @@ from marshmallow import (
     pre_dump
 )
 
+from loftes.marshmallow_schema.QuestionSchema import QuestionSchema
+
 class ObstacleSchema(Schema):
     id_obstacle = fields.Int()
     name_obstacle = fields.Str()
