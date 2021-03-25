@@ -30,7 +30,7 @@ class ServiceInformations:
 
         switcher = {
             400: "Bad Request",
-            401: "Unauthorized",
+            401: "Bad credentials.",
             403: "Requested resource is forbidden.",
             404: "Requested resource is not found.",
             500: "The server encountred an internal error and was unable to complete your request."
