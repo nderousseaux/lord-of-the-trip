@@ -4,12 +4,14 @@ from cornice import Service
 
 from loftes.models import Segment, DBSession
 
-from loftes.marshmallow_schema import SegmentSchema
+from loftes.marshmallow_schema import SegmentSchema, SegmentSchemaAdd
 
-import pyramid.httpexceptions as exc
+import pyramid.httpexceptions as exception
+
+import json
 
 segment = Service(name='segment',
-                   path='/segments',
+                   path='/segment',
                    cors_policy=cors_policy)
 @segment.get()
 def get_segment(request):
@@ -17,10 +19,32 @@ def get_segment(request):
     segmentdata = DBSession.query(Segment).all()
 
     if len(segmentdata) == 0:
-        raise exc.HTTPError("Aucun segment")
+        raise exception.HTTPError("Aucun segment")
 
+    response = exception.HTTPOk()
     res = SegmentSchema(many=True).dump(segmentdata)
-    return res
+    response.text = json.dumps(SegmentSchema(many=True).dump(segmentdata))
+    
+    return response
+
+@segment.post()
+def segment_add(request):
+
+    try:
+        segmentdata = SegmentSchemaAdd().load(request.json)
+
+        DBSession.add(segmentdata)
+        DBSession.flush()
+
+        response = exception.HTTPCreated()
+        response.text = json.dumps(SegmentSchema().dump(segmentdata))
+
+    except Exception as e:
+        response = exception.HTTPNotImplemented()
+        response.text = str(e)         
+        print(e)
+    
+    return response
 
 segment_id = Service(name='segment_id',
                      path='/segment/{id}',
@@ -29,50 +53,56 @@ segment_id = Service(name='segment_id',
 @segment_id.get()
 def get_segment_by_id(request):
 
-#     # if 'id' in request.get:
-#     #     raise exc.HTTPError("Aucun id de parcours")
+    try:
 
-    id = request.matchdict['id']
+        id = request.matchdict['id']
+        segmentdata  = DBSession.query(Segment).get(id)
 
-    segmentdata  = DBSession.query(Segment).get(id)
+        response = exception.HTTPOk()
+        response.text = json.dumps(SegmentSchema().dump(segmentdata))
 
-    res = SegmentSchema().dump(segmentdata)
-    return res
-   
-# segment_update = Service(name='segment_update',
-#                           path='/segment/update',
-#                           cors_policy=cors_policy)
+    except Exception as e:
+        response = exception.HTTPNotImplemented(e)
+        response.text = str(e)
+        print(e)
+        
+    return response
 
-# def is_id(request):
-#     if not 'id' in request.body:
-#         request.errors.add('query', 'id',
-#                             'the id parameter is required')
+@segment_id.put()
+def modify_segment(request):
 
-# @segment_update.put()
-# def update_segment(request):
+    try:
+        id = request.matchdict['id']
+        SegmentSchema().load(request.json)
+
+        segmentdata = DBSession.query(Segment).filter(Segment.id_segment == id).update(request.json)
+        DBSession.flush()
+        
+        response = exception.HTTPCreated()
+        response.text = json.dumps(SegmentSchema().dump(segmentdata))
+
+    except Exception as e:
+        response = exception.HTTPNotImplemented(e)
+        response.text = str(e)
+        print(e)
     
-#     id = request.matchdict['id']
+    return response
 
-#     raise exc.HTTPError("ID OK")
-    
-    # if 'name' in request.get:
-    #     nameparcours = request.matchdict['name']
+@segment_id.delete()
+def delete_segment(request):
 
-    # if 'description' in request.get:
-    #     descriptionparcours = request.matchdict['description']
-    
-    # if 'urlmap' in request.get:
-    #     urlparcours = request.matchdict['urlmap']
+    try:
+        id = request.matchdict['id']
 
-    # if 'level' in request.get:
-    #     levelparcours = request.matchdict['level']
-    
-    # if 'scalling' in request.get:
-    #     scallingparcours = request.matchdict['scalling']
+        segmentdata = DBSession.query(Segment).get(id)
 
-    # if 'startpoint' in request.get:
-    #     startparcours = request.matchdict['startpoint']
-    
-    # if 'endpoint' in request.get:
-    #     startparcours = request.matchdict['endpoint']
+        DBSession.delete(segmentdata)
+        # supression en cascade des obstacle ou mise à vide des id segment comment faire ?????
+        DBSession.flush()
 
+        response = exception.HTTPAccepted
+        
+    except Exception as e:
+        response = exception.HTTPNotImplemented()
+        response.text = str(e)
+        print(e)   

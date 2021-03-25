@@ -10,3 +10,5 @@ class UserSchema(Schema):
     last_name = fields.Str()
     pseudo = fields.Str()
     mail = fields.Str()
+
+
