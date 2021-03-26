@@ -83,7 +83,7 @@ const Konva = () => {
   };
 
   const addCrossingPoint = (x, y) => {
-    setCrossingPoints(current => [...current, { id: idCrossingPoints, x: x, y: y, isDragging: false }]);
+    setCrossingPoints(current => [...current, { id: idCrossingPoints, x: x, y: y, isDragging: false, isStartChallenge: false, isEndChallenge: false }]);
     setIdCrossingPoints(id => id + 1);
   };
 
@@ -93,6 +93,14 @@ const Konva = () => {
 
   const updateCrossingPoint = (x, y, idCrossingPoint) => {
     setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? cr : { ...cr, x: x, y: y, isDragging: false }));
+  };
+
+  const setStartChallenge = (idCrossingPoint) => {
+    setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? { ...cr, isStartChallenge: false } : { ...cr, isStartChallenge: true }));
+  };
+
+  const setEndChallenge = (idCrossingPoint) => {
+    setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? { ...cr, isEndChallenge: false } : { ...cr, isEndChallenge: true }));
   };
 
   const addSegment = (segment) => {
@@ -142,6 +150,14 @@ const Konva = () => {
     else if(radioButtonChecked === "4" && drawingSegment !== false)
     {
       stopDrawingSegment(e, idCrossingPoint);
+    }
+    else if(radioButtonChecked === "6")
+    {
+      setStartChallenge(idCrossingPoint);
+    }
+    else if(radioButtonChecked === "7")
+    {
+      setEndChallenge(idCrossingPoint);
     }
   };
 
@@ -212,9 +228,11 @@ const Konva = () => {
       <label> <input type="radio" name="action" value="1" checked={radioButtonChecked === "1"} onChange={handleOptionChange} /> Nothing </label>
       <label> <input type="radio" name="action" value="2" checked={radioButtonChecked === "2"} onChange={handleOptionChange} /> Add Crossing points </label>
       <label> <input type="radio" name="action" value="3" checked={radioButtonChecked === "3"} onChange={handleOptionChange} /> Delete Crossing points (to code) </label>
-      <label> <input type="radio" name="action" value="4" checked={radioButtonChecked === "4"} onChange={handleOptionChange} /> Draw a segment </label>
-      <label> <input type="radio" name="action" value="5" checked={radioButtonChecked === "5"} onChange={handleOptionChange} /> Delete a segment </label>
-      <label> <input type="radio" name="action" value="6" checked={radioButtonChecked === "6"} onChange={handleOptionChange} /> Other stuff to code </label>
+      <label> <input type="radio" name="action" value="4" checked={radioButtonChecked === "4"} onChange={handleOptionChange} /> Draw a Segment </label>
+      <label> <input type="radio" name="action" value="5" checked={radioButtonChecked === "5"} onChange={handleOptionChange} /> Delete a Segment </label>
+      <label> <input type="radio" name="action" value="6" checked={radioButtonChecked === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
+      <label> <input type="radio" name="action" value="7" checked={radioButtonChecked === "7"} onChange={handleOptionChange} /> Set End challenge </label>
+      <label> <input type="radio" name="action" value="8" checked={radioButtonChecked === "8"} onChange={handleOptionChange} /> Other stuff to code </label>
     </div>
   };
 
@@ -235,14 +253,17 @@ const Konva = () => {
                                         onMouseEnter={(e) => onMouseEnterSegment(e, segment)}
                                         onMouseLeave={(e) => onMouseLeaveSegment(e, segment)} />)}
               {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment.coordinates)}
-                                          stroke="red"
+                                          stroke={radioButtonChecked === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
                                           strokeWidth={radioButtonChecked === "5" && drawingSegment.onMouseOver ? 10 : 5}
                                           onClick={(e) => onClickDrawingSegment(e)}
                                           onMouseEnter={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: true }))}
                                           onMouseLeave={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: false }))} />
                                         : null}
-              {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.x} y={crossingPoint.y} radius={10} draggable
-                                                   fill={crossingPoint.isDragging ? "red" : "blue"}
+              {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.x} y={crossingPoint.y} radius={12} draggable stroke={"black"} strokeWidth={2}
+                                                   fill={crossingPoint.isDragging ? "sienna" : crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "green" : !crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? "red" : !crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "blue" : null}
+                                                   fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : null}
+                                                   fillLinearGradientEndPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: 5, y: 0 } : null}
+                                                   fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, 'green', 0.40, 'green', 0.41, 'black', 0.59, 'black', 0.60, 'red', 1, 'red'] : null}
                                                    onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint.id)}
                                                    onDragEnd={(e) => onDragEndCrossingPoint(e, crossingPoint.id)}
                                                    onClick={(e) => onClickCrossingPoint(e, crossingPoint.id)} />)}
