@@ -17,8 +17,10 @@ import {API_URL} from "@env"
 let NewJsxSyntax = connect(state => ({ main: state.main }))(JsxComponent);
 */
 
+console.log(API_URL);
+
 //Initialise axios
-api.init(API_URL)
+api.init(API_URL);
 
 // Create Reducer
 function mainReducer(state, action) {

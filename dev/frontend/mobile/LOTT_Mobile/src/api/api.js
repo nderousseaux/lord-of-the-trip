@@ -6,6 +6,11 @@ const apiFonctions = {
 
     init(server){
         api.defaults.baseURL = server;
+        api.headers = {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': 0
+        };
         return api
     },
 
