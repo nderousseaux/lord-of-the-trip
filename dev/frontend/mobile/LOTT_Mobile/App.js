@@ -9,13 +9,16 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import DrawerContent from './src/Components/Drawer/DrawerContent';
 import SelectChallenge from './src/Components/Tab/SelectChallenge';
-import Pedometer from './src/Components/Tab/Pedometer';
+import GO from './src/Components/Tab/GO';
 import EditProfile from './src/Components/Stack/EditProfile';
-
-
+import api from './src/api/api'
+import {API_URL} from "@env"
 /* Exemple of how to connect the screens to Redux
 let NewJsxSyntax = connect(state => ({ main: state.main }))(JsxComponent);
 */
+
+//Initialise axios
+api.init(API_URL)
 
 // Create Reducer
 function mainReducer(state, action) {
@@ -46,7 +49,7 @@ const TabNavigator = (props) => {
             case 'Select Challenge':
               iconName = 'ios-list';
               break;
-            case 'Pedometer':
+            case 'GO !':
               iconName = 'ios-navigate-outline';
               break;
             default:
@@ -58,7 +61,7 @@ const TabNavigator = (props) => {
         }
       })}>
       <Tab.Screen name="Select Challenge" component={SelectChallenge} />
-      <Tab.Screen name="Pedometer" component={Pedometer} />
+      <Tab.Screen name="GO !" component={GO} />
     </Tab.Navigator>
   );
 }

@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.pythonPath": "env/bin/python"
+	},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"name": "Python : application Pyramid",
+				"type": "python",
+				"request": "launch",
+				"module": "pyramid.scripts.pserve",
+				"args": [
+					"${workspaceFolder}/development.ini"
+				],
+				"pyramid": true,
+				"jinja": true
+			}
+		]
+	}
+}
