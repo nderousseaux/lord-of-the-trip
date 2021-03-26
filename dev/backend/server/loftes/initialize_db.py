@@ -97,48 +97,56 @@ def fill(argv=sys.argv):
 
     #Crossing points
     cp1 = CrossingPoint(name_crossing='L\'armoire',
+                        challenge_id='1',
                         x_position='0.10',
                         y_position='0.10')
     session.add(cp1)
     session.commit()
 
     cp2 = CrossingPoint(name_crossing='La passe du faune',
+                        challenge_id='1',
                         x_position='0.10',
                         y_position='0.10')
     session.add(cp2)
     session.commit()
 
     cp3 = CrossingPoint(name_crossing='La passe du magicien',
+                        challenge_id='1',
                         x_position='0.20',
                         y_position='0.40')
     session.add(cp3)
     session.commit()
 
     cp4 = CrossingPoint(name_crossing='Le carrousel des ours',
+                        challenge_id='1',
                         x_position='0.30',
                         y_position='0.40')
     session.add(cp4)
     session.commit()
 
     cp5 = CrossingPoint(name_crossing='Le pont des centaures',
+                        challenge_id='1',
                         x_position='0.30',
                         y_position='0.50')
     session.add(cp5)
     session.commit()
 
     cp6 = CrossingPoint(name_crossing='Le pont de la sorcière',
+                        challenge_id='1',
                         x_position='0.20',
                         y_position='0.50')
     session.add(cp6)
     session.commit()
 
     cp7 = CrossingPoint(name_crossing='Le nid des griffons',
+                        challenge_id='1',
                         x_position='0.20',
                         y_position='0.50')
     session.add(cp7)
     session.commit()
 
     cp8 = CrossingPoint(name_crossing='La table de pierre',
+                        challenge_id='1',
                         x_position='0.20',
                         y_position='0.50')
     session.add(cp8)
@@ -146,6 +154,7 @@ def fill(argv=sys.argv):
 
 
     cp9 = CrossingPoint(name_crossing='Cair Paravel',
+                        challenge_id='1',
                         x_position='0.20',
                         y_position='0.50')
     session.add(cp9)
