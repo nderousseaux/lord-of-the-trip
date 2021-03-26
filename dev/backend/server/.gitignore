@@ -31,3 +31,5 @@ development.ini
 
 env
 production.ini
+build
+logs

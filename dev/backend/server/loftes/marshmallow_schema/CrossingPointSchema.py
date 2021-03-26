@@ -4,7 +4,6 @@ from marshmallow import (
     pre_dump
 )
 
-# from loftes.marshmallow_schema.ParcoursSchema import ParcoursSchema
 # from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
 
 class CrossingPointSchema(Schema):
@@ -13,4 +12,3 @@ class CrossingPointSchema(Schema):
     x_position = fields.Int()
     y_position = fields.Int()
     # segment_info = fields.Nested(lambda: SegmentSchema(exclude=["start_crossing_point,end_crossing_point"]))
-    # parcours_info = fields.Nested(lambda: ParcoursSchema(exclude=["start_crossing_point,end_crossing_point"]))
