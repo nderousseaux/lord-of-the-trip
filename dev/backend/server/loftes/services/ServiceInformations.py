@@ -1,4 +1,5 @@
 from pyramid.response import Response
+import logging
 
 import json
 
@@ -6,6 +7,7 @@ class ServiceInformations:
 
     def build_response(self, http_exception, data = None, message = None):
 
+        logging.getLogger(__name__).warn('Returning: %s', message)
         code = http_exception.code
         content = data
 
