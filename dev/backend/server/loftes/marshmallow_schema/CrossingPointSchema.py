@@ -7,6 +7,8 @@ from marshmallow import (
     pre_load
 )
 
+# from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
+
 class CrossingPointSchema(Schema):
     id = fields.Int()
     name_crossing = fields.Str()

@@ -30,7 +30,7 @@ class ChallengeSchema(Schema):
     end_crossing_point = fields.Nested(lambda: CrossingPointSchema())
     segments = fields.List(fields.Nested(lambda: SegmentSchema()))
     admin = fields.Nested(lambda: UserSchema())
-    admin_id = fields.Int()
+    admin_id = fields.Int(load_only=True)
 
     class Meta:
         ordered = True
@@ -43,15 +43,20 @@ class ChallengeSchema(Schema):
     def pre_load(self, data, many, **kwargs):
 
         admin = DBSession.query(User).get(1) # solution en ce moment. Il faut penser à trouver l'utilisateur authentifié
-        if admin is not None:
+        if admin != None:
             data['admin_id'] = admin.id
         else:
              raise PermissionError()
 
-        challenge = DBSession().query(Challenge).filter_by(name=data['name']).first()
-        if challenge is not None:
-            raise ValueError("The given value '"+data['name']+"' is already used as a challenge name.")
+        if 'name' in data:
+            challenge = DBSession().query(Challenge).filter_by(name=data['name']).first()
+            if challenge != None:
+                raise ValueError("The given value '"+data['name']+"' is already used as a challenge name.")
 
-        data['end_date'] = datetime.datetime.fromisoformat(data['end_date']).isoformat()
+        if 'end_date' in data:
+            data['end_date'] = datetime.datetime.fromisoformat(data['end_date']).isoformat()
 
         return data
+
+    def check_json(self, data, **kwargs):
+        return self.pre_load(data, True)
