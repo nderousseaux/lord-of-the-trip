@@ -2,8 +2,8 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 
 from loftes.models import Base
-from loftes.models.entity.EventType import EventType
-from loftes.models.entity.EventTypeMove import EventTypeMove
+# from loftes.models.entity.EventType import EventType
+# from loftes.models.entity.EventTypeMove import EventTypeMove
 
 class Events(Base):
     __tablename__ = 'Events'
