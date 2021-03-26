@@ -104,12 +104,16 @@ const Konva = () => {
     setSegments(current => current.filter(segment => segment.id !== idSegment));
   };
 
+  const updateSegment = (segment) => {
+    setSegments(current => current.map(seg => seg.id !== segment.id ? seg : segment));
+  };
+
   const startDrawingSegment = (e, idCrossingPoint) => {
-    setDrawingSegment({ coordinates: [{ x: e.target.attrs.x, y: e.target.attrs.y }] });
+    setDrawingSegment({ coordinates: [{ x: e.target.attrs.x, y: e.target.attrs.y }], onMouseOver: false });
   };
 
   const updateDrawingSegment = (x, y) => {
-    setDrawingSegment(segment => ({ coordinates: [...segment.coordinates, { x: x, y: y }] }));
+    setDrawingSegment(segment => ({ ...segment, coordinates: [...segment.coordinates, { x: x, y: y }] }));
   };
 
   const stopDrawingSegment = (e, idCrossingPoint) => {
@@ -147,6 +151,16 @@ const Konva = () => {
     {
       deleteSegment(idSegment);
     }
+  };
+
+  const onMouseEnterSegment = (e, segment) => {
+    segment.onMouseOver = true;
+    updateSegment(segment);
+  };
+
+  const onMouseLeaveSegment = (e, segment) => {
+    segment.onMouseOver = false;
+    updateSegment(segment);
   };
 
   // Click on the drawing Segment
@@ -214,10 +228,19 @@ const Konva = () => {
           <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
             <Layer>
               <Image image={image} />
-              {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment.coordinates)} stroke="black" strokeWidth={radioButtonChecked === "5" ? 10 : 5}
-                                        onClick={(e) => onClickSegment(e, segment.id)} />)}
-              {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment.coordinates)} stroke="red" strokeWidth={radioButtonChecked === "5" ? 10 : 5}
-                                          onClick={(e) => onClickDrawingSegment(e)} /> : null}
+              {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment.coordinates)}
+                                        stroke={radioButtonChecked === "5" && segment.onMouseOver ? "red" : "black"}
+                                        strokeWidth={radioButtonChecked === "5" && segment.onMouseOver ? 10 : 5}
+                                        onClick={(e) => onClickSegment(e, segment.id)}
+                                        onMouseEnter={(e) => onMouseEnterSegment(e, segment)}
+                                        onMouseLeave={(e) => onMouseLeaveSegment(e, segment)} />)}
+              {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment.coordinates)}
+                                          stroke="red"
+                                          strokeWidth={radioButtonChecked === "5" && drawingSegment.onMouseOver ? 10 : 5}
+                                          onClick={(e) => onClickDrawingSegment(e)}
+                                          onMouseEnter={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: true }))}
+                                          onMouseLeave={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: false }))} />
+                                        : null}
               {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.x} y={crossingPoint.y} radius={10} draggable
                                                    fill={crossingPoint.isDragging ? "red" : "blue"}
                                                    onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint.id)}
