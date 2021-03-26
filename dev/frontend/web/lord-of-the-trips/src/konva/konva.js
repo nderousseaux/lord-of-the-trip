@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Stage, Layer, Image, Circle, Line } from 'react-konva';
+import { pixelsToPercent } from "../utils/utils";
 
 // Upload
 // https://dev.to/asimdahall/client-side-image-upload-in-react-5ffc
@@ -117,7 +118,7 @@ const Konva = () => {
   };
 
   const startDrawingSegment = (e, idCrossingPoint) => {
-    setDrawingSegment({ coordinates: [{ x: e.target.attrs.x, y: e.target.attrs.y }], onMouseOver: false });
+    setDrawingSegment({ startCrossingPoint: idCrossingPoint, endCrossingPoint: null, coordinates: [], onMouseOver: false });
   };
 
   const updateDrawingSegment = (x, y) => {
@@ -125,11 +126,7 @@ const Konva = () => {
   };
 
   const stopDrawingSegment = (e, idCrossingPoint) => {
-    setDrawingSegment(segment => {
-      segment.coordinates.push({ x: e.target.attrs.x, y: e.target.attrs.y })
-      return segment;
-    });
-    addSegment(drawingSegment);
+    addSegment({ ...drawingSegment, endCrossingPoint: idCrossingPoint });
     setDrawingSegment(false);
   };
 
@@ -201,12 +198,33 @@ const Konva = () => {
     }
   };
 
-  const formatSegmentPoints = (coordinates) => {
-    const returnCoordinates = [];
-    coordinates.forEach((coordinate) => {
+  const getCoordinatesFromCrossingPoint = (idCrossingPoint) => {
+    let returnCoordinates = null;
+    crossingPoints.forEach((item) => {
+      if(item.id === idCrossingPoint) {
+        returnCoordinates = { x: item.x, y: item.y };
+        return;
+      }
+    });
+    return returnCoordinates;
+  };
+
+  const formatSegmentPoints = (segment) => {
+    let returnCoordinates = [];
+    let coordinatesStart = getCoordinatesFromCrossingPoint(segment.startCrossingPoint);
+    if(coordinatesStart !== null) {
+      returnCoordinates.push(coordinatesStart.x);
+      returnCoordinates.push(coordinatesStart.y);
+    }
+    segment.coordinates.forEach((coordinate) => {
       returnCoordinates.push(coordinate.x);
       returnCoordinates.push(coordinate.y);
     });
+    let coordinatesEnd = getCoordinatesFromCrossingPoint(segment.endCrossingPoint);
+    if(coordinatesEnd !== null) {
+      returnCoordinates.push(coordinatesEnd.x);
+      returnCoordinates.push(coordinatesEnd.y);
+    }
     return returnCoordinates;
   };
 
@@ -217,6 +235,22 @@ const Konva = () => {
     console.log(segments);
     console.log("drawingSegment");
     console.log(drawingSegment);
+    let tabPixels = [];
+    let tab0To1 = [];
+    segments.forEach((item) => {
+      let segPixels = [];
+      let seg0To1 = [];
+      item.coordinates.forEach((item) => {
+        segPixels.push({ x: item.x, y: item.y});
+        seg0To1.push({ x: pixelsToPercent(item.x, width), y: pixelsToPercent(item.y, height)});
+      });
+      tabPixels.push(segPixels);
+      tab0To1.push(seg0To1);
+    });
+    console.log("tabPixels");
+    console.log(tabPixels);
+    console.log("tab0To1");
+    console.log(tab0To1);
   };
 
   const Menu = () => {
@@ -246,13 +280,13 @@ const Konva = () => {
           <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
             <Layer>
               <Image image={image} />
-              {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment.coordinates)}
+              {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment)}
                                         stroke={radioButtonChecked === "5" && segment.onMouseOver ? "red" : "black"}
                                         strokeWidth={radioButtonChecked === "5" && segment.onMouseOver ? 10 : 5}
                                         onClick={(e) => onClickSegment(e, segment.id)}
                                         onMouseEnter={(e) => onMouseEnterSegment(e, segment)}
                                         onMouseLeave={(e) => onMouseLeaveSegment(e, segment)} />)}
-              {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment.coordinates)}
+              {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment)}
                                           stroke={radioButtonChecked === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
                                           strokeWidth={radioButtonChecked === "5" && drawingSegment.onMouseOver ? 10 : 5}
                                           onClick={(e) => onClickDrawingSegment(e)}
@@ -261,8 +295,8 @@ const Konva = () => {
                                         : null}
               {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.x} y={crossingPoint.y} radius={12} draggable stroke={"black"} strokeWidth={2}
                                                    fill={crossingPoint.isDragging ? "sienna" : crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "green" : !crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? "red" : !crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "blue" : null}
-                                                   fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : null}
-                                                   fillLinearGradientEndPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: 5, y: 0 } : null}
+                                                   fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : { x: null, y: null }}
+                                                   fillLinearGradientEndPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: 5, y: 0 } : { x: null, y: null }}
                                                    fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, 'green', 0.40, 'green', 0.41, 'black', 0.59, 'black', 0.60, 'red', 1, 'red'] : null}
                                                    onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint.id)}
                                                    onDragEnd={(e) => onDragEndCrossingPoint(e, crossingPoint.id)}

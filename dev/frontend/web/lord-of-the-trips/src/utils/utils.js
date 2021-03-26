@@ -6,15 +6,15 @@ export const degToRad = (degrees) => {
 };
 
 // Converti une valeur en pourcentage en une position en pixels
-// exemple : une position de 70% sur une image de 800 pixels donne 560 pixels
+// exemple : une position de 0.7 sur une image de 800 pixels donne 560 pixels
 export const percentToPixels = (percent, totalPixels) => {
-  return percent * totalPixels / 100;
+  return percent * totalPixels;
 };
 
 // Converti une position en pixels en une valeur en pourcentage
-// exemple : 560 pixels sur une image de 800 pixels donne une position de 70%
+// exemple : 560 pixels sur une image de 800 pixels donne une position de 0.7
 export const pixelsToPercent = (pixels, totalPixels) => {
-  return pixels * 100 / totalPixels;
+  return pixels / totalPixels;
 };
 
 export const randomInt = (min, max) => {
