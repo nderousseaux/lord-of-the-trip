@@ -13,7 +13,7 @@ class Challenge(Base):
     map_url = Column(String(255))
     level = Column(String(255))
     scalling = Column(Integer)
-    draft = Column(Boolean, server_default=text("0")) # permet de mettre la valeur par défaut
+    draft = Column(Boolean, server_default=text("0")) # permet de mettre la valeur par defaut
     start_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id'))
     end_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id'))
     segments = relationship("Segment", backref="segments", cascade="all,delete")
