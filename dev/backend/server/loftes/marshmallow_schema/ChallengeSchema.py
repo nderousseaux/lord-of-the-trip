@@ -40,7 +40,7 @@ class ChallengeSchema(Schema):
     @pre_load
     def pre_load(self, data, many, **kwargs):
 
-        admin = DBSession.query(User).get(1) # solution en ce moment. Il faut penser à trouver l'utilisateur authentifie
+        admin = DBSession.query(User).get(1) # solution en ce moment. Il faut penser à trouver lutilisateur authentifie
         if admin != None:
             data['admin_id'] = admin.id
         else:
