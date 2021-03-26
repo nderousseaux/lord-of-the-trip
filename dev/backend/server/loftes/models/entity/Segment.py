@@ -16,4 +16,4 @@ class Segment(Base):
     list_points  = Column(TEXT(length=65535))
     challenge_id = Column(Integer, ForeignKey('Challenge.id'))
     challenge_info = relationship("Challenge")
-    list_obstacle = relationship("Obstacle", backref="Segment")
+    list_obstacle = relationship("Obstacle", cascade="all,delete", backref="Segment")
