@@ -7,8 +7,7 @@ class Challenge(Base):
     __tablename__ = 'Challenge'
     id = Column(Integer, primary_key=True)
     name = Column(String(255), unique=True)
-    #TODO augmenter la taille
-    description = Column(String(255))
+    description = Column(TEXT(length=2000))
     end_date = Column(DateTime(timezone=False))
     alone_only = Column(Integer)
     map_url = Column(String(255))

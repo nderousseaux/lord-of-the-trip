@@ -11,4 +11,6 @@ class Obstacle(Base):
     y_position = Column(Integer)
     description_obstacle = Column(String(255))
     segment_id = Column(Integer, ForeignKey('Segment.id'))
+    segment_info = relationship("Segment",)
     question_id = Column(Integer, ForeignKey('Question.id'))
+    question_info = relationship("Question")  
