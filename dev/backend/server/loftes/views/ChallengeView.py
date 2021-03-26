@@ -64,7 +64,7 @@ def create_challenge(request):
         logging.getLogger(__name__).warn('Returning: %s', str(e))
         DBSession.close()
 
-    return ServiceInformations().build_response(exception.HTTPOk, data)
+    return response
 
 
 challenge_by_id = Service(name='challenge_by_id',
@@ -119,6 +119,8 @@ def update_challenge(request):
 
     else:
         response = service_informations.build_response(exception.HTTPNotFound)
+
+    return response
 
 
 @challenge_by_id.patch()
