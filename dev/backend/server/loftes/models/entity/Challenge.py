@@ -7,6 +7,7 @@ class Challenge(Base):
     __tablename__ = 'Challenge'
     id = Column(Integer, primary_key=True)
     name = Column(String(255), unique=True)
+    #TODO augmenter la taille
     description = Column(String(255))
     end_date = Column(DateTime(timezone=False))
     alone_only = Column(Integer)
@@ -14,8 +15,10 @@ class Challenge(Base):
     level = Column(String(255))
     scalling = Column(Integer)
     draft = Column(Boolean, server_default=text("0")) # permet de mettre la valeur par défaut
-    start_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id'))
-    end_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id'))
+    start_crossing_point_id = Column(Integer, ForeignKey('CrossingPoint.id'))
+    end_crossing_point_id = Column(Integer, ForeignKey('CrossingPoint.id'))
+    start_crossing_point = relationship("CrossingPoint", foreign_keys="Challenge.start_crossing_point_id")     
+    end_crossing_point = relationship("CrossingPoint",foreign_keys="Challenge.end_crossing_point_id")
     segments = relationship("Segment", backref="segments")
     admin_id = Column(Integer, ForeignKey('User.id'))
     admin = relationship("User", backref="challenge_manager")

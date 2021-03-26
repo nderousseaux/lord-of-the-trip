@@ -1,4 +1,4 @@
-from loftes.models import CrossingPoint
+from loftes.models import CrossingPoint, DBSession
 from marshmallow import (
     Schema,
     fields,
@@ -8,11 +8,11 @@ from marshmallow import (
 )
 
 class CrossingPointSchema(Schema):
-    id_crossing_point = fields.Int()
+    id = fields.Int()
     name_crossing = fields.Str()
     x_position = fields.Float()
     y_position = fields.Float()
-    
+    # rajouter le challenge ?
 
     @post_load
     def make_crossingpoint(self, data, **kwargs):
@@ -20,6 +20,11 @@ class CrossingPointSchema(Schema):
 
     @pre_load
     def pre_load(self, data, many, **kwargs):
+
+        croissingpointdata = DBSession().query(CrossingPoint).filter_by(name_crossing=data['name_crossing']).first()
+        if croissingpointdata is not None:
+            raise ValueError("The given value '"+data['name_crossing']+"' is already used as a croissing point name.")
+
         data['y_position'] = float(data['y_position'])
         data['x_position'] = float(data['x_position'])
   

@@ -24,6 +24,8 @@ class ChallengeSchema(Schema):
     level = fields.Str()
     scalling = fields.Int()
     draft = fields.Bool()
+    start_crossing_point_id = fields.Int()
+    end_crossing_point_id = fields.Int()
     start_crossing_point = fields.Nested(lambda: CrossingPointSchema())
     end_crossing_point = fields.Nested(lambda: CrossingPointSchema())
     segments = fields.List(fields.Nested(lambda: SegmentSchema()))
