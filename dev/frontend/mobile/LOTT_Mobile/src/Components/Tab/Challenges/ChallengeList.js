@@ -18,35 +18,30 @@ export default function ChallengeList(props) {
     }, []);
 
     return (
-        <View>
+        <>
             {isLoading
-                ? <ActivityIndicator size="large" color="#0000ff" />
-                : challenges?.map((challenge, i) => (
-                    <ListItem key={i} onPress={() => props.navigation.navigate("Card")}>
-                        <ListItem.Content>
-                            <ListItem.Title>{challenge.name}</ListItem.Title>
-                            <ListItem.Subtitle>{challenge.duration}</ListItem.Subtitle>
-                        </ListItem.Content>
-                        <ListItem.Chevron />
-                    </ListItem>
-                ))
+                ? <View style={styles.spinnerContainer}><ActivityIndicator size="large" color="#0000ff" /></View>
+                : <View style={styles.listContainer}>
+                    {challenges?.map((challenge, i) => (
+                        <ListItem key={i} onPress={() => props.navigation.navigate("Card", {
+                            challenge: challenge})}>
+                            <ListItem.Content>
+                                <ListItem.Title>{challenge.name}</ListItem.Title>
+                                <ListItem.Subtitle>{new Date(challenge.duration).toLocaleDateString()}</ListItem.Subtitle>
+                            </ListItem.Content>
+                            <ListItem.Chevron />
+                        </ListItem>))}
+                </View>
             }
-        </View>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    spinnerContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#ecf0f1',
-        padding: 8,
-    },
-    paragraph: {
-        margin: 24,
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
+        padding: 8
     },
 });

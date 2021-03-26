@@ -15,7 +15,7 @@ const apiFonctions = {
     },
 
     getChallenges(){
-        return api.get('/challenges')
+        return api.get('/challenges-detail')
     }
 }
 

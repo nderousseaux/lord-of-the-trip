@@ -1,26 +1,33 @@
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { useEffect, useState } from 'react';
 
 export default function ChallengeCard(props) {
+
+    const [ challenge ] = useState(props.route.params.challenge);
+
+    console.log(challenge);
+
     return(
-        <View style={styles.container}>
-            <Text>Fiche challenge</Text>
+        <View style={styles.cardContainer}>
+            {challenge === null
+                ? <ActivityIndicator size="large" color="#0000ff" />
+                : <>
+                    {console.log(challenge)}
+                    <Text>{"Nom : " + challenge.name}</Text>
+                    <Text>{"Longueur : " + challenge.length + "kms"}</Text>
+                    <Text>{"Expiration : " + new Date(challenge.duration).toLocaleDateString()}</Text>
+                </>
+            }
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
+    cardContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#ecf0f1',
         padding: 8,
-    },
-    paragraph: {
-        margin: 24,
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
+    }
 });
