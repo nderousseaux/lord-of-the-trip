@@ -20,6 +20,7 @@ Data.fs*
 coverage
 test
 logs
+uploads
 
 .idea
 .vscode*
