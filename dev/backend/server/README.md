@@ -11,5 +11,5 @@
 - Lancer le serveur : `server_start`
 
 ## Base de données
-- Créer la base de donnée : `initialize_loftes_db`
-- Remplir la base de donnée : `fill_loftes_db`
+- Créer la base de données : `initialize_loftes_db`
+- Remplir la base de données : `fill_loftes_db`

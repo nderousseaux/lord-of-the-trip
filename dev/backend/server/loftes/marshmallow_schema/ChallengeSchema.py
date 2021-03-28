@@ -1,18 +1,12 @@
 from loftes.models import Challenge, User, DBSession
-from marshmallow import (
-    Schema,
-    fields,
-    pre_dump,
-    post_load,
-    pre_load,
-    ValidationError
-)
+from marshmallow import Schema, fields, pre_dump, post_load, pre_load, ValidationError
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
 
 import datetime
+
 
 class ChallengeSchema(Schema):
     id = fields.Int()
@@ -40,19 +34,32 @@ class ChallengeSchema(Schema):
     @pre_load
     def pre_load(self, data, many, **kwargs):
 
-        admin = DBSession.query(User).get(1) # solution en ce moment. Il faut penser à trouver l'utilisateur authentifié
+        admin = DBSession.query(User).get(1)
         if admin != None:
-            data['admin_id'] = admin.id
+            data["admin_id"] = admin.id
         else:
-             raise PermissionError()
+            raise PermissionError()
 
-        if 'name' in data:
-            challenge = DBSession().query(Challenge).filter_by(name=data['name']).first()
+        if "name" in data:
+            if data["name"] == "":
+                raise ValueError(
+                    "The given value 'empty field' cannot be used as a challenge name."
+                )
+
+            challenge = (
+                DBSession().query(Challenge).filter_by(name=data["name"]).first()
+            )
             if challenge != None:
-                raise ValueError("The given value '"+data['name']+"' is already used as a challenge name.")
+                raise ValueError(
+                    "The given value '"
+                    + data["name"]
+                    + "' is already used as a challenge name."
+                )
 
-        if 'end_date' in data:
-            data['end_date'] = datetime.datetime.fromisoformat(data['end_date']).isoformat()
+        if "end_date" in data:
+            data["end_date"] = datetime.datetime.fromisoformat(
+                data["end_date"]
+            ).isoformat()
 
         return data
 

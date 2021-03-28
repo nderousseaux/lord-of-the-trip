@@ -3,8 +3,9 @@ from sqlalchemy.orm import relationship
 
 from loftes.models import Base
 
+
 class Challenge(Base):
-    __tablename__ = 'Challenge'
+    __tablename__ = "Challenge"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), unique=True, nullable=False)
     description = Column(String(255))
@@ -13,9 +14,11 @@ class Challenge(Base):
     map_url = Column(String(255))
     level = Column(String(255))
     scalling = Column(Integer)
-    draft = Column(Boolean, server_default=text("0")) # permet de mettre la valeur par défaut
-    start_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id'))
-    end_crossing_point = Column(Integer, ForeignKey('CrossingPoint.id'))
+    draft = Column(
+        Boolean, server_default=text("0")
+    )
+    start_crossing_point = Column(Integer, ForeignKey("CrossingPoint.id"))
+    end_crossing_point = Column(Integer, ForeignKey("CrossingPoint.id"))
     segments = relationship("Segment", backref="segments", cascade="all,delete")
-    admin_id = Column(Integer, ForeignKey('User.id'))
+    admin_id = Column(Integer, ForeignKey("User.id"))
     admin = relationship("User", backref="challenge_manager")
