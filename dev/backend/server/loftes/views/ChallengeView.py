@@ -20,7 +20,7 @@ challenge = Service(name='challenge',
 @challenge.get()
 def get_challenges(request):
     service_informations = ServiceInformations()
-    challenges = DBSession.query(Challenge).all()
+    challenges = DBSession.query(Challenge).one()
 
     if len(challenges) == 0:
         return service_informations.build_response(exception.HTTPNotFound())
