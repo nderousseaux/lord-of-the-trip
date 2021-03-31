@@ -19,7 +19,6 @@ challenge = Service(name='challenge',
 
 @challenge.get()
 def get_challenges(request):
-
     service_informations = ServiceInformations()
     challenges = DBSession.query(Challenge).all()
 
@@ -27,7 +26,7 @@ def get_challenges(request):
         return service_informations.build_response(exception.HTTPNotFound())
 
     data = {
-        'challenges' : ChallengeSchema(many=True).dump(challenges)
+            'challenges' : ChallengeSchema().dump(challenges, many=True)
     }
 
     return service_informations.build_response(exception.HTTPOk, data)

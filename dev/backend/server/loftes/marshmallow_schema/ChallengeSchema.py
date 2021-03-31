@@ -24,10 +24,10 @@ class ChallengeSchema(Schema):
     level = fields.Str()
     scalling = fields.Int()
     draft = fields.Bool()
-    start_crossing_point = fields.Nested(lambda: CrossingPointSchema())
-    end_crossing_point = fields.Nested(lambda: CrossingPointSchema())
-    segments = fields.List(fields.Nested(lambda: SegmentSchema()))
-    admin = fields.Nested(lambda: UserSchema())
+    start_crossing_point = fields.Nested(CrossingPointSchema)
+    end_crossing_point = fields.Nested(CrossingPointSchema)
+    segments =fields.Nested(SegmentSchema, many=True)
+    admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
 
     class Meta:

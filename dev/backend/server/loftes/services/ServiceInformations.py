@@ -24,7 +24,7 @@ class ServiceInformations:
         response.status_code = code
 
         if content != None:
-            response.body = json.dumps(content)
+            response.json_body = content
 
         return response
 
