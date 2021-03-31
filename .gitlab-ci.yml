@@ -15,6 +15,6 @@ deploy_staging:
     name: staging
     url: example.com
   script:
-    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && git checkout master && git pull origin master && python setup.py develop && python setup.py install && service apache2 reload "
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && git checkout master && git pull origin master && rm -rf build/ dist/ loftes.egg-info/ python setup.py develop && python setup.py install && service apache2 reload "
   only:
     - master
