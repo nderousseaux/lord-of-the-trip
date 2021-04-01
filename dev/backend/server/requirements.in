@@ -1,10 +1,8 @@
 alembic
-cornice
-marshmallow
 pymysql
 pyramid
 sqlalchemy
-sqlalchemy_utils
 passlib
 waitress
 transaction
+repoze.lru

@@ -1,9 +1,3 @@
-from marshmallow import (
-    Schema,
-    fields,
-    pre_dump
-    )
-
 from .ChallengeSchema import ChallengeSchema
 from .CrossingPointSchema import CrossingPointSchema
 from .ObstacleSchema import ObstacleSchema
