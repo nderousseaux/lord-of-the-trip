@@ -6,23 +6,23 @@ from marshmallow import ValidationError
 from sqlalchemy import exc
 
 from loftes.cors import cors_policy
-from loftes.models import Segment, Challenge, DBSession
+from loftes.models import Challenge, CrossingPoint, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
-from loftes.marshmallow_schema import SegmentSchema
+from loftes.marshmallow_schema import CrossingPointSchema
 
 import pyramid.httpexceptions as exception
 import logging
 import json
 
-segment = Service(
-    name="segment",
-    path="/challenge/{challenge_id:\d+}/segment",
+crossing_point = Service(
+    name="crossingpoint",
+    path="/challenge/{challenge_id:\d+}/crossing-point",
     cors_policy=cors_policy,
 )
 
 
-@segment.get()
-def get_segments(request):
+@crossing_point.get()
+def get_crossing_points(request):
 
     service_informations = ServiceInformations()
 
@@ -30,16 +30,16 @@ def get_segments(request):
 
     if challenge != None:
 
-        segments = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id)
+        crossing_points = (
+            DBSession.query(CrossingPoint)
+            .filter(CrossingPoint.challenge_id == challenge.id)
             .all()
         )
 
-        if len(segments) == 0:
+        if len(crossing_points) == 0:
             return service_informations.build_response(exception.HTTPNotFound())
 
-        data = {"segments": SegmentSchema(many=True).dump(segments)}
+        data = {"crossing_points": CrossingPointSchema(many=True).dump(crossing_points)}
 
         response = service_informations.build_response(exception.HTTPOk, data)
 
@@ -53,8 +53,8 @@ def get_segments(request):
     return response
 
 
-@segment.post()
-def create_segment(request):
+@crossing_point.post()
+def create_crossing_point(request):
 
     service_informations = ServiceInformations()
 
@@ -65,15 +65,15 @@ def create_segment(request):
 
         try:
 
-            segment_schema = SegmentSchema()
-            segment = segment_schema.load(request.json)
-            segment.challenge_id = challenge_id
+            crossing_point_schema = CrossingPointSchema()
+            crossing_point = crossing_point_schema.load(request.json)
+            crossing_point.challenge_id = challenge_id
 
-            DBSession.add(segment)
+            DBSession.add(crossing_point)
             DBSession.flush()
 
             response = service_informations.build_response(
-                exception.HTTPOk, segment_schema.dump(segment)
+                exception.HTTPOk, crossing_point_schema.dump(crossing_point)
             )
 
         except ValidationError as validation_error:
@@ -109,14 +109,15 @@ def create_segment(request):
     return response
 
 
-segment_id = Service(
-    name="segment_id",
-    path="/challenge/{challenge_id:\d+}/segment/{id:\d+}",
+crossing_point_id = Service(
+    name="crossingpoint_id",
+    path="/challenge/{challenge_id:\d+}/crossing-point/{id:\d+}",
     cors_policy=cors_policy,
 )
 
-@segment_id.get()
-def get_segment_by_id(request):
+
+@crossing_point_id.get()
+def get_crossing_point(request):
 
     service_informations = ServiceInformations()
 
@@ -124,20 +125,20 @@ def get_segment_by_id(request):
 
     if challenge != None:
 
-        segment = (
-            DBSession.query(Segment)
+        crossing_point = (
+            DBSession.query(CrossingPoint)
             .filter(
-                Segment.challenge_id == challenge.id,
-                Segment.id == request.matchdict["id"],
+                CrossingPoint.challenge_id == challenge.id,
+                CrossingPoint.id == request.matchdict["id"],
             )
             .first()
         )
 
-        if segment == None:
+        if crossing_point == None:
             return service_informations.build_response(exception.HTTPNotFound())
 
         response = service_informations.build_response(
-            exception.HTTPOk, SegmentSchema().dump(segment)
+            exception.HTTPOk, CrossingPointSchema().dump(crossing_point)
         )
 
     else:
@@ -150,134 +151,8 @@ def get_segment_by_id(request):
     return response
 
 
-@segment_id.put()
-def update_segment(request):
-
-    service_informations = ServiceInformations()
-
-    challenge_id = request.matchdict["challenge_id"]
-    challenge = DBSession.query(Challenge).get(challenge_id)
-
-    if challenge != None:
-
-        id = request.matchdict["id"]
-
-        query = DBSession.query(Segment).filter(
-            Segment.challenge_id == challenge.id, Segment.id == id
-        )
-        segment = query.first()
-
-        if segment != None:
-
-            try:
-
-                query.update(SegmentSchema().check_json(request.json))
-                DBSession.flush()
-
-                response = service_informations.build_response(exception.HTTPNoContent)
-
-            except ValidationError as validation_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(validation_error)
-                )
-                DBSession.close()
-
-            except ValueError as value_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(value_error)
-                )
-                DBSession.close()
-
-            except PermissionError as pe:
-                response = service_informations.build_response(
-                    exception.HTTPUnauthorized
-                )
-                DBSession.close()
-
-            except Exception as e:
-                response = service_informations.build_response(
-                    exception.HTTPInternalServerError
-                )
-                logging.getLogger(__name__).warn("Returning: %s", str(e))
-                DBSession.close()
-        else:
-            response = service_informations.build_response(exception.HTTPNotFound)
-
-    else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested resource 'Challenge' is not found.",
-        )
-
-    return response
-
-
-@segment_id.patch()
-def modify_segment(request):
-
-    service_informations = ServiceInformations()
-
-    challenge_id = request.matchdict["challenge_id"]
-    challenge = DBSession.query(Challenge).get(challenge_id)
-
-    if challenge != None:
-
-        id = request.matchdict["id"]
-
-        query = DBSession.query(Segment).filter(
-            Segment.challenge_id == challenge.id, Segment.id == id
-        )
-        segment = query.first()
-
-        if segment != None:
-
-            try:
-
-                query.update(SegmentSchema().check_json(request.json))
-                DBSession.flush()
-
-                response = service_informations.build_response(exception.HTTPNoContent)
-
-            except ValidationError as validation_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(validation_error)
-                )
-                DBSession.close()
-
-            except ValueError as value_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(value_error)
-                )
-                DBSession.close()
-
-            except PermissionError as pe:
-                response = service_informations.build_response(
-                    exception.HTTPUnauthorized
-                )
-                DBSession.close()
-
-            except Exception as e:
-                response = service_informations.build_response(
-                    exception.HTTPInternalServerError
-                )
-                logging.getLogger(__name__).warn("Returning: %s", str(e))
-                DBSession.close()
-        else:
-            response = service_informations.build_response(exception.HTTPNotFound)
-
-    else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested resource 'Challenge' is not found.",
-        )
-
-    return response
-
-
-@segment_id.delete()
-def delete_segment(request):
+@crossing_point_id.put()
+def update_crossing_point(request):
 
     service_informations = ServiceInformations()
 
@@ -289,17 +164,153 @@ def delete_segment(request):
         id = request.matchdict["id"]
 
         # Check if the crossing point exist
-        segment = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id, Segment.id == id)
-            .first()
+        query = DBSession.query(CrossingPoint).filter(
+            CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
         )
+        crossing_point = query.first()
 
-        if segment != None:
+        if crossing_point != None:
 
             try:
 
-                DBSession.delete(segment)
+                query.update(CrossingPointSchema().check_json(request.json))
+                DBSession.flush()
+
+                response = service_informations.build_response(exception.HTTPNoContent)
+
+            except ValidationError as validation_error:
+                response = service_informations.build_response(
+                    exception.HTTPBadRequest, None, str(validation_error)
+                )
+                DBSession.close()
+
+            except ValueError as value_error:
+                response = service_informations.build_response(
+                    exception.HTTPBadRequest, None, str(value_error)
+                )
+                DBSession.close()
+
+            except PermissionError as pe:
+                response = service_informations.build_response(
+                    exception.HTTPUnauthorized
+                )
+                DBSession.close()
+
+            except Exception as e:
+                response = service_informations.build_response(
+                    exception.HTTPInternalServerError
+                )
+                logging.getLogger(__name__).warn("Returning: %s", str(e))
+                DBSession.close()
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(
+            exception.HTTPNotFound(),
+            None,
+            "Requested resource 'Challenge' is not found.",
+        )
+
+    return response
+
+
+@crossing_point_id.patch()
+def modify_crossing_point(request):
+
+    service_informations = ServiceInformations()
+
+    challenge_id = request.matchdict["challenge_id"]
+    challenge = DBSession.query(Challenge).get(challenge_id)
+
+    if challenge != None:
+
+        id = request.matchdict["id"]
+
+        # Check if the crossing point exist
+        query = DBSession.query(CrossingPoint).filter(
+            CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
+        )
+        crossing_point = query.first()
+
+        if crossing_point != None:
+
+            try:
+
+                query.update(CrossingPointSchema().check_json(request.json))
+                DBSession.flush()
+
+                response = service_informations.build_response(exception.HTTPNoContent)
+
+            except ValidationError as validation_error:
+                response = service_informations.build_response(
+                    exception.HTTPBadRequest, None, str(validation_error)
+                )
+                DBSession.close()
+
+            except ValueError as value_error:
+                response = service_informations.build_response(
+                    exception.HTTPBadRequest, None, str(value_error)
+                )
+                DBSession.close()
+
+            except PermissionError as pe:
+                response = service_informations.build_response(
+                    exception.HTTPUnauthorized
+                )
+                DBSession.close()
+
+            except Exception as e:
+                response = service_informations.build_response(
+                    exception.HTTPInternalServerError
+                )
+                logging.getLogger(__name__).warn("Returning: %s", str(e))
+                DBSession.close()
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(
+            exception.HTTPNotFound(),
+            None,
+            "Requested resource 'Challenge' is not found.",
+        )
+
+    return response
+
+
+@crossing_point_id.delete()
+def delete_crossing_point(request):
+
+    service_informations = ServiceInformations()
+
+    challenge_id = request.matchdict["challenge_id"]
+    challenge = DBSession.query(Challenge).get(challenge_id)
+
+    if challenge != None:
+
+        id = request.matchdict["id"]
+
+        # Check if the crossing point exist
+        crossing_point = (
+            DBSession.query(CrossingPoint)
+            .filter(CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id)
+            .first()
+        )
+
+        if crossing_point != None:
+
+            try:
+
+                if challenge.start_crossing_point_id == crossing_point.id:
+                    challenge.start_crossing_point_id = None
+
+                if challenge.end_crossing_point_id == crossing_point.id:
+                    challenge.end_crossing_point_id = None
+
+                crossing_point.challenge_id = None
+
+                DBSession.delete(crossing_point)
                 DBSession.flush()
 
                 response = service_informations.build_response(exception.HTTPNoContent)
