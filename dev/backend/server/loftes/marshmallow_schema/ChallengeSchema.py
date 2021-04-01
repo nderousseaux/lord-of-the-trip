@@ -11,11 +11,9 @@ from marshmallow import (
 )
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
-from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
 
 import datetime
-import simplejson
 
 
 class ChallengeSchema(Schema):
@@ -38,7 +36,7 @@ class ChallengeSchema(Schema):
     end_crossing_point_id = fields.Int(load_only=True)
     start_crossing_point = fields.Nested(CrossingPointSchema)
     end_crossing_point = fields.Nested(CrossingPointSchema)
-    segments = fields.List(fields.Nested(SegmentSchema))
+    segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
     admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
 
