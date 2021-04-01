@@ -24,7 +24,6 @@ challenge = Service(name="challenge", path="/challenge", cors_policy=cors_policy
 
 @challenge.get()
 def get_challenges(request):
-
     service_informations = ServiceInformations()
     challenges = DBSession.query(Challenge).all()
 
