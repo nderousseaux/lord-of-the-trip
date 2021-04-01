@@ -19,6 +19,8 @@ Data.fs*
 .DS_Store
 coverage
 test
+logs
+uploads
 
 .idea
 .vscode*

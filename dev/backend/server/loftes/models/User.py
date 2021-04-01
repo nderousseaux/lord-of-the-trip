@@ -10,3 +10,4 @@ class User(Base):
     pseudo = Column(String(255), unique=True)
     mail = Column(String(255), unique=True)
     password = Column(String(255))
+    is_admin = Column(Boolean,server_default=text("0"))
