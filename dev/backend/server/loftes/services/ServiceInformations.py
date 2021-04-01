@@ -1,7 +1,6 @@
 from pyramid.response import Response
 import logging
 
-
 class ServiceInformations:
     def build_response(self, http_exception, data=None, message=None):
 

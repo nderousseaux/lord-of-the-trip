@@ -16,6 +16,7 @@ from sqlalchemy import exc
 import pyramid.httpexceptions as exception
 import logging
 import os
+import shutil
 
 
 challenge = Service(name="challenge", path="/challenge", cors_policy=cors_policy)
@@ -74,7 +75,7 @@ def create_challenge(request):
         logging.getLogger(__name__).warn("Returning: %s", str(e))
         DBSession.close()
 
-    return ServiceInformations().build_response(exception.HTTPCreated, data)
+    return response
 
 
 challenge_by_id = Service(
@@ -151,13 +152,12 @@ def modify_challenge(request):
 
     id = request.matchdict["id"]
 
-    challenge = DBSession.query(Challenge).get(id)
+    query = DBSession.query(Challenge)
+    challenge = query.get(id)
 
     if challenge != None:
         try:
-            DBSession.query(Challenge).filter(Challenge.id == id).update(
-                ChallengeSchema().check_json(request.json)
-            )
+            query.update(ChallengeSchema().check_json(request.json))
             DBSession.flush()
 
             response = service_informations.build_response(exception.HTTPNoContent)
