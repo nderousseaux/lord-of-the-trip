@@ -15,7 +15,7 @@ from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
 
 import datetime
-import simplejson
+import json
 
 
 class ChallengeSchema(Schema):
