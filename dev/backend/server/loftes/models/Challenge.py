@@ -8,7 +8,7 @@ class Challenge(Base):
     __tablename__ = "Challenge"
     id = Column(Integer, primary_key=True)
     name = Column(String(255), unique=True, nullable=False)
-    description = Column(String(255))
+    description = Column(TEXT(length=65535))
     map_url = Column(String(255))
     end_date = Column(DateTime(timezone=False))
     alone_only = Column(Integer)

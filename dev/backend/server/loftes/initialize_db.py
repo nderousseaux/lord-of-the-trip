@@ -101,89 +101,89 @@ def fill(argv=sys.argv):
 
     # Crossing points
     cp1 = CrossingPoint(
-        name_crossing="L'armoire",
+        name="L'armoire",
         challenge_id="1",
-        x_position="0.10",
-        y_position="0.10",
+        position_x="0.10",
+        position_y="0.10",
     )
     session.add(cp1)
     session.commit()
 
     cp2 = CrossingPoint(
-        name_crossing="La passe du faune",
+        name="La passe du faune",
         challenge_id="1",
-        x_position="0.10",
-        y_position="0.10",
+        position_x="0.10",
+        position_y="0.10",
     )
     session.add(cp2)
     session.commit()
 
     cp3 = CrossingPoint(
-        name_crossing="La passe du magicien",
+        name="La passe du magicien",
         challenge_id="1",
-        x_position="0.20",
-        y_position="0.40",
+        position_x="0.20",
+        position_y="0.40",
     )
     session.add(cp3)
     session.commit()
 
     cp4 = CrossingPoint(
-        name_crossing="Le carrousel des ours",
+        name="Le carrousel des ours",
         challenge_id="1",
-        x_position="0.30",
-        y_position="0.40",
+        position_x="0.30",
+        position_y="0.40",
     )
     session.add(cp4)
     session.commit()
 
     cp5 = CrossingPoint(
-        name_crossing="Le pont des centaures",
+        name="Le pont des centaures",
         challenge_id="1",
-        x_position="0.30",
-        y_position="0.50",
+        position_x="0.30",
+        position_y="0.50",
     )
     session.add(cp5)
     session.commit()
 
     cp6 = CrossingPoint(
-        name_crossing="Le pont de la sorcière",
+        name="Le pont de la sorcière",
         challenge_id="1",
-        x_position="0.20",
-        y_position="0.50",
+        position_x="0.20",
+        position_y="0.50",
     )
     session.add(cp6)
     session.commit()
 
     cp7 = CrossingPoint(
-        name_crossing="Le nid des griffons",
+        name="Le nid des griffons",
         challenge_id="1",
-        x_position="0.20",
-        y_position="0.50",
+        position_x="0.20",
+        position_y="0.50",
     )
     session.add(cp7)
     session.commit()
 
     cp8 = CrossingPoint(
-        name_crossing="La table de pierre",
+        name="La table de pierre",
         challenge_id="1",
-        x_position="0.20",
-        y_position="0.50",
+        position_x="0.20",
+        position_y="0.50",
     )
     session.add(cp8)
     session.commit()
 
     cp9 = CrossingPoint(
-        name_crossing="Cair Paravel",
+        name="Cair Paravel",
         challenge_id="1",
-        x_position="0.20",
-        y_position="0.50",
+        position_x="0.20",
+        position_y="0.50",
     )
     session.add(cp9)
     session.commit()
 
     # segment
     s1 = Segment(
-        name_segment="A travers le bois d'entre les mondes",
+        name="A travers le bois d'entre les mondes",
         start_crossing_point_id="1",
         end_crossing_point_id="2",
         challenge_id="1",
@@ -192,7 +192,7 @@ def fill(argv=sys.argv):
     session.commit()
 
     s2 = Segment(
-        name_segment="La route d'Ettinsmoor",
+        name="La route d'Ettinsmoor",
         start_crossing_point_id="2",
         end_crossing_point_id="3",
         challenge_id="1",
@@ -201,7 +201,7 @@ def fill(argv=sys.argv):
     session.commit()
 
     s3 = Segment(
-        name_segment="La traversée du grand désert",
+        name="La traversée du grand désert",
         start_crossing_point_id="2",
         end_crossing_point_id="3",
         challenge_id="1",
@@ -210,7 +210,7 @@ def fill(argv=sys.argv):
     session.commit()
 
     s4 = Segment(
-        name_segment="La traversée du Grand Océan Oriental",
+        name="La traversée du Grand Océan Oriental",
         start_crossing_point_id="5",
         end_crossing_point_id="8",
         challenge_id="1",
