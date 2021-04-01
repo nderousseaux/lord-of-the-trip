@@ -49,5 +49,6 @@ init_database:
   script:
     - ssh root@hephaistos.nathanaelderousseaux.fr "mysql < db.sql"
     - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && env/bin/initialize_loftes_db production.ini"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && env/bin/fill_loftes_db production.ini"
   only:
     - master
