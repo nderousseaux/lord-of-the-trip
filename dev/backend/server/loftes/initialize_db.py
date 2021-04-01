@@ -183,7 +183,6 @@ def fill(argv=sys.argv):
 
     # segment
     s1 = Segment(
-        name="A travers le bois d'entre les mondes",
         start_crossing_point_id="1",
         end_crossing_point_id="2",
         challenge_id="1",
@@ -192,7 +191,6 @@ def fill(argv=sys.argv):
     session.commit()
 
     s2 = Segment(
-        name="La route d'Ettinsmoor",
         start_crossing_point_id="2",
         end_crossing_point_id="3",
         challenge_id="1",
@@ -201,7 +199,6 @@ def fill(argv=sys.argv):
     session.commit()
 
     s3 = Segment(
-        name="La traversée du grand désert",
         start_crossing_point_id="2",
         end_crossing_point_id="3",
         challenge_id="1",
@@ -210,7 +207,6 @@ def fill(argv=sys.argv):
     session.commit()
 
     s4 = Segment(
-        name="La traversée du Grand Océan Oriental",
         start_crossing_point_id="5",
         end_crossing_point_id="8",
         challenge_id="1",
