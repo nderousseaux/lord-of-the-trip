@@ -1,5 +1,5 @@
 from pyramid.response import Response
-import logging
+
 
 class ServiceInformations:
     def build_response(self, http_exception, data=None, message=None):
@@ -10,9 +10,11 @@ class ServiceInformations:
         if code >= 400 and code < 600:
             # errors (400 -> client, 500 -> server)
             content = {
-                "error" : {
-                    "status" : http_exception.title.upper(),
-                    "message" : self.get_error_message_by_code(code) if message == None else message
+                "error": {
+                    "status": http_exception.title.upper(),
+                    "message": self.get_error_message_by_code(code)
+                    if message == None
+                    else message,
                 }
             }
 

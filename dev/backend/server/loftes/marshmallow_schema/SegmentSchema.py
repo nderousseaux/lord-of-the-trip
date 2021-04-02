@@ -6,14 +6,12 @@ from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 
 class SegmentSchema(Schema):
     id = fields.Int()
-
     name = fields.Str(
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={
             "null": "Field must not be null.",
         },
     )
-
     start_crossing_point_id = fields.Int(
         load_only=True,
         required=True,
@@ -64,11 +62,7 @@ class SegmentSchema(Schema):
                 .get(int(data["start_crossing_point_id"]))
             )
             if start_crossing_point == None:
-                raise ValueError(
-                    "The start crossing point id '"
-                    + data["start_crossing_point_id"]
-                    + "' doesn't exits."
-                )
+                raise ValueError("Start crossing point does not exist.")
             data["start_crossing_point_id"] = int(data["start_crossing_point_id"])
 
         if "end_crossing_point_id" in data:
@@ -77,11 +71,7 @@ class SegmentSchema(Schema):
                 DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
             )
             if end_crossing_point == None:
-                raise ValueError(
-                    "The end crossing point id '"
-                    + data["end_crossing_point_id"]
-                    + "' doesn't exits."
-                )
+                raise ValueError("End crossing point does not exist..")
             data["end_crossing_point_id"] = int(data["end_crossing_point_id"])
 
         if ("end_crossing_point_id" in data) and ("start_crossing_point_id" in data):
@@ -108,9 +98,7 @@ class SegmentSchema(Schema):
 
         if "start_crossing_point_id" in data and "end_crossing_point_id" in data:
             if data["start_crossing_point_id"] == data["end_crossing_point_id"]:
-                raise ValueError(
-                    "The start and end crossing point ids must be different."
-                )
+                raise ValueError("The segment cannot have the same start and end.")
 
         if "list_points" in data and (
             data["list_points"] == "" or data["list_points"] == None

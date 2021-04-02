@@ -1,4 +1,4 @@
-from loftes.models import Challenge, User, DBSession
+from loftes.models import Challenge, CrossingPoint, User, DBSession
 from marshmallow import (
     Schema,
     fields,
@@ -85,5 +85,23 @@ class ChallengeSchema(Schema):
 
             if data["name"] == "":
                 raise ValueError("Invalid value.")
+
+        if "start_crossing_point_id" in data:
+            start_crossing_point = DBSession.query(CrossingPoint).get(
+                int(data["start_crossing_point_id"])
+            )
+            if start_crossing_point != None:
+                data["start_crossing_point_id"] = start_crossing_point.id
+            else:
+                raise ValueError("Start crossing point does not exist.")
+
+        if "end_crossing_point_id" in data:
+            end_crossing_point = DBSession.query(CrossingPoint).get(
+                int(data["end_crossing_point_id"])
+            )
+            if end_crossing_point != None:
+                data["end_crossing_point_id"] = end_crossing_point.id
+            else:
+                raise ValueError("End crossing point does not exist.")
 
         return self.pre_load(data, True)
