@@ -11,9 +11,11 @@ from loftes.utils import get_project_root
 
 from pathlib import Path
 
+import pyramid.httpexceptions as exception
+from pyramid.response import FileResponse
+
 from sqlalchemy import exc
 
-import pyramid.httpexceptions as exception
 import logging
 import os
 import shutil
@@ -151,12 +153,13 @@ def modify_challenge(request):
 
     id = request.matchdict["id"]
 
-    query = DBSession.query(Challenge)
-    challenge = query.get(id)
+    challenge = DBSession.query(Challenge).get(id)
 
     if challenge != None:
         try:
-            query.update(ChallengeSchema().check_json(request.json))
+            DBSession.query(Challenge).filter(Challenge.id == id).update(
+                ChallengeSchema().check_json(request.json)
+            )
             DBSession.flush()
 
             response = service_informations.build_response(exception.HTTPNoContent)
@@ -200,10 +203,13 @@ def delete_challenge(request):
 
     if challenge != None:
         try:
-            challenge_to_delete = (
-                DBSession.query(Challenge).filter(Challenge.id == id).first()
-            )
-            DBSession.delete(challenge_to_delete)
+
+            if challenge.map_url != None:
+                image = str(get_project_root()) + challenge.map_url
+                if os.path.exists(image):
+                    os.remove(image)
+
+            DBSession.delete(challenge)
             DBSession.flush()
 
             response = service_informations.build_response(exception.HTTPNoContent)
@@ -223,9 +229,37 @@ def delete_challenge(request):
 
 challenge_image = Service(
     name="challenge_image",
-    path="challenge/{id:\d+}/upload-image",
+    path="challenge/{id:\d+}/image",
     cors_policy=cors_policy,
 )
+
+
+@challenge_image.get()
+def download_image(request):
+
+    service_informations = ServiceInformations()
+
+    id = request.matchdict["id"]
+
+    challenge = DBSession.query(Challenge).get(id)
+
+    if challenge != None:
+
+        image = str(get_project_root()) + challenge.map_url
+
+        if os.path.exists(image):
+            response = FileResponse(image, request=request)
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound,
+                None,
+                "Requested resource 'Challenge' is not found.",
+            )
+
+    else:
+        response = service_informations.build_response(exception.HTTPNotFound)
+
+    return response
 
 
 @challenge_image.post()
@@ -233,7 +267,9 @@ def upload_image(request):
 
     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+    id = request.matchdict["id"]
+
+    challenge = DBSession.query(Challenge).get(id)
 
     if challenge != None:
 
@@ -248,18 +284,28 @@ def upload_image(request):
                     try:
 
                         root = get_project_root()
-                        challenge_uploads_path = str(root) + "/uploads/challenges"
+                        challenge_uploads_path = "/uploads/challenges"
+                        path = str(root) + challenge_uploads_path
 
-                        if not os.path.isdir(challenge_uploads_path):
-                            os.makedirs(challenge_uploads_path, 0o755)
+                        if not os.path.isdir(path):
+                            os.makedirs(path, 0o755)
 
                         input_file = request.POST["file"].file
                         input_file_filename = "challenge_" + str(challenge.id)
                         input_file_type = "." + file_type.split("/")[1]
+                        input_image = input_file_filename + input_file_type
+
+                        # delete old map
+                        if os.path.exists(path) and os.path.isdir(path):
+                            if os.listdir(path):
+                                for filename in os.listdir(path):
+                                    if filename.startswith(input_file_filename):
+                                        os.remove(os.path.join(path, filename))
+                                        break
 
                         file_path = os.path.join(
-                            challenge_uploads_path,
-                            input_file_filename + input_file_type,
+                            path,
+                            input_image,
                         )
                         temp_file_path = file_path + "~"
 
@@ -268,6 +314,15 @@ def upload_image(request):
                             shutil.copyfileobj(input_file, output_file)
 
                         os.rename(temp_file_path, file_path)
+
+                        DBSession.query(Challenge).filter(Challenge.id == id).update(
+                            {
+                                Challenge.map_url: challenge_uploads_path
+                                + "/"
+                                + input_image
+                            }
+                        )
+                        DBSession.flush()
 
                         response = ServiceInformations().build_response(
                             exception.HTTPNoContent

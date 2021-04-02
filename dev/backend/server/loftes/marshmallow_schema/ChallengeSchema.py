@@ -1,4 +1,4 @@
-from loftes.models import Challenge, User, DBSession
+from loftes.models import Challenge, CrossingPoint, User, DBSession
 from marshmallow import (
     Schema,
     fields,
@@ -11,11 +11,9 @@ from marshmallow import (
 )
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
-from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
 
 import datetime
-import simplejson
 
 
 class ChallengeSchema(Schema):
@@ -38,7 +36,7 @@ class ChallengeSchema(Schema):
     end_crossing_point_id = fields.Int(load_only=True)
     start_crossing_point = fields.Nested(CrossingPointSchema)
     end_crossing_point = fields.Nested(CrossingPointSchema)
-    segments = fields.List(fields.Nested(SegmentSchema))
+    segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
     admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
 
@@ -87,5 +85,23 @@ class ChallengeSchema(Schema):
 
             if data["name"] == "":
                 raise ValueError("Invalid value.")
+
+        if "start_crossing_point_id" in data:
+            start_crossing_point = DBSession.query(CrossingPoint).get(
+                int(data["start_crossing_point_id"])
+            )
+            if start_crossing_point != None:
+                data["start_crossing_point_id"] = start_crossing_point.id
+            else:
+                raise ValueError("Start crossing point does not exist.")
+
+        if "end_crossing_point_id" in data:
+            end_crossing_point = DBSession.query(CrossingPoint).get(
+                int(data["end_crossing_point_id"])
+            )
+            if end_crossing_point != None:
+                data["end_crossing_point_id"] = end_crossing_point.id
+            else:
+                raise ValueError("End crossing point does not exist.")
 
         return self.pre_load(data, True)
