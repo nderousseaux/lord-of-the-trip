@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function GO(props) {
+export default function EditProfile(props) {
     return(
         <View style={styles.container}>
-            <Text>Let's go !</Text>
+            <Text>Édition profil</Text>
         </View>
     )
 }
