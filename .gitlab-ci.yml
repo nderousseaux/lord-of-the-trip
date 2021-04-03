@@ -1,0 +1,55 @@
+stages:
+  - deploy
+  - build
+  - init_database
+
+
+before_script:
+  - apt-get update -qq
+  - apt-get install -qq git
+  # Setup SSH deploy keys
+  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY"
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    
+deploy:
+  type: deploy
+  environment:
+    name: staging
+    url: example.com
+  script:
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && git checkout master" 
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && git pull origin master"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && rm -rf build/ dist/ loftes.egg-info/"
+  only:
+    - master
+
+build:
+  type: build
+  environment:
+    name: staging
+    url: example.com
+  script:
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && env/bin/pip install -r requirements.txt"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && env/bin/pip install -r requirements.in"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && env/bin/python setup.py develop"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && env/bin/python setup.py install"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "service apache2 reload"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server &&  chmod -R 777 env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg"
+  only:
+    - master
+
+init_database:
+  type: init_database
+  environment:
+    name: staging
+    url: example.com
+  script:
+    - ssh root@hephaistos.nathanaelderousseaux.fr "mysql < db.sql"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && env/bin/initialize_loftes_db production.ini"
+    - ssh root@hephaistos.nathanaelderousseaux.fr "cd /var/www/lord-of-the-trips/dev/backend/server && env/bin/fill_loftes_db production.ini"
+  only:
+    - master

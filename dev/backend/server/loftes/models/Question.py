@@ -5,7 +5,7 @@ from loftes.models import Base
 
 class Question(Base):
     __tablename__ = 'Question'
-    id_question = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     name_question = Column(String(255), unique=True)
     type_question = Column(String(255))
     description_question = Column(String(255))
