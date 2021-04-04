@@ -4,12 +4,12 @@ import Konva from './konva/konva'
 import AdminChallenges from './admin/challenges'
 
 const queryClient  = new QueryClient({
-    defaultConfig: {
-        queries: {
-            staleTime: 0,
-            refetchOnWindowFocus: false
-        }
+  defaultConfig: {
+    queries: {
+      staleTime: 0,
+      refetchOnWindowFocus: false
     }
+  }
 });
 
 const App = () => {

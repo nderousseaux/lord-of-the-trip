@@ -16,9 +16,9 @@ const apiChallenge = {
 
   createChallenge: (challenge) => {
     return fetch(`${urlPrefix}/challenge`, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(challenge)
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(challenge)
 		})
     .then(checkStatus)
     .then(res => res.json());
@@ -26,25 +26,25 @@ const apiChallenge = {
 
   updateChallenge: (id, challenge) => {
     return fetch(`${urlPrefix}/challenge/${id}`, {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(challenge)
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(challenge)
 		})
     .then(checkStatus);
   },
 
   modifyChallenge: (id, challenge) => {
     return fetch(`${urlPrefix}/challenge/${id}`, {
-			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(challenge)
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(challenge)
 		})
     .then(checkStatus);
   },
 
   deleteChallenge: (id) => {
     return fetch(`${urlPrefix}/challenge/${id}`, {
-			method: 'DELETE',
+      method: 'DELETE',
 		})
     .then(checkStatus);
   },
@@ -58,8 +58,8 @@ const apiChallenge = {
 
   uploadMap: (challengeId, file) => {
     return fetch(`${urlPrefix}/challenge/${challengeId}/image`, {
-			method: 'POST',
-			body: file
+      method: 'POST',
+      body: file
 		})
     .then(checkStatus);
   },
