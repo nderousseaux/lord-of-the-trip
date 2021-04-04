@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Stage, Layer, Image, Circle, Line } from 'react-konva';
 import { pixelsToPercent } from "../utils/utils";
 
+// Image
+// https://www.encyclopedie-hp.org/wp-content/uploads/sites/4/2014/07/poudlard-valentin.jpg
+
 // Upload
 // https://dev.to/asimdahall/client-side-image-upload-in-react-5ffc
 // https://stackoverflow.com/questions/22087076/how-to-make-a-simple-image-upload-using-javascript-html

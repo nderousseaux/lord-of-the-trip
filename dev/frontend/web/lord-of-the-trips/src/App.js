@@ -1,24 +1,31 @@
-import CanvasExample from './canvas/canvasExample'
-import CanvasStatic from './canvas/canvasStatic'
-import CanvasClick from './canvas/canvasClick'
-
-import KonvaExample from './konva/konvaExample'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 import Konva from './konva/konva'
+import AdminChallenges from './admin/challenges'
 
-// Image
-// https://www.encyclopedie-hp.org/wp-content/uploads/sites/4/2014/07/poudlard-valentin.jpg
+const queryClient  = new QueryClient({
+    defaultConfig: {
+        queries: {
+            staleTime: 0,
+            refetchOnWindowFocus: false
+        }
+    }
+});
 
 const App = () => {
 
-  return <div>
-    <h1>Lord of the trips</h1>
-    { /* <CanvasExample /> */ }
-    { /* <CanvasStatic /> */ }
-    { /* <CanvasClick /> */ }
-
-    { /* <KonvaExample /> */ }
-    <Konva />
-  </div>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <div>
+        <h1>Lord of the trips</h1>
+        <hr />
+        <AdminChallenges />
+        <hr />
+        <Konva />
+      </div>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
 };
 
 export default App;
