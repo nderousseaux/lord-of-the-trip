@@ -51,7 +51,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\":\"First Challenge\",\n\t\"description\":\"Description\", \n\t\"end_date\":\"2022-10-18\"\n}",
+							"raw": "{\n\t\"name\":\"First Challenge\",\n\t\"description\":\"Description\", \n\t\"end_date\":\"2022-10-18\",\n    \"alone_only\" : 1,\n    \"level\" : \"Débutant\",\n    \"scalling\" : 10,\n    \"draft\": true,\n    \"start_crossing_point_id\" : 1,\n    \"end_crossing_point_id\" : 2,\n    \"admin_id\" : 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -357,7 +357,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"start_crossing_point_id\" : \"3\"\n}",
+							"raw": "{\n     \"name\" : \"Mon segment 3\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -737,7 +737,174 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "EVENTS_ALL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "526b0593-87c3-4fbb-84b1-ecf39f966bcc",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/events",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_FIND_BY_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3dad93d4-8a5e-492d-9f8c-e0355f51062d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenge/1/crossing-point/1",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenge",
+								"1",
+								"crossing-point",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_ADD",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eed7745c-7594-4eca-bfbe-fb18d6461531",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"move_type\": 1,\n    \"event_date\":\"2021-10-18\",\n    \"distance\":250,\n    \"duration\": \"02:05:10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/events",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"events"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"event": [
@@ -762,8 +929,10 @@
 	],
 	"variable": [
 		{
+			"id": "782e7d24-cd6c-4823-8991-b0ad6d13725f",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
