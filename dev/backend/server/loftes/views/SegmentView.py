@@ -16,7 +16,7 @@ import json
 
 segment = Service(
     name="segment",
-    path="/challenge/{challenge_id:\d+}/segment",
+    path="/challenges/{challenge_id:\d+}/segments",
     cors_policy=cors_policy,
 )
 
@@ -31,9 +31,7 @@ def get_segments(request):
     if challenge != None:
 
         segments = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id)
-            .all()
+            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id).all()
         )
 
         if len(segments) == 0:
@@ -111,9 +109,10 @@ def create_segment(request):
 
 segment_id = Service(
     name="segment_id",
-    path="/challenge/{challenge_id:\d+}/segment/{id:\d+}",
+    path="/challenges/{challenge_id:\d+}/segments/{id:\d+}",
     cors_policy=cors_policy,
 )
+
 
 @segment_id.get()
 def get_segment_by_id(request):
@@ -234,7 +233,7 @@ def modify_segment(request):
 
             try:
 
-                query.update(SegmentSchema().check_json(request.json))
+                query.update(SegmentSchema().check_json(request.json, segment))
                 DBSession.flush()
 
                 response = service_informations.build_response(exception.HTTPNoContent)
