@@ -21,7 +21,7 @@ crossing_point = Service(
 )
 
 """
-@api {get} /challenge/:challenge_id/crossingpoint Request all crossing points informations of challenge's id.
+@api {get} /challenges/:challenge_id/crossingpoint Request all crossing points informations of challenge's id.
 @apiParam challenge_id Challenge's unique ID.
 @apiVersion 0.1.0
 @apiName GetCrossingPoints
