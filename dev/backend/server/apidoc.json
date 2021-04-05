@@ -1,0 +1,19 @@
+{
+    "name": "Lord of the Trips",
+    "version": "0.1.0",
+    "description": "apiDoc basic example",
+    "title": "LOFTS - API documentatiton",
+    "url": "https://hephaistos.nathanaelderousseaux.fr/api",
+    "sampleUrl": "https://hephaistos.nathanaelderousseaux.fr/api",
+    "order": [
+        "GetChallenges",
+        "PostChallenge",
+        "GetChallenge",
+        "PutChallenge",
+        "PatchChallenge",
+        "DeleteChallenge",
+        "GetChallengeImage",
+        "PostChallengeImage",
+        "GetCrossingPoints"
+    ]
+}
