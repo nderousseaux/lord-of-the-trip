@@ -19,7 +19,7 @@ const apiChallenge = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(challenge)
-		})
+    })
     .then(checkStatus)
     .then(res => res.json());
   },
@@ -29,7 +29,7 @@ const apiChallenge = {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(challenge)
-		})
+    })
     .then(checkStatus);
   },
 
@@ -38,14 +38,14 @@ const apiChallenge = {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(challenge)
-		})
+    })
     .then(checkStatus);
   },
 
   deleteChallenge: (id) => {
     return fetch(`${urlPrefix}/challenge/${id}`, {
       method: 'DELETE',
-		})
+    })
     .then(checkStatus);
   },
 
@@ -60,7 +60,7 @@ const apiChallenge = {
     return fetch(`${urlPrefix}/challenge/${challengeId}/image`, {
       method: 'POST',
       body: file
-		})
+    })
     .then(checkStatus);
   },
 

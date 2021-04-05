@@ -5,7 +5,7 @@ export const checkStatus = res => {
     return res;
   }
   else {
-    return res.text()
-    .then(msg => { throw new Error(msg); });
+    return res.json()
+    .then(res => { throw new Error(res.error.message); });
   }
 };

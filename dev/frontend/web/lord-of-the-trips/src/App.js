@@ -1,7 +1,9 @@
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { HashRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Konva from './konva/konva'
 import AdminChallenges from './admin/challenges'
+import EditChallenge from './admin/editChallenge'
 
 const queryClient  = new QueryClient({
   defaultConfig: {
@@ -15,16 +17,24 @@ const queryClient  = new QueryClient({
 const App = () => {
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <div>
-        <h1>Lord of the trips</h1>
-        <hr />
-        <AdminChallenges />
-        <hr />
-        <Konva />
-      </div>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <HashRouter>
+      <QueryClientProvider client={queryClient}>
+      <h1>Lord of the trips</h1>
+        <Switch>
+          <Route exact path="/">
+            <AdminChallenges />
+          </Route>
+          <Route path="/editchallenge/:id">
+            <EditChallenge />
+          </Route>
+          <Route path="/konva">
+            <Konva />
+          </Route>
+          <Redirect to="/" />
+        </Switch>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </HashRouter>
   );
 };
 
