@@ -86,6 +86,12 @@ class SegmentSchema(Schema):
     def check_json(self, data, segment, **kwargs):
 
         # Check mandatory fields
+        if "name" in data:
+            if data["name"] == None:
+                raise ValueError("Field must not be null.")
+
+            if data["name"] == "":
+                raise ValueError("Invalid value.")
 
         if "name" in data:
             if data["name"] == None:
