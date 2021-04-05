@@ -4,9 +4,10 @@ import { Link, useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 
 const AdminChallenges = () => {
-  const { isLoading, isError, error, data: challenges } = useQuery('challenges', () => apiChallenge.getAllChallenges());
   const queryClient = useQueryClient();
   const history = useHistory();
+
+  const { isLoading, isError, error, data: challenges } = useQuery('challenges', () => apiChallenge.getAllChallenges());
 
   const deleteChallenge = useMutation( (id) => apiChallenge.deleteChallenge(id), {
     onSuccess: () => {
@@ -15,7 +16,6 @@ const AdminChallenges = () => {
   });
 
   return <>
-    <h3>Create a new challenge</h3>
     <CreateChallengeForm />
     <h3>Challenge List</h3>
     {isLoading ? 'Loading...' : isError ? error.message :
@@ -61,12 +61,13 @@ const CreateChallengeForm = () => {
 
   return (
     <div>
+    <h3>Create a new challenge</h3>
       <form onSubmit={handleSubmit}>
         <label>Name : </label>
         <input type="text" value={name} onChange={e => setName(e.target.value)} /> {' '}
         <button>Create</button>
       </form>
-      { error ? <p>{error.message}</p> : null}
+      {error ? <p>{error.message}</p> : null}
     </div>
   );
 };

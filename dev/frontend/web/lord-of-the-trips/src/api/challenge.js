@@ -57,9 +57,11 @@ const apiChallenge = {
   },
 
   uploadMap: (challengeId, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
     return fetch(`${urlPrefix}/challenge/${challengeId}/image`, {
       method: 'POST',
-      body: file
+      body: formData
     })
     .then(checkStatus);
   },
