@@ -17,8 +17,6 @@ export default function ChallengeList(props) {
         .finally(() => setLoading(false));
     }, []);
 
-    console.log(challenges);
-
     return (
         <>
             {isLoading

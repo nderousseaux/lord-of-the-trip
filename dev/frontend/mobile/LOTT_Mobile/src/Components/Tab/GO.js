@@ -1,25 +1,17 @@
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { createStackNavigator } from '@react-navigation/stack';
+import Start from './GO/Start';
+import Recording from './GO/Recording';
 
 export default function GO(props) {
+
+    const listStack = createStackNavigator();
+
     return(
-        <View style={styles.container}>
-            <Text>Let's go !</Text>
-        </View>
+        <listStack.Navigator>
+            <listStack.Screen name="Start" component={Start} />
+            <listStack.Screen name="Recording" component={Recording} />
+        </listStack.Navigator>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 8,
-    },
-    paragraph: {
-        margin: 24,
-        fontSize: 18,
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-});

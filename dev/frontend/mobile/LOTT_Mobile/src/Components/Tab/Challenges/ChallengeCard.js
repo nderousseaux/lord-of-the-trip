@@ -19,14 +19,11 @@ export default function ChallengeCard(props) {
         return value;
     });
 
-    console.log(coordinatesValues);
-
     return(
         <View style={styles.cardContainer}>
             {challenge === null
                 ? <ActivityIndicator size="large" color="#0000ff" />
                 : <>
-                    {console.log(challenge)}
                     <Text>{"Nom : " + challenge.name}</Text>
                     <Text>{"Longueur : " + challenge.length + "kms"}</Text>
                     <Text>{"Expiration : " + new Date(challenge.duration).toLocaleDateString()}</Text>
