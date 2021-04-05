@@ -8,6 +8,15 @@ from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 
 class SegmentSchema(Schema):
     id = fields.Int()
+    
+    name = fields.Str(
+        required=True,
+        validate=validate.NoneOf("", error="Invalid value"),
+        error_messages={
+            "required": "This field is mandatory.",
+            "null": "Field must not be null.",
+        },
+    )
 
     start_crossing_point_id = fields.Int(
         load_only=True,
@@ -93,6 +102,12 @@ class SegmentSchema(Schema):
     def check_json(self, data, **kwargs):
 
         # Check mandatory fields
+        if "name" in data:
+            if data["name"] == None:
+                raise ValueError("Field must not be null.")
+
+            if data["name"] == "":
+                raise ValueError("Invalid value.")
 
         if "start_crossing_point_id" in data and "end_crossing_point_id" in data:
             if data["start_crossing_point_id"] == data["end_crossing_point_id"]:
