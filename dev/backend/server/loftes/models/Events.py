@@ -13,7 +13,7 @@ class Events(Base):
     #challenge_info = relationship("Challenge")
     segment_id = Column(Integer, ForeignKey('Segment.id'))
     #segment_info = relationship("Segment")
-    duration = Column(Time)
+    duration = Column(Integer)
     #event_type = Column(Enum(EventType))
     move_type = Column(Integer)
     event_date = Column(DateTime(timezone=False))
