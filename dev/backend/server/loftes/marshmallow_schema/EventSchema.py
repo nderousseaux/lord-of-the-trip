@@ -17,7 +17,7 @@ class EventSchema(Schema):
     user_id = fields.Int(load_only=True)
     challenge_id = fields.Int(load_only=True)
     segment_id = fields.Int(load_only=True)
-    duration = fields.Time()
+    duration = fields.Int()
     move_type = fields.Int()
     event_date = fields.DateTime()   
     distance = fields.Int()

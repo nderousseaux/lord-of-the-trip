@@ -50,10 +50,10 @@ class ChallengeSchema(Schema):
     class Meta:
         ordered = True
     
-    @pre_dump
-    def get_eventsum(self,data, **kwargs):
-        data["event_sum"] = DBSession.query(func.sum(Events.duration)).filter(Events.challenge_id==data["id"]).filter(Events.user_id==1).first()
-        return data
+    # @pre_dump
+    # def get_eventsum(self,data, **kwargs):
+    #     data["event_sum"] = DBSession.query(func.sum(Events.duration)).filter(Events.challenge_id==data["id"]).filter(Events.user_id==1).first()
+    #     return data
 
     @post_load
     def make_challenge(self, data, **kwargs):
