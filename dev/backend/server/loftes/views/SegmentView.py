@@ -1,7 +1,7 @@
 from cornice import Service
 from cornice.validators import marshmallow_body_validator
 
-from marshmallow import ValidationError
+from marshmallow import ValidationError, INCLUDE
 
 from sqlalchemy import exc
 
@@ -64,7 +64,7 @@ def create_segment(request):
         try:
 
             segment_schema = SegmentSchema()
-            segment = segment_schema.load(request.json)
+            segment = segment_schema.load(request.json, unknown=INCLUDE)
             segment.challenge_id = challenge_id
 
             DBSession.add(segment)
