@@ -16,7 +16,7 @@ import json
 
 crossing_point = Service(
     name="crossingpoint",
-    path="/challenge/{challenge_id:\d+}/crossing-point",
+    path="/challenges/{challenge_id:\d+}/crossing-points",
     cors_policy=cors_policy,
 )
 
@@ -111,7 +111,7 @@ def create_crossing_point(request):
 
 crossing_point_id = Service(
     name="crossingpoint_id",
-    path="/challenge/{challenge_id:\d+}/crossing-point/{id:\d+}",
+    path="/challenges/{challenge_id:\d+}/crossing-points/{id:\d+}",
     cors_policy=cors_policy,
 )
 

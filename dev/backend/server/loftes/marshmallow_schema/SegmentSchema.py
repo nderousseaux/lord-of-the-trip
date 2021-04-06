@@ -3,21 +3,15 @@ from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 
-# from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
-
 
 class SegmentSchema(Schema):
     id = fields.Int()
-    
     name = fields.Str(
-        required=True,
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={
-            "required": "This field is mandatory.",
             "null": "Field must not be null.",
         },
     )
-
     start_crossing_point_id = fields.Int(
         load_only=True,
         required=True,
@@ -39,7 +33,7 @@ class SegmentSchema(Schema):
     )
     end_crossing_point = fields.Nested(CrossingPointSchema)
     challenge_id = fields.Int(load_only=True)
-    # challenge = fields.Nested(ChallengeSchema)
+    challenge = fields.Nested("ChallengeSchema", exclude=("segments",))
     list_points = fields.Str(
         required=True,
         validate=validate.NoneOf("", error="Invalid value"),
@@ -68,11 +62,7 @@ class SegmentSchema(Schema):
                 .get(int(data["start_crossing_point_id"]))
             )
             if start_crossing_point == None:
-                raise ValueError(
-                    "The start crossing point id '"
-                    + data["start_crossing_point_id"]
-                    + "' doesn't exits."
-                )
+                raise ValueError("Start crossing point does not exist.")
             data["start_crossing_point_id"] = int(data["start_crossing_point_id"])
 
         if "end_crossing_point_id" in data:
@@ -81,25 +71,19 @@ class SegmentSchema(Schema):
                 DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
             )
             if end_crossing_point == None:
-                raise ValueError(
-                    "The end crossing point id '"
-                    + data["end_crossing_point_id"]
-                    + "' doesn't exits."
-                )
+                raise ValueError("End crossing point does not exist.")
             data["end_crossing_point_id"] = int(data["end_crossing_point_id"])
 
-        if ("end_crossing_point_id" in data) and ("start_crossing_point_id" in data):
+        if "start_crossing_point_id" in data and "end_crossing_point_id" in data:
             if data["start_crossing_point_id"] == data["end_crossing_point_id"]:
-                raise ValueError(
-                    "The start and end crossing point ids must be different."
-                )
+                raise ValueError("The start and end crossing points must be different.")
 
         if "list_points" in data:
             data["list_points"] = str((data["list_points"]))
 
         return data
 
-    def check_json(self, data, **kwargs):
+    def check_json(self, data, segment, **kwargs):
 
         # Check mandatory fields
         if "name" in data:
@@ -109,11 +93,38 @@ class SegmentSchema(Schema):
             if data["name"] == "":
                 raise ValueError("Invalid value.")
 
+        if "name" in data:
+            if data["name"] == None:
+                raise ValueError("Field must not be null.")
+
+            if data["name"] == "":
+                raise ValueError("Invalid value.")
+
+        if "start_crossing_point_id" in data:
+            # Check if crossing point exist
+            start_crossing_point = (
+                DBSession()
+                .query(CrossingPoint)
+                .get(int(data["start_crossing_point_id"]))
+            )
+
+            if start_crossing_point != None:
+                if start_crossing_point.id == segment.end_crossing_point.id:
+                    raise ValueError("The segment cannot have the same start and end.")
+
+        if "end_crossing_point_id" in data:
+            # Check if crossing point exist
+            end_crossing_point = (
+                DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
+            )
+
+            if end_crossing_point != None:
+                if end_crossing_point.id == segment.start_crossing_point.id:
+                    raise ValueError("The segment cannot have the same start and end.")
+
         if "start_crossing_point_id" in data and "end_crossing_point_id" in data:
             if data["start_crossing_point_id"] == data["end_crossing_point_id"]:
-                raise ValueError(
-                    "The start and end crossing point ids must be different."
-                )
+                raise ValueError("The segment cannot have the same start and end.")
 
         if "list_points" in data and (
             data["list_points"] == "" or data["list_points"] == None
