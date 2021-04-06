@@ -1,4 +1,5 @@
-from loftes.models import Challenge, CrossingPoint, User, DBSession
+from loftes.models import Challenge, CrossingPoint, User, Events, DBSession
+
 from marshmallow import (
     Schema,
     fields,
@@ -10,8 +11,11 @@ from marshmallow import (
     validate,
 )
 
+from sqlalchemy import func
+
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
+from loftes.marshmallow_schema.EventSchema import EventSchema
 
 import datetime
 import json
@@ -40,9 +44,16 @@ class ChallengeSchema(Schema):
     segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
     admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
+    event_sum = fields.Int(dump_only=True)  
+    #event_sum2 = fields.Int(dump_only=True)
 
     class Meta:
         ordered = True
+    
+    @pre_dump
+    def get_eventsum(self,data, **kwargs):
+        data["event_sum"] = DBSession.query(func.sum(Events.duration)).filter(Events.challenge_id==data["id"]).filter(Events.user_id==1).first()
+        return data
 
     @post_load
     def make_challenge(self, data, **kwargs):
