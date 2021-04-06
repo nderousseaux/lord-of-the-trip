@@ -17,7 +17,7 @@ class Segment(Base):
     end_crossing_point = relationship(
         "CrossingPoint", foreign_keys="Segment.end_crossing_point_id"
     )
-    list_points = Column(TEXT(length=65535))
+    coordinates = Column(TEXT(length=65535))
     challenge_id = Column(Integer, ForeignKey("Challenge.id"))
     challenge = relationship("Challenge", backref="segment_challenge")
     obstacles = relationship(
