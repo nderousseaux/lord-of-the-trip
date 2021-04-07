@@ -43,7 +43,10 @@ class SegmentSchema(Schema):
         unknown = INCLUDE
 
     def deserialize_coordinates(self, obj):
-        return json.loads(obj.coordinates)
+
+        coordinates = json.loads(obj.coordinates) if obj.coordinates != None else []
+
+        return coordinates
 
     @post_load
     def make_segment(self, data, **kwargs):
