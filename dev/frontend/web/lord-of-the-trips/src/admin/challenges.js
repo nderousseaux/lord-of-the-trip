@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 
 const AdminChallenges = () => {
@@ -30,9 +30,7 @@ const AdminChallenges = () => {
       </ul>
     }
     <h3>Konva test</h3>
-    <Link to="/konva">
-      <button>Konva test</button>
-    </Link>
+    <button onClick={() => history.push("/konva")}>Konva test</button>
   </>
 };
 

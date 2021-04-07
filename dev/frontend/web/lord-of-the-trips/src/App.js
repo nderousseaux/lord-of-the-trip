@@ -4,6 +4,7 @@ import { HashRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Konva from './konva/konva'
 import AdminChallenges from './admin/challenges'
 import EditChallenge from './admin/editChallenge'
+import EditMap from './admin/editMap'
 
 const queryClient  = new QueryClient({
   defaultConfig: {
@@ -20,12 +21,16 @@ const App = () => {
     <HashRouter>
       <QueryClientProvider client={queryClient}>
       <h1>Lord of the trips</h1>
+      <hr />
         <Switch>
           <Route exact path="/">
             <AdminChallenges />
           </Route>
           <Route path="/editchallenge/:id">
             <EditChallenge />
+          </Route>
+          <Route path="/editmap/:id">
+            <EditMap />
           </Route>
           <Route path="/konva">
             <Konva />

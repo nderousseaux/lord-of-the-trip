@@ -3,19 +3,19 @@ import { checkStatus, urlPrefix } from './fetchUtils';
 const apiChallenge = {
 
   getAllChallenges: () => {
-    return fetch(`${urlPrefix}/challenge`)
+    return fetch(`${urlPrefix}/challenges`)
     .then(checkStatus)
     .then(res => res.json());
   },
 
   getChallengeById: (id) => {
-    return fetch(`${urlPrefix}/challenge/${id}`)
+    return fetch(`${urlPrefix}/challenges/${id}`)
     .then(checkStatus)
     .then(res => res.json());
   },
 
   createChallenge: (challenge) => {
-    return fetch(`${urlPrefix}/challenge`, {
+    return fetch(`${urlPrefix}/challenges`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(challenge)
@@ -25,7 +25,7 @@ const apiChallenge = {
   },
 
   updateChallenge: (id, challenge) => {
-    return fetch(`${urlPrefix}/challenge/${id}`, {
+    return fetch(`${urlPrefix}/challenges/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(challenge)
@@ -34,7 +34,7 @@ const apiChallenge = {
   },
 
   modifyChallenge: (id, challenge) => {
-    return fetch(`${urlPrefix}/challenge/${id}`, {
+    return fetch(`${urlPrefix}/challenges/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(challenge)
@@ -43,7 +43,7 @@ const apiChallenge = {
   },
 
   deleteChallenge: (id) => {
-    return fetch(`${urlPrefix}/challenge/${id}`, {
+    return fetch(`${urlPrefix}/challenges/${id}`, {
       method: 'DELETE',
     })
     .then(checkStatus);
@@ -51,7 +51,7 @@ const apiChallenge = {
 
 
   downloadMap: (challengeId) => {
-    return fetch(`${urlPrefix}/challenge/${challengeId}/image`)
+    return fetch(`${urlPrefix}/challenges/${challengeId}/image`)
     .then(checkStatus)
     .then(res => res.blob());
   },
@@ -59,7 +59,7 @@ const apiChallenge = {
   uploadMap: (challengeId, file) => {
     const formData = new FormData();
     formData.append('file', file);
-    return fetch(`${urlPrefix}/challenge/${challengeId}/image`, {
+    return fetch(`${urlPrefix}/challenges/${challengeId}/image`, {
       method: 'POST',
       body: formData
     })
