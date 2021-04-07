@@ -119,7 +119,7 @@ class SegmentSchema(Schema):
                     raise ValueError("The segment cannot have the same start and end.")
 
         if "end_crossing_point_id" in data:
-            # Check if crossing point exist
+            # Check if crossing point exist.
             end_crossing_point = (
                 DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
             )
