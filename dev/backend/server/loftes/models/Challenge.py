@@ -30,6 +30,9 @@ class Challenge(Base):
     admin_id = Column(Integer, ForeignKey("User.id"))
     admin = relationship("User", backref="challenge_manager")
     event_sum_user = relationship("Events")
+    user_subscribes = relationship(
+        "UserSubscribe", backref="user_subscribed", cascade="all,delete"
+    )
 
     @hybrid_property
     def event_sum(self):
