@@ -3,7 +3,7 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import { Text, Button} from 'react-native-elements';
 import api from '../../../api/api';
-
+var _ = require('lodash');
 
 export default function Start(props) {
 
@@ -61,7 +61,7 @@ export default function Start(props) {
                 <Button
                     title="Lancer un enregistrement"
                     onPress={() => props.navigation.navigate("Recording", {
-                        challenge: selectedChallenge, transport: selectedTransport})}
+                        challenge: _.find(challenges, function(c) {return c["id"] == selectedChallenge}), transport: selectedTransport})}
                 />
             </View>
         </View>

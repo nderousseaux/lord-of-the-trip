@@ -24,6 +24,7 @@
     "expo": "~40.0.0",
     "expo-sensors": "^10.0.0",
     "expo-status-bar": "~1.0.3",
+    "lodash": "^4.17.21",
     "metro": "^0.65.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",

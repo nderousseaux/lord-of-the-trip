@@ -6,6 +6,7 @@ import { distanceTotale, vitesseMoyenne } from '../../../utils';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import apiFonctions from '../../../api/api';
+import ChallengeMap from '../Challenges/ChallengeMap'
 
 class Recording extends React.Component {
     state = {
@@ -18,28 +19,27 @@ class Recording extends React.Component {
         dateDebut: new Date(),
         displayDuree: "00:00",
         uniteDuree: "minute",
+        intervalTemps: null,
+        intervalGps: null,
     }
 
-    interintervalTemps = null;
-    intervalGps = null;
-
     componentDidMount() {
-        intervalTemps = setInterval(this.displayTempsCourse, 1000);
+        this.setState({intervalTemps:setInterval(this.displayTempsCourse, 1000)})
         if ( this.props.route.params.transport ==  "marche" ){
             this._subscribePedometer();
         }
         else {
-            intervalGps = setInterval(this._getLocation, 1000);
+            this.setState({intervalGps: setInterval(this._getLocation, 1000)})
         }
     }
     
     componentWillUnmont() {
-        clearInterval(intervalTemps);
+        clearInterval(this.state.intervalTemps);
         if ( this.props.route.params.transport ==  "marche" ){
             this._unsubscribePedometer();
         }
         else {
-            clearInterval(intervalGps);
+            clearInterval(this.state.intervalGps);
         }
     }
     
@@ -106,19 +106,18 @@ class Recording extends React.Component {
       }
 
     pressedStop = () => {
-        clearInterval(intervalTemps);
+        clearInterval(this.state.intervalTemps);
 
         if ( this.props.route.params.transport !=  "marche" ){
-            clearInterval(intervalGps);
+            clearInterval(this.state.intervalGps);
         }
 
         let dateFin = new Date()
 
         let duree = dateFin.getTime() - this.state.dateDebut.getTime()
         
-
-        apiFonctions.addEvent(
-            this.props.route.params.challenge, 
+        apiFonctions.addEvent(    
+            this.props.route.params.challenge["id"], 
             this.props.route.params.transport, 
             this.state.dateDebut, 
             this.state.distance, 
@@ -174,7 +173,7 @@ class Recording extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.map}>
-
+                    <ChallengeMap challenge={ this.props.route.params.challenge }/>
                 </View>
                 <View style={styles.foot}>
                     <View style={styles.left}>
@@ -267,7 +266,6 @@ const styles = StyleSheet.create({
     },
     map:{
         flex:7,
-        backgroundColor:'red'
     },
     foot:{
         flex:1,
