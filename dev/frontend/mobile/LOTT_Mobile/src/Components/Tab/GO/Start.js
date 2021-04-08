@@ -9,14 +9,18 @@ export default function Start(props) {
 
     const [isLoading, setLoading] = useState(true);
     const [challenges, setChallenges] = useState([]);
-    const [selectedChallenge, setSelectedChallenge] = useState(); //TODO:State undefined si on change pas le selected challenge
+    const [selectedChallenge, setSelectedChallenge] = useState([]);
     const [selectedTransport, setSelectedTransport] = useState("marche");
     
 
     useEffect(() => {
         api.getChallenges()
         .then((response) => response.data)
-        .then((json) => setChallenges(json.challenges))
+        .then((json) => {
+            setChallenges(json.challenges);
+            return json.challenges
+        })
+        .then((challengesJson) => setSelectedChallenge(challengesJson[0]["id"]))
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
     }, []);
@@ -35,9 +39,7 @@ export default function Start(props) {
                             selectedValue={selectedChallenge}
                             onValueChange={(itemValue, itemIndex) => setSelectedChallenge(itemValue)}
                         >
-                            {challenges?.map((challenge) => (
-                                <Picker.Item label={challenge["name"]} value={challenge["id"]} />
-                            ))}
+                            {challenges?.map((challenge) => <Picker.Item label={challenge["name"]} value={challenge["id"]} key={challenge["id"]} />)}
                         </Picker>
                     </View>
                 }

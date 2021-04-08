@@ -1095,7 +1095,7 @@
   dependencies:
     "@types/hammerjs" "^2.0.36"
 
-"@expo/config-plugins@1.0.21":
+"@expo/config-plugins@~1.0.13", "@expo/config-plugins@1.0.21":
   "integrity" "sha512-sMTF0/lx52ovJPz9iH5l0aKRpPFFtYoAQ+38AYhXI890Sswr1UU4Pq3IA5RMdvtOTkTzNREr21WvEHd7X8D1dA=="
   "resolved" "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-1.0.21.tgz"
   "version" "1.0.21"
@@ -3284,6 +3284,14 @@
   "integrity" "sha512-dNhKcoUUn+1kmEfFVxSU7h+YsqODqlExZQJcQgxgeiuCeeDvJWkE10t3jjrO6aNfrdM5i/X2l3oh401EDslWsQ=="
   "resolved" "https://registry.npmjs.org/expo-secure-store/-/expo-secure-store-9.3.0.tgz"
   "version" "9.3.0"
+
+"expo-sensors@^10.0.0":
+  "integrity" "sha512-DvsgGh201RUgRJykUHRcMUWjea2s5jdW7ycB0nC1JdKFK74KQQ6YJngMwSqegVwwKs4pysjf/4QwUa/Zwga14g=="
+  "resolved" "https://registry.npmjs.org/expo-sensors/-/expo-sensors-10.0.0.tgz"
+  "version" "10.0.0"
+  dependencies:
+    "@expo/config-plugins" "~1.0.13"
+    "invariant" "^2.2.4"
 
 "expo-sqlite@~8.5.0":
   "integrity" "sha512-8VMFrjagl8qE+BWqdacl2I0KLwF6SPMFHqJHHB5vlT/cxOi4PAk1SpmCIvALgZhrtO6UXG6eOG27gICONZtlVg=="
