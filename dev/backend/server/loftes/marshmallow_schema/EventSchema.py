@@ -9,6 +9,8 @@ from marshmallow import (
     pre_load
 )
 
+from loftes.marshmallow_schema.EventTypesSchema import EventTypesSchema
+
 import datetime, time
 import json
 
@@ -19,6 +21,8 @@ class EventSchema(Schema):
     segment_id = fields.Int(load_only=True)
     duration = fields.Int()
     move_type = fields.Int()
+    event_type = fields.Nested(EventTypesSchema)
+    footstep = fields.Int()
     event_date = fields.DateTime()   
     distance = fields.Int()
     

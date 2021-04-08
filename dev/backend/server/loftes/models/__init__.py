@@ -20,4 +20,8 @@ from .User import User
 from .UserSubscribe import UserSubscribe
 from .Events import Events
 
+# Constante
+from .EventTypes import EventTypes
+
+
 from .Root import Root

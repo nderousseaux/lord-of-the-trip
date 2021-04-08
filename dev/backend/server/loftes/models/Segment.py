@@ -23,3 +23,5 @@ class Segment(Base):
     obstacles = relationship(
         "Obstacle", cascade="all,delete", backref="segment_obstacles", lazy=True
     )
+
+Index('idx_name', Segment.challenge_id, Segment.name, unique=True)

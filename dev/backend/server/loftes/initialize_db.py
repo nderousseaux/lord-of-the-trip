@@ -22,6 +22,7 @@ from .models.Challenge import *
 from .models.CrossingPoint import *
 from .models.Segment import *
 from .models.UserSubscribe import *
+from .models.EventTypes import *
 
 
 def usage(argv):
@@ -58,6 +59,49 @@ def fill(argv=sys.argv):
 
     #DATA
 
+    #Constant - EventTypes
+    et1 = EventTypes(code="SUBSCRIBE", 
+                     label="Inscription à un challenge")
+    session.add(et1)
+
+    et2 = EventTypes(code="START",
+                     label="Départ du parcours")
+    session.add(et2)
+
+    et3 = EventTypes(code="ARRIVAL",
+                     label="Arrivée à la fin du parcours")
+    session.add(et3)
+
+    et4 = EventTypes(code="MOVE",
+                     label="Déplacement")
+    session.add(et4)
+
+    et5 = EventTypes(code="OBSTACLE_ARR",
+                     label="Arrivée sur un obstacle")
+    session.add(et5)
+
+    et6 = EventTypes(code="OBSTACLE_REP",
+                     label="Réponse à un obstacle")
+    session.add(et6)
+
+    et7 = EventTypes(code="OBSTACLE_REP_OK",
+                     label="Réponse validée")
+    session.add(et7)   
+
+    et8 = EventTypes(code="OBSTACLE_REP_KO",
+                     label="Refus de la réponse par un administrateur ou par le système")
+    session.add(et8)
+
+    et9 = EventTypes(code="CROSS_PT_ARRIVAL",
+                     label="Arrivée à un point de passage")
+    session.add(et9)
+
+    et10 = EventTypes(code="CHOOSE_SEGMENT",
+                      label="Choix d'un segment")
+    session.add(et10)
+
+    session.commit()
+
     #User
     u = User(first_name='Missy',
              last_name='Of Gallifrey',
@@ -72,7 +116,7 @@ def fill(argv=sys.argv):
     c1 = Challenge(name='A la recherche d\'Aslan',
                     description='Fille d\'Eve et Fils d\'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous', 
                     end_date='2020-03-18',
-                    map_url='Map/Narnia.jpg',
+                    map_url='',
                     level='1',
                     scalling='4',
                     admin_id='1')
@@ -82,7 +126,7 @@ def fill(argv=sys.argv):
     c2 = Challenge(name='Oops, on a perdu Han Solo',
                     description='Leia Organa, Lando Calrissian et le reste de l\'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n\'attends pas', 
                     end_date='2020-03-18',
-                    map_url='Map/Tatoine.jpg',
+                    map_url='',
                     level='2',
                     scalling='4',
                     admin_id='1')

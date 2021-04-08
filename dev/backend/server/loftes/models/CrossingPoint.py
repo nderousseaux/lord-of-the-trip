@@ -11,4 +11,6 @@ class CrossingPoint(Base):
     position_x = Column(Float(precision=2), nullable=False)
     position_y = Column(Float(precision=2), nullable=False)
     challenge_id = Column(Integer, ForeignKey("Challenge.id"))
-    # challenge = relationship("Challenge", backref="challenge_point")
+    # challenge = relationship("Challenge", backref="challenge_point")    
+    
+Index('idx_name', CrossingPoint.challenge_id, CrossingPoint.name, unique=True)
