@@ -162,7 +162,10 @@ const EditMap = () => {
   };
 
   const createSegmentMutation = useMutation( (segment) => apiSegments.createSegment(id, segment), {
-    onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['segments', id]);
+      setDrawingSegment(false);
+     },
   });
 
   const addSegment = (segment) => {
@@ -196,8 +199,8 @@ const EditMap = () => {
   };
 
   const stopDrawingSegment = (idCrossingPoint) => {
+    setDrawingSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
     addSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
-    setDrawingSegment(false);
   };
 
   const onDragStartCrossingPoint = (e, crossingPoint) => {
