@@ -3,7 +3,7 @@ import { Image, View, Text, StyleSheet, ActivityIndicator, Animated } from 'reac
 import { useEffect, useState } from 'react';
 import Svg, { Circle, Image as SvgImage, Polyline } from 'react-native-svg';
 import { ReactNativeZoomableView } from '@dudigital/react-native-zoomable-view';
-import { Card, Paragraph, Title } from 'react-native-paper';
+import { Card, Divider, Paragraph, Title } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
@@ -39,6 +39,7 @@ export default function ChallengeCard(props) {
                             <Card.Content>
                                 <Paragraph>Niveau : {challenge.level}</Paragraph>
                                 <Paragraph>Date de fin : {new Date(challenge.end_date).toLocaleDateString()}</Paragraph>
+                                <Paragraph>Avancement fait : {challenge.event_sum}</Paragraph>
                             </Card.Content>
                         </Card>
                     </View>
@@ -85,14 +86,11 @@ export default function ChallengeCard(props) {
 
                                     let coordinatesValue = segment.start_crossing_point?.position_x * 100 + "," + segment.start_crossing_point?.position_y * 100 + " ";
                                     
-
                                     segment.coordinates?.map(coord => {
                                         coordinatesValue += coord.position_x * 100 + "," + coord.position_y * 100 + " "
                                     });
 
                                     coordinatesValue += segment.end_crossing_point?.position_x * 100 + "," + segment.end_crossing_point?.position_y * 100;
-
-                                    console.log(index + ": " + coordinatesValue);
 
                                     return(
                                         <>
@@ -101,7 +99,7 @@ export default function ChallengeCard(props) {
                                                 fill="none"
                                                 stroke="black"
                                                 strokeWidth="3"
-                                                key={"poly" + index}
+                                                key={"poly-" + index + "-" + segment.id}
                                                 onPress={() => {alert("segment " + segment.id + " touché!")}}
                                             />
                                             <Circle 
@@ -110,7 +108,7 @@ export default function ChallengeCard(props) {
                                                 r={4 / zoomMap}
                                                 stroke="black" 
                                                 fill="red" 
-                                                key={"start-cir" + index}
+                                                key={"start-cir-" + index + "-" + segment.start_crossing_point.id}
                                                 onPress={() => {alert(zoomMap)}}
                                             />
                                             <Circle 
@@ -119,7 +117,7 @@ export default function ChallengeCard(props) {
                                                 r={4 / zoomMap}
                                                 stroke="black" 
                                                 fill="green" 
-                                                key={"end-cir" + index}
+                                                key={"end-cir-" + index + "-" + segment.end_crossing_point.id}
                                                 onPress={() => {alert(zoomMap)}}
                                             />
                                         </>
@@ -141,7 +139,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#e7e7e7',
     },
     InformationsContainer: {
-        flex: 3,
+        flex: 4,
         overflow: 'hidden'
     },
     DescriptionContainer: {
@@ -150,12 +148,12 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     ScrollContainer: {
-        height: '80%'
+        height: '75%',
     },
     zoomContainer: {
         flex: 3,
         overflow: 'hidden',
-        margin: 3
+        margin: 10,
     },
     mapBackgroundContainer: {
         justifyContent: 'center',
@@ -174,6 +172,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     PrimaryCard: {
-        marginTop: 10
+        marginTop: 10,
+        paddingVertical: 10 
     }
 });
