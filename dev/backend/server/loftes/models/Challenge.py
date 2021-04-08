@@ -6,6 +6,7 @@ from loftes.models import Base
 from sqlalchemy import func
 from sqlalchemy.ext.hybrid import hybrid_property
 
+
 class Challenge(Base):
     __tablename__ = "Challenge"
     id = Column(Integer, primary_key=True)
@@ -32,7 +33,7 @@ class Challenge(Base):
 
     @hybrid_property
     def event_sum(self):
-         return sum(Events.duration for Events in self.event_sum_user)
+        return sum(Events.distance for Events in self.event_sum_user)
 
     # @hybrid_property
     # def event_sum2(self):
