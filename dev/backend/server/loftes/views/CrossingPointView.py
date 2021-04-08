@@ -97,7 +97,7 @@ HTTP/1.1 200 OK
   ]
 }
 
-@apiError {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 
@@ -108,7 +108,7 @@ HTTP/1.1 404 Not Found
   }
 }
 
-@apiError {Object} RessourceNotFound No crossing points were found.
+@apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 

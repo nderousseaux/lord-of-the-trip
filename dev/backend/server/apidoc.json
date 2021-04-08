@@ -25,6 +25,9 @@
         "GetSegment",
         "PutSegment",
         "PatchSegment",
-        "DeleteSegment"
+        "DeleteSegment",
+        "GetEvents",
+        "PostEvent",
+        "GetEvent"
     ]
 }

@@ -738,16 +738,16 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "Error 4xx": [
+        "Error 404": [
           {
-            "group": "Error 4xx",
+            "group": "Error 404",
             "type": "Object",
             "optional": false,
             "field": "ChallengeNotFound",
             "description": "<p>The id of the Challenge was not found.</p>"
           },
           {
-            "group": "Error 4xx",
+            "group": "Error 404",
             "type": "Object",
             "optional": false,
             "field": "RessourceNotFound",
@@ -1029,6 +1029,248 @@ define({ "api": [
     "groupTitle": "CrossingPoint"
   },
   {
+    "type": "get",
+    "url": "/challenges/:challenge_id/events/:id",
+    "title": "Request an event informations.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Event's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "name": "GetEvent",
+    "group": "Event",
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "Event",
+            "description": "<p>All events created of challenge's id.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"events\": [\n    {\n      \"id\": 1,\n      \"duration\": 300,\n      \"move_type\": 1,\n      \"event_date\": \"2021-10-18T00:00:00\",\n      \"distance\": 250\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:challenge_id/events",
+    "title": "Request all events informations of challenge's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "name": "GetEvents",
+    "group": "Event",
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Event",
+            "description": "<p>All events created of challenge's id.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"events\": [\n    {\n      \"id\": 1,\n      \"duration\": 300,\n      \"move_type\": 1,\n      \"event_date\": \"2021-10-18T00:00:00\",\n      \"distance\": 250\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "post",
+    "url": "/challenges/:challenge_id/events",
+    "title": "Create a new event of challenge's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "name": "PostEvent",
+    "group": "Event",
+    "success": {
+      "fields": {
+        "OK 201": [
+          {
+            "group": "OK 201",
+            "type": "Object",
+            "optional": false,
+            "field": "Events",
+            "description": "<p>Created event.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n\n{\n    \"id\": 1,\n    \"duration\": 300,\n    \"move_type\": 1,\n    \"event_date\": \"2021-10-18T00:00:00\",\n    \"distance\": 250\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Invalid isoformat string: '2022-10-'\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
     "type": "delete",
     "url": "/challenges/:challenge_id/crossing-points/:id",
     "title": "Delete a segment",
@@ -1127,7 +1369,7 @@ define({ "api": [
         "OK 200": [
           {
             "group": "OK 200",
-            "type": "Array",
+            "type": "Object",
             "optional": false,
             "field": "Segments",
             "description": "<p>Segment of id.</p>"
@@ -1153,16 +1395,16 @@ define({ "api": [
             "description": "<p>Malformed request syntax.</p>"
           }
         ],
-        "Error 4xx": [
+        "Error 404": [
           {
-            "group": "Error 4xx",
+            "group": "Error 404",
             "type": "Object",
             "optional": false,
             "field": "ChallengeNotFound",
             "description": "<p>The id of the Challenge was not found.</p>"
           },
           {
-            "group": "Error 4xx",
+            "group": "Error 404",
             "type": "Object",
             "optional": false,
             "field": "RessourceNotFound",
@@ -1237,16 +1479,16 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "Error 4xx": [
+        "Error 404": [
           {
-            "group": "Error 4xx",
+            "group": "Error 404",
             "type": "Object",
             "optional": false,
             "field": "ChallengeNotFound",
             "description": "<p>The id of the Challenge was not found.</p>"
           },
           {
-            "group": "Error 4xx",
+            "group": "Error 404",
             "type": "Object",
             "optional": false,
             "field": "RessourceNotFound",
@@ -1382,7 +1624,7 @@ define({ "api": [
         "OK 201": [
           {
             "group": "OK 201",
-            "type": "Array",
+            "type": "Object",
             "optional": false,
             "field": "Segments",
             "description": "<p>Created segment.</p>"
@@ -1399,16 +1641,16 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "Error 4xx": [
+        "Error 404": [
           {
-            "group": "Error 4xx",
+            "group": "Error 404",
             "type": "Object",
             "optional": false,
             "field": "ChallengeNotFound",
             "description": "<p>The id of the Challenge was not found.</p>"
           },
           {
-            "group": "Error 4xx",
+            "group": "Error 404",
             "type": "Object",
             "optional": false,
             "field": "RessourceNotFound",

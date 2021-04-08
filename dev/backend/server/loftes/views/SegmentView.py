@@ -85,7 +85,7 @@ HTTP/1.1 200 OK
 }
 
 
-@apiError {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 
@@ -96,7 +96,7 @@ HTTP/1.1 404 Not Found
   }
 }
 
-@apiError {Object} RessourceNotFound No segments were found.
+@apiError (Error 404) {Object} RessourceNotFound No segments were found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 
@@ -147,7 +147,7 @@ def get_segments(request):
 @apiGroup Segment
 @apiSampleRequest off
 
-@apiSuccess (OK 201) {Array} Segments Created segment.
+@apiSuccess (OK 201) {Object} Segments Created segment.
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
 
@@ -200,7 +200,7 @@ HTTP/1.1 200 OK
 }
 
 
-@apiError {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 
@@ -211,7 +211,7 @@ HTTP/1.1 404 Not Found
   }
 }
 
-@apiError {Object} RessourceNotFound No segments were found.
+@apiError (Error 404) {Object} RessourceNotFound No segments were found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 
@@ -295,7 +295,7 @@ segment_id = Service(
 @apiGroup Segment
 @apiSampleRequest off
 
-@apiSuccess (OK 200) {Array} Segments Segment of id.
+@apiSuccess (OK 200) {Object} Segments Segment of id.
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
 
@@ -368,7 +368,7 @@ HTTP/1.1 400 Bad Request
   }
 }
 
-@apiError {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 
@@ -379,7 +379,7 @@ HTTP/1.1 404 Not Found
   }
 }
 
-@apiError {Object} RessourceNotFound No segments were found.
+@apiError (Error 404) {Object} RessourceNotFound No segments were found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 
