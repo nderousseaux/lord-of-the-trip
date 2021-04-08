@@ -209,6 +209,17 @@ def delete_challenge(request):
                 if os.path.exists(image):
                     os.remove(image)
 
+            challenge.start_crossing_point_id = None
+            challenge.end_crossing_point_id = None
+
+            crossing_points_to_delete = (
+                DBSession.query(CrossingPoint)
+                .filter_by(challenge_id=challenge.id)
+                .all()
+            )
+            for crossing_point_to_delete in crossing_points_to_delete:
+                DBSession.delete(crossing_point_to_delete)
+
             DBSession.delete(challenge)
             DBSession.flush()
 

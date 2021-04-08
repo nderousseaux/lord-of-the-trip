@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 from sqlalchemy import exc
 
 from loftes.cors import cors_policy
-from loftes.models import Challenge, CrossingPoint, DBSession
+from loftes.models import Challenge, CrossingPoint, Segment, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import CrossingPointSchema
 
@@ -309,6 +309,25 @@ def delete_crossing_point(request):
                     challenge.end_crossing_point_id = None
 
                 crossing_point.challenge_id = None
+
+                segments_to_delete_with_start = (
+                    DBSession.query(Segment)
+                    .filter_by(start_crossing_point_id=crossing_point.id)
+                    .all()
+                )
+
+                segments_to_delete_with_end = (
+                    DBSession.query(Segment)
+                    .filter_by(end_crossing_point_id=crossing_point.id)
+                    .all()
+                )
+
+                segments_to_delete = (
+                    segments_to_delete_with_start + segments_to_delete_with_end
+                )
+
+                for segment_to_delete in segments_to_delete:
+                    DBSession.delete(segment_to_delete)
 
                 DBSession.delete(crossing_point)
                 DBSession.flush()
