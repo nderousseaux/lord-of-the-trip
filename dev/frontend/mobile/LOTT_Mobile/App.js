@@ -13,12 +13,13 @@ import GO from './src/Components/Tab/GO';
 import EditProfile from './src/Components/Stack/EditProfile';
 import api from './src/api/api'
 import {API_URL} from "@env"
+import { Provider as PaperProvider } from 'react-native-paper';
 
 /* Exemple of how to connect the screens to Redux
 let NewJsxSyntax = connect(state => ({ main: state.main }))(JsxComponent);
 */
 
-console.log(API_URL);
+console.log("api url : " + API_URL);
 
 //Initialise axios
 api.init(API_URL);
@@ -84,12 +85,14 @@ const DrawerNavigator = (props) => {
 export default function App() {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={DrawerNavigator} options={{headerShown: false}}/>
-          <Stack.Screen name="Edit Profile" component={EditProfile} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <PaperProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen name="Home" component={DrawerNavigator} options={{headerShown: false}}/>
+            <Stack.Screen name="Edit Profile" component={EditProfile} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
     </Provider>
   );
 }

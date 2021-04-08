@@ -17,9 +17,9 @@ const apiFonctions = {
 
     getChallenges(){
         
-        console.log("requete challenges : " + api.defaults.baseURL + "/challenges-detail");
+        console.log("requete challenges : " + api.defaults.baseURL + "/challenges");
 
-        return axios.get(api.defaults.baseURL + '/challenges-detail')
+        return axios.get(api.defaults.baseURL + '/challenges')
             .catch(function (error) {
                 if (error.response) {
                     // Request made and server responded
