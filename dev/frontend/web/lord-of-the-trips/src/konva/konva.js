@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Stage, Layer, Image, Circle, Line } from 'react-konva';
 import { pixelsToPercent } from "../utils/utils";
 
@@ -15,7 +15,7 @@ import { pixelsToPercent } from "../utils/utils";
 // https://konvajs.org/docs/react/index.html
 // https://konvajs.org/docs/react/Free_Drawing.html
 
-const Konva = () => {;
+const Konva = () => {
   // the image loaded from the file uploaded
   const [image, setImage] = useState(null);
   // width of the image
