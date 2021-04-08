@@ -62,7 +62,7 @@ const CreateChallengeForm = () => {
       <form onSubmit={handleSubmit}>
         <label>Name : </label>
         <input type="text" value={name} onChange={e => setName(e.target.value)} /> {' '}
-        <Button size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Create</Button>
+        <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Create</Button>
       </form>
       {error ? <p>{error.message}</p> : null}
     </div>
