@@ -5,11 +5,18 @@ import Svg, { Circle, Image as SvgImage, Polyline } from 'react-native-svg';
 import { Card, Paragraph, Title } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import Map from './ChallengeMap.js'
+import api from '../../../api/api';
 
 
 export default function ChallengeCard(props) {
 
-    const [ challenge ] = useState(props.route.params.challenge);
+    const [ challenge, setChallenge ] = useState(props.route.params.challenge);
+
+    useEffect(() => {
+        api.getChallenge(challenge["id"])
+        .then((response) => setChallenge(response.data))
+        .catch((error) => console.error(error))
+    }, []);
 
     return(
         <View style={styles.cardContainer}>
