@@ -72,7 +72,7 @@ const EditMap = () => {
         segment.coordinates.forEach((coordinate) => {
           coord = [...coord, { position_x: percentToPixels(coordinate.position_x, width), position_y: percentToPixels(coordinate.position_y, height) }];
         });
-        seg = [...seg, { id: segment.id, startCrossingPoint: segment.start_crossing_point.id, endCrossingPoint: segment.end_crossing_point.id, name: segment.name, coordinates: coord, onMouseOver: false }];
+        seg = [...seg, { id: segment.id, start_crossing_point_id: segment.start_crossing_point.id, end_crossing_point_id: segment.end_crossing_point.id, name: segment.name, coordinates: coord, onMouseOver: false }];
       });
       setSegments(seg);
     }
@@ -116,12 +116,12 @@ const EditMap = () => {
   const deleteCrossingPoint = (idCrossingPoint) => {
     let isUsed = false;
     segments.forEach((segment) => {
-      if(segment.startCrossingPoint === idCrossingPoint || segment.endCrossingPoint === idCrossingPoint)
+      if(segment.start_crossing_point_id === idCrossingPoint || segment.end_crossing_point_id === idCrossingPoint)
       {
         isUsed = true;
       }
     });
-    if(drawingSegment.startCrossingPoint === idCrossingPoint || drawingSegment.endCrossingPoint === idCrossingPoint)
+    if(drawingSegment.start_crossing_point_id === idCrossingPoint || drawingSegment.end_crossing_point_id === idCrossingPoint)
     {
       isUsed = true;
     }
@@ -300,7 +300,7 @@ const EditMap = () => {
 
   const formatSegmentPoints = (segment) => {
     let returnCoordinates = [];
-    let coordinatesStart = getCoordinatesFromCrossingPoint(segment.startCrossingPoint);
+    let coordinatesStart = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
     if(coordinatesStart !== null) {
       returnCoordinates.push(coordinatesStart.position_x);
       returnCoordinates.push(coordinatesStart.position_y);
@@ -309,7 +309,7 @@ const EditMap = () => {
       returnCoordinates.push(coordinate.position_x);
       returnCoordinates.push(coordinate.position_y);
     });
-    let coordinatesEnd = getCoordinatesFromCrossingPoint(segment.endCrossingPoint);
+    let coordinatesEnd = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
     if(coordinatesEnd !== null) {
       returnCoordinates.push(coordinatesEnd.position_x);
       returnCoordinates.push(coordinatesEnd.position_y);
