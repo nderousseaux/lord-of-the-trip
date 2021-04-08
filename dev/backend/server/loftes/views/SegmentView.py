@@ -21,6 +21,94 @@ segment = Service(
 )
 
 
+"""
+@api {get} /challenges/:challenge_id/segments Request all segments informations of challenge's id.
+@apiParam challenge_id Challenge's unique ID.
+@apiVersion 0.1.0
+@apiName GetSegments
+@apiGroup Segment
+@apiSampleRequest off
+
+@apiSuccess (OK 200) {Array} Segments All segments created of challenge's id.
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
+
+{
+  "segments": [
+    {
+      "id": 1,
+      "name": "A travers le bois d'entre les mondes",
+      "start_crossing_point": {
+        "id": 1,
+        "name": "L'armoire",
+        "position_x": 0.1,
+        "position_y": 0.1
+      },
+      "end_crossing_point": {
+        "id": 2,
+        "name": "La passe du faune",
+        "position_x": 0.1,
+        "position_y": 0.1
+      },
+      "coordinates": [],
+      "challenge": {
+        "id": 1,
+        "name": "A la recherche d'Aslan",
+        "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+        "end_date": "2020-03-18T00:00:00",
+        "alone_only": null,
+        "level": "1",
+        "scalling": 4,
+        "draft": false,
+        "start_crossing_point": {
+          "id": 10,
+          "name": "cr 1",
+          "position_x": 0.417391,
+          "position_y": 0.207442
+        },
+        "end_crossing_point": {
+          "id": 12,
+          "name": "cr 3",
+          "position_x": 0.573043,
+          "position_y": 0.492283
+        },
+        "admin": {
+          "id": 1,
+          "first_name": "Missy",
+          "last_name": "Of Gallifrey",
+          "pseudo": "Le maitre",
+          "mail": "lemaitre@gmail.com"
+        }
+      }
+    }
+  ]
+}
+
+
+@apiError {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError {Object} RessourceNotFound No segments were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
+
+
 @segment.get()
 def get_segments(request):
 
@@ -49,6 +137,91 @@ def get_segments(request):
         )
 
     return response
+
+
+"""
+@api {post} /challenges/:challenge_id/segments Create a new segment of challenge's id.
+@apiParam challenge_id Challenge's unique ID.
+@apiVersion 0.1.0
+@apiName PostSegment
+@apiGroup Segment
+@apiSampleRequest off
+
+@apiSuccess (OK 201) {Array} Segments Created segment.
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
+
+
+{
+    "id": 1,
+    "name": "A travers le bois d'entre les mondes",
+    "start_crossing_point": {
+    "id": 1,
+    "name": "L'armoire",
+    "position_x": 0.1,
+    "position_y": 0.1
+    },
+    "end_crossing_point": {
+    "id": 2,
+    "name": "La passe du faune",
+    "position_x": 0.1,
+    "position_y": 0.1
+    },
+    "coordinates": [],
+    "challenge": {
+        "id": 1,
+        "name": "A la recherche d'Aslan",
+        "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+        "end_date": "2020-03-18T00:00:00",
+        "alone_only": null,
+        "level": "1",
+        "scalling": 4,
+        "draft": false,
+        "start_crossing_point": {
+            "id": 10,
+            "name": "cr 1",
+            "position_x": 0.417391,
+            "position_y": 0.207442
+        },
+        "end_crossing_point": {
+            "id": 12,
+            "name": "cr 3",
+            "position_x": 0.573043,
+            "position_y": 0.492283
+        },
+        "admin": {
+            "id": 1,
+            "first_name": "Missy",
+            "last_name": "Of Gallifrey",
+            "pseudo": "Le maitre",
+            "mail": "lemaitre@gmail.com"
+        }
+    }
+}
+
+
+@apiError {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError {Object} RessourceNotFound No segments were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
 
 
 @segment.post()
@@ -113,6 +286,111 @@ segment_id = Service(
     cors_policy=cors_policy,
 )
 
+"""
+@api {get} /challenges/:challenge_id/segments/:id Request a segment informations of challenge's id
+@apiParam challenge_id Challenge's unique ID.
+@apiParam id Segment's unique ID.
+@apiVersion 0.1.0
+@apiName GetSegment
+@apiGroup Segment
+@apiSampleRequest off
+
+@apiSuccess (OK 200) {Array} Segments Segment of id.
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
+
+{
+    "id": 1,
+    "name": "A travers le bois d'entre les mondes",
+    "start_crossing_point": {
+    "id": 1,
+    "name": "L'armoire",
+    "position_x": 0.1,
+    "position_y": 0.1
+    },
+    "end_crossing_point": {
+    "id": 2,
+    "name": "La passe du faune",
+    "position_x": 0.1,
+    "position_y": 0.1
+    },
+    "coordinates": [],
+    "challenge": {
+        "id": 1,
+        "name": "A la recherche d'Aslan",
+        "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+        "end_date": "2020-03-18T00:00:00",
+        "alone_only": null,
+        "level": "1",
+        "scalling": 4,
+        "draft": false,
+        "start_crossing_point": {
+            "id": 10,
+            "name": "cr 1",
+            "position_x": 0.417391,
+            "position_y": 0.207442
+        },
+        "end_crossing_point": {
+            "id": 12,
+            "name": "cr 3",
+            "position_x": 0.573043,
+            "position_y": 0.492283
+        },
+        "admin": {
+            "id": 1,
+            "first_name": "Missy",
+            "last_name": "Of Gallifrey",
+            "pseudo": "Le maitre",
+            "mail": "lemaitre@gmail.com"
+        }
+    }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'name': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'name': ['Invalid value']}"
+  }
+}
+
+@apiError {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError {Object} RessourceNotFound No segments were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
+
 
 @segment_id.get()
 def get_segment_by_id(request):
@@ -147,6 +425,64 @@ def get_segment_by_id(request):
         )
 
     return response
+
+
+"""
+@api {put} /challenges/:challenge_id/segments/:id Update a segment
+@apiParam challenge_id Challenge's unique ID.
+@apiParam id Segment's unique ID.
+@apiVersion 0.1.0
+@apiName PutSegment
+@apiGroup Segment
+@apiSampleRequest off
+
+@apiSuccessExample Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'name': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'name': ['Invalid value']}"
+  }
+}
+
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound No segments were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
 
 
 @segment_id.put()
@@ -212,6 +548,64 @@ def update_segment(request):
     return response
 
 
+"""
+@api {patch} /challenges/:challenge_id/segments/:id Partially modify a segment
+@apiParam challenge_id Challenge's unique ID.
+@apiParam id Segment's unique ID.
+@apiVersion 0.1.0
+@apiName PatchSegment
+@apiGroup Segment
+@apiSampleRequest off
+
+@apiSuccessExample Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'name': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'name': ['Invalid value']}"
+  }
+}
+
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound No segments were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
+
+
 @segment_id.patch()
 def modify_segment(request):
 
@@ -273,6 +667,42 @@ def modify_segment(request):
         )
 
     return response
+
+
+"""
+@api {delete} /challenges/:challenge_id/crossing-points/:id Delete a segment
+@apiParam challenge_id Challenge's unique ID.
+@apiParam id Segment's unique ID.
+@apiVersion 0.1.0
+@apiName DeleteSegment
+@apiGroup Segment
+@apiSampleRequest off
+
+@apiSuccessExample Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound No segments were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
 
 
 @segment_id.delete()

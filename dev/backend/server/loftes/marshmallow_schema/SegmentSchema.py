@@ -64,7 +64,7 @@ class SegmentSchema(Schema):
             )
             if start_crossing_point == None:
                 raise ValueError("Start crossing point does not exist.")
-            data["start_crossing_point_id"] = int(data["start_crossing_point_id"])
+            data["start_crossing_point_id"] = start_crossing_point.id
 
         if "end_crossing_point_id" in data:
             # Check if crossing point exist
