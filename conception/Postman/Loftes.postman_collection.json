@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5ed65c89-2c08-466b-92a7-7d846a407b46",
+		"_postman_id": "941527fe-40ef-4473-8e0a-06e8d53f1188",
 		"name": "Loftes",
 		"description": "Pour le faire tourner, changez dans variable la valeur de bas_url\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -15,12 +15,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url_base}}/challenge",
+							"raw": "{{url_base}}/challenges",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge"
+								"challenges"
 							]
 						}
 					},
@@ -32,12 +32,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{url_base}}/challenge/1",
+							"raw": "{{url_base}}/challenges/1",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1"
 							]
 						}
@@ -51,7 +51,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\":\"First Challenge\",\n\t\"description\":\"Description\", \n\t\"end_date\":\"2022-10-18\"\n}",
+							"raw": "{\n\t\"name\":\"First Challenge\",\n\t\"description\":\"Description\", \n\t\"end_date\":\"2022-10-18\",\n    \"alone_only\" : 1,\n    \"level\" : \"Débutant\",\n    \"scalling\" : 10,\n    \"draft\": true,\n    \"start_crossing_point_id\" : 1,\n    \"end_crossing_point_id\" : 2,\n    \"admin_id\" : 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -59,12 +59,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url}}/challenge",
+							"raw": "{{url}}/challenges",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
-								"challenge"
+								"challenges"
 							]
 						}
 					},
@@ -85,12 +85,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1",
+							"raw": "{{url_base}}/challenges/1",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1"
 							]
 						}
@@ -112,12 +112,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1",
+							"raw": "{{url_base}}/challenges/1",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1"
 							]
 						}
@@ -130,13 +130,60 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{url_base}}/challenge/1",
+							"raw": "{{url_base}}/challenges/1",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download challenge's map",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/image",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload challenge's map",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/image",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"image"
 							]
 						}
 					},
@@ -148,7 +195,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "95f59929-d27a-4e5c-bef4-19369cf4fe42",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -158,15 +204,13 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "c7d4664b-630d-416f-8fdb-3cafa033c22a",
 						"type": "text/javascript",
 						"exec": [
 							""
 						]
 					}
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Segments",
@@ -177,7 +221,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b5b85f04-a633-4a8b-8a26-9b2226747c9d",
 								"exec": [
 									""
 								],
@@ -201,14 +244,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1/segment",
+							"raw": "{{url_base}}/challenges/1/segments",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1",
-								"segment"
+								"segments"
 							]
 						}
 					},
@@ -220,7 +263,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "86a7a5e2-fa28-49b0-aff8-52b15bbb45bf",
 								"exec": [
 									""
 								],
@@ -244,14 +286,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1/segment/2",
+							"raw": "{{url_base}}/challenges/1/segments/2",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1",
-								"segment",
+								"segments",
 								"2"
 							]
 						}
@@ -264,7 +306,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c747ce92-211e-4e2f-9a3c-f2f1a6947788",
 								"exec": [
 									""
 								],
@@ -285,14 +326,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1/segment",
+							"raw": "{{url_base}}/challenges/1/segments",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1",
-								"segment"
+								"segments"
 							]
 						}
 					},
@@ -304,7 +345,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "32e43cf4-1e4c-40d8-ae23-a8aae5723e6b",
 								"exec": [
 									""
 								],
@@ -317,7 +357,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"start_crossing_point_id\" : \"3\"\n}",
+							"raw": "{\n     \"name\" : \"Mon segment 3\" \n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -325,14 +365,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1/segment/5",
+							"raw": "{{url_base}}/challenges/1/segments/5",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1",
-								"segment",
+								"segments",
 								"5"
 							]
 						}
@@ -345,7 +385,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "098c0196-be4a-4c5c-a4ea-8021d6d0c148",
 								"exec": [
 									""
 								],
@@ -366,14 +405,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/2/segment/5",
+							"raw": "{{url_base}}/challenges/2/segments/5",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"2",
-								"segment",
+								"segments",
 								"5"
 							]
 						}
@@ -386,7 +425,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "90dab9b4-8415-477d-925b-375941e5c822",
 								"exec": [
 									""
 								],
@@ -407,15 +445,293 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/2/segment/5",
+							"raw": "{{url_base}}/challenges/2/segments/5",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"2",
-								"segment",
+								"segments",
 								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "CrossingPoint",
+			"item": [
+				{
+					"name": "CROSSING_POINT_ALL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/crossing-points",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"crossing-points"
+							]
+						},
+						"description": "You can use /crossingpoints to get all the crossing in the database"
+					},
+					"response": []
+				},
+				{
+					"name": "CROSSING_POINT_FIND_BY_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/crossing-points/1",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"crossing-points",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CROSSING_POINT_ADD",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"La maison de Monsieur Tumnus 2\",\n    \"position_x\":\"0.42\",\n    \"position_y\":\"0.45\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/crossing-points",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"crossing-points"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "## Create a crossing point\n\nUse to create a crossing point \nThe data were pass throught thte request body\n\n### Mandatory fields\n\n* name_crossing : the name of the crossing point\n* challenge_id  : The ide of the challenge\n* x_position    : The x position on the map\n* y_position    : The y position on the map\n\n### Example\n\n`{  \n   \"name_crossing\":\"Mos Eisley 3\",   \"challenge_id\" : \"2\",  \n   \"x_position\":\"0.20\",    \n   \"y_position\":\"0.40\"      \n}`\n\n### Result"
+					},
+					"response": []
+				},
+				{
+					"name": "CROSSING_UPDATE_BY_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"La maison de Monsieur Tumnus\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/crossing-points/10",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"crossing-points",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CROSSING_MODIFY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"La maison de Monsieur Tumnus 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/crossing-points/11",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"crossing-points",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CROSSING_POINT_DELETE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/crossing-points/11",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"crossing-points",
+								"11"
 							]
 						}
 					},
@@ -425,10 +741,10 @@
 			"protocolProfileBehavior": {}
 		},
 		{
-			"name": "CrossingPoint",
+			"name": "Events",
 			"item": [
 				{
-					"name": "CROSSING_POINT_ALL",
+					"name": "EVENTS_ALL",
 					"event": [
 						{
 							"listen": "test",
@@ -457,22 +773,21 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1/crossing-point",
+							"raw": "{{url_base}}/challenges/1/events",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1",
-								"crossing-point"
+								"events"
 							]
-						},
-						"description": "You can use /crossingpoint to get all the crossing in the database"
+						}
 					},
 					"response": []
 				},
 				{
-					"name": "CROSSING_POINT_FIND_BY_ID",
+					"name": "EVENT_FIND_BY_ID",
 					"event": [
 						{
 							"listen": "test",
@@ -516,7 +831,7 @@
 					"response": []
 				},
 				{
-					"name": "CROSSING_POINT_ADD",
+					"name": "EVENT_ADD",
 					"event": [
 						{
 							"listen": "test",
@@ -531,10 +846,16 @@
 					],
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "token",
+								"value": "1",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\":\"La maison de Monsieur Tumnus 2\",\n    \"position_x\":\"0.42\",\n    \"position_y\":\"0.45\"\n}",
+							"raw": "{\n    \"move_type\": 1,\n    \"event_date\":\"2021-10-18\",\n    \"distance\":250,\n    \"duration\": \"02:05:10\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -542,14 +863,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1/crossing-point",
+							"raw": "{{url_base}}/challenges/1/events",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1",
-								"crossing-point"
+								"events"
 							],
 							"query": [
 								{
@@ -578,130 +899,6 @@
 									"disabled": true
 								}
 							]
-						},
-						"description": "## Create a crossing point\n\nUse to create a crossing point \nThe data were pass throught thte request body\n\n### Mandatory fields\n\n* name_crossing : the name of the crossing point\n* challenge_id  : The ide of the challenge\n* x_position    : The x position on the map\n* y_position    : The y position on the map\n\n### Example\n\n`{  \n   \"name_crossing\":\"Mos Eisley 3\",   \"challenge_id\" : \"2\",  \n   \"x_position\":\"0.20\",    \n   \"y_position\":\"0.40\"      \n}`\n\n### Result"
-					},
-					"response": []
-				},
-				{
-					"name": "CROSSING_UPDATE_BY_ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "6a5876f2-ea43-44fd-bc1e-a7909b6c6e12",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\":\"La maison de Monsieur Tumnus\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_base}}/challenge/1/crossing-point/10",
-							"host": [
-								"{{url_base}}"
-							],
-							"path": [
-								"challenge",
-								"1",
-								"crossing-point",
-								"10"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "CROSSING_MODIFY",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "d99c1c3e-0a90-4233-97b9-e9d2f5c6dd0a",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\":\"La maison de Monsieur Tumnus 2\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_base}}/challenge/1/crossing-point/11",
-							"host": [
-								"{{url_base}}"
-							],
-							"path": [
-								"challenge",
-								"1",
-								"crossing-point",
-								"11"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "CROSSING_POINT_DELETE",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "88e2471a-3fc0-4982-aa10-a9ee605e1f6d",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_base}}/challenge/1/crossing-point/11",
-							"host": [
-								"{{url_base}}"
-							],
-							"path": [
-								"challenge",
-								"1",
-								"crossing-point",
-								"11"
-							]
 						}
 					},
 					"response": []
@@ -714,7 +911,6 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "5f55c672-aa03-4514-a617-454e36ca0b66",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -724,7 +920,6 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "3f8379ab-68d4-479a-b898-826f6c71e10e",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -734,7 +929,7 @@
 	],
 	"variable": [
 		{
-			"id": "2e550d19-09c7-4cb7-b9c7-adaf4b7733da",
+			"id": "782e7d24-cd6c-4823-8991-b0ad6d13725f",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		}

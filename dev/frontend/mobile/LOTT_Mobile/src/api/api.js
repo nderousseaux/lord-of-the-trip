@@ -15,6 +15,7 @@ const apiFonctions = {
     },
 
     getChallenges(){
+        
         console.log("requete challenges : " + api.defaults.baseURL + "/challenges");
 
         return axios.get(api.defaults.baseURL + '/challenges')

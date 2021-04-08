@@ -4,7 +4,7 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Challenge, DBSession
+from loftes.models import Challenge, CrossingPoint, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.utils import get_project_root
@@ -21,7 +21,7 @@ import os
 import shutil
 
 
-challenge = Service(name="challenge", path="/challenge", cors_policy=cors_policy)
+challenge = Service(name="challenge", path="/challenges", cors_policy=cors_policy)
 
 
 @challenge.get()
@@ -80,7 +80,7 @@ def create_challenge(request):
 
 
 challenge_by_id = Service(
-    name="challenge_by_id", path="challenge/{id:\d+}", cors_policy=cors_policy
+    name="challenge_by_id", path="challenges/{id:\d+}", cors_policy=cors_policy
 )
 
 
@@ -229,7 +229,7 @@ def delete_challenge(request):
 
 challenge_image = Service(
     name="challenge_image",
-    path="challenge/{id:\d+}/image",
+    path="challenges/{id:\d+}/image",
     cors_policy=cors_policy,
 )
 
@@ -245,16 +245,16 @@ def download_image(request):
 
     if challenge != None:
 
-        image = str(get_project_root()) + challenge.map_url
+        if challenge.map_url != None:
+            image = str(get_project_root()) + challenge.map_url
 
-        if os.path.exists(image):
-            response = FileResponse(image, request=request)
+            if os.path.exists(image):
+                response = FileResponse(image, request=request)
+            else:
+                response = service_informations.build_response(exception.HTTPNotFound)
+
         else:
-            response = service_informations.build_response(
-                exception.HTTPNotFound,
-                None,
-                "Requested resource 'Challenge' is not found.",
-            )
+            response = service_informations.build_response(exception.HTTPNotFound)
 
     else:
         response = service_informations.build_response(exception.HTTPNotFound)

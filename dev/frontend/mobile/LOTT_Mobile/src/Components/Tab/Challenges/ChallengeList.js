@@ -27,7 +27,7 @@ export default function ChallengeList(props) {
                             challenge: challenge})}>
                             <ListItem.Content>
                                 <ListItem.Title>{challenge.name}</ListItem.Title>
-                                <ListItem.Subtitle>{new Date(challenge.duration).toLocaleDateString()}</ListItem.Subtitle>
+                                <ListItem.Subtitle>{new Date(challenge.end_date).toLocaleDateString()}</ListItem.Subtitle>
                             </ListItem.Content>
                             <ListItem.Chevron />
                         </ListItem>))}
