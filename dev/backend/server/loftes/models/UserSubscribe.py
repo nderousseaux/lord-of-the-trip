@@ -3,11 +3,11 @@ from sqlalchemy.orm import relationship
 
 from loftes.models import Base
 
+
 class UserSubscribe(Base):
-    __tablename__ = 'UserSubscribe'
+    __tablename__ = "UserSubscribe"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('User.id'))
-    user_info = relationship("User")  
-    challenge_id = Column(Integer, ForeignKey('Challenge.id'))
-    challenge_info = relationship("Challenge")  
+    user_id = Column(Integer, ForeignKey("User.id"))
+    user_info = relationship("User")
+    challenge_id = Column(Integer, ForeignKey("Challenge.id"))
     subscribe_date = Column(DateTime(timezone=False))
