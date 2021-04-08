@@ -4,7 +4,7 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Challenge, DBSession
+from loftes.models import Challenge, CrossingPoint, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.utils import get_project_root

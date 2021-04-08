@@ -1,0 +1,8 @@
+{
+  "android": {
+    "package": "com.brain4not4found.lott_mobile"
+  },
+  "ios": {
+    "bundleIdentifier": "host.exp.exponent"
+  }
+}
