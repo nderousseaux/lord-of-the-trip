@@ -42,14 +42,11 @@ export default function ChallengeMap(props) {
 
                         let coordinatesValue = segment.start_crossing_point?.position_x * 100 + "," + segment.start_crossing_point?.position_y * 100 + " ";
                         
-
                         segment.coordinates?.map(coord => {
                             coordinatesValue += coord.position_x * 100 + "," + coord.position_y * 100 + " "
                         });
 
                         coordinatesValue += segment.end_crossing_point?.position_x * 100 + "," + segment.end_crossing_point?.position_y * 100;
-
-                        console.log(index + ": " + coordinatesValue);
 
                         return(
                             <>
@@ -58,7 +55,7 @@ export default function ChallengeMap(props) {
                                     fill="none"
                                     stroke="black"
                                     strokeWidth="3"
-                                    key={"poly" + index}
+                                    key={"poly-" + index + "-" + segment.id}
                                     onPress={() => {alert("segment " + segment.id + " touché!")}}
                                 />
                                 <Circle 
@@ -67,7 +64,7 @@ export default function ChallengeMap(props) {
                                     r={4 / zoomMap}
                                     stroke="black" 
                                     fill="red" 
-                                    key={"start-cir" + index}
+                                    key={"start-cir-" + index + "-" + segment.start_crossing_point.id}
                                     onPress={() => {alert(zoomMap)}}
                                 />
                                 <Circle 
@@ -76,7 +73,7 @@ export default function ChallengeMap(props) {
                                     r={4 / zoomMap}
                                     stroke="black" 
                                     fill="green" 
-                                    key={"end-cir" + index}
+                                    key={"end-cir-" + index + "-" + segment.end_crossing_point.id}
                                     onPress={() => {alert(zoomMap)}}
                                 />
                             </>

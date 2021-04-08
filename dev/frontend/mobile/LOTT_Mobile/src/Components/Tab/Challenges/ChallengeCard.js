@@ -33,6 +33,7 @@ export default function ChallengeCard(props) {
                             <Card.Content>
                                 <Paragraph>Niveau : {challenge.level}</Paragraph>
                                 <Paragraph>Date de fin : {new Date(challenge.end_date).toLocaleDateString()}</Paragraph>
+                                <Paragraph>Avancement fait : {challenge.event_sum} mètres</Paragraph>
                             </Card.Content>
                         </Card>
                     </View>
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#e7e7e7',
     },
     InformationsContainer: {
-        flex: 3,
+        flex: 4,
         overflow: 'hidden'
     },
     DescriptionContainer: {
@@ -75,12 +76,12 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     ScrollContainer: {
-        height: '80%'
+        height: '75%',
     },
     zoomContainer: {
         flex: 3,
         overflow: 'hidden',
-        margin: 3
+        margin: 10,
     },
     mapBackgroundContainer: {
         justifyContent: 'center',
@@ -99,6 +100,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     PrimaryCard: {
-        marginTop: 10
+        marginTop: 10,
+        paddingVertical: 10 
     }
 });
