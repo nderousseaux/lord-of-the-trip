@@ -29,8 +29,6 @@ const AdminChallenges = () => {
         ))}
       </ul>
     }
-    <h3>Konva test</h3>
-    <button onClick={() => history.push("/konva")}>Konva test</button>
   </>
 };
 

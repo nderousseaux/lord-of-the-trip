@@ -32,11 +32,9 @@ const EditChallenge = () => {
   const downloadMap = useMutation( () => apiChallenge.downloadMap(id), {
     onError: () => {
       setAMapUploaded(false);
-      console.log('false');
     },
     onSuccess: () => {
       setAMapUploaded(true);
-      console.log('true');
     },
   });
 
@@ -82,9 +80,7 @@ const EditChallenge = () => {
     <UploadMap setNewUpload={setNewUpload}/>
     <hr />
     {aMapUploaded ? <> <DownloadMap newUpload={newUpload} setNewUpload={setNewUpload}/> <hr /> </> : null}
-    {aMapUploaded ? <> <button onClick={() => history.push(`/editmap/${id}`)}>Edit Map</button> <hr /> </> : null}
-    <h3>Back to home</h3>
-    <button onClick={() => history.push("/")}>Home</button>
+    {aMapUploaded ? <button onClick={() => history.push(`/editmap/${id}`)}>Edit Map</button> : null}
   </>
 };
 

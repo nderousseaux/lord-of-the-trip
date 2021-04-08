@@ -15,9 +15,7 @@ import { pixelsToPercent } from "../utils/utils";
 // https://konvajs.org/docs/react/index.html
 // https://konvajs.org/docs/react/Free_Drawing.html
 
-const Konva = () => {
-  // the file uploaded (to send to API server ?)
-  const [file, setFile] = useState(null);
+const Konva = () => {;
   // the image loaded from the file uploaded
   const [image, setImage] = useState(null);
   // width of the image
@@ -44,7 +42,6 @@ const Konva = () => {
   const [radioButtonChecked, setRadioButtonChecked] = useState("1"); // first radio button checked by default
 
   const resetState = () => {
-    setFile(null);
     setImage(null);
     setWidth(0);
     setHeight(0);
@@ -60,9 +57,9 @@ const Konva = () => {
 
   const handleImageUpload = e => {
     resetState();
+    // the file uploaded to send to API
     const file = e.target.files[0];
     if (file) {
-      setFile(file);
       let img = new window.Image();
       img.src = window.URL.createObjectURL(file);
       img.onload = function() {
