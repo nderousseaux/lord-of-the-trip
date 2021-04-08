@@ -15,7 +15,6 @@ const EditMap = () => {
   const [height, setHeight] = useState(0);
   const [radioButtonValue, setRadioButtonValue] = useState("1");
 
-  // Temp State, replace with API calls
   const [crossingPoints, setCrossingPoints] = useState([]);
   const [idCrossingPoints, setIdCrossingPoints] = useState(1);
   const [segments, setSegments] = useState([]);
@@ -31,17 +30,18 @@ const EditMap = () => {
   const { isLoadingSegments, isErrorSegments, data: segmentsRequest } = useQuery(['segments', id], () => apiSegments.getAllSegments(id));
 
   useEffect(() => {
-    if(isLoadingCrossingPoints || isErrorCrossingPoints || !crossingPointsRequest) {
+    if(isLoadingCrossingPoints || isErrorCrossingPoints || !crossingPointsRequest || !successDownload) {
       setCrossingPoints([]);
     }
     else {
       let cr = [];
       crossingPointsRequest.crossing_points.forEach((crossingPoint) => {
-        cr = [...cr, { id: crossingPoint.id, position_x: percentToPixels(crossingPoint.position_x, width), position_y: percentToPixels(crossingPoint.position_y, height), name: crossingPoint.name, isDragging: false, isStartChallenge: false, isEndChallenge: false, onMouseOver: false }];
+        cr = [...cr, { id: crossingPoint.id, position_x: percentToPixels(crossingPoint.position_x, width), position_y: percentToPixels(crossingPoint.position_y, height),
+              name: crossingPoint.name, isDragging: false, isStartChallenge: false, isEndChallenge: false, onMouseOver: false }];
       });
       setCrossingPoints(cr);
     }
-  }, [crossingPointsRequest]);
+  }, [crossingPointsRequest, successDownload]);
 
   useEffect(() => {
     if(isLoadingSegments || isErrorSegments || !segmentsRequest) {
@@ -58,7 +58,7 @@ const EditMap = () => {
       });
       setSegments(seg);
     }
-  }, [segmentsRequest]);
+  }, [segmentsRequest, successDownload]);
 
   const downloadMap = useMutation( () => apiChallenge.downloadMap(id), {
     onError: (error) => {
@@ -135,13 +135,26 @@ const EditMap = () => {
     setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? { ...cr, isEndChallenge: false } : { ...cr, isEndChallenge: true }));
   };
 
+  const createSegmentMutation = useMutation( (segment) => apiSegments.createSegment(id, segment), {
+    onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
+  });
+
   const addSegment = (segment) => {
-    setSegments(current => [...current, { id: idSegments, ...segment }]);
+    let coord = [];
+    segment.coordinates.forEach((coordinate) => {
+      coord = [...coord, { position_x: pixelsToPercent(coordinate.position_x, width), position_y: pixelsToPercent(coordinate.position_y, height) }];
+    });
+    let seg = { name: "seg " + idSegments, start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
+    createSegmentMutation.mutate(seg);
     setIdSegments(id => id + 1);
   };
 
+  const deleteSegmentMutation = useMutation( (segmentId) => apiSegments.deleteSegment(id, segmentId), {
+    onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
+  });
+
   const deleteSegment = (idSegment) => {
-    setSegments(current => current.filter(segment => segment.id !== idSegment));
+    deleteSegmentMutation.mutate(idSegment);
   };
 
   const updateSegment = (segment) => {
@@ -149,7 +162,7 @@ const EditMap = () => {
   };
 
   const startDrawingSegment = (idCrossingPoint) => {
-    setDrawingSegment({ startCrossingPoint: idCrossingPoint, endCrossingPoint: null, coordinates: [], onMouseOver: false });
+    setDrawingSegment({ start_crossing_point_id: idCrossingPoint, end_crossing_point_id: null, coordinates: [], onMouseOver: false });
   };
 
   const updateDrawingSegment = (x, y) => {
@@ -157,7 +170,7 @@ const EditMap = () => {
   };
 
   const stopDrawingSegment = (idCrossingPoint) => {
-    addSegment({ ...drawingSegment, endCrossingPoint: idCrossingPoint });
+    addSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
     setDrawingSegment(false);
   };
 
@@ -278,28 +291,12 @@ const EditMap = () => {
     return returnCoordinates;
   };
 
-  const Menu = () => {
-    const handleOptionChange = (e) => {
-      setRadioButtonValue(e.target.value);
-    }
-    return <div>
-      <p>Select an action to do on the Map</p>
-      <label> <input type="radio" name="action" value="1" checked={radioButtonValue === "1"} onChange={handleOptionChange} /> Nothing </label>
-      <label> <input type="radio" name="action" value="2" checked={radioButtonValue === "2"} onChange={handleOptionChange} /> Add Crossing points </label>
-      <label> <input type="radio" name="action" value="3" checked={radioButtonValue === "3"} onChange={handleOptionChange} /> Delete Crossing points </label>
-      <label> <input type="radio" name="action" value="4" checked={radioButtonValue === "4"} onChange={handleOptionChange} /> Draw a Segment </label>
-      <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Delete a Segment </label>
-      <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
-      <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Set End challenge </label>
-    </div>
-  };
-
   return <>
     <h3>Edit Map</h3>
     {errorDownload ? <h3>{errorDownload.message}</h3> :
       successDownload ?
         <div>
-          <Menu />
+          <Menu radioButtonValue={radioButtonValue} setRadioButtonValue={setRadioButtonValue}/>
           <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
             <Layer>
               <Image image={image} />
@@ -334,6 +331,22 @@ const EditMap = () => {
     <h3>Back to challenge</h3>
     <button onClick={() => history.push(`/editchallenge/${id}`)}>Edit Challenge</button>
   </>
+};
+
+const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
+  const handleOptionChange = (e) => {
+    setRadioButtonValue(e.target.value);
+  }
+  return <div>
+    <p>Select an action to do on the Map</p>
+    <label> <input type="radio" name="action" value="1" checked={radioButtonValue === "1"} onChange={handleOptionChange} /> Nothing </label>
+    <label> <input type="radio" name="action" value="2" checked={radioButtonValue === "2"} onChange={handleOptionChange} /> Add Crossing points </label>
+    <label> <input type="radio" name="action" value="3" checked={radioButtonValue === "3"} onChange={handleOptionChange} /> Delete Crossing points </label>
+    <label> <input type="radio" name="action" value="4" checked={radioButtonValue === "4"} onChange={handleOptionChange} /> Draw a Segment </label>
+    <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Delete a Segment </label>
+    <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
+    <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Set End challenge </label>
+  </div>
 };
 
 export default EditMap;
