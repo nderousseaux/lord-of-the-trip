@@ -14,13 +14,24 @@ define({
     "DeleteChallenge",
     "GetChallengeImage",
     "PostChallengeImage",
-    "GetCrossingPoints"
+    "GetCrossingPoints",
+    "PostCrossingPoint",
+    "GetCrossingPoint",
+    "PutCrossingPoint",
+    "PatchCrossingPoint",
+    "DeleteCrossingPoint",
+    "GetSegments",
+    "PostSegment",
+    "GetSegment",
+    "PutSegment",
+    "PatchSegment",
+    "DeleteSegment"
   ],
   "defaultVersion": "0.0.0",
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2021-04-05T17:03:08.170Z",
+    "time": "2021-04-08T18:18:21.587Z",
     "url": "https://apidocjs.com",
     "version": "0.27.1"
   }

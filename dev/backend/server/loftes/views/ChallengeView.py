@@ -63,7 +63,7 @@ HTTP/1.1 200 OK
             "position_x": 0.1,
             "position_y": 0.1
           },
-          "list_points": null
+          "coordinates": []
         },
         {
           "id": 2,
@@ -80,7 +80,7 @@ HTTP/1.1 200 OK
             "position_x": 0.2,
             "position_y": 0.4
           },
-          "list_points": null
+          "coordinates": null
         },
         {
           "id": 3,
@@ -97,7 +97,7 @@ HTTP/1.1 200 OK
             "position_x": 0.2,
             "position_y": 0.4
           },
-          "list_points": null
+          "coordinates": []
         },
         {
           "id": 4,
@@ -114,7 +114,7 @@ HTTP/1.1 200 OK
             "position_x": 0.2,
             "position_y": 0.5
           },
-          "list_points": null
+          "coordinates": null
         }
       ],
       "admin": {
@@ -359,7 +359,7 @@ HTTP/1.1 200 OK
         "position_x": 0.2,
         "position_y": 0.4
       },
-      "list_points": null
+      "coordinates": []
     },
     {
       "id": 3,
@@ -376,7 +376,7 @@ HTTP/1.1 200 OK
         "position_x": 0.2,
         "position_y": 0.4
       },
-      "list_points": null
+      "coordinates": []
     },
     {
       "id": 4,
@@ -393,7 +393,7 @@ HTTP/1.1 200 OK
         "position_x": 0.2,
         "position_y": 0.5
       },
-      "list_points": null
+      "coordinates": []
     }
   ],
   "admin": {

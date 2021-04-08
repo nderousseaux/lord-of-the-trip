@@ -14,6 +14,17 @@
         "DeleteChallenge",
         "GetChallengeImage",
         "PostChallengeImage",
-        "GetCrossingPoints"
+        "GetCrossingPoints",
+        "PostCrossingPoint",
+        "GetCrossingPoint",
+        "PutCrossingPoint",
+        "PatchCrossingPoint",
+        "DeleteCrossingPoint",
+        "GetSegments",
+        "PostSegment",
+        "GetSegment",
+        "PutSegment",
+        "PatchSegment",
+        "DeleteSegment"
     ]
 }
