@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useParams, useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
+import Button from '@material-ui/core/Button';
 
 const EditChallenge = () => {
   const [name, setName] = useState(null);
@@ -56,22 +57,21 @@ const EditChallenge = () => {
   return <>
     {isLoading ? 'Loading...' : isError ? error.message :
       <div>
-        <h3>Edit challenge</h3>
+        <h3>Edit challenge {challenge.id}</h3>
         <form onSubmit={handleSubmit}>
-          <p>Id : {challenge.id}</p>
           <p>
             <label>Name : {challenge.name}</label> <br />
             <label>New Name : </label> <input type="text" value={name} onChange={e => setName(e.target.value)} size="100" />
           </p>
           <p>
             <label>Description : </label> {challenge.description} <br />
-            <label>New Description : </label> <textarea value={description} onChange={e => setDescription(e.target.value)} rows="5" cols="200" />
+            <label>New Description : </label> <textarea value={description} onChange={e => setDescription(e.target.value)} rows="2" cols="200" />
           </p>
           <p>
             <label>Scalling : {challenge.scalling}</label> <br />
             <label>New Scalling : </label> <input type="number" value={scalling} onChange={e => setScalling(e.target.value)} />
           </p>
-          <button>Update challenge</button>
+          <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Update challenge</Button>
         </form>
         {errorUpdate ? <p>{errorUpdate.message}</p> : null}
       </div>
@@ -80,7 +80,7 @@ const EditChallenge = () => {
     <UploadMap setNewUpload={setNewUpload}/>
     <hr />
     {aMapUploaded ? <> <DownloadMap newUpload={newUpload} setNewUpload={setNewUpload}/> <hr /> </> : null}
-    {aMapUploaded ? <button onClick={() => history.push(`/editmap/${id}`)}>Edit Map</button> : null}
+    {aMapUploaded ? <Button onClick={() => history.push(`/editmap/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Map</Button> : null}
   </>
 };
 
@@ -123,7 +123,7 @@ const UploadMap = ({ setNewUpload }) => {
   return (
     <div>
     <h3>Upload the map of the challenge</h3>
-      <button onClick={() => hiddenFileInput.current.click()}>Upload Map</button>
+      <Button onClick={() => hiddenFileInput.current.click()} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Upload Map</Button>
       <input ref={hiddenFileInput} type="file" accept="image/*" onChange={handleImageUpload} style={{ display:"none" }} />
       {errorUploadClient ? <h3>Client check : Invalid file uploaded</h3> : null}
       {errorUploadServer ? <h3>Server check : {errorUploadServer.message}</h3> : null}
@@ -170,8 +170,8 @@ const DownloadMap = ({ newUpload, setNewUpload }) => {
   return (
     <div>
     <h3>Download the map of the challenge</h3>
-      <button onClick={handleImageDownload}>Download Map</button> {' '}
-      {successDownload ? <button onClick={resetState}>Hide Map</button> : null}
+      <Button onClick={handleImageDownload} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Download Map</Button> {' '}
+      {successDownload ? <Button onClick={resetState} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Hide Map</Button> : null}
       {errorDownload ? <h3>{errorDownload.message}</h3> : null}
       {successDownload ? <p> <img src={window.URL.createObjectURL(file)} alt="map" /> </p> : null}
     </div>

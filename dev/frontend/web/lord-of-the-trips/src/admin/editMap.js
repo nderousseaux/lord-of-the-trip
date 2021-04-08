@@ -6,6 +6,7 @@ import apiChallenge from '../api/challenge';
 import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
 import { percentToPixels, pixelsToPercent } from "../utils/utils";
+import Button from '@material-ui/core/Button';
 
 const EditMap = () => {
   const [errorDownload, setErrorDownload] = useState(null);
@@ -331,13 +332,13 @@ const EditMap = () => {
               <Image image={image} />
               {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment)}
                                         stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : "black"}
-                                        strokeWidth={radioButtonValue === "5" && segment.onMouseOver ? 10 : 5}
+                                        strokeWidth={radioButtonValue === "5" && segment.onMouseOver ? 12 : 6}
                                         onClick={(e) => onClickSegment(e, segment.id)}
                                         onMouseEnter={(e) => onMouseEnterSegment(e, segment)}
                                         onMouseLeave={(e) => onMouseLeaveSegment(e, segment)} />)}
               {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment)}
                                           stroke={radioButtonValue === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
-                                          strokeWidth={radioButtonValue === "5" && drawingSegment.onMouseOver ? 10 : 5}
+                                          strokeWidth={radioButtonValue === "5" && drawingSegment.onMouseOver ? 12 : 6}
                                           onClick={(e) => onClickDrawingSegment(e)}
                                           onMouseEnter={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: true }))}
                                           onMouseLeave={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: false }))} />
@@ -358,7 +359,7 @@ const EditMap = () => {
       : null}
     <hr />
     <h3>Back to challenge</h3>
-    <button onClick={() => history.push(`/editchallenge/${id}`)}>Edit Challenge</button>
+    <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button>
   </>
 };
 
