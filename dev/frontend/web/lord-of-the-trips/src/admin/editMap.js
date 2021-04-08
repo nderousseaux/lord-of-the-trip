@@ -17,6 +17,8 @@ const EditMap = () => {
 
   const [crossingPoints, setCrossingPoints] = useState([]);
   const [idCrossingPoints, setIdCrossingPoints] = useState(1);
+  // +1 when there is a change in the crossing points, to set again the start and the end of the challenge (horrible)
+  const [crossingPointsLoaded, setCrossingPointsLoaded] = useState(0);
   const [segments, setSegments] = useState([]);
   const [idSegments, setIdSegments] = useState(1);
   const [drawingSegment, setDrawingSegment] = useState(false);
@@ -26,9 +28,23 @@ const EditMap = () => {
   let { id } = useParams();
   id = parseInt(id);
 
+  const { isLoadingChallenge, isErrorChallenge, errorChallenge, data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
   const { isLoadingCrossingPoints, isErrorCrossingPoints, data: crossingPointsRequest } = useQuery(['crossingPoints', id], () => apiCrossingPoints.getAllCrossingPoints(id));
   const { isLoadingSegments, isErrorSegments, data: segmentsRequest } = useQuery(['segments', id], () => apiSegments.getAllSegments(id));
 
+  // Load the start point and the end point of the challenge
+  useEffect(() => {
+    if(challenge && crossingPointsLoaded !== 0) {
+      if(challenge.start_crossing_point) {
+        setCrossingPoints(current => current.map(cr => cr.id !== challenge.start_crossing_point.id ? {...cr, isStartChallenge: false} : {...cr, isStartChallenge: true}));
+      }
+      if(challenge.end_crossing_point) {
+        setCrossingPoints(current => current.map(cr => cr.id !== challenge.end_crossing_point.id ? { ...cr, isEndChallenge: false } : {...cr, isEndChallenge: true}));
+      }
+    }
+  }, [challenge, crossingPointsLoaded]);
+
+  // Load the crossing points
   useEffect(() => {
     if(isLoadingCrossingPoints || isErrorCrossingPoints || !crossingPointsRequest || !successDownload) {
       setCrossingPoints([]);
@@ -40,9 +56,11 @@ const EditMap = () => {
               name: crossingPoint.name, isDragging: false, isStartChallenge: false, isEndChallenge: false, onMouseOver: false }];
       });
       setCrossingPoints(cr);
+      setCrossingPointsLoaded(current => current + 1);
     }
   }, [crossingPointsRequest, successDownload]);
 
+  // Load the segments
   useEffect(() => {
     if(isLoadingSegments || isErrorSegments || !segmentsRequest) {
       setSegments([]);
@@ -127,12 +145,20 @@ const EditMap = () => {
     }
   };
 
+  const setStartChallengeMutation = useMutation( (crossingPointId) => apiChallenge.setStartChallenge(id, crossingPointId), {
+    onSuccess: () => { queryClient.invalidateQueries(['challenge', id]) },
+  });
+
   const setStartChallenge = (idCrossingPoint) => {
-    setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? { ...cr, isStartChallenge: false } : { ...cr, isStartChallenge: true }));
+    setStartChallengeMutation.mutate(idCrossingPoint);
   };
 
+  const setEndChallengeMutation = useMutation( (crossingPointId) => apiChallenge.setEndChallenge(id, crossingPointId), {
+    onSuccess: () => { queryClient.invalidateQueries(['challenge', id]) },
+  });
+
   const setEndChallenge = (idCrossingPoint) => {
-    setCrossingPoints(current => current.map(cr => idCrossingPoint !== cr.id ? { ...cr, isEndChallenge: false } : { ...cr, isEndChallenge: true }));
+    setEndChallengeMutation.mutate(idCrossingPoint);
   };
 
   const createSegmentMutation = useMutation( (segment) => apiSegments.createSegment(id, segment), {

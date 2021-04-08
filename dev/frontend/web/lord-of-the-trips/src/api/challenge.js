@@ -65,6 +65,25 @@ const apiChallenge = {
     })
     .then(checkStatus);
   },
+  
+
+  setStartChallenge: (id, crossingPointId) => {
+    return fetch(`${urlPrefix}/challenges/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ "start_crossing_point_id": crossingPointId })
+    })
+    .then(checkStatus);
+  },
+
+  setEndChallenge: (id, crossingPointId) => {
+    return fetch(`${urlPrefix}/challenges/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ "end_crossing_point_id": crossingPointId })
+    })
+    .then(checkStatus);
+  },
 
 };
 
