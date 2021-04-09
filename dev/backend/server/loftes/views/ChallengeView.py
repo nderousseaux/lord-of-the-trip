@@ -42,7 +42,7 @@ HTTP/1.1 200 OK
       "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
       "end_date": "2020-03-18T00:00:00",
       "alone_only": null,
-      "level": "1",
+      "level": 1,
       "scalling": 4,
       "draft": false,
       "start_crossing_point": null,
@@ -131,7 +131,7 @@ HTTP/1.1 200 OK
       "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
       "end_date": "2020-03-18T00:00:00",
       "alone_only": null,
-      "level": "2",
+      "level": 2,
       "scalling": 4,
       "draft": false,
       "start_crossing_point": null,
@@ -181,7 +181,24 @@ def get_challenges(request):
 @apiGroup Challenge
 @apiSampleRequest off
 
-@apiSuccess (Created 201) {Object} Challenge Created challenge.
+@apiSuccess (Body parameters) {String} name Challenge's name
+@apiSuccess (Body parameters) {String} description Challenge's description
+@apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
+@apiSuccess (Body parameters) {Number} level Challenge's difficulty
+@apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+
+@apiSuccessExample {json} Body:
+
+{
+	"name":"A la recherche d'Aslan",
+	"description":"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+	"end_date":"2022-10-18",
+	"alone_only":"0",
+	"level":3,
+	"scalling":10000
+}
+
 @apiSuccessExample {json} Success response:
 HTTP/1.1 201 Created
 
@@ -192,22 +209,9 @@ HTTP/1.1 201 Created
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
   "end_date": "2021-12-15T03:16:00",
   "alone_only": 0,
-  "level": "3",
+  "level":3,
   "scalling": 3,
   "draft": false,
-  "start_crossing_point": {
-    "id": 2,
-    "name": "La passe du faune",
-    "position_x": 0.1,
-    "position_y": 0.1
-  },
-  "end_crossing_point": {
-    "id": 3,
-    "name": "La passe du magicien",
-    "position_x": 0.2,
-    "position_y": 0.4
-  },
-  "segments": [],
   "admin": {
     "id": 1,
     "first_name": "Missy",
@@ -318,7 +322,20 @@ challenge_by_id = Service(
 @apiGroup Challenge
 @apiSampleRequest off
 
-@apiSuccess (OK 200) {Object} Challenge Challenge of id
+@apiSuccess (OK 200) {Number} id Challenge's ID
+@apiSuccess (OK 200) {String} name Challenge's name
+@apiSuccess (OK 200) {String} description Challenge's description
+@apiSuccess (OK 200) {Date} end_date Challenge's end date
+@apiSuccess (OK 200) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
+@apiSuccess (OK 200) {Number} level Challenge's difficulty
+@apiSuccess (OK 200) {Number} scalling Challenge's scale in meters
+@apiSuccess (OK 200) {Bool} draft If true the challenge is in edition mode, if false challenge is published
+@apiSuccess (OK 200) {Object} start_crossing_point Challenge's start crossing point
+@apiSuccess (OK 200) {Object} end_crossing_point Challenge's end crossing point
+@apiSuccess (OK 200) {Array} segments All segments of the challenge
+@apiSuccess (OK 200) {Object} admin Challenge's creator aka administrator
+@apiSuccess (OK 200) {Number} event_sum Sum of distance passed of all challenge's events
+
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
 
@@ -328,7 +345,7 @@ HTTP/1.1 200 OK
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
   "end_date": "2021-12-15T03:16:00",
   "alone_only": 0,
-  "level": "3",
+  "level": 3,
   "scalling": 3,
   "draft": false,
   "start_crossing_point": {
@@ -403,6 +420,7 @@ HTTP/1.1 200 OK
     "pseudo": "Le maitre",
     "mail": "lemaitre@gmail.com"
   }
+  "event_sum": 395
 }
 
 @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
@@ -440,6 +458,28 @@ def get_challenge(request):
 @apiName PutChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+
+@apiSuccess (Body parameters) {String} name Challenge's name
+@apiSuccess (Body parameters) {String} description Challenge's description
+@apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
+@apiSuccess (Body parameters) {Number} level Challenge's difficulty
+@apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
+@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
+
+@apiSuccessExample {json} Body:
+
+{
+  "name":"A la recherche d'Aslan",
+  "description":"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "end_date":"2022-10-18",
+  "alone_only":0,
+  "level":3,
+  "scalling":10000,
+  "start_crossing_point_id":1,
+  "end_crossing_point_id":2
+}
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
@@ -566,6 +606,22 @@ def update_challenge(request):
 @apiName PatchChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+
+@apiSuccess (Body parameters) {String} name Challenge's name
+@apiSuccess (Body parameters) {String} description Challenge's description
+@apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
+@apiSuccess (Body parameters) {Number} level Challenge's difficulty
+@apiSuccess (Body parameters) {Bool} draft If true the challenge is in edition mode, if false challenge is published
+@apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
+@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
+
+@apiSuccessExample {json} Body:
+
+{
+  "draft":false
+}
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
@@ -831,6 +887,8 @@ def download_image(request):
 @apiName PostChallengeImage
 @apiGroup Challenge
 @apiSampleRequest off
+
+@apiSuccess (Body parameter) {File} Image Challenge's map in jpeg/png format.
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content

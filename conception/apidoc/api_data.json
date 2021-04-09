@@ -74,17 +74,101 @@
         "OK 200": [
           {
             "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's ID</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Challenge's name</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Challenge's description</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Date",
+            "optional": false,
+            "field": "end_date",
+            "description": "<p>Challenge's end date</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Bool",
+            "optional": false,
+            "field": "alone_only",
+            "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "level",
+            "description": "<p>Challenge's difficulty</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "scalling",
+            "description": "<p>Challenge's scale in meters</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Bool",
+            "optional": false,
+            "field": "draft",
+            "description": "<p>If true the challenge is in edition mode, if false challenge is published</p>"
+          },
+          {
+            "group": "OK 200",
             "type": "Object",
             "optional": false,
-            "field": "Challenge",
-            "description": "<p>Challenge of id</p>"
+            "field": "start_crossing_point",
+            "description": "<p>Challenge's start crossing point</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "end_crossing_point",
+            "description": "<p>Challenge's end crossing point</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "segments",
+            "description": "<p>All segments of the challenge</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "admin",
+            "description": "<p>Challenge's creator aka administrator</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "event_sum",
+            "description": "<p>Sum of distance passed of all challenge's events</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\": \"3\",\n  \"scalling\": 3,\n  \"draft\": false,\n  \"start_crossing_point\": {\n    \"id\": 2,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n  },\n  \"end_crossing_point\": {\n    \"id\": 3,\n    \"name\": \"La passe du magicien\",\n    \"position_x\": 0.2,\n    \"position_y\": 0.4\n  },\n  \"segments\": [\n    {\n      \"id\": 2,\n      \"name\": \"La route d'Ettinsmoor\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 3,\n      \"name\": \"La traversée du grand désert\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 4,\n      \"name\": \"La traversée du Grand Océan Oriental\",\n      \"start_crossing_point\": {\n        \"id\": 5,\n        \"name\": \"Le pont des centaures\",\n        \"position_x\": 0.3,\n        \"position_y\": 0.5\n      },\n      \"end_crossing_point\": {\n        \"id\": 8,\n        \"name\": \"La table de pierre\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.5\n      },\n      \"coordinates\": []\n    }\n  ],\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"mail\": \"lemaitre@gmail.com\"\n  }\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\": 3,\n  \"scalling\": 3,\n  \"draft\": false,\n  \"start_crossing_point\": {\n    \"id\": 2,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n  },\n  \"end_crossing_point\": {\n    \"id\": 3,\n    \"name\": \"La passe du magicien\",\n    \"position_x\": 0.2,\n    \"position_y\": 0.4\n  },\n  \"segments\": [\n    {\n      \"id\": 2,\n      \"name\": \"La route d'Ettinsmoor\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 3,\n      \"name\": \"La traversée du grand désert\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 4,\n      \"name\": \"La traversée du Grand Océan Oriental\",\n      \"start_crossing_point\": {\n        \"id\": 5,\n        \"name\": \"Le pont des centaures\",\n        \"position_x\": 0.3,\n        \"position_y\": 0.5\n      },\n      \"end_crossing_point\": {\n        \"id\": 8,\n        \"name\": \"La table de pierre\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.5\n      },\n      \"coordinates\": []\n    }\n  ],\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"mail\": \"lemaitre@gmail.com\"\n  }\n  \"event_sum\": 395\n}",
           "type": "json"
         }
       ]
@@ -201,7 +285,7 @@
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": \"1\",\n      \"scalling\": 4,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [\n        {\n          \"id\": 1,\n          \"name\": \"A travers le bois d'entre les mondes\",\n          \"start_crossing_point\": {\n            \"id\": 1,\n            \"name\": \"L'armoire\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 2,\n          \"name\": \"La route d'Ettinsmoor\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": null\n        },\n        {\n          \"id\": 3,\n          \"name\": \"La traversée du grand désert\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 4,\n          \"name\": \"La traversée du Grand Océan Oriental\",\n          \"start_crossing_point\": {\n            \"id\": 5,\n            \"name\": \"Le pont des centaures\",\n            \"position_x\": 0.3,\n            \"position_y\": 0.5\n          },\n          \"end_crossing_point\": {\n            \"id\": 8,\n            \"name\": \"La table de pierre\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.5\n          },\n          \"coordinates\": null\n        }\n      ],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"mail\": \"lemaitre@gmail.com\"\n      }\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": \"2\",\n      \"scalling\": 4,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"mail\": \"lemaitre@gmail.com\"\n      }\n    }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": 1,\n      \"scalling\": 4,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [\n        {\n          \"id\": 1,\n          \"name\": \"A travers le bois d'entre les mondes\",\n          \"start_crossing_point\": {\n            \"id\": 1,\n            \"name\": \"L'armoire\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 2,\n          \"name\": \"La route d'Ettinsmoor\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": null\n        },\n        {\n          \"id\": 3,\n          \"name\": \"La traversée du grand désert\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 4,\n          \"name\": \"La traversée du Grand Océan Oriental\",\n          \"start_crossing_point\": {\n            \"id\": 5,\n            \"name\": \"Le pont des centaures\",\n            \"position_x\": 0.3,\n            \"position_y\": 0.5\n          },\n          \"end_crossing_point\": {\n            \"id\": 8,\n            \"name\": \"La table de pierre\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.5\n          },\n          \"coordinates\": null\n        }\n      ],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"mail\": \"lemaitre@gmail.com\"\n      }\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": 2,\n      \"scalling\": 4,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"mail\": \"lemaitre@gmail.com\"\n      }\n    }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -249,7 +333,79 @@
     "name": "PatchChallenge",
     "group": "Challenge",
     "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Challenge's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Challenge's description</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": false,
+            "field": "end_date",
+            "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Bool",
+            "optional": false,
+            "field": "alone_only",
+            "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "level",
+            "description": "<p>Challenge's difficulty</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Bool",
+            "optional": false,
+            "field": "draft",
+            "description": "<p>If true the challenge is in edition mode, if false challenge is published</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "scalling",
+            "description": "<p>Challenge's scale in meters</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "start_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as start of a challenge</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "end_crossing_point_id",
+            "description": "<p>ID of end point choosed as end of a challenge</p>"
+          }
+        ]
+      },
       "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n  \"draft\":false\n}",
+          "type": "json"
+        },
         {
           "title": "Success response:",
           "content": "HTTP/1.1 204 No Content",
@@ -323,20 +479,60 @@
     "group": "Challenge",
     "success": {
       "fields": {
-        "Created 201": [
+        "Body parameters": [
           {
-            "group": "Created 201",
-            "type": "Object",
+            "group": "Body parameters",
+            "type": "String",
             "optional": false,
-            "field": "Challenge",
-            "description": "<p>Created challenge.</p>"
+            "field": "name",
+            "description": "<p>Challenge's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Challenge's description</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": false,
+            "field": "end_date",
+            "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Bool",
+            "optional": false,
+            "field": "alone_only",
+            "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "level",
+            "description": "<p>Challenge's difficulty</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "scalling",
+            "description": "<p>Challenge's scale in meters</p>"
           }
         ]
       },
       "examples": [
         {
+          "title": "Body:",
+          "content": "\n{\n\"name\":\"A la recherche d'Aslan\",\n\"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n\"end_date\":\"2022-10-18\",\n\"alone_only\":\"0\",\n\"level\":3,\n\"scalling\":10000\n}",
+          "type": "json"
+        },
+        {
           "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\": \"3\",\n  \"scalling\": 3,\n  \"draft\": false,\n  \"start_crossing_point\": {\n    \"id\": 2,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n  },\n  \"end_crossing_point\": {\n    \"id\": 3,\n    \"name\": \"La passe du magicien\",\n    \"position_x\": 0.2,\n    \"position_y\": 0.4\n  },\n  \"segments\": [],\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"mail\": \"lemaitre@gmail.com\"\n  }\n}",
+          "content": "HTTP/1.1 201 Created\n\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\":3,\n  \"scalling\": 3,\n  \"draft\": false,\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"mail\": \"lemaitre@gmail.com\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -399,6 +595,17 @@
     "name": "PostChallengeImage",
     "group": "Challenge",
     "success": {
+      "fields": {
+        "Body parameter": [
+          {
+            "group": "Body parameter",
+            "type": "File",
+            "optional": false,
+            "field": "Image",
+            "description": "<p>Challenge's map in jpeg/png format.</p>"
+          }
+        ]
+      },
       "examples": [
         {
           "title": "Success response:",
@@ -483,7 +690,72 @@
     "name": "PutChallenge",
     "group": "Challenge",
     "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Challenge's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "description",
+            "description": "<p>Challenge's description</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": false,
+            "field": "end_date",
+            "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Bool",
+            "optional": false,
+            "field": "alone_only",
+            "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "level",
+            "description": "<p>Challenge's difficulty</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "scalling",
+            "description": "<p>Challenge's scale in meters</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "start_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as start of a challenge</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "end_crossing_point_id",
+            "description": "<p>ID of end point choosed as end of a challenge</p>"
+          }
+        ]
+      },
       "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n  \"name\":\"A la recherche d'Aslan\",\n  \"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\":\"2022-10-18\",\n  \"alone_only\":0,\n  \"level\":3,\n  \"scalling\":10000,\n  \"start_crossing_point_id\":1,\n  \"end_crossing_point_id\":2\n}",
+          "type": "json"
+        },
         {
           "title": "Success response:",
           "content": "HTTP/1.1 204 No Content",
@@ -647,10 +919,31 @@
         "OK 200": [
           {
             "group": "OK 200",
-            "type": "Object",
+            "type": "Number",
             "optional": false,
-            "field": "CrossingPoint",
-            "description": "<p>CrossingPoint of id</p>"
+            "field": "id",
+            "description": "<p>Crossing point's ID</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Crossing point's name</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Float",
+            "optional": false,
+            "field": "position_x",
+            "description": "<p>Crossing point's position x on map</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Float",
+            "optional": false,
+            "field": "position_y",
+            "description": "<p>Crossing point's position y on map</p>"
           }
         ]
       },
@@ -797,7 +1090,37 @@
     "name": "PatchCrossingPoint",
     "group": "CrossingPoint",
     "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Crossing point's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "position_x",
+            "description": "<p>Crossing point's position x on map</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "position_y",
+            "description": "<p>Crossing point's position y on map</p>"
+          }
+        ]
+      },
       "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n  \"name\": \"La passe du magicien\"\n}",
+          "type": "json"
+        },
         {
           "title": "Success response:",
           "content": "HTTP/1.1 204 No Content",
@@ -880,17 +1203,36 @@
     "group": "CrossingPoint",
     "success": {
       "fields": {
-        "OK 201": [
+        "Body parameters": [
           {
-            "group": "OK 201",
-            "type": "Object",
+            "group": "Body parameters",
+            "type": "String",
             "optional": false,
-            "field": "CrossingPoint",
-            "description": "<p>Created Crossing point.</p>"
+            "field": "name",
+            "description": "<p>Crossing point's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "position_x",
+            "description": "<p>Crossing point's position x on map</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "position_y",
+            "description": "<p>Crossing point's position y on map</p>"
           }
         ]
       },
       "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n  \"name\": \"La passe du faune\",\n  \"position_x\": 0.1,\n  \"position_y\": 0.1\n}",
+          "type": "json"
+        },
         {
           "title": "Success response:",
           "content": "HTTP/1.1 201 Created\n\n{\n  \"id\": 1,\n  \"name\": \"La passe du faune\",\n  \"position_x\": 0.1,\n  \"position_y\": 0.1\n}",
@@ -966,7 +1308,37 @@
     "name": "PutCrossingPoint",
     "group": "CrossingPoint",
     "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Crossing point's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "position_x",
+            "description": "<p>Crossing point's position x on map</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "position_y",
+            "description": "<p>Crossing point's position y on map</p>"
+          }
+        ]
+      },
       "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n  \"name\": \"La passe du faune\",\n  \"position_x\": 0.1,\n  \"position_y\": 0.1\n}",
+          "type": "json"
+        },
         {
           "title": "Success response:",
           "content": "HTTP/1.1 204 No Content",
@@ -1058,10 +1430,38 @@
         "OK 200": [
           {
             "group": "OK 200",
-            "type": "Object",
+            "type": "Number",
             "optional": false,
-            "field": "Event",
-            "description": "<p>All events created of challenge's id.</p>"
+            "field": "id",
+            "description": "<p>Crossing point's ID</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "duration",
+            "description": "<p>Event's duration</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "move_type",
+            "description": "<p>Event's move type. If 0 it is walking, 1 is running and 2 is riding a bicycle</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Date",
+            "optional": false,
+            "field": "event_date",
+            "description": "<p>Event's date start in format datetime</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "distance",
+            "description": "<p>Event's distance passed</p>"
           }
         ]
       },
@@ -1203,20 +1603,46 @@
     "group": "Event",
     "success": {
       "fields": {
-        "OK 201": [
+        "Body parameters": [
           {
-            "group": "OK 201",
-            "type": "Object",
+            "group": "Body parameters",
+            "type": "Number",
             "optional": false,
-            "field": "Events",
-            "description": "<p>Created event.</p>"
+            "field": "duration",
+            "description": "<p>Event's duration</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "move_type",
+            "description": "<p>Event's move type. If 0 it is walking, 1 is running and 2 is riding a bicycle</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": false,
+            "field": "event_date",
+            "description": "<p>Event's date start in fomrat datetime</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "distance",
+            "description": "<p>Event's distance passed</p>"
           }
         ]
       },
       "examples": [
         {
+          "title": "Body:",
+          "content": "\n{\n    \"duration\": 300,\n    \"move_type\": 1,\n    \"event_date\": \"2021-10-18T00:00:00\",\n    \"distance\": 250\n}",
+          "type": "json"
+        },
+        {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n\n{\n    \"id\": 1,\n    \"duration\": 300,\n    \"move_type\": 1,\n    \"event_date\": \"2021-10-18T00:00:00\",\n    \"distance\": 250\n}",
+          "content": "HTTP/1.1 201 Created\n\n\n{\n    \"id\": 1,\n    \"duration\": 300,\n    \"move_type\": 1,\n    \"event_date\": \"2021-10-18T00:00:00\",\n    \"distance\": 250\n}",
           "type": "json"
         }
       ]
@@ -1369,10 +1795,68 @@
         "OK 200": [
           {
             "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Segment's ID</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Segment's name</p>"
+          },
+          {
+            "group": "OK 200",
             "type": "Object",
             "optional": false,
-            "field": "Segments",
-            "description": "<p>Segment of id.</p>"
+            "field": "start_crossing_point",
+            "description": "<p>Segment's start crossing point</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "end_crossing_point",
+            "description": "<p>Segment's end crossing point</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "coordinates",
+            "description": "<p>Array of segment's coordinates</p>"
+          }
+        ],
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Segment's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "start_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as start of a segment</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "end_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as end of a segment</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Array",
+            "optional": false,
+            "field": "coordinates",
+            "description": "<p>Array of segment's coordinates</p>"
           }
         ]
       },
@@ -1538,7 +2022,44 @@
     "name": "PatchSegment",
     "group": "Segment",
     "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Segment's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "start_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as start of a segment</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "end_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as end of a segment</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Array",
+            "optional": false,
+            "field": "coordinates",
+            "description": "<p>Array of segment's coordinates</p>"
+          }
+        ]
+      },
       "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n  \"coordinates\":[\n    {\n      \"position_x\": 455,\n      \"position_y\": 465.125\n    },\n    {\n      \"position_x\": 567,\n      \"position_y\": 591.125\n    }\n  ]\n}",
+          "type": "json"
+        },
         {
           "title": "Success response:",
           "content": "HTTP/1.1 204 No Content",
@@ -1621,20 +2142,46 @@
     "group": "Segment",
     "success": {
       "fields": {
-        "OK 201": [
+        "Body parameters": [
           {
-            "group": "OK 201",
-            "type": "Object",
+            "group": "Body parameters",
+            "type": "String",
             "optional": false,
-            "field": "Segments",
-            "description": "<p>Created segment.</p>"
+            "field": "name",
+            "description": "<p>Segment's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "start_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as start of a segment</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "end_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as end of a segment</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Array",
+            "optional": false,
+            "field": "coordinates",
+            "description": "<p>Array of segment's coordinates</p>"
           }
         ]
       },
       "examples": [
         {
+          "title": "Body:",
+          "content": "\n{\n  \"name\": \"A travers le bois d'entre les mondes\",\n  \"start_crossing_point_id\":5,\n\"end_crossing_point_id\":6,\n  \"coordinates\":[\n    {\n      \"position_x\": 355,\n      \"position_y\": 365.125\n    },\n    {\n      \"position_x\": 300,\n      \"position_y\": 347.125\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n\n{\n    \"id\": 1,\n    \"name\": \"A travers le bois d'entre les mondes\",\n    \"start_crossing_point\": {\n    \"id\": 1,\n    \"name\": \"L'armoire\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n    },\n    \"end_crossing_point\": {\n    \"id\": 2,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n    },\n    \"coordinates\": [],\n    \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n            \"id\": 10,\n            \"name\": \"cr 1\",\n            \"position_x\": 0.417391,\n            \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n            \"id\": 12,\n            \"name\": \"cr 3\",\n            \"position_x\": 0.573043,\n            \"position_y\": 0.492283\n        },\n        \"admin\": {\n            \"id\": 1,\n            \"first_name\": \"Missy\",\n            \"last_name\": \"Of Gallifrey\",\n            \"pseudo\": \"Le maitre\",\n            \"mail\": \"lemaitre@gmail.com\"\n        }\n    }\n}",
+          "content": "HTTP/1.1 201 Created\n\n\n{\n    \"id\": 1,\n    \"name\": \"A travers le bois d'entre les mondes\",\n    \"start_crossing_point\": {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"end_crossing_point\": {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"coordinates\": [\n      {\n        \"position_x\": 355,\n        \"position_y\": 365.125\n      },\n      {\n        \"position_x\": 300,\n        \"position_y\": 347.125\n      }\n    ],\n    \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n            \"id\": 10,\n            \"name\": \"cr 1\",\n            \"position_x\": 0.417391,\n            \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n            \"id\": 12,\n            \"name\": \"cr 3\",\n            \"position_x\": 0.573043,\n            \"position_y\": 0.492283\n        },\n        \"admin\": {\n            \"id\": 1,\n            \"first_name\": \"Missy\",\n            \"last_name\": \"Of Gallifrey\",\n            \"pseudo\": \"Le maitre\",\n            \"mail\": \"lemaitre@gmail.com\"\n        }\n    }\n}",
           "type": "json"
         }
       ]
@@ -1700,7 +2247,44 @@
     "name": "PutSegment",
     "group": "Segment",
     "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "name",
+            "description": "<p>Segment's name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "start_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as start of a segment</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "end_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as end of a segment</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Array",
+            "optional": false,
+            "field": "coordinates",
+            "description": "<p>Array of segment's coordinates</p>"
+          }
+        ]
+      },
       "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n  \"name\": \"A travers le bois d'entre les mondes\",\n  \"start_crossing_point_id\":5,\n\"end_crossing_point_id\":6,\n  \"coordinates\":[\n    {\n      \"position_x\": 355,\n      \"position_y\": 365.125\n    },\n    {\n      \"position_x\": 300,\n      \"position_y\": 347.125\n    }\n  ]\n}",
+          "type": "json"
+        },
         {
           "title": "Success response:",
           "content": "HTTP/1.1 204 No Content",
