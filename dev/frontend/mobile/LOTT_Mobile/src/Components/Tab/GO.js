@@ -10,7 +10,7 @@ export default function GO(props) {
 
     return(
         <listStack.Navigator>
-            <listStack.Screen name="Start" component={Start} />
+            <listStack.Screen name="Start" component={Start} options={{ headerLeft:null}}/>
             <listStack.Screen name="Recording" component={Recording} />
         </listStack.Navigator>
     )
