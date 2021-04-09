@@ -161,7 +161,19 @@ def get_crossing_points(request):
 @apiGroup CrossingPoint
 @apiSampleRequest off
 
-@apiSuccess (OK 201) {Object} CrossingPoint Created Crossing point.
+@apiSuccess (Body parameters) {String} name Crossing point's name
+@apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
+@apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
+
+
+@apiSuccessExample {json} Body:
+
+{
+  "name": "La passe du faune",
+  "position_x": 0.1,
+  "position_y": 0.1
+}
+
 @apiSuccessExample {json} Success response:
 HTTP/1.1 201 Created
 
@@ -279,7 +291,11 @@ crossing_point_id = Service(
 @apiGroup CrossingPoint
 @apiSampleRequest off
 
-@apiSuccess (OK 200) {Object} CrossingPoint CrossingPoint of id
+@apiSuccess (OK 200) {Number} id Crossing point's ID
+@apiSuccess (OK 200) {String} name Crossing point's name
+@apiSuccess (OK 200) {Float} position_x Crossing point's position x on map
+@apiSuccess (OK 200) {Float} position_y Crossing point's position y on map
+
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
 
@@ -357,6 +373,18 @@ def get_crossing_point(request):
 @apiName PutCrossingPoint
 @apiGroup CrossingPoint
 @apiSampleRequest off
+
+@apiSuccess (Body parameters) {String} name Crossing point's name
+@apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
+@apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
+
+@apiSuccessExample {json} Body:
+
+{
+  "name": "La passe du faune",
+  "position_x": 0.1,
+  "position_y": 0.1
+}
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
@@ -479,6 +507,16 @@ def update_crossing_point(request):
 @apiName PatchCrossingPoint
 @apiGroup CrossingPoint
 @apiSampleRequest off
+
+@apiSuccess (Body parameters) {String} name Crossing point's name
+@apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
+@apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
+
+@apiSuccessExample {json} Body:
+
+{
+  "name": "La passe du magicien"
+}
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
