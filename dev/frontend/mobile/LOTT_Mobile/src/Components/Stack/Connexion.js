@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, Text, Input } from 'react-native-elements';
 
-export default function EditProfile(props) {
+export default function Connexion(props) {
 
     const [login, setLogin] = useState([]);
     const [password, setPassword] = useState([]);
