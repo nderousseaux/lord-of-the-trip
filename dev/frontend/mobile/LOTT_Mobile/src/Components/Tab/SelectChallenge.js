@@ -10,7 +10,7 @@ export default function SelectChallenge(props) {
 
     return(
         <listStack.Navigator initialRouteName="List">
-            <listStack.Screen name="List" component={ChallengeList} />
+            <listStack.Screen name="List" component={ChallengeList} options={{ headerLeft:null}} />
             <listStack.Screen name="Card" component={ChallengeCard} />
         </listStack.Navigator>
     )

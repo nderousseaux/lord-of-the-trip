@@ -47,10 +47,8 @@ class Recording extends React.Component {
         this._subscription = Pedometer.watchStepCount(result => {
             this.setState({
                 nbPas: result.steps,
+                distance: result.steps * 0.8
             });
-            this.setState({
-                distance: state.nbPas * 0.8,
-            })
         });
     
         Pedometer.isAvailableAsync().then(
@@ -178,7 +176,7 @@ class Recording extends React.Component {
                 <View style={styles.foot}>
                     <View style={styles.left}>
                         <Button 
-                                title="Arrêter"
+                                title="Stop"
                                 titleStyle={{
                                     fontSize: 30,
                                 }}
@@ -277,7 +275,7 @@ const styles = StyleSheet.create({
         padding: '2%',
     },
     right:{
-        flex:4,
+        flex:6,
         flexDirection:'row'
     },
     stop:{

@@ -25,6 +25,7 @@ export default function ChallengeMap(props) {
                 bindToBorders={true}
                 style={styles.zoomableView}
                 onZoomEnd={ResizeMapDots}
+                onDoubleTapAfter={ResizeMapDots}
             >
                 <Svg 
                     style={styles.map}
@@ -47,7 +48,7 @@ export default function ChallengeMap(props) {
                         });
 
                         coordinatesValue += segment.end_crossing_point?.position_x * 100 + "," + segment.end_crossing_point?.position_y * 100;
-
+                        
                         return(
                             <>
                                 <Polyline

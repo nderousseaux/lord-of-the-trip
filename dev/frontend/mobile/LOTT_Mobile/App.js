@@ -11,9 +11,11 @@ import DrawerContent from './src/Components/Drawer/DrawerContent';
 import SelectChallenge from './src/Components/Tab/SelectChallenge';
 import GO from './src/Components/Tab/GO';
 import EditProfile from './src/Components/Stack/EditProfile';
+import Connexion from './src/Components/Stack/Connexion';
 import api from './src/api/api'
 import {API_URL} from "@env"
 import { Provider as PaperProvider } from 'react-native-paper';
+console.disableYellowBox = true;
 
 /* Exemple of how to connect the screens to Redux
 let NewJsxSyntax = connect(state => ({ main: state.main }))(JsxComponent);
@@ -87,8 +89,9 @@ export default function App() {
     <Provider store={store}>
       <PaperProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen name="Home" component={DrawerNavigator} options={{headerShown: false}}/>
+          <Stack.Navigator initialRouteName="Connexion">
+            <Stack.Screen name="Connexion" component={Connexion} options={{headerShown: false}}/>
+            <Stack.Screen name="Home" component={DrawerNavigator} options={{headerShown: false, headerLeft:null}}/>
             <Stack.Screen name="Edit Profile" component={EditProfile} />
           </Stack.Navigator>
         </NavigationContainer>
