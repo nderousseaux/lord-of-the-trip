@@ -3,6 +3,9 @@ from sqlalchemy.orm import relationship
 
 from loftes.models import Base
 
+from sqlalchemy import func
+from sqlalchemy.ext.hybrid import hybrid_property
+
 
 class Challenge(Base):
     __tablename__ = "Challenge"
@@ -26,3 +29,15 @@ class Challenge(Base):
     segments = relationship("Segment", backref="segments", cascade="all,delete")
     admin_id = Column(Integer, ForeignKey("User.id"))
     admin = relationship("User", backref="challenge_manager")
+    event_sum_user = relationship("Events")
+    user_subscribes = relationship(
+        "UserSubscribe", backref="user_subscribed", cascade="all,delete"
+    )
+
+    @hybrid_property
+    def event_sum(self):
+        return sum(Events.distance for Events in self.event_sum_user)
+
+    # @hybrid_property
+    # def event_sum2(self):
+    #     return 0

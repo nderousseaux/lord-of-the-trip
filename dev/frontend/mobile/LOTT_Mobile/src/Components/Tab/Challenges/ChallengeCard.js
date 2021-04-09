@@ -2,20 +2,21 @@ import * as React from 'react';
 import { Image, View, Text, StyleSheet, ActivityIndicator, Animated } from 'react-native';
 import { useEffect, useState } from 'react';
 import Svg, { Circle, Image as SvgImage, Polyline } from 'react-native-svg';
-import { ReactNativeZoomableView } from '@dudigital/react-native-zoomable-view';
-import { Card, Divider, Paragraph, Title } from 'react-native-paper';
+import { Card, Paragraph, Title } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
+import Map from './ChallengeMap.js'
+import api from '../../../api/api';
 
 
 export default function ChallengeCard(props) {
 
-    const [ challenge ] = useState(props.route.params.challenge);
-    const [ zoomMap, setZoomMap ] = useState(1);
+    const [ challenge, setChallenge ] = useState(props.route.params.challenge);
 
-    const ResizeMapDots = (event, gestureState, zoomableViewEventObject) => {
-        console.log(zoomableViewEventObject);
-        setZoomMap(zoomableViewEventObject?.zoomLevel);
-    }
+    useEffect(() => {
+        api.getChallenge(challenge["id"])
+        .then((response) => setChallenge(response.data))
+        .catch((error) => console.error(error))
+    }, []);
 
     return(
         <View style={styles.cardContainer}>
@@ -39,7 +40,7 @@ export default function ChallengeCard(props) {
                             <Card.Content>
                                 <Paragraph>Niveau : {challenge.level}</Paragraph>
                                 <Paragraph>Date de fin : {new Date(challenge.end_date).toLocaleDateString()}</Paragraph>
-                                <Paragraph>Avancement fait : {challenge.event_sum}</Paragraph>
+                                <Paragraph>Avancement fait : {challenge.event_sum} mètres</Paragraph>
                             </Card.Content>
                         </Card>
                     </View>
@@ -59,73 +60,7 @@ export default function ChallengeCard(props) {
                         </Card>
                     </View>
                     
-                    <View style={styles.zoomContainer}>
-                        <ReactNativeZoomableView
-                            zoomEnabled={true}
-                            maxZoom={1.5}
-                            minZoom={0.95}
-                            zoomStep={0.25}
-                            initialZoom={1}
-                            bindToBorders={true}
-                            style={styles.zoomableView}
-                            onZoomEnd={ResizeMapDots}
-                        >
-                            <Svg 
-                                style={styles.map}
-                                viewBox="0 0 100 100"
-                            >
-                                <View style={styles.mapBackgroundContainer}>
-                                    <SvgImage 
-                                        href="https://i.etsystatic.com/8226264/r/il/f96ec9/1661412249/il_570xN.1661412249_jebg.jpg"
-                                        width='100%'
-                                        height='100%'
-                                        preserveAspectRatio="xMidYMid"
-                                    />
-                                </View>
-                                {challenge.segments?.map((segment, index) => {
-
-                                    let coordinatesValue = segment.start_crossing_point?.position_x * 100 + "," + segment.start_crossing_point?.position_y * 100 + " ";
-                                    
-                                    segment.coordinates?.map(coord => {
-                                        coordinatesValue += coord.position_x * 100 + "," + coord.position_y * 100 + " "
-                                    });
-
-                                    coordinatesValue += segment.end_crossing_point?.position_x * 100 + "," + segment.end_crossing_point?.position_y * 100;
-
-                                    return(
-                                        <>
-                                            <Polyline
-                                                points={coordinatesValue}
-                                                fill="none"
-                                                stroke="black"
-                                                strokeWidth="3"
-                                                key={"poly-" + index + "-" + segment.id}
-                                                onPress={() => {alert("segment " + segment.id + " touché!")}}
-                                            />
-                                            <Circle 
-                                                cx={segment.start_crossing_point?.position_x * 100} 
-                                                cy={segment.start_crossing_point?.position_y * 100} 
-                                                r={4 / zoomMap}
-                                                stroke="black" 
-                                                fill="red" 
-                                                key={"start-cir-" + index + "-" + segment.start_crossing_point.id}
-                                                onPress={() => {alert(zoomMap)}}
-                                            />
-                                            <Circle 
-                                                cx={segment.end_crossing_point?.position_x * 100} 
-                                                cy={segment.end_crossing_point?.position_y * 100} 
-                                                r={4 / zoomMap}
-                                                stroke="black" 
-                                                fill="green" 
-                                                key={"end-cir-" + index + "-" + segment.end_crossing_point.id}
-                                                onPress={() => {alert(zoomMap)}}
-                                            />
-                                        </>
-                                    );
-                                })}
-                            </Svg>
-                        </ReactNativeZoomableView>
-                    </View>
+                    <Map challenge={challenge}></Map>
                 </>
             }
         </View>
