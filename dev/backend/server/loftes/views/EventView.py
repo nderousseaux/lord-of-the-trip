@@ -102,9 +102,22 @@ def get_event(request):
 @apiGroup Event
 @apiSampleRequest off
 
-@apiSuccess (OK 201) {Object} Events Created event.
+@apiSuccess (Body parameters) {Number} duration Event's duration
+@apiSuccess (Body parameters) {Number} move_type Event's move type. If 0 it is walking, 1 is running and 2 is riding a bicycle
+@apiSuccess (Body parameters) {Date} event_date Event's date start in fomrat datetime
+@apiSuccess (Body parameters) {Number} distance Event's distance passed
+
+@apiSuccessExample {json} Body:
+
+{
+    "duration": 300,
+    "move_type": 1,
+    "event_date": "2021-10-18T00:00:00",
+    "distance": 250
+}
+
 @apiSuccessExample {json} Success response:
-HTTP/1.1 200 OK
+HTTP/1.1 201 Created
 
 
 {
@@ -229,7 +242,12 @@ def event_add(request):
 @apiGroup Event
 @apiSampleRequest off
 
-@apiSuccess (OK 200) {Object} Event All events created of challenge's id.
+@apiSuccess (OK 200) {Number} id Crossing point's ID
+@apiSuccess (OK 200) {Number} duration Event's duration
+@apiSuccess (OK 200) {Number} move_type Event's move type. If 0 it is walking, 1 is running and 2 is riding a bicycle
+@apiSuccess (OK 200) {Date} event_date Event's date start in format datetime
+@apiSuccess (OK 200) {Number} distance Event's distance passed
+
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
 

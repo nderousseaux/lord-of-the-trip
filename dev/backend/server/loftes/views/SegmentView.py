@@ -147,27 +147,58 @@ def get_segments(request):
 @apiGroup Segment
 @apiSampleRequest off
 
-@apiSuccess (OK 201) {Object} Segments Created segment.
+@apiSuccess (Body parameters) {String} name Segment's name
+@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a segment
+@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of crossing point choosed as end of a segment
+@apiSuccess (Body parameters) {Array} coordinates Array of segment's coordinates
+
+@apiSuccessExample {json} Body:
+
+{
+  "name": "A travers le bois d'entre les mondes",
+  "start_crossing_point_id":5,
+	"end_crossing_point_id":6,
+  "coordinates":[
+    {
+      "position_x": 355,
+      "position_y": 365.125
+    },
+    {
+      "position_x": 300,
+      "position_y": 347.125
+    }
+  ]
+}
+
 @apiSuccessExample {json} Success response:
-HTTP/1.1 200 OK
+HTTP/1.1 201 Created
 
 
 {
     "id": 1,
     "name": "A travers le bois d'entre les mondes",
     "start_crossing_point": {
-    "id": 1,
-    "name": "L'armoire",
-    "position_x": 0.1,
-    "position_y": 0.1
+      "id": 1,
+      "name": "L'armoire",
+      "position_x": 0.1,
+      "position_y": 0.1
     },
     "end_crossing_point": {
-    "id": 2,
-    "name": "La passe du faune",
-    "position_x": 0.1,
-    "position_y": 0.1
+      "id": 2,
+      "name": "La passe du faune",
+      "position_x": 0.1,
+      "position_y": 0.1
     },
-    "coordinates": [],
+    "coordinates": [
+      {
+        "position_x": 355,
+        "position_y": 365.125
+      },
+      {
+        "position_x": 300,
+        "position_y": 347.125
+      }
+    ],
     "challenge": {
         "id": 1,
         "name": "A la recherche d'Aslan",
@@ -295,7 +326,17 @@ segment_id = Service(
 @apiGroup Segment
 @apiSampleRequest off
 
-@apiSuccess (OK 200) {Object} Segments Segment of id.
+@apiSuccess (OK 200) {Number} id Segment's ID
+@apiSuccess (OK 200) {String} name Segment's name
+@apiSuccess (OK 200) {Object} start_crossing_point Segment's start crossing point
+@apiSuccess (OK 200) {Object} end_crossing_point Segment's end crossing point
+@apiSuccess (OK 200) {Array} coordinates Array of segment's coordinates
+
+@apiSuccess (Body parameters) {String} name Segment's name
+@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a segment
+@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of crossing point choosed as end of a segment
+@apiSuccess (Body parameters) {Array} coordinates Array of segment's coordinates
+
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
 
@@ -436,6 +477,29 @@ def get_segment_by_id(request):
 @apiGroup Segment
 @apiSampleRequest off
 
+@apiSuccess (Body parameters) {String} name Segment's name
+@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a segment
+@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of crossing point choosed as end of a segment
+@apiSuccess (Body parameters) {Array} coordinates Array of segment's coordinates
+
+@apiSuccessExample {json} Body:
+
+{
+  "name": "A travers le bois d'entre les mondes",
+  "start_crossing_point_id":5,
+	"end_crossing_point_id":6,
+  "coordinates":[
+    {
+      "position_x": 355,
+      "position_y": 365.125
+    },
+    {
+      "position_x": 300,
+      "position_y": 347.125
+    }
+  ]
+}
+
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
 
@@ -556,6 +620,26 @@ def update_segment(request):
 @apiName PatchSegment
 @apiGroup Segment
 @apiSampleRequest off
+
+@apiSuccess (Body parameters) {String} name Segment's name
+@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a segment
+@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of crossing point choosed as end of a segment
+@apiSuccess (Body parameters) {Array} coordinates Array of segment's coordinates
+
+@apiSuccessExample {json} Body:
+
+{
+  "coordinates":[
+    {
+      "position_x": 455,
+      "position_y": 465.125
+    },
+    {
+      "position_x": 567,
+      "position_y": 591.125
+    }
+  ]
+}
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
