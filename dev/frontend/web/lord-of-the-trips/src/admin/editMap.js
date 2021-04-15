@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Stage, Layer, Image, Circle, Line } from 'react-konva';
+import { Stage, Layer, Image, Circle, Arrow } from 'react-konva';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useParams, useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
-import { percentToPixels, pixelsToPercent } from "../utils/utils";
+import { percentToPixels, pixelsToPercent, coordinatesEndSegment } from "../utils/utils";
 import Button from '@material-ui/core/Button';
 
 const EditMap = () => {
@@ -304,19 +304,23 @@ const EditMap = () => {
 
   const formatSegmentPoints = (segment) => {
     let returnCoordinates = [];
+    let lastCoordinates; // Last coordinates before the coordinates of the ending crossing points
     let coordinatesStart = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
     if(coordinatesStart !== null) {
       returnCoordinates.push(coordinatesStart.position_x);
       returnCoordinates.push(coordinatesStart.position_y);
+      lastCoordinates = coordinatesStart;
     }
     segment.coordinates.forEach((coordinate) => {
       returnCoordinates.push(coordinate.position_x);
       returnCoordinates.push(coordinate.position_y);
+      lastCoordinates = coordinate;
     });
     let coordinatesEnd = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
     if(coordinatesEnd !== null) {
-      returnCoordinates.push(coordinatesEnd.position_x);
-      returnCoordinates.push(coordinatesEnd.position_y);
+      let newCoordinatesEnd = coordinatesEndSegment(lastCoordinates.position_x, lastCoordinates.position_y, coordinatesEnd.position_x, coordinatesEnd.position_y, 16);
+      returnCoordinates.push(newCoordinatesEnd.x);
+      returnCoordinates.push(newCoordinatesEnd.y);
     }
     return returnCoordinates;
   };
@@ -330,15 +334,19 @@ const EditMap = () => {
           <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
             <Layer>
               <Image image={image} />
-              {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment)}
+              {segments.map(segment => <Arrow key={segment.id} id={segment.id} points={formatSegmentPoints(segment)}
                                         stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : "black"}
                                         strokeWidth={radioButtonValue === "5" && segment.onMouseOver ? 12 : 6}
+                                        fill={radioButtonValue === "5" && segment.onMouseOver ? "red" : "black"}
+                                        pointerLength={20} pointerWidth={20}
                                         onClick={(e) => onClickSegment(e, segment.id)}
                                         onMouseEnter={(e) => onMouseEnterSegment(e, segment)}
                                         onMouseLeave={(e) => onMouseLeaveSegment(e, segment)} />)}
-              {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment)}
+              {drawingSegment !== false ? <Arrow points={formatSegmentPoints(drawingSegment)}
                                           stroke={radioButtonValue === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
                                           strokeWidth={radioButtonValue === "5" && drawingSegment.onMouseOver ? 12 : 6}
+                                          fill={radioButtonValue === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
+                                          pointerLength={20} pointerWidth={20}
                                           onClick={(e) => onClickDrawingSegment(e)}
                                           onMouseEnter={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: true }))}
                                           onMouseLeave={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: false }))} />
