@@ -80,12 +80,10 @@ class SegmentSchema(Schema):
                 raise ValueError("The start and end crossing points must be different.")
 
         if "coordinates" in data:
-            if data["coordinates"] == "" or data["coordinates"] == None:
+            if data["coordinates"] == None:
                 raise ValueError("The segment must have coordinates.")
 
             data["coordinates"] = json.dumps(data["coordinates"])
-        else:
-            raise ValueError("The segment must have coordinates.")
 
         return data
 
@@ -133,7 +131,7 @@ class SegmentSchema(Schema):
                 raise ValueError("The segment cannot have the same start and end.")
 
         if "coordinates" in data and (
-            data["coordinates"] == "" or data["coordinates"] == None
+            data["coordinates"] == None
         ):
             raise ValueError("The segment must have coordinates.")
 
