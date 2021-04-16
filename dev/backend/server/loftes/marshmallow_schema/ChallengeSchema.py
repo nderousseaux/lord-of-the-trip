@@ -44,7 +44,7 @@ class ChallengeSchema(Schema):
     segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
     admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
-    event_sum = fields.Int(dump_only=True)  
+    #event_sum = fields.Int(dump_only=True)  
     #event_sum2 = fields.Int(dump_only=True)
 
     class Meta:

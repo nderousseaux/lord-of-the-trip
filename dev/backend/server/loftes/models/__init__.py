@@ -13,7 +13,6 @@ from .Challenge import Challenge
 from .CrossingPoint import CrossingPoint
 from .Segment import Segment
 from .Obstacle import Obstacle
-from .Question import Question
 
 # User Data
 from .User import User

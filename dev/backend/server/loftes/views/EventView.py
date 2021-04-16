@@ -2,12 +2,16 @@ from cornice import Service
 from marshmallow import ValidationError
 from loftes.cors import cors_policy
 
-from loftes.models import Events, Challenge, User, DBSession
+from loftes.models import Events, Challenge, User, Segment, DBSession
 from loftes.marshmallow_schema.EventSchema import EventSchema
 
 from loftes.services.ServiceInformations import ServiceInformations
+from pathlib import Path
 
 import pyramid.httpexceptions as exception
+from pyramid.response import FileResponse
+from sqlalchemy import exc
+
 import logging
 import json
 
@@ -28,57 +32,54 @@ def get_event(request):
 
         events = (
             DBSession.query(Events)
-            .filter(Events.challenge_id == challenge.id)
+            .join(Segment,Events.segment_id==Segment.id)
+            .filter(Segment.challenge_id==request.matchdict["challenge_id"])
+            .order_by(Events.event_date.desc())
             .all()
-        )
-
+        )          
         if len(events) == 0:
             return service_informations.build_response(exception.HTTPNotFound())
-
-        data = {"events": EventSchema(many=True).dump(events)}
-
-        response = service_informations.build_response(exception.HTTPOk, data)
-
+        
+        if len(events) == 1:
+            response = service_informations.build_response(
+                exception.HTTPOk, EventSchema().dump(events))
+        else:        
+            data = {"events": EventSchema(many=True).dump(events)}
+            response = service_informations.build_response(exception.HTTPOk, data)
+ 
     else:
         response = service_informations.build_response(
             exception.HTTPNotFound(),
             None,
-            "Requested resource 'Challenge' is not found.",
-        )
+            "Requested resource 'challenge' is not found.",
+        )        
 
     return response
 
+event_create = Service(
+    name='event_create',
+    path='/segments/{segment_id:\d+}/events',
+    cors_policy=cors_policy
+)
 
-@event.post()
+@event_create.post()
 def event_add(request):
 
     service_informations = ServiceInformations()
-    challenge_id = request.matchdict["challenge_id"]
-    challenge = DBSession.query(Challenge).get(challenge_id)
-    
-    if challenge != None:
-        
-        # user_id = request.headers.get('token')
-        # user = DBSession.query(User).get(user_id)
+    segment_id = request.matchdict["segment_id"]  
+    segment = DBSession.query(Segment).get(segment_id)
 
-        # if user == None:
-        #     response = service_informations.build_response(
-        #     exception.HTTPNotFound(),
-        #     None,
-        #     "Requested resource 'User' is not found.",
-        #     )    
-        #     return response
+    if segment != None:
 
-        try :
-        
+        try:
             event_schema = EventSchema()
             eventdata = event_schema.load(request.json)
-            eventdata.challenge_id = challenge_id
+            eventdata.segment_id = segment_id
 
             user = DBSession.query(User).first()
             if user != None:            
                 eventdata.user_id = user.id
-            
+                
             DBSession.add(eventdata)
             DBSession.flush()     
 
@@ -108,52 +109,53 @@ def event_add(request):
             )
             logging.getLogger(__name__).warn("Returning: %s", str(e))
             DBSession.close()
-
     else:
         response = service_informations.build_response(
             exception.HTTPNotFound(),
             None,
-            "Requested resource 'Challenge' is not found.",
+            "Requested resource 'Segment' is not found.",
         )
+
+    return response
     
-    return response
 
-event_id = Service(
-    name="event_id",
-    path="/challenges/{challenge_id:\d+}/events/{id:\d+}",
-    cors_policy=cors_policy
-)
+ 
+# event_id = Service(
+#     name="event_id",
+#     path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/{id:\d+}",
+#     cors_policy=cors_policy
+# )
 
-@event_id.get()
-def get_event_by_id(request):
+# @event_id.get()
+# def get_event_by_id(request):
 
-    service_informations = ServiceInformations()
+#     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+#     challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
-    if challenge != None:
+#     if challenge != None:
 
-        event = (
-            DBSession.query(Events)
-            .filter(
-                Events.challenge_id == challenge.id,
-                Events.id == request.matchdict["id"]
-            )
-            .first()
-        )
+#         event = (
+#             DBSession.query(Events)
+#             .filter(
+#                 Events.challenge_id == challenge.id,
+#                 Events.id == request.matchdict["id"]
+#             )
+#             .first()
+#         )
 
-        if event == None:
-            return service_informations.build_response(exception.HTTPNotFound())
+#         if event == None:
+#             return service_informations.build_response(exception.HTTPNotFound())
 
-        response = service_informations.build_response(
-                exception.HTTPOk, EventSchema().dump(event)
-        )
+#         response = service_informations.build_response(
+#                 exception.HTTPOk, EventSchema().dump(event)
+#         )
 
-    else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested resource 'Challenge' is not found.",
-        )
+#     else:
+#         response = service_informations.build_response(
+#             exception.HTTPNotFound(),
+#             None,
+#             "Requested resource 'Challenge' is not found.",
+#         )
 
-    return response
+#     return response

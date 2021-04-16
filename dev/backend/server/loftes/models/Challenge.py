@@ -29,11 +29,11 @@ class Challenge(Base):
     segments = relationship("Segment", backref="segments", cascade="all,delete")
     admin_id = Column(Integer, ForeignKey("User.id"))
     admin = relationship("User", backref="challenge_manager")
-    event_sum_user = relationship("Events")
+    # event_sum_user = relationship("Events")
 
-    @hybrid_property
-    def event_sum(self):
-        return sum(Events.distance for Events in self.event_sum_user)
+    # @hybrid_property
+    # def event_sum(self):
+    #     return sum(Events.distance for Events in self.event_sum_user)
 
     # @hybrid_property
     # def event_sum2(self):

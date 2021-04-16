@@ -13,4 +13,4 @@ class CrossingPoint(Base):
     challenge_id = Column(Integer, ForeignKey("Challenge.id"))
     # challenge = relationship("Challenge", backref="challenge_point")    
     
-Index('idx_name', CrossingPoint.challenge_id, CrossingPoint.name, unique=True)
+Index('idx_name_cp', CrossingPoint.challenge_id, CrossingPoint.name, unique=True)
