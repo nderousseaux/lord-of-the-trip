@@ -16,10 +16,57 @@ import logging
 import json
 
 event = Service(
-    name='event',
-    path='/challenges/{challenge_id:\d+}/events',
-    cors_policy=cors_policy
+    name="event", path="/challenges/{challenge_id:\d+}/events", cors_policy=cors_policy
 )
+
+"""
+@api {get} /challenges/:challenge_id/events Request all events informations of challenge's id.
+@apiParam challenge_id Challenge's unique ID.
+@apiVersion 0.1.0
+@apiName GetEvents
+@apiGroup Event
+@apiSampleRequest off
+
+@apiSuccess (OK 200) {Array} Event All events created of challenge's id.
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
+
+{
+  "events": [
+    {
+      "id": 1,
+      "duration": 300,
+      "move_type": 1,
+      "event_date": "2021-10-18T00:00:00",
+      "distance": 250
+    }
+  ]
+}
+
+
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound No events were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
+
 
 @event.get()
 def get_event(request):
@@ -62,6 +109,73 @@ event_create = Service(
     cors_policy=cors_policy
 )
 
+"""
+@api {post} /challenges/:challenge_id/events Create a new event of challenge's id.
+@apiParam challenge_id Challenge's unique ID.
+@apiVersion 0.1.0
+@apiName PostEvent
+@apiGroup Event
+@apiSampleRequest off
+
+@apiSuccess (Body parameters) {Number} duration Event's duration
+@apiSuccess (Body parameters) {Number} move_type Event's move type. If 0 it is walking, 1 is running and 2 is riding a bicycle
+@apiSuccess (Body parameters) {Date} event_date Event's date start in fomrat datetime
+@apiSuccess (Body parameters) {Number} distance Event's distance passed
+
+@apiSuccessExample {json} Body:
+
+{
+    "duration": 300,
+    "move_type": 1,
+    "event_date": "2021-10-18T00:00:00",
+    "distance": 250
+}
+
+@apiSuccessExample {json} Success response:
+HTTP/1.1 201 Created
+
+
+{
+    "id": 1,
+    "duration": 300,
+    "move_type": 1,
+    "event_date": "2021-10-18T00:00:00",
+    "distance": 250
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound No events were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
 @event_create.post()
 def event_add(request):
 
@@ -77,11 +191,11 @@ def event_add(request):
             eventdata.segment_id = segment_id
 
             user = DBSession.query(User).first()
-            if user != None:            
+            if user != None:
                 eventdata.user_id = user.id
                 
             DBSession.add(eventdata)
-            DBSession.flush()     
+            DBSession.flush()
 
             response = service_informations.build_response(
                 exception.HTTPOk, event_schema.dump(eventdata)
@@ -119,15 +233,69 @@ def event_add(request):
     return response
     
 
- 
-# event_id = Service(
-#     name="event_id",
-#     path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/{id:\d+}",
-#     cors_policy=cors_policy
-# )
 
-# @event_id.get()
-# def get_event_by_id(request):
+"""
+@api {get} /challenges/:challenge_id/events/:id Request an event informations.
+@apiParam challenge_id Challenge's unique ID.
+@apiParam id Event's unique ID.
+@apiVersion 0.1.0
+@apiName GetEvent
+@apiGroup Event
+@apiSampleRequest off
+
+@apiSuccess (OK 200) {Number} id Crossing point's ID
+@apiSuccess (OK 200) {Number} duration Event's duration
+@apiSuccess (OK 200) {Number} move_type Event's move type. If 0 it is walking, 1 is running and 2 is riding a bicycle
+@apiSuccess (OK 200) {Date} event_date Event's date start in format datetime
+@apiSuccess (OK 200) {Number} distance Event's distance passed
+
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
+
+{
+  "events": [
+    {
+      "id": 1,
+      "duration": 300,
+      "move_type": 1,
+      "event_date": "2021-10-18T00:00:00",
+      "distance": 250
+    }
+  ]
+}
+
+
+@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource 'Challenge' is not found."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound No events were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
+event_id = Service(
+    name="event_id",
+    path="/challenges/{challenge_id:\d+}/events/{id:\d+}",
+    cors_policy=cors_policy,
+)
+
+
+@event_id.get()
+def get_event_by_id(request):
 
 #     service_informations = ServiceInformations()
 
@@ -135,21 +303,21 @@ def event_add(request):
 
 #     if challenge != None:
 
-#         event = (
-#             DBSession.query(Events)
-#             .filter(
-#                 Events.challenge_id == challenge.id,
-#                 Events.id == request.matchdict["id"]
-#             )
-#             .first()
-#         )
+        event = (
+            DBSession.query(Events)
+            .filter(
+                Events.challenge_id == challenge.id,
+                Events.id == request.matchdict["id"],
+            )
+            .first()
+        )
 
 #         if event == None:
 #             return service_informations.build_response(exception.HTTPNotFound())
 
-#         response = service_informations.build_response(
-#                 exception.HTTPOk, EventSchema().dump(event)
-#         )
+        response = service_informations.build_response(
+            exception.HTTPOk, EventSchema().dump(event)
+        )
 
 #     else:
 #         response = service_informations.build_response(

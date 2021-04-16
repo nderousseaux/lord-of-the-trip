@@ -25,6 +25,7 @@ export default function ChallengeMap(props) {
                 bindToBorders={true}
                 style={styles.zoomableView}
                 onZoomEnd={ResizeMapDots}
+                onDoubleTapAfter={ResizeMapDots}
             >
                 <Svg 
                     style={styles.map}
@@ -47,7 +48,7 @@ export default function ChallengeMap(props) {
                         });
 
                         coordinatesValue += segment.end_crossing_point?.position_x * 100 + "," + segment.end_crossing_point?.position_y * 100;
-
+                        
                         return(
                             <>
                                 <Polyline
@@ -63,7 +64,7 @@ export default function ChallengeMap(props) {
                                     cy={segment.start_crossing_point?.position_y * 100} 
                                     r={4 / zoomMap}
                                     stroke="black" 
-                                    fill="red" 
+                                    fill="blue" 
                                     key={"start-cir-" + index + "-" + segment.start_crossing_point.id}
                                     onPress={() => {alert(zoomMap)}}
                                 />
@@ -72,13 +73,31 @@ export default function ChallengeMap(props) {
                                     cy={segment.end_crossing_point?.position_y * 100} 
                                     r={4 / zoomMap}
                                     stroke="black" 
-                                    fill="green" 
+                                    fill="blue" 
                                     key={"end-cir-" + index + "-" + segment.end_crossing_point.id}
                                     onPress={() => {alert(zoomMap)}}
                                 />
                             </>
                         );
                     })}
+                    <Circle 
+                        cx={challenge.start_crossing_point?.position_x * 100} 
+                        cy={challenge.start_crossing_point?.position_y * 100} 
+                        r={4 / zoomMap}
+                        stroke="black" 
+                        fill="green" 
+                        key={"start-chall-cir"}
+                        onPress={() => {alert(zoomMap)}}
+                    />
+                    <Circle 
+                        cx={challenge.end_crossing_point?.position_x * 100} 
+                        cy={challenge.end_crossing_point?.position_y * 100} 
+                        r={4 / zoomMap}
+                        stroke="black" 
+                        fill="red" 
+                        key={"start-chall-cir"}
+                        onPress={() => {alert(zoomMap)}}
+                    />
                 </Svg>
             </ReactNativeZoomableView>
         </View>

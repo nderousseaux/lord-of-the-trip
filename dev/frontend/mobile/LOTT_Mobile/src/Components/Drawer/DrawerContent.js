@@ -15,7 +15,7 @@ export default DrawerContent = (props) => {
                     title="Edit profile"
                     onPress={() => {
                         props.navigation.navigate('Edit Profile');
-                        props.navigation.setOptions({ headerShown: false})
+                        props.navigation.setOptions({ headerShown: false, headerLeft:null})
                     }}>
                 </Button>
                 <DrawerContentScrollView {...props}>
