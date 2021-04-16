@@ -187,6 +187,14 @@ const EditMap = () => {
     deleteSegmentMutation.mutate(idSegment);
   };
 
+  const changeSegmentOrientationMutation = useMutation( ({ segment, segmentId }) => apiSegments.changeSegmentOrientation(id, segment, segmentId), {
+    onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
+  });
+
+  const changeSegmentOrientation = (segment) => {
+    changeSegmentOrientationMutation.mutate({ segment: segment, segmentId: segment.id });
+  };
+
   const updateSegment = (segment) => {
     setSegments(current => current.map(seg => seg.id !== segment.id ? seg : segment));
   };
@@ -252,10 +260,14 @@ const EditMap = () => {
   };
 
   // Click on a Segment
-  const onClickSegment = (e, idSegment) => {
+  const onClickSegment = (e, segment) => {
     if(radioButtonValue === "5")
     {
-      deleteSegment(idSegment);
+      deleteSegment(segment.id);
+    }
+    else if(radioButtonValue === "8")
+    {
+      changeSegmentOrientation(segment);
     }
   };
 
@@ -335,18 +347,18 @@ const EditMap = () => {
             <Layer>
               <Image image={image} />
               {segments.map(segment => <Arrow key={segment.id} id={segment.id} points={formatSegmentPoints(segment)}
-                                        stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : "black"}
-                                        strokeWidth={radioButtonValue === "5" && segment.onMouseOver ? 12 : 6}
-                                        fill={radioButtonValue === "5" && segment.onMouseOver ? "red" : "black"}
-                                        pointerLength={20} pointerWidth={20}
-                                        onClick={(e) => onClickSegment(e, segment.id)}
+                                        stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : radioButtonValue === "8" && segment.onMouseOver ? "green" : "black"}
+                                        strokeWidth={(radioButtonValue === "5" || radioButtonValue === "8") && segment.onMouseOver ? 12 : 6}
+                                        fill={radioButtonValue === "5" && segment.onMouseOver ? "red" : radioButtonValue === "8" && segment.onMouseOver ? "green" : "black"}
+                                        pointerLength={16} pointerWidth={16}
+                                        onClick={(e) => onClickSegment(e, segment)}
                                         onMouseEnter={(e) => onMouseEnterSegment(e, segment)}
                                         onMouseLeave={(e) => onMouseLeaveSegment(e, segment)} />)}
               {drawingSegment !== false ? <Arrow points={formatSegmentPoints(drawingSegment)}
                                           stroke={radioButtonValue === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
                                           strokeWidth={radioButtonValue === "5" && drawingSegment.onMouseOver ? 12 : 6}
                                           fill={radioButtonValue === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
-                                          pointerLength={20} pointerWidth={20}
+                                          pointerLength={16} pointerWidth={16}
                                           onClick={(e) => onClickDrawingSegment(e)}
                                           onMouseEnter={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: true }))}
                                           onMouseLeave={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: false }))} />
@@ -384,6 +396,7 @@ const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
     <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Delete a Segment </label>
     <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
     <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Set End challenge </label>
+    <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Change Segment Orientation </label>
   </div>
 };
 
