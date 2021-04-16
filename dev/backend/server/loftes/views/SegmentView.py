@@ -77,7 +77,7 @@ HTTP/1.1 200 OK
           "first_name": "Missy",
           "last_name": "Of Gallifrey",
           "pseudo": "Le maitre",
-          "mail": "lemaitre@gmail.com"
+          "email": "lemaitre@gmail.com"
         }
       }
     }
@@ -225,7 +225,7 @@ HTTP/1.1 201 Created
             "first_name": "Missy",
             "last_name": "Of Gallifrey",
             "pseudo": "Le maitre",
-            "mail": "lemaitre@gmail.com"
+            "email": "lemaitre@gmail.com"
         }
     }
 }
@@ -382,7 +382,7 @@ HTTP/1.1 200 OK
             "first_name": "Missy",
             "last_name": "Of Gallifrey",
             "pseudo": "Le maitre",
-            "mail": "lemaitre@gmail.com"
+            "email": "lemaitre@gmail.com"
         }
     }
 }
@@ -570,7 +570,7 @@ def update_segment(request):
 
             try:
 
-                query.update(SegmentSchema().check_json(request.json))
+                query.update(SegmentSchema().check_json(request.json, segment))
                 DBSession.flush()
 
                 response = service_informations.build_response(exception.HTTPNoContent)
