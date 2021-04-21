@@ -17,7 +17,7 @@ class Challenge(Base):
     alone_only = Column(Integer)
     level = Column(String(255))
     scalling = Column(Integer)
-    draft = Column(Boolean, server_default=text("0"))
+    draft = Column(Boolean, server_default=text("1"))
     start_crossing_point_id = Column(Integer, ForeignKey("CrossingPoint.id"))
     start_crossing_point = relationship(
         "CrossingPoint", foreign_keys=[start_crossing_point_id]

@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate
 
 
 class CrossingPointSchema(Schema):
-    id = fields.Int()
+    id = fields.Int(dump_only=True)
     name = fields.Str(
         required=True,
         validate=validate.NoneOf("", error="Invalid value"),
