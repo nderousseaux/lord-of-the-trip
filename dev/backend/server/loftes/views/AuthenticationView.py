@@ -16,6 +16,50 @@ import pyramid.httpexceptions as exception
 login = Service(name="login", path="/login", cors_policy=cors_policy)
 
 
+"""
+@api {post} /login User's Authentication
+@apiVersion 0.2.0
+@apiName Login
+@apiGroup Authentication
+@apiSampleRequest off
+
+@apiSuccess (Body parameters) {String} email User's email
+@apiSuccess (Body parameters) {String} password User's password
+
+@apiSuccessExample {json} Body:
+
+{
+	"email":"lemaitre@gmail.com",
+	"password":"Conquérantdelunivers"
+}
+
+@apiSuccessExample Success response:
+HTTP/1.1 200 OK
+
+{
+  "user": {
+    "first_name": "Missy",
+    "last_name": "Of Gallifrey",
+    "pseudo": "LeMaitre",
+    "email": "lemaitre@gmail.com",
+    "is_admin": false
+  },
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MTkwNDYxMTEsImV4cCI6MTYxOTA0OTcxMX0.cQBvaaj7czxA5kUp9DrmK_GYw-M8IG8cT5pJLj62ome26q30TQZC4lZSvqRmpQpzkhRd-BFBzu8EDklNTaMgyQ"
+}
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+"""
+
+
 @login.post()
 def login_user(request):
 
@@ -41,6 +85,140 @@ def login_user(request):
 
 
 signup = Service(name="signup", path="/signup", cors_policy=cors_policy)
+
+"""
+@api {post} /signup Create a new User
+@apiVersion 0.2.0
+@apiName SignUp
+@apiGroup Authentication
+@apiSampleRequest off
+
+@apiSuccess (Body parameters) {String} first_name User's first name
+@apiSuccess (Body parameters) {String} last_name User's last name
+@apiSuccess (Body parameters) {String} pseudo User's pseudo
+@apiSuccess (Body parameters) {String} email User's email
+@apiSuccess (Body parameters) {String} password User's password
+
+@apiSuccessExample {json} Body:
+
+{
+	"first_name":"Missy",
+	"last_name":"Of Gallifrey",
+	"pseudo":"LeMaitre",
+	"email":"lemaitre@gmail.com",
+	"password":"Conquérantdelunivers"
+}
+
+@apiSuccessExample Success response:
+HTTP/1.1 201 Created
+
+{
+    "first_name": "Missy",
+    "last_name": "Of Gallifrey",
+    "pseudo": "LeMaitre",
+    "email": "lemaitre@gmail.com",
+    "is_admin": false
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'first_name': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'last_name': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'email': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'pseudo': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'password': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "This email is already in use. Please use another one."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "This pseudo is already in use. Please use another one."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'email': ['Not a valid email address.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Pseudo can contain only letters, numbers and underscores."
+  }
+}
+"""
 
 
 @signup.post()
@@ -82,6 +260,48 @@ def signup_user(request):
 
 
 whoami = Service(name="whoami", path="/whoami", cors_policy=cors_policy)
+
+"""
+@api {get} /whoami Read data of a User
+@apiVersion 0.2.0
+@apiName Whoami
+@apiGroup Authentication
+@apiSampleRequest off
+
+@apiSuccessExample Success response:
+HTTP/1.1 200 OK
+
+{
+  "first_name": "Missy",
+  "last_name": "Of Gallifrey",
+  "pseudo": "Le maitre",
+  "email": "lemaitre@gmail.com",
+  "is_admin": false
+}
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound The User is not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+
+"""
 
 
 @whoami.get()
