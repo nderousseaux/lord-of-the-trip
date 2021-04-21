@@ -6,6 +6,9 @@
     "url": "https://hephaistos.nathanaelderousseaux.fr/api",
     "sampleUrl": "https://hephaistos.nathanaelderousseaux.fr/api",
     "order": [
+        "Login",
+        "SignUp",
+        "Whoami",
         "GetChallenges",
         "PostChallenge",
         "GetChallenge",
