@@ -13,12 +13,14 @@ from pathlib import Path
 
 import pyramid.httpexceptions as exception
 from pyramid.response import FileResponse
+from pyramid.authentication import AuthTicket
 
 from sqlalchemy import exc
 
 import logging
 import os
 import shutil
+import socket
 
 
 challenge = Service(name="challenge", path="/challenges", cors_policy=cors_policy)
@@ -122,7 +124,7 @@ HTTP/1.1 200 OK
         "first_name": "Missy",
         "last_name": "Of Gallifrey",
         "pseudo": "Le maitre",
-        "mail": "lemaitre@gmail.com"
+        "email": "lemaitre@gmail.com"
       }
     },
     {
@@ -142,7 +144,7 @@ HTTP/1.1 200 OK
         "first_name": "Missy",
         "last_name": "Of Gallifrey",
         "pseudo": "Le maitre",
-        "mail": "lemaitre@gmail.com"
+        "email": "lemaitre@gmail.com"
       }
     }
   ]
@@ -163,15 +165,24 @@ HTTP/1.1 404 Not Found
 
 @challenge.get()
 def get_challenges(request):
+
     service_informations = ServiceInformations()
-    challenges = DBSession.query(Challenge).all()
 
-    if len(challenges) == 0:
-        return service_informations.build_response(exception.HTTPNotFound())
+    if request.authenticated_userid != None:
 
-    data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+        challenges = DBSession.query(Challenge).all()
 
-    return service_informations.build_response(exception.HTTPOk, data)
+        if len(challenges) == 0:
+            return service_informations.build_response(exception.HTTPNotFound())
+
+        data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+
+        response = service_informations.build_response(exception.HTTPOk, data)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
 
 
 """
@@ -217,7 +228,7 @@ HTTP/1.1 201 Created
     "first_name": "Missy",
     "last_name": "Of Gallifrey",
     "pseudo": "Le maitre",
-    "mail": "lemaitre@gmail.com"
+    "email": "lemaitre@gmail.com"
   }
 }
 
@@ -418,7 +429,7 @@ HTTP/1.1 200 OK
     "first_name": "Missy",
     "last_name": "Of Gallifrey",
     "pseudo": "Le maitre",
-    "mail": "lemaitre@gmail.com"
+    "email": "lemaitre@gmail.com"
   }
   "event_sum": 395
 }

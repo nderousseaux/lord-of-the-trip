@@ -1,17 +1,87 @@
-from marshmallow import (
-    Schema,
-    fields,
-    pre_dump
-)
+from marshmallow import Schema, fields, pre_load, post_load, validate
+
+from loftes.models import Base, User, DBSession
+from loftes.security.password_utils import hash_password
+import hashlib, binascii, os, re
+
 
 class UserSchema(Schema):
-    id = fields.Int()
-    first_name = fields.Str()
-    last_name = fields.Str()
-    pseudo = fields.Str()
-    mail = fields.Str()
-    password = fields.Str(load_only=True) # permet de ne pas afficher le mot de passe
-    managed_challenges = fields.List(fields.Nested(lambda: ChallengeSchema()))
+    first_name = fields.Str(
+        required=True,
+        validate=validate.NoneOf("", error="Invalid value"),
+        error_messages={
+            "required": "This field is mandatory.",
+            "null": "Field must not be null.",
+        },
+    )
+    last_name = fields.Str(
+        required=True,
+        validate=validate.NoneOf("", error="Invalid value"),
+        error_messages={
+            "required": "This field is mandatory.",
+            "null": "Field must not be null.",
+        },
+    )
+    pseudo = fields.Str(
+        required=True,
+        validate=validate.NoneOf("", error="Invalid value"),
+        error_messages={
+            "required": "This field is mandatory.",
+            "null": "Field must not be null.",
+        },
+    )
+    email = fields.Email(
+        required=True,
+        validate=validate.NoneOf("", error="Invalid value"),
+        error_messages={
+            "required": "This field is mandatory.",
+            "null": "Field must not be null.",
+        },
+    )
+    password = fields.Str(
+        required=True,
+        validate=[
+            validate.NoneOf("", error="Invalid value"),
+            validate.Length(min=8),
+        ],
+        error_messages={
+            "required": "This field is mandatory.",
+            "null": "Field must not be null.",
+        },
+        load_only=True,
+    )
+    is_admin = fields.Bool()
 
     class Meta:
         ordered = True
+
+    @post_load
+    def make_user(self, data, **kwargs):
+        data["password"] = hash_password(data["password"])
+        return User(**data)
+
+    @pre_load
+    def pre_load(self, data, many, **kwargs):
+
+        if "email" in data:
+            user = DBSession().query(User).filter_by(email=data["email"]).first()
+
+            if user != None:
+                raise ValueError(
+                    "This email is already in use. Please use another one."
+                )
+
+        if "pseudo" in data:
+            if not re.match("^[A-Za-z0-9_-]*$", data["pseudo"]):
+                raise ValueError(
+                    "Pseudo can contain only letters, numbers and underscores."
+                )
+
+            user = DBSession().query(User).filter_by(pseudo=data["pseudo"]).first()
+
+            if user != None:
+                raise ValueError(
+                    "This pseudo is already in use. Please use another one."
+                )
+
+        return data

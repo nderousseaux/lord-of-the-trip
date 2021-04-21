@@ -7,7 +7,7 @@ import json
 
 
 class EventSchema(Schema):
-    id = fields.Int()
+    id = fields.Int(dump_only=True)
     user_id = fields.Int(load_only=True)
     challenge_id = fields.Int(load_only=True)
     segment_id = fields.Int(load_only=True)
