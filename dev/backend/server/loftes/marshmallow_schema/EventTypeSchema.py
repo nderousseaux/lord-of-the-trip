@@ -1,4 +1,4 @@
-from loftes.models import EventTypes, User, DBSession
+from loftes.models import EventType, User, DBSession
 
 from marshmallow import (
     Schema,
@@ -13,7 +13,7 @@ from marshmallow import (
 import datetime, time
 import json
 
-class EventTypesSchema(Schema):
+class EventTypeSchema(Schema):
     id = fields.Int()
 
     code = fields.Str(
@@ -39,7 +39,7 @@ class EventTypesSchema(Schema):
     
     @post_load
     def make_event_type(self, data, **kwargs):
-        return EventTypes(**data)
+        return EventType(**data)
 
     @pre_load
     def pre_load(self, data, many, **kwargs):
@@ -53,7 +53,7 @@ class EventTypesSchema(Schema):
 
         if "code" in data:
             event_types = (
-                DBSession().query(EventTypes).filter_by(code=data["code"]).first()
+                DBSession().query(EventType).filter_by(code=data["code"]).first()
             )
 
             if event_types != None:
@@ -65,7 +65,7 @@ class EventTypesSchema(Schema):
 
         if "label" in data:
             event_types = (
-                DBSession().query(EventTypes).filter_by(label=data["label"]).first()
+                DBSession().query(EventType).filter_by(label=data["label"]).first()
             )
 
             if event_types != None:

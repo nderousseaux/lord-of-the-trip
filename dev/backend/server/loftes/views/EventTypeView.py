@@ -2,8 +2,8 @@ from cornice import Service
 from marshmallow import ValidationError
 from loftes.cors import cors_policy
 
-from loftes.models import EventTypes, Events, DBSession
-from loftes.marshmallow_schema.EventTypesSchema import EventTypesSchema
+from loftes.models import EventType, Event, DBSession
+from loftes.marshmallow_schema.EventTypeSchema import EventTypeSchema
 
 from loftes.services.ServiceInformations import ServiceInformations
 
@@ -13,7 +13,7 @@ import json
 
 event_type = Service(
     name='event_type',
-    path='/event-types',
+    path='/event-type',
     cors_policy=cors_policy
 )
 
@@ -23,14 +23,14 @@ def get_event_type(request):
     service_informations = ServiceInformations()
 
     event_types = (
-            DBSession.query(EventTypes)
+            DBSession.query(EventType)
             .all()
         )
 
     if len(event_types) == 0:
         return service_informations.build_response(exception.HTTPNotFound())
 
-    data = {"eventTypes": EventTypesSchema(many=True).dump(event_types)}
+    data = {"eventTypes": EventTypeSchema(many=True).dump(event_types)}
 
     response = service_informations.build_response(exception.HTTPOk, data)
 
@@ -44,7 +44,7 @@ def event_type_add(request):
      
     try :
         
-        event_type_schema = EventTypesSchema()
+        event_type_schema = EventTypeSchema()
         event_type_data = event_type_schema.load(request.json)    
          
         DBSession.add(event_type_data)
@@ -81,7 +81,7 @@ def event_type_add(request):
 
 event_type_id = Service(
     name="event_type_id",
-    path="/event-types/{id:\d+}",
+    path="/event-type/{id:\d+}",
     cors_policy=cors_policy
 )
 
@@ -91,9 +91,9 @@ def get_event_type_by_id(request):
     service_informations = ServiceInformations()
 
     event_type = (
-        DBSession.query(EventTypes)
+        DBSession.query(EventType)
         .filter(
-            EventTypes.id == request.matchdict["id"]
+            EventType.id == request.matchdict["id"]
         )
         .first()
     )
@@ -102,7 +102,7 @@ def get_event_type_by_id(request):
         return service_informations.build_response(exception.HTTPNotFound())
 
     response = service_informations.build_response(
-            exception.HTTPOk, EventTypesSchema().dump(event_type)
+            exception.HTTPOk, EventTypeSchema().dump(event_type)
     )
 
     return response

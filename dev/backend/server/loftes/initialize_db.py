@@ -21,7 +21,7 @@ from .models.Challenge import *
 from .models.CrossingPoint import *
 from .models.Segment import *
 from .models.UserSubscribe import *
-from .models.EventTypes import *
+from .models.EventType import *
 
 
 def usage(argv):
@@ -59,40 +59,40 @@ def fill(argv=sys.argv):
     #DATA
 
     #Constant - EventTypes
-    et1 = EventTypes(code="START",
-                     label="Départ du parcours")
+    et1 = EventType(code="START",
+                    label="Départ du parcours")
     session.add(et1)
 
-    et2 = EventTypes(code="ARRIVAL",
-                     label="Arrivée à la fin du parcours")
+    et2 = EventType(code="ARRIVAL",
+                    label="Arrivée à la fin du parcours")
     session.add(et2)
 
-    et3 = EventTypes(code="MOVE",
-                     label="Déplacement")
+    et3 = EventType(code="MOVE",
+                    label="Déplacement")
     session.add(et3)
 
-    et4 = EventTypes(code="OBSTACLE_ARR",
-                     label="Arrivée sur un obstacle")
+    et4 = EventType(code="OBSTACLE_ARR",
+                    label="Arrivée sur un obstacle")
     session.add(et4)
 
-    et5 = EventTypes(code="OBSTACLE_REP",
-                     label="Réponse à un obstacle")
+    et5 = EventType(code="OBSTACLE_REP",
+                    label="Réponse à un obstacle")
     session.add(et5)
 
-    et6 = EventTypes(code="OBSTACLE_REP_OK",
-                     label="Réponse validée")
+    et6 = EventType(code="OBSTACLE_REP_OK",
+                    label="Réponse validée")
     session.add(et6)
 
-    et7 = EventTypes(code="OBSTACLE_REP_KO",
-                     label="Refus de la réponse par un administrateur ou par le système")
+    et7 = EventType(code="OBSTACLE_REP_KO",
+                    label="Refus de la réponse par un administrateur ou par le système")
     session.add(et7)
 
-    et8 = EventTypes(code="CROSS_PT_ARRIVAL",
-                     label="Arrivée à un point de passage")
+    et8 = EventType(code="CROSS_PT_ARRIVAL",
+                    label="Arrivée à un point de passage")
     session.add(et8)
 
-    et9 = EventTypes(code="CHOOSE_SEGMENT",
-                      label="Choix d'un segment")
+    et9 = EventType(code="CHOOSE_SEGMENT",
+                    label="Choix d'un segment")
     session.add(et9)
 
     session.commit()

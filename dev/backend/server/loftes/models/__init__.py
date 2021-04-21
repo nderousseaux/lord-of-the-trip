@@ -17,10 +17,10 @@ from .Obstacle import Obstacle
 # User Data
 from .User import User
 from .UserSubscribe import UserSubscribe
-from .Events import Events
+from .Event import Event
 
 # Constante
-from .EventTypes import EventTypes
+from .EventType import EventType
 
 
 from .Root import Root

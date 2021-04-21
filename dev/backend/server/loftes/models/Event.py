@@ -2,16 +2,16 @@ from sqlalchemy import *
 from sqlalchemy.orm import relationship
 
 from loftes.models import Base
-#from loftes.models.entity.EventType import EventType
-#from loftes.models.entity.EventTypeMove import EventTypeMove
 
-class Events(Base):
-    __tablename__ = 'Events'
+class Event(Base):
+    __tablename__ = 'Event'
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('User.id'))
     segment_id = Column(Integer, ForeignKey('Segment.id'))
-    event_type_id = Column(Integer, ForeignKey('EventTypes.id'))
-    event_type_info = challenge = relationship("EventTypes")
+    event_type_id = Column(Integer, ForeignKey('EventType.id'))
+    event_type_info = relationship(
+        "EventType", foreign_keys=[event_type_id]
+    )
     move_type = Column(Integer)
     event_date = Column(BigInteger)
     duration = Column(Integer)
