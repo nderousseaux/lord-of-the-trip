@@ -263,16 +263,35 @@ HTTP/1.1 404 Not Found
 def get_event_by_id(request):
 
     service_informations = ServiceInformations()
+    segment_id = request.matchdict["segment_id"]  
+    segment = DBSession.query(Segment).get(segment_id)
 
-    event = DBSession.query(Event).get(request.matchdict["id"])
+    if segment != None:
 
-    if event == None:
-        return service_informations.build_response(exception.HTTPNotFound())
+        event = (
+            DBSession.query(Event)
+            .filter(
+                Event.segment_id == segment.id,
+                Event.id == request.matchdict["id"],
+            )
+            .first()
+        )
 
-    return service_informations.build_response(
-        exception.HTTPOk, EventSchema().dump(event)
-    )
+        if event == None:
+            return service_informations.build_response(exception.HTTPNotFound())
 
+        return service_informations.build_response(
+            exception.HTTPOk, EventSchema().dump(event)
+        )
+
+    else:
+        response = service_informations.build_response(
+            exception.HTTPNotFound(),
+            None,
+            "Requested resource 'Segment' is not found.",
+        )
+
+    return response
 
 event_create = Service(
     name='event_create',

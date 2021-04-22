@@ -32,7 +32,7 @@ class EventSchema(Schema):
         ordered = True
 
     @post_load
-    def make_crossing_point(self, data, **kwargs):
+    def make_event(self, data, **kwargs):
         return Event(**data)
 
     @pre_load

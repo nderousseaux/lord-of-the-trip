@@ -14,5 +14,5 @@ class Obstacle(Base):
     nb_point = Column(Integer)
     result = Column(String(255))
     segment_id = Column(Integer, ForeignKey("Segment.id"))
-    segment_info = relationship("Segment")    
+    # segment_info = relationship("Segment")    
     
