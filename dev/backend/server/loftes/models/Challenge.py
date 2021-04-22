@@ -13,6 +13,7 @@ class Challenge(Base):
     name = Column(String(255), unique=True, nullable=False)
     description = Column(TEXT(length=65535))
     map_url = Column(String(255))
+    start_date = Column(DateTime(timezone=False))
     end_date = Column(DateTime(timezone=False))
     alone_only = Column(Integer)
     level = Column(String(255))

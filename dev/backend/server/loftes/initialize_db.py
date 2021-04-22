@@ -1,11 +1,11 @@
 import os
 import sys
 import transaction
+import datetime
 
 from sqlalchemy import engine_from_config
 
 from sqlalchemy.orm import sessionmaker
-from loftes.utils import hash_password
 
 from pyramid.paster import (
     get_appsettings,
@@ -65,7 +65,7 @@ def fill(argv=sys.argv):
         last_name="Of Gallifrey",
         pseudo="LeMaitre",
         email="lemaitre@gmail.com",
-        password=hash_password("Conquérantdelunivers"),
+        password="Conquérantdelunivers",
     )
     session.add(u)
     session.commit()
@@ -74,6 +74,7 @@ def fill(argv=sys.argv):
     c1 = Challenge(
         name="A la recherche d'Aslan",
         description="Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+        start_date=datetime.datetime.now(),
         end_date="2020-03-18",
         map_url="/uploads/challenges/challenge_1.jpeg",
         level="1",
@@ -86,6 +87,7 @@ def fill(argv=sys.argv):
     c2 = Challenge(
         name="Oops, on a perdu Han Solo",
         description="Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
+        start_date=datetime.datetime.now(),
         end_date="2020-03-18",
         map_url="/uploads/challenges/challenge_2.jpeg",
         level="2",
