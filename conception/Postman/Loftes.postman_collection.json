@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d5260c26-d181-4b61-bdf7-647516fdd3d1",
+		"_postman_id": "7baed3e7-0d3f-4950-ab70-7a394b9a5e3f",
 		"name": "Loftes",
 		"description": "Pour le faire tourner, changez dans variable la valeur de bas_url\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -199,8 +199,7 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						],
-						"id": "877eb870-9fa0-4111-9bbb-2e0704bad7d3"
+						]
 					}
 				},
 				{
@@ -209,12 +208,10 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						],
-						"id": "fde26dbd-cf92-4e5a-ba74-4158adaed8d4"
+						]
 					}
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Segments",
@@ -228,8 +225,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5c75c7eb-7ec7-42f1-bfb8-4c66504a72bb"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -271,8 +267,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5b86ce09-c3c2-4ed0-8e3b-1b226506ab99"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -315,8 +310,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "217fbdbb-76f6-4bf9-b696-60fd9c5d48e7"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -355,8 +349,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "0b20c341-a43a-4751-9909-b9a428a4af22"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -396,8 +389,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "fbb57da5-b715-4cb3-ad63-5a4733bf3472"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -437,8 +429,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "b56a4b2a-4bb7-4eca-80f3-282c447b42e9"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -469,8 +460,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "CrossingPoint",
@@ -484,8 +474,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "673d1c55-4c59-4f56-ae89-393aac19e3fe"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -528,8 +517,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "0c30030d-d268-4e44-bd7c-df7111fff507"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -572,8 +560,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "66e7cc53-54ed-43ed-846f-4fcab6ac1e84"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -640,8 +627,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "eadc5b24-0239-45f8-81ea-b5593ec50857"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -681,8 +667,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5fd8b8a5-077c-496d-9f89-90b36dccd30d"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -722,8 +707,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5c77851f-0efb-4398-8211-8621f4043dad"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -754,8 +738,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Events",
@@ -766,7 +749,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -809,7 +791,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "35025c99-42c0-401e-9d5f-bed9f14b6ec6",
 								"exec": [
 									""
 								],
@@ -853,7 +834,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c1d532bf-6a2c-4cb6-b656-78dba760057f",
 								"exec": [
 									""
 								],
@@ -920,8 +900,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "EventsType",
@@ -932,7 +911,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7fae8a69-795e-4f02-bc3b-e0638249b362",
 								"exec": [
 									""
 								],
@@ -970,7 +948,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "fc4b9a8e-230b-4563-a239-5886f43a4212",
 								"exec": [
 									""
 								],
@@ -1011,7 +988,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e0dc8de1-7439-4d5d-ae4a-48912a785443",
 								"exec": [
 									""
 								],
@@ -1047,8 +1023,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Obstacles",
@@ -1059,7 +1034,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1104,7 +1078,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1146,7 +1119,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1190,7 +1162,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1233,7 +1204,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1276,7 +1246,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1313,8 +1282,73 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"Harry\", \n\t\"last_name\":\"Potter\", \n\t\"pseudo\":\"h_potter\", \n\t\"email\":\"potter@hotmail.com\", \n\t\"password\":\"hogwarts\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/signup",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\":\"lemaitre@gmail.com\", \n\t\"password\":\"Conquérantdelunivers\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/login",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -1324,8 +1358,7 @@
 				"type": "text/javascript",
 				"exec": [
 					""
-				],
-				"id": "a2d84545-3092-4f84-96fd-6d30a75def75"
+				]
 			}
 		},
 		{
@@ -1334,17 +1367,14 @@
 				"type": "text/javascript",
 				"exec": [
 					""
-				],
-				"id": "d8e1cc31-2e7b-4dbb-a779-83f41daa8a62"
+				]
 			}
 		}
 	],
 	"variable": [
 		{
-			"id": "782e7d24-cd6c-4823-8991-b0ad6d13725f",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
