@@ -117,17 +117,14 @@ const EditMap = () => {
   const deleteCrossingPoint = (idCrossingPoint) => {
     let isUsed = false;
     segments.forEach((segment) => {
-      if(segment.start_crossing_point_id === idCrossingPoint || segment.end_crossing_point_id === idCrossingPoint)
-      {
+      if(segment.start_crossing_point_id === idCrossingPoint || segment.end_crossing_point_id === idCrossingPoint) {
         isUsed = true;
       }
     });
-    if(drawingSegment.start_crossing_point_id === idCrossingPoint || drawingSegment.end_crossing_point_id === idCrossingPoint)
-    {
+    if(drawingSegment.start_crossing_point_id === idCrossingPoint || drawingSegment.end_crossing_point_id === idCrossingPoint) {
       isUsed = true;
     }
-    if(isUsed === false)
-    {
+    if(isUsed === false) {
       deleteCrossingPointMutation.mutate(idCrossingPoint);
     }
   };
@@ -166,7 +163,7 @@ const EditMap = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['segments', id]);
       setDrawingSegment(false);
-     },
+    },
   });
 
   const addSegment = (segment) => {
@@ -235,24 +232,19 @@ const EditMap = () => {
   // Click on a Crossing Point
   const onClickCrossingPoint = (e, idCrossingPoint) => {
     e.cancelBubble = true; // Cancel the click on the stage
-    if(radioButtonValue === "3")
-    {
+    if(radioButtonValue === "3") {
       deleteCrossingPoint(idCrossingPoint);
     }
-    else if(radioButtonValue === "4" && drawingSegment === false)
-    {
+    else if(radioButtonValue === "4" && drawingSegment === false) {
       startDrawingSegment(idCrossingPoint);
     }
-    else if(radioButtonValue === "4" && drawingSegment !== false)
-    {
+    else if(radioButtonValue === "4" && drawingSegment !== false) {
       stopDrawingSegment(idCrossingPoint);
     }
-    else if(radioButtonValue === "6")
-    {
+    else if(radioButtonValue === "6") {
       setStartChallenge(idCrossingPoint);
     }
-    else if(radioButtonValue === "7")
-    {
+    else if(radioButtonValue === "7") {
       setEndChallenge(idCrossingPoint);
     }
   };
@@ -269,12 +261,10 @@ const EditMap = () => {
 
   // Click on a Segment
   const onClickSegment = (e, segment) => {
-    if(radioButtonValue === "5")
-    {
+    if(radioButtonValue === "5") {
       deleteSegment(segment.id);
     }
-    else if(radioButtonValue === "8")
-    {
+    else if(radioButtonValue === "8") {
       changeSegmentOrientation(segment);
     }
   };
@@ -291,8 +281,7 @@ const EditMap = () => {
 
   // Click on the drawing Segment
   const onClickDrawingSegment = (e) => {
-    if(radioButtonValue === "5")
-    {
+    if(radioButtonValue === "5") {
       setDrawingSegment(false);
     }
   };
@@ -300,13 +289,11 @@ const EditMap = () => {
   // Click on Canvas
   const clickOnStage = (e) => {
     const pos = e.target.getStage().getPointerPosition();
-    if(radioButtonValue === "2")
-    {
+    if(radioButtonValue === "2") {
       addCrossingPoint(pos.x, pos.y);
     }
     // add Coordinates in the current drawn segment
-    else if(radioButtonValue === "4" && drawingSegment !== false)
-    {
+    else if(radioButtonValue === "4" && drawingSegment !== false) {
       updateDrawingSegment(pos.x, pos.y);
     }
   };
