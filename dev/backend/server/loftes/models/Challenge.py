@@ -22,13 +22,19 @@ class Challenge(Base):
     draft = Column(Boolean, server_default=text("1"))
     start_crossing_point_id = Column(Integer, ForeignKey("CrossingPoint.id"))
     start_crossing_point = relationship(
-        "CrossingPoint", foreign_keys=[start_crossing_point_id]
+        "CrossingPoint",
+        foreign_keys="Challenge.start_crossing_point_id",
+        backref="challenge_start_crossing-point",
     )
     end_crossing_point_id = Column(Integer, ForeignKey("CrossingPoint.id"))
     end_crossing_point = relationship(
-        "CrossingPoint", foreign_keys=[end_crossing_point_id]
+        "CrossingPoint",
+        foreign_keys="Challenge.end_crossing_point_id",
+        backref="challenge_end_crossing-point",
     )
-    segments = relationship("Segment", backref="segments", cascade="all,delete")
+    segments = relationship(
+        "Segment", backref="segment_challenges", cascade="all,delete"
+    )
     admin_id = Column(Integer, ForeignKey("User.id"))
     admin = relationship("User", backref="challenge_manager")
     event_sum_user = relationship("Events")

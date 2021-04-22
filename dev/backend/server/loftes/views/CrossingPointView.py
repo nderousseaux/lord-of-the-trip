@@ -690,33 +690,6 @@ def delete_crossing_point(request):
 
             try:
 
-                if challenge.start_crossing_point_id == crossing_point.id:
-                    challenge.start_crossing_point_id = None
-
-                if challenge.end_crossing_point_id == crossing_point.id:
-                    challenge.end_crossing_point_id = None
-
-                crossing_point.challenge_id = None
-
-                segments_to_delete_with_start = (
-                    DBSession.query(Segment)
-                    .filter_by(start_crossing_point_id=crossing_point.id)
-                    .all()
-                )
-
-                segments_to_delete_with_end = (
-                    DBSession.query(Segment)
-                    .filter_by(end_crossing_point_id=crossing_point.id)
-                    .all()
-                )
-
-                segments_to_delete = (
-                    segments_to_delete_with_start + segments_to_delete_with_end
-                )
-
-                for segment_to_delete in segments_to_delete:
-                    DBSession.delete(segment_to_delete)
-
                 DBSession.delete(crossing_point)
                 DBSession.flush()
 
