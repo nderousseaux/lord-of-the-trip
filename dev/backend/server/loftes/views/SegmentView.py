@@ -230,6 +230,27 @@ HTTP/1.1 201 Created
     }
 }
 
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The segment's coordinates must be of the type array."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The coordinates must have x and y positions."
+  }
+}
 
 @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
@@ -332,11 +353,6 @@ segment_id = Service(
 @apiSuccess (OK 200) {Object} end_crossing_point Segment's end crossing point
 @apiSuccess (OK 200) {Array} coordinates Array of segment's coordinates
 
-@apiSuccess (Body parameters) {String} name Segment's name
-@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a segment
-@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of crossing point choosed as end of a segment
-@apiSuccess (Body parameters) {Array} coordinates Array of segment's coordinates
-
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
 
@@ -344,16 +360,16 @@ HTTP/1.1 200 OK
     "id": 1,
     "name": "A travers le bois d'entre les mondes",
     "start_crossing_point": {
-    "id": 1,
-    "name": "L'armoire",
-    "position_x": 0.1,
-    "position_y": 0.1
+      "id": 1,
+      "name": "L'armoire",
+      "position_x": 0.1,
+      "position_y": 0.1
     },
     "end_crossing_point": {
-    "id": 2,
-    "name": "La passe du faune",
-    "position_x": 0.1,
-    "position_y": 0.1
+      "id": 2,
+      "name": "La passe du faune",
+      "position_x": 0.1,
+      "position_y": 0.1
     },
     "coordinates": [],
     "challenge": {
@@ -385,28 +401,6 @@ HTTP/1.1 200 OK
             "email": "lemaitre@gmail.com"
         }
     }
-}
-
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
-
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'name': ['Field must not be null.']}"
-  }
-}
-
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
-
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'name': ['Invalid value']}"
-  }
 }
 
 @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
@@ -522,6 +516,28 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "{'name': ['Invalid value']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The segment's coordinates must be of the type array."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The coordinates must have x and y positions."
   }
 }
 
@@ -663,6 +679,28 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "{'name': ['Invalid value']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The segment's coordinates must be of the type array."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The coordinates must have x and y positions."
   }
 }
 

@@ -38,6 +38,21 @@ class CrossingPointSchema(Schema):
     @pre_load
     def pre_load(self, data, many, **kwargs):
 
+        if "name" in data:
+            crossing_point = (
+                DBSession()
+                .query(CrossingPoint)
+                .filter_by(name=data["name"], challenge_id=data["challenge_id"])
+                .first()
+            )
+
+            if crossing_point != None:
+                raise ValueError(
+                    "The given value '"
+                    + data["name"]
+                    + "' is already used as a crossing point name for this challenge."
+                )
+
         # Check mandatory field
         if "position_x" in data:
             data["position_x"] = float(data["position_x"])

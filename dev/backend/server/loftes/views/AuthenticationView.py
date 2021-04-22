@@ -262,7 +262,7 @@ def signup_user(request):
 whoami = Service(name="whoami", path="/whoami", cors_policy=cors_policy)
 
 """
-@api {get} /whoami Read data of a User
+@api {get} /whoami Request a user informations
 @apiVersion 0.2.0
 @apiName Whoami
 @apiGroup Authentication
