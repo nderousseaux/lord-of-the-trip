@@ -1,13 +1,14 @@
-# import enum
+from sqlalchemy import *
+from sqlalchemy.orm import relationship
 
-# class EventType(enum.Enum):
-#     SUBSCRIBE = 1
-#     START = 2
-#     ARRIVAL = 3
-#     MOVE = 4
-#     CROSS_PT_ARRIVAL = 5
-#     CHOOSE_SEGMENT = 6
-#     OBSTACLE_ARR = 7
-#     OBSTACLE_REP = 8
-#     OBSTACLE_REP_OK = 9
-#     OBSTACLE_REP_KO = 10
+from loftes.models import Base
+
+class EventType(Base):
+    __tablename__ = 'EventType'
+    id = Column(Integer, primary_key=True)
+    code = Column(String(25), unique=True, nullable=False)
+    label = Column(String(255), unique=True, nullable=False)    
+    # place a unique index on col3, col4
+
+Index('idx_code', EventType.code)
+Index('idx_label', EventType.label)
