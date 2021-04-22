@@ -13,7 +13,7 @@ import logging
 import json
 
 obstacle = Service(name='obstacle',
-                   path='/segments/{segment_id:\d+}/obstacles',
+                   path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/obstacles',
                    cors_policy=cors_policy)
 @obstacle.get()
 def get_obstacle(request):
@@ -94,7 +94,7 @@ def obstacle_add(request):
     return response
     
 obstacle_id = Service(name='obstacle_id',
-                      path='/segments/{segment_id:\d+}/obstacles/{id}',
+                      path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/obstacles/{id}',
                       cors_policy=cors_policy)
               
 @obstacle_id.get()

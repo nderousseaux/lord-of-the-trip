@@ -1083,11 +1083,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/segments/1/obstacles",
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
+								"1",
 								"segments",
 								"1",
 								"obstacles"
@@ -1123,11 +1125,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/segments/1/obstacles",
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
+								"1",
 								"segments",
 								"1",
 								"obstacles"
@@ -1199,7 +1203,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"libelle\": \"Qui offre des armes aux enfants Pevensie ?\",\n    \"progress\": 60,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"Le père Noel\"\n}",
+							"raw": "{\n    \"libelle\": \"Qui offre des armes aux enfants Pevensie ?\",\n    \"progress\": 70,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"Le père Noel\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1207,11 +1211,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/segments/1/obstacles/6",
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/6",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
+								"1",
 								"segments",
 								"1",
 								"obstacles",
@@ -1240,7 +1246,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"libelle\": \"Qui Susan Pevensie, rencontre en premier à Narnia ?\",\n    \"result\": \"Mr Tumnus \",\n    \"segment_id\":1\n}",
+							"raw": "{\n    \"libelle\": \"Qui Susan Pevensie, rencontre en premier à Narnia ?\",\n    \"result\": \"Mr Tumnus2\",\n    \"segment_id\":1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1248,11 +1254,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/segments/1/obstacles/5",
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/5",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
+								"1",
 								"segments",
 								"1",
 								"obstacles",
@@ -1276,11 +1284,8 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -1292,15 +1297,17 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/segments/1/obstacles/2",
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/10",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
+								"1",
 								"segments",
 								"1",
 								"obstacles",
-								"2"
+								"10"
 							]
 						}
 					},
