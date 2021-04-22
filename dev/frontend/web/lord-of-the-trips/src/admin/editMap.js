@@ -187,12 +187,17 @@ const EditMap = () => {
     deleteSegmentMutation.mutate(idSegment);
   };
 
-  const changeSegmentOrientationMutation = useMutation( ({ segment, segmentId }) => apiSegments.changeSegmentOrientation(id, segment, segmentId), {
+  const updateSegmentMutation = useMutation( ({ segment, segmentId }) => apiSegments.updateSegment(id, segment, segmentId), {
     onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
   });
 
   const changeSegmentOrientation = (segment) => {
-    changeSegmentOrientationMutation.mutate({ segment: segment, segmentId: segment.id });
+    let coord = [];
+    segment.coordinates.forEach((coordinate) => {
+      coord = [...coord, { position_x: pixelsToPercent(coordinate.position_x, width), position_y: pixelsToPercent(coordinate.position_y, height) }];
+    });
+    let newSegmentData = { "start_crossing_point_id": segment.end_crossing_point_id, "end_crossing_point_id": segment.start_crossing_point_id, "coordinates": coord.reverse() };
+    updateSegmentMutation.mutate({ segment: newSegmentData, segmentId: segment.id });
   };
 
   const updateSegment = (segment) => {
@@ -208,8 +213,11 @@ const EditMap = () => {
   };
 
   const stopDrawingSegment = (idCrossingPoint) => {
-    setDrawingSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
-    addSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
+    // The end crossing point can't be the same as the start
+    if(idCrossingPoint !== drawingSegment.start_crossing_point_id) {
+      setDrawingSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
+      addSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
+    }
   };
 
   const onDragStartCrossingPoint = (e, crossingPoint) => {
@@ -337,6 +345,41 @@ const EditMap = () => {
     return returnCoordinates;
   };
 
+  // Longueur entre le départ et l'arrivé du segment (sans points intermédiaires entre les crossings points)
+  const longueurSegment1 = () => {
+    let scaling = challenge.scalling;
+    let firstSegment = segments[0];
+    let startPointCoordinates = getCoordinatesFromCrossingPoint(firstSegment.start_crossing_point_id);
+    let endPointCoordinates = getCoordinatesFromCrossingPoint(firstSegment.end_crossing_point_id);
+    let dx = endPointCoordinates.position_x - startPointCoordinates.position_x;
+    let dy = endPointCoordinates.position_y - startPointCoordinates.position_y;
+    let dx2 = dx * dx;
+    let dy2 = dy * dy;
+    let longueurPix = Math.sqrt(dx2 + dy2);
+    console.log(longueurPix);
+    let longueur1pix = scaling / width;
+    let longueurRéelle = longueurPix * longueur1pix;
+    console.log(longueurRéelle);
+  };
+
+  // Longueur du segment avec les points intermédiaire (vrai longueur du segment)
+  // TODO(actuellement copier coller de longueurSegment1)
+  const longueurSegment2 = () => {
+    let scaling = challenge.scalling;
+    let firstSegment = segments[0];
+    let startPointCoordinates = getCoordinatesFromCrossingPoint(firstSegment.start_crossing_point_id);
+    let endPointCoordinates = getCoordinatesFromCrossingPoint(firstSegment.end_crossing_point_id);
+    let dx = endPointCoordinates.position_x - startPointCoordinates.position_x;
+    let dy = endPointCoordinates.position_y - startPointCoordinates.position_y;
+    let dx2 = dx * dx;
+    let dy2 = dy * dy;
+    let longueurPix = Math.sqrt(dx2 + dy2);
+    console.log(longueurPix);
+    let longueur1pix = scaling / width;
+    let longueurRéelle = longueurPix * longueur1pix;
+    console.log(longueurRéelle);
+  };
+
   return <>
     <h3>Edit Map</h3>
     {errorDownload ? <h3>{errorDownload.message}</h3> :
@@ -380,6 +423,8 @@ const EditMap = () => {
     <hr />
     <h3>Back to challenge</h3>
     <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button>
+    <button onClick={() => longueurSegment1()}>test longueur segment 1</button>
+    <button onClick={() => longueurSegment2()}>test longueur segment 2</button>
   </>
 };
 

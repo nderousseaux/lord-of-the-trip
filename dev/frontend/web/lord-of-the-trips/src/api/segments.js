@@ -49,15 +49,6 @@ const apiSegments = {
     .then(checkStatus);
   },
 
-  changeSegmentOrientation: (challengeId, segment, segmentId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ "start_crossing_point_id": segment.end_crossing_point_id, "end_crossing_point_id": segment.start_crossing_point_id })
-    })
-    .then(checkStatus);
-  },
-
 };
 
 export default apiSegments;
