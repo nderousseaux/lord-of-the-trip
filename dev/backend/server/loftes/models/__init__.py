@@ -13,11 +13,14 @@ from .Challenge import Challenge
 from .CrossingPoint import CrossingPoint
 from .Segment import Segment
 from .Obstacle import Obstacle
-from .Question import Question
 
 # User Data
 from .User import User
 from .UserSubscribe import UserSubscribe
-from .Events import Events
+from .Event import Event
+
+# Constante
+from .EventType import EventType
+
 
 from .Root import Root

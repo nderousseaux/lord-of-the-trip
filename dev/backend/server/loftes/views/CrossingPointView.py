@@ -165,7 +165,6 @@ def get_crossing_points(request):
 @apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
 @apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
 
-
 @apiSuccessExample {json} Body:
 
 {
@@ -206,6 +205,17 @@ HTTP/1.1 400 Bad Request
   }
 }
 
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The given value 'La passe du faune' is already used as a crossing point name for this challenge."
+  }
+}
+
 @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
@@ -225,16 +235,16 @@ def create_crossing_point(request):
 
     service_informations = ServiceInformations()
 
-    challenge_id = request.matchdict["challenge_id"]
-    challenge = DBSession.query(Challenge).get(challenge_id)
+    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
     if challenge != None:
 
         try:
+            crossing_point_data = request.json
+            crossing_point_data["challenge_id"] = challenge.id
 
             crossing_point_schema = CrossingPointSchema()
-            crossing_point = crossing_point_schema.load(request.json)
-            crossing_point.challenge_id = challenge_id
+            crossing_point = crossing_point_schema.load(crossing_point_data)
 
             DBSession.add(crossing_point)
             DBSession.flush()
@@ -689,33 +699,6 @@ def delete_crossing_point(request):
         if crossing_point != None:
 
             try:
-
-                if challenge.start_crossing_point_id == crossing_point.id:
-                    challenge.start_crossing_point_id = None
-
-                if challenge.end_crossing_point_id == crossing_point.id:
-                    challenge.end_crossing_point_id = None
-
-                crossing_point.challenge_id = None
-
-                segments_to_delete_with_start = (
-                    DBSession.query(Segment)
-                    .filter_by(start_crossing_point_id=crossing_point.id)
-                    .all()
-                )
-
-                segments_to_delete_with_end = (
-                    DBSession.query(Segment)
-                    .filter_by(end_crossing_point_id=crossing_point.id)
-                    .all()
-                )
-
-                segments_to_delete = (
-                    segments_to_delete_with_start + segments_to_delete_with_end
-                )
-
-                for segment_to_delete in segments_to_delete:
-                    DBSession.delete(segment_to_delete)
 
                 DBSession.delete(crossing_point)
                 DBSession.flush()

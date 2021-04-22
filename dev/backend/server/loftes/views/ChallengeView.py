@@ -13,12 +13,14 @@ from pathlib import Path
 
 import pyramid.httpexceptions as exception
 from pyramid.response import FileResponse
+from pyramid.authentication import AuthTicket
 
 from sqlalchemy import exc
 
 import logging
 import os
 import shutil
+import socket
 
 
 challenge = Service(name="challenge", path="/challenges", cors_policy=cors_policy)
@@ -40,10 +42,12 @@ HTTP/1.1 200 OK
       "id": 1,
       "name": "A la recherche d'Aslan",
       "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+      "start_date": "2021-04-22T11:57:00"
       "end_date": "2020-03-18T00:00:00",
       "alone_only": null,
       "level": 1,
       "scalling": 4,
+      "step_length": 0.7,
       "draft": false,
       "start_crossing_point": null,
       "end_crossing_point": null,
@@ -122,17 +126,19 @@ HTTP/1.1 200 OK
         "first_name": "Missy",
         "last_name": "Of Gallifrey",
         "pseudo": "Le maitre",
-        "mail": "lemaitre@gmail.com"
+        "email": "lemaitre@gmail.com"
       }
     },
     {
       "id": 2,
       "name": "Oops, on a perdu Han Solo",
       "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
+      "start_date": "2021-04-22T11:57:00"
       "end_date": "2020-03-18T00:00:00",
       "alone_only": null,
       "level": 2,
       "scalling": 4,
+      "step_length": 0.7,
       "draft": false,
       "start_crossing_point": null,
       "end_crossing_point": null,
@@ -142,7 +148,7 @@ HTTP/1.1 200 OK
         "first_name": "Missy",
         "last_name": "Of Gallifrey",
         "pseudo": "Le maitre",
-        "mail": "lemaitre@gmail.com"
+        "email": "lemaitre@gmail.com"
       }
     }
   ]
@@ -163,15 +169,133 @@ HTTP/1.1 404 Not Found
 
 @challenge.get()
 def get_challenges(request):
+
     service_informations = ServiceInformations()
-    challenges = DBSession.query(Challenge).all()
 
-    if len(challenges) == 0:
-        return service_informations.build_response(exception.HTTPNotFound())
+    if request.authenticated_userid != None:
 
-    data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+        challenges = DBSession.query(Challenge).all()
 
-    return service_informations.build_response(exception.HTTPOk, data)
+        if len(challenges) == 0:
+            return service_informations.build_response(exception.HTTPNotFound())
+
+        data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+
+        response = service_informations.build_response(exception.HTTPOk, data)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+"""
+@api {post} /challenges Create a new Challenge
+@apiVersion 0.1.0
+@apiName PostChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+
+@apiSuccess (Body parameters) {String} name Challenge's name
+@apiSuccess (Body parameters) {String} description Challenge's description
+@apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
+@apiSuccess (Body parameters) {Number} level Challenge's difficulty
+@apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
+
+@apiSuccessExample {json} Body:
+
+{
+	"name":"A la recherche d'Aslan",
+	"description":"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+	"end_date":"2022-10-18",
+	"alone_only":"0",
+	"level":3,
+	"scalling":10000,
+  "step_length": 0.7
+}
+
+@apiSuccessExample {json} Success response:
+HTTP/1.1 201 Created
+
+
+{
+  "id": 1,
+  "name": "A la recherche d'Aslan",
+  "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date": null
+  "end_date": "2021-12-15T03:16:00",
+  "alone_only": 0,
+  "level":3,
+  "scalling": 3,
+  "step_length": 0.7,
+  "draft": false,
+  "admin": {
+    "id": 1,
+    "first_name": "Missy",
+    "last_name": "Of Gallifrey",
+    "pseudo": "Le maitre",
+    "email": "lemaitre@gmail.com"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The given value {name} is already used as a challenge name."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'name': ['Field must not be null.']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "{'name': ['Invalid value']}"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+"""
 
 
 """
@@ -325,10 +449,12 @@ challenge_by_id = Service(
 @apiSuccess (OK 200) {Number} id Challenge's ID
 @apiSuccess (OK 200) {String} name Challenge's name
 @apiSuccess (OK 200) {String} description Challenge's description
+@apiSuccess (OK 200) {Date} start_date Challenge's validation date
 @apiSuccess (OK 200) {Date} end_date Challenge's end date
 @apiSuccess (OK 200) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (OK 200) {Number} level Challenge's difficulty
 @apiSuccess (OK 200) {Number} scalling Challenge's scale in meters
+@apISuccess (OK 200) {Float} step_length Challenge's step length in meters
 @apiSuccess (OK 200) {Bool} draft If true the challenge is in edition mode, if false challenge is published
 @apiSuccess (OK 200) {Object} start_crossing_point Challenge's start crossing point
 @apiSuccess (OK 200) {Object} end_crossing_point Challenge's end crossing point
@@ -343,10 +469,12 @@ HTTP/1.1 200 OK
   "id": 1,
   "name": "A la recherche d'Aslan",
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date": "2021-04-22T11:57:00"
   "end_date": "2021-12-15T03:16:00",
   "alone_only": 0,
   "level": 3,
   "scalling": 3,
+  "step_length": 0.7,
   "draft": false,
   "start_crossing_point": {
     "id": 2,
@@ -418,7 +546,7 @@ HTTP/1.1 200 OK
     "first_name": "Missy",
     "last_name": "Of Gallifrey",
     "pseudo": "Le maitre",
-    "mail": "lemaitre@gmail.com"
+    "email": "lemaitre@gmail.com"
   }
   "event_sum": 395
 }
@@ -465,6 +593,7 @@ def get_challenge(request):
 @apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
 @apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
 @apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
 @apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
 
@@ -477,6 +606,7 @@ def get_challenge(request):
   "alone_only":0,
   "level":3,
   "scalling":10000,
+  "step_length": 0.7,
   "start_crossing_point_id":1,
   "end_crossing_point_id":2
 }
@@ -525,6 +655,17 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
 
@@ -614,6 +755,7 @@ def update_challenge(request):
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
 @apiSuccess (Body parameters) {Bool} draft If true the challenge is in edition mode, if false challenge is published
 @apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
 @apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
 @apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
 
@@ -667,6 +809,17 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
 
@@ -783,14 +936,6 @@ def delete_challenge(request):
 
             challenge.start_crossing_point_id = None
             challenge.end_crossing_point_id = None
-
-            crossing_points_to_delete = (
-                DBSession.query(CrossingPoint)
-                .filter_by(challenge_id=challenge.id)
-                .all()
-            )
-            for crossing_point_to_delete in crossing_points_to_delete:
-                DBSession.delete(crossing_point_to_delete)
 
             DBSession.delete(challenge)
             DBSession.flush()

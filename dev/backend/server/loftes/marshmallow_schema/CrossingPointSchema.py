@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate
 
 
 class CrossingPointSchema(Schema):
-    id = fields.Int()
+    id = fields.Int(dump_only=True)
     name = fields.Str(
         required=True,
         validate=validate.NoneOf("", error="Invalid value"),
@@ -37,6 +37,21 @@ class CrossingPointSchema(Schema):
 
     @pre_load
     def pre_load(self, data, many, **kwargs):
+
+        if "name" in data:
+            crossing_point = (
+                DBSession()
+                .query(CrossingPoint)
+                .filter_by(name=data["name"], challenge_id=data["challenge_id"])
+                .first()
+            )
+
+            if crossing_point != None:
+                raise ValueError(
+                    "The given value '"
+                    + data["name"]
+                    + "' is already used as a crossing point name for this challenge."
+                )
 
         # Check mandatory field
         if "position_x" in data:
