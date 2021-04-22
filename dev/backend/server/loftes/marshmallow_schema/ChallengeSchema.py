@@ -36,6 +36,7 @@ class ChallengeSchema(Schema):
     alone_only = fields.Int()
     level = fields.Str()
     scalling = fields.Int()
+    step_length = fields.Float()
     draft = fields.Bool()
     start_crossing_point_id = fields.Int(load_only=True)
     end_crossing_point_id = fields.Int(load_only=True)
