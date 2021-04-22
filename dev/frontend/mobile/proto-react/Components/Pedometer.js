@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, Text } from 'react-native'
-import { Pedometer } from 'expo-sensors';
 
 class PedometerComponent extends React.Component {
 

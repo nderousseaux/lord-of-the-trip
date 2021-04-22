@@ -9,7 +9,7 @@ class GPS extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      speed: 'Checking...',
+      speed: 0,
       distance: 0,
       vitesseMoyenne: 0,
       log : []
