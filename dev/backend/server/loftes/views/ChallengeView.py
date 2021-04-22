@@ -42,6 +42,7 @@ HTTP/1.1 200 OK
       "id": 1,
       "name": "A la recherche d'Aslan",
       "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+      "start_date": "2021-04-22T11:57:00"
       "end_date": "2020-03-18T00:00:00",
       "alone_only": null,
       "level": 1,
@@ -131,6 +132,7 @@ HTTP/1.1 200 OK
       "id": 2,
       "name": "Oops, on a perdu Han Solo",
       "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
+      "start_date": "2021-04-22T11:57:00"
       "end_date": "2020-03-18T00:00:00",
       "alone_only": null,
       "level": 2,
@@ -218,6 +220,7 @@ HTTP/1.1 201 Created
   "id": 1,
   "name": "A la recherche d'Aslan",
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date": null
   "end_date": "2021-12-15T03:16:00",
   "alone_only": 0,
   "level":3,
@@ -273,6 +276,17 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
 
@@ -336,6 +350,7 @@ challenge_by_id = Service(
 @apiSuccess (OK 200) {Number} id Challenge's ID
 @apiSuccess (OK 200) {String} name Challenge's name
 @apiSuccess (OK 200) {String} description Challenge's description
+@apiSuccess (OK 200) {Date} start_date Challenge's validation date
 @apiSuccess (OK 200) {Date} end_date Challenge's end date
 @apiSuccess (OK 200) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (OK 200) {Number} level Challenge's difficulty
@@ -354,6 +369,7 @@ HTTP/1.1 200 OK
   "id": 1,
   "name": "A la recherche d'Aslan",
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date": "2021-04-22T11:57:00"
   "end_date": "2021-12-15T03:16:00",
   "alone_only": 0,
   "level": 3,
@@ -546,6 +562,17 @@ HTTP/1.1 400 Bad Request
 {
   "error": {
     "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
     "message": "Crossing point does not exist."
   }
 }
@@ -678,6 +705,17 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
 

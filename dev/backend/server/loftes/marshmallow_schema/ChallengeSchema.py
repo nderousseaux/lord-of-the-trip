@@ -63,6 +63,15 @@ class ChallengeSchema(Schema):
         else:
             raise PermissionError()
 
+        now = datetime.datetime.now()
+
+        if data["end_date"] < now:
+            raise ValueError(
+                "Challenge's end date must be greater of today's date ("
+                + now.strftime("%d-%m-%Y, %H:%M")
+                + ")"
+            )
+
         return Challenge(**data)
 
     @pre_load
