@@ -1723,15 +1723,6 @@ define({ "api": [
         {
           "title": "Success response:",
           "content": "HTTP/1.1 204 No Content",
-=======
-    "name": "DeleteSegment",
-    "group": "Segment",
-    "success": {
-      "examples": [
-        {
-          "title": "Success response:",
-          "content": "HTTP/1.1 204 No Content",
->>>>>>> develop-nemanja
           "type": "json"
         }
       ]
