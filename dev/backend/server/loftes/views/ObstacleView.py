@@ -246,40 +246,64 @@ def get_obstacle_modify(request):
     return response
 
 
+@obstacle_id.delete()
+def delete_obstacle(request):
 
-# @obstacle_id.put()
-# def modify_obstacle(request):
+    service_informations = ServiceInformations()
+    segment_id = request.matchdict["segment_id"]  
+    segment = DBSession.query(Segment).get(segment_id)
 
-#     try:
-#         id = request.matchdict['id']
-#         ObstacleSchema().load(request.json)
+    if segment != None:
 
-#         obstacledata = DBSession.query(Obstacle).filter(Obstacle.id_obstacle == id).update(request.json)
-#         DBSession.flush()
-        
-#         response = exception.HTTPCreated()
-#         response.text = json.dumps(ObstacleSchema().dump(obstacledata))
+        id = request.matchdict["id"]
 
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented(e)
-#         print(e)
-    
-#     return response
+        obstacle = (
+            DBSession.query(Obstacle)
+            .filter( Obstacle.segment_id == segment.id, Obstacle.id == id,)
+            .first()
+        )
 
-# @obstacle_id.delete()
-# def delete_obstacle(request):
+        if obstacle != None:
 
-#     try:
-#         id = request.matchdict['id']
+            try:
+                DBSession.delete(obstacle)
+                DBSession.flush()
 
-#         obstacledata = DBSession.query(Obstacle).get(id)
+                response = service_informations.build_response(exception.HTTPNoContent)
 
-#         DBSession.delete(obstacledata)
-#         # supression en cascade comment faire ?????
-#         #DBSession.flush()
+            except ValidationError as validation_error:
+                response = service_informations.build_response(
+                    exception.HTTPBadRequest, None, str(validation_error)
+                )
+                DBSession.close()
 
-#         response = exception.HTTPAccepted
-        
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented()
-#         print(e)   
+            except ValueError as value_error:
+                response = service_informations.build_response(
+                    exception.HTTPBadRequest, None, str(value_error)
+                )
+                DBSession.close()
+
+            except PermissionError as pe:
+                response = service_informations.build_response(
+                    exception.HTTPUnauthorized
+                )
+                DBSession.close()
+
+            except Exception as e:
+                response = service_informations.build_response(
+                    exception.HTTPInternalServerError
+                )
+                logging.getLogger(__name__).warn("Returning: %s", str(e))
+                DBSession.close()
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(
+            exception.HTTPNotFound(),
+            None,
+            "Requested resource 'Segment' is not found.",
+        )
+
+    return response
+

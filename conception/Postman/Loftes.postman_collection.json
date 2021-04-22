@@ -1261,6 +1261,50 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "OBSTACLES_DELETE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/segments/1/obstacles/2",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"segments",
+								"1",
+								"obstacles",
+								"2"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
