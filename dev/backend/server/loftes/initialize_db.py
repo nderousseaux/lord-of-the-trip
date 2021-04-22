@@ -75,11 +75,13 @@ def fill(argv=sys.argv):
         name="A la recherche d'Aslan",
         description="Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
         start_date=datetime.datetime.now(),
-        end_date="2020-03-18",
+        end_date="2022-03-18 12:00:00",
         map_url="/uploads/challenges/challenge_1.jpeg",
         level="1",
-        scalling="4",
-        admin_id="1",
+        scalling=4,
+        step_length=0.7,
+        draft=False,
+        admin_id=1,
     )
     session.add(c1)
     session.commit()
@@ -88,11 +90,13 @@ def fill(argv=sys.argv):
         name="Oops, on a perdu Han Solo",
         description="Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
         start_date=datetime.datetime.now(),
-        end_date="2020-03-18",
+        end_date="2022-03-18 18:30:00",
         map_url="/uploads/challenges/challenge_2.jpeg",
         level="2",
-        scalling="4",
-        admin_id="1",
+        scalling=4,
+        step_length=0.8,
+        draft=False,
+        admin_id=1,
     )
     session.add(c2)
     session.commit()

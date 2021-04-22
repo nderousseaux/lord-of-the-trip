@@ -47,6 +47,7 @@ HTTP/1.1 200 OK
       "alone_only": null,
       "level": 1,
       "scalling": 4,
+      "step_length": 0.7,
       "draft": false,
       "start_crossing_point": null,
       "end_crossing_point": null,
@@ -137,6 +138,7 @@ HTTP/1.1 200 OK
       "alone_only": null,
       "level": 2,
       "scalling": 4,
+      "step_length": 0.7,
       "draft": false,
       "start_crossing_point": null,
       "end_crossing_point": null,
@@ -200,6 +202,7 @@ def get_challenges(request):
 @apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
 @apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
 
 @apiSuccessExample {json} Body:
 
@@ -209,7 +212,8 @@ def get_challenges(request):
 	"end_date":"2022-10-18",
 	"alone_only":"0",
 	"level":3,
-	"scalling":10000
+	"scalling":10000,
+  "step_length": 0.7
 }
 
 @apiSuccessExample {json} Success response:
@@ -225,6 +229,7 @@ HTTP/1.1 201 Created
   "alone_only": 0,
   "level":3,
   "scalling": 3,
+  "step_length": 0.7,
   "draft": false,
   "admin": {
     "id": 1,
@@ -355,6 +360,7 @@ challenge_by_id = Service(
 @apiSuccess (OK 200) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (OK 200) {Number} level Challenge's difficulty
 @apiSuccess (OK 200) {Number} scalling Challenge's scale in meters
+@apISuccess (OK 200) {Float} step_length Challenge's step length in meters
 @apiSuccess (OK 200) {Bool} draft If true the challenge is in edition mode, if false challenge is published
 @apiSuccess (OK 200) {Object} start_crossing_point Challenge's start crossing point
 @apiSuccess (OK 200) {Object} end_crossing_point Challenge's end crossing point
@@ -374,6 +380,7 @@ HTTP/1.1 200 OK
   "alone_only": 0,
   "level": 3,
   "scalling": 3,
+  "step_length": 0.7,
   "draft": false,
   "start_crossing_point": {
     "id": 2,
@@ -492,6 +499,7 @@ def get_challenge(request):
 @apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
 @apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
 @apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
 @apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
 
@@ -504,6 +512,7 @@ def get_challenge(request):
   "alone_only":0,
   "level":3,
   "scalling":10000,
+  "step_length": 0.7,
   "start_crossing_point_id":1,
   "end_crossing_point_id":2
 }
@@ -652,6 +661,7 @@ def update_challenge(request):
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
 @apiSuccess (Body parameters) {Bool} draft If true the challenge is in edition mode, if false challenge is published
 @apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
 @apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
 @apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
 
