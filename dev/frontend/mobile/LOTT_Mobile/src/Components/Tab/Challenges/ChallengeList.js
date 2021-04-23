@@ -10,11 +10,14 @@ export default function ChallengeList(props) {
     const [challenges, setChallenges] = useState([]);
 
     useEffect(() => {
-        api.getChallenges()
+        /*api.getChallenges()
         .then((response) => response.data)
         .then((json) => setChallenges(json.challenges))
         .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
+        .finally(() => setLoading(false));*/
+
+        setChallenges(api.getChallengesNoRequest().challenges);
+        setLoading(false);
     }, []);
 
     return (
