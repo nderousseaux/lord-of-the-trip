@@ -11,7 +11,7 @@ deploy:
   stage: deploy
   script:
     - pwd
-    - ./dev/backend/server/env/bin/pip install -r requirements.txt
+    - /builds/acrobatt-1/lord-of-the-trips/dev/backend/server/env/bin/pip install -r requirements.txt
     - ./dev/backend/server/env/bin/pip install -r requirements.in
     - ./dev/backend/server/env/bin/python setup.py develop
     - ./dev/backend/server/env/bin/python setup.py install
