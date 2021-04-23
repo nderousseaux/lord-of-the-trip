@@ -16,7 +16,7 @@ deploy:
     - ./env/bin/python setup.py develop
     - ./env/bin/python setup.py install
     - sudo service apache2 reload
-    - chmod -R 777 ./dev/backend/server/env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg
+    - chmod -R 777 ./env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg
   only:
     - master
 
@@ -24,7 +24,7 @@ init_database:
   stage: init_database
   script:
     - mysql < /root/db.sql"
-    - ./dev/backend/server/env/bin/initialize_loftes_db production.ini
-    - ./dev/backend/server/env/bin/fill_loftes_db production.ini
+    - ./env/bin/initialize_loftes_db production.ini
+    - ./env/bin/fill_loftes_db production.ini
   only:
     - master
