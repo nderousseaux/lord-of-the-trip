@@ -700,6 +700,12 @@ def delete_crossing_point(request):
 
             try:
 
+                if challenge.start_crossing_point_id == crossing_point.id:
+                    challenge.start_crossing_point_id = None
+
+                if challenge.end_crossing_point_id == crossing_point.id:
+                    challenge.end_crossing_point_id = None
+
                 DBSession.delete(crossing_point)
                 DBSession.flush()
 
