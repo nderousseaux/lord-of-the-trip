@@ -9,8 +9,9 @@ stages:
 deploy:
   stage: deploy
   script:
-    - sudo apt purge python3-venv python3-pip -y
-    - sudo apt install python3.7-venv python3-pip -y
+    - export LC_ALL="fr_FR.UTF-8"
+    - export LC_CTYPE="fr_FR.UTF-8"
+    - sudo dpkg-reconfigure locales
     - cd ./dev/backend/server
     - python3.7 -m venv env
     - ./env/bin/pip install -r requirements.txt
