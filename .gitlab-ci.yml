@@ -9,6 +9,8 @@ stages:
 deploy:
   stage: deploy
   script:
+    - sudo apt purge python3-venv python3-pip -y
+    - sudo apt install python3-venv python3-pip -y
     - cd ./dev/backend/server
     - python3.7 -m venv env
     - ./env/bin/pip install -r requirements.txt
