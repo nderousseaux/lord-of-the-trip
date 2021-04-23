@@ -10,7 +10,7 @@ deploy:
   stage: deploy
   script:
     - cd ./dev/backend/server
-    - python3.7 -m venv env --without-pip
+    - python3.7 -m venv env
     - ./env/bin/pip install -r requirements.txt
     - ./env/bin/pip install -r requirements.in
     - ./env/bin/python setup.py develop
