@@ -1,4 +1,5 @@
-export const urlPrefix = 'https://hephaistos.nathanaelderousseaux.fr/api';
+//export const urlPrefix = 'https://hephaistos.nathanaelderousseaux.fr/api';
+export const urlPrefix = 'http://localhost:6543';
 
 export const checkStatus = res => {
   if (res.ok) {

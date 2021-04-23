@@ -17,6 +17,8 @@ from .models import (
     Base,
 )
 
+from loftes.security import password_utils
+
 from .models.User import *
 from .models.Challenge import *
 from .models.CrossingPoint import *
@@ -100,7 +102,7 @@ def fill(argv=sys.argv):
         last_name="Of Gallifrey",
         pseudo="LeMaitre",
         email="lemaitre@gmail.com",
-        password="Conquérantdelunivers",
+        password=password_utils.hash_password("Conquérantdelunivers"),
     )
 
     session.add(u)
