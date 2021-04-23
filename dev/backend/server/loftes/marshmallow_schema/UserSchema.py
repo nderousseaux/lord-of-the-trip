@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, pre_load, post_load, validate
 
 from loftes.models import Base, User, DBSession
-from loftes.security.password_utils import hash_password
+from loftes.security import password_utils
 import hashlib, binascii, os, re
 
 
@@ -57,7 +57,7 @@ class UserSchema(Schema):
 
     @post_load
     def make_user(self, data, **kwargs):
-        data["password"] = hash_password(data["password"])
+        data["password"] = password_utils.hash_password(data["password"])
         return User(**data)
 
     @pre_load

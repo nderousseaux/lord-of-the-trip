@@ -4,7 +4,7 @@ from loftes.cors import cors_policy
 from loftes.marshmallow_schema.UserSchema import UserSchema
 from loftes.models import User, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
-from loftes.security.password_utils import verify_password
+from loftes.security import password_utils
 
 from marshmallow import ValidationError
 
@@ -68,7 +68,7 @@ def login_user(request):
     user = DBSession().query(User).filter_by(email=request.json["email"]).first()
 
     if user != None:
-        if verify_password(user.password, request.json["password"]):
+        if password_utils.verify_password(user.password, request.json["password"]):
 
             data = {
                 "user": UserSchema().dump(user),
