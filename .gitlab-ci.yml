@@ -9,6 +9,7 @@ stages:
 deploy:
   stage: deploy
   script:
+    - apt-get install python3-venv
     - cd ./dev/backend/server
     - python3 -m venv env
     - ./env/bin/pip install -r requirements.txt
