@@ -1019,7 +1019,7 @@ def upload_image(request):
                         path = str(root) + challenge_uploads_path
 
                         if not os.path.isdir(path):
-                            os.makedirs(path, 0o755)
+                            os.makedirs(path, 0o777)
 
                         input_file = request.POST["file"].file
                         input_file_filename = "challenge_" + str(challenge.id)

@@ -31,4 +31,5 @@ class Segment(Base):
         "Obstacle", cascade="all,delete", backref="segment_obstacles", lazy=True
     )
 
-Index('idx_name_seg', Segment.challenge_id, Segment.name, unique=True)
+
+# Index('idx_name_seg', Segment.challenge_id, Segment.name, unique=True)
