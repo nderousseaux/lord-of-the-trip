@@ -9,9 +9,7 @@ stages:
 deploy:
   stage: deploy
   script:
-    - pwd
-    - hostname
-    - ./dev/backend/server/env/bin/pip install -r requirements.txt
+    - dev/backend/server/env/bin/pip install -r requirements.txt
     - ./dev/backend/server/env/bin/pip install -r requirements.in
     - ./dev/backend/server/env/bin/python setup.py develop
     - ./dev/backend/server/env/bin/python setup.py install
