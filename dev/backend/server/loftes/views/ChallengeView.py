@@ -172,21 +172,16 @@ def get_challenges(request):
 
     service_informations = ServiceInformations()
 
-    if request.authenticated_userid != None:
+    challenges = DBSession.query(Challenge).all()
 
-        challenges = DBSession.query(Challenge).all()
+    if len(challenges) == 0:
+        return service_informations.build_response(exception.HTTPNotFound())
 
-        if len(challenges) == 0:
-            return service_informations.build_response(exception.HTTPNotFound())
+    data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
 
-        data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+    # response = service_informations.build_response(exception.HTTPOk, data)
 
-        response = service_informations.build_response(exception.HTTPOk, data)
-
-    else:
-        response = service_informations.build_response(exception.HTTPUnauthorized)
-
-    return response
+    return service_informations.build_response(exception.HTTPOk, data)
 
 
 """

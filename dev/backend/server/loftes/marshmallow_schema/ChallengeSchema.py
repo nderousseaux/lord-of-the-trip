@@ -15,6 +15,7 @@ from sqlalchemy import func
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
+
 # from loftes.marshmallow_schema.EventSchema import EventSchema
 
 import datetime
@@ -66,7 +67,7 @@ class ChallengeSchema(Schema):
 
         now = datetime.datetime.now()
 
-        if data["end_date"] < now:
+        if "end_date" in data and data["end_date"] < now:
             raise ValueError(
                 "Challenge's end date must be greater of today's date ("
                 + now.strftime("%d-%m-%Y, %H:%M")
