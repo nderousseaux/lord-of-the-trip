@@ -19,8 +19,8 @@ deploy:
     - ./env/bin/python setup.py install
     - sudo service apache2 reload
     - chmod -R 777 env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg
-    - mysql < /root/db.sql"
-    - sudo ./env/bin/initialize_loftes_db production.ini
-    - sudo ./env/bin/fill_loftes_db production.ini
+    - mysql < /root/db.sql
+    - ./env/bin/initialize_loftes_db production.ini
+    - ./env/bin/fill_loftes_db production.ini
   only:
     - master
