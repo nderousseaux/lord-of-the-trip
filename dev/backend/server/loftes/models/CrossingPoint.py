@@ -35,5 +35,6 @@ class CrossingPoint(Base):
         backref="challenge_end_crossing-points",
         cascade="all,delete",
     )
-    
-Index('idx_name_cp', CrossingPoint.challenge_id, CrossingPoint.name, unique=True)
+
+
+Index("idx_name_cp", CrossingPoint.challenge_id, CrossingPoint.name, unique=True)
