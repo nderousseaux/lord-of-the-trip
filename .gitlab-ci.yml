@@ -9,10 +9,12 @@ stages:
 deploy:
   stage: deploy
   script:
-    - dev/backend/server/env/bin/pip install -r requirements.txt
-    - ./dev/backend/server/env/bin/pip install -r requirements.in
-    - ./dev/backend/server/env/bin/python setup.py develop
-    - ./dev/backend/server/env/bin/python setup.py install
+    - cd ./dev/backend/server
+    - python3 -m venv env
+    - ./env/bin/pip install -r requirements.txt
+    - ./env/bin/pip install -r requirements.in
+    - ./env/bin/python setup.py develop
+    - ./env/bin/python setup.py install
     - service apache2 reload
     - chmod -R 777 ./dev/backend/server/env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg
   only:
