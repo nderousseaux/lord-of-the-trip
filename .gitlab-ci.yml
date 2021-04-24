@@ -26,3 +26,6 @@ deploy:
     - ./env/bin/fill_loftes_db production.ini
   only:
     - master
+
+variables:
+  GIT_CLEAN_FLAGS: -x -f -e dev/backend/server/env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg/uploads/**
