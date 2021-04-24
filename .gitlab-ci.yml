@@ -17,8 +17,6 @@ deploy:
     - ./env/bin/python setup.py install
     - sudo service apache2 reload
     - cp /production.ini .
-    - mkdir logs
-    - touch logs/loftes.log
     - sudo mysql < /db.sql
     - ./env/bin/initialize_loftes_db production.ini
     - ./env/bin/fill_loftes_db production.ini
