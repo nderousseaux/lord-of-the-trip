@@ -19,6 +19,7 @@ deploy:
     - cp /production.ini .
     - mkdir logs
     - touch logs/loftes.log
+    - mkdir -p /env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg/uploads/challenges/
     - chmod -R 777 env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg logs
     - sudo mysql < /db.sql
     - ./env/bin/initialize_loftes_db production.ini
