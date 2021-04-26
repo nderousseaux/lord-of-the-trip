@@ -308,18 +308,16 @@ HTTP/1.1 404 Not Found
 def whoami_user(request):
 
     service_informations = ServiceInformations()
-    user_email = request.authenticated_userid
 
-    if user_email != None:
-        user = DBSession.query(User).filter(User.email == user_email).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
-        if user != None:
-            response = service_informations.build_response(
-                exception.HTTPOk, UserSchema().dump(user)
-            )
+    if user != None:
 
-        else:
-            response = service_informations.build_response(exception.HTTPNotFound)
+        response = service_informations.build_response(
+            exception.HTTPOk, UserSchema().dump(user)
+        )
 
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)

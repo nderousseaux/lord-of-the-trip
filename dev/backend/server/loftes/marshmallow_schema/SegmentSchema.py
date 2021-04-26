@@ -6,7 +6,7 @@ import json
 
 
 class SegmentSchema(Schema):
-    id = fields.Int()
+    id = fields.Int(dump_only=True)
     name = fields.Str(
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={

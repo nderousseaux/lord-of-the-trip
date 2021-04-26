@@ -189,6 +189,64 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "ChallengeSubscribe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MTkwNDkyMjcsImV4cCI6MTYxOTA1MjgyN30.vAQ1IMG4UkOwwPIe9Pd6GoE0cwVd42XkmS3ByrkSEBbkYxFTyoyMusO1zj1k6H7L0k5koWFvdFoHJtVrBl8mDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/subscribe",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"subscribe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChallengeUnsubscribe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGFiaWNuQGhvdG1haWwuY29tIiwiaWF0IjoxNjE5NDcwMjE3LCJleHAiOjE2MTk0NzM4MTd9.U964gWZXH38CuNbB3UOszz4BSTFsr_uwzx_xq1Fgwd1pL9NqSIuWI-RkngstDb1uM81vwm2eLt8jJHVBVryufA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/unsubscribe",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"unsubscribe"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "Requête pour un challenge\n\nDonnées envoyé dans le JSON sous forme de body \n\nChamps obligatoire en création\n - name\n\nChamps utilisable en modification : \n - name\n - description \n - end_date = \tForamt \"YYYY-MM-DD\"\n -  alone_only = 0 ou 1\n - leve\" : Niveau du challenge,\n - scalling\" : niveau\n - draft : true ou false\n - start_crossing_point_id : id du crossing point\n - end_crossing_point_id : id du crossing point\n - admin_id : id de l'administrateur\n\n\n  Exemple pour modification\n    {\n        \"name\":\"First Challenge\",\n        \"description\":\"Description\", \n        \"end_date\":\"2022-10-18\",\n        \"alone_only\" : 1,\n        \"level\" : \"Débutant\",\n        \"scalling\" : 10,\n        \"draft\": true,\n        \"start_crossing_point_id\" : 1,\n        \"end_crossing_point_id\" : 2,\n        \"admin_id\" : 1\n    }",
@@ -199,8 +257,7 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						],
-						"id": "877eb870-9fa0-4111-9bbb-2e0704bad7d3"
+						]
 					}
 				},
 				{
@@ -209,12 +266,10 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						],
-						"id": "fde26dbd-cf92-4e5a-ba74-4158adaed8d4"
+						]
 					}
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Segments",
@@ -228,8 +283,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5c75c7eb-7ec7-42f1-bfb8-4c66504a72bb"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -271,8 +325,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5b86ce09-c3c2-4ed0-8e3b-1b226506ab99"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -315,8 +368,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "217fbdbb-76f6-4bf9-b696-60fd9c5d48e7"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -355,8 +407,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "0b20c341-a43a-4751-9909-b9a428a4af22"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -396,8 +447,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "fbb57da5-b715-4cb3-ad63-5a4733bf3472"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -437,8 +487,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "b56a4b2a-4bb7-4eca-80f3-282c447b42e9"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -469,8 +518,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "CrossingPoint",
@@ -484,8 +532,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "673d1c55-4c59-4f56-ae89-393aac19e3fe"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -528,8 +575,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "0c30030d-d268-4e44-bd7c-df7111fff507"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -572,8 +618,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "66e7cc53-54ed-43ed-846f-4fcab6ac1e84"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -640,8 +685,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "eadc5b24-0239-45f8-81ea-b5593ec50857"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -681,8 +725,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5fd8b8a5-077c-496d-9f89-90b36dccd30d"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -722,8 +765,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5c77851f-0efb-4398-8211-8621f4043dad"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1374,8 +1416,7 @@
 				"type": "text/javascript",
 				"exec": [
 					""
-				],
-				"id": "a2d84545-3092-4f84-96fd-6d30a75def75"
+				]
 			}
 		},
 		{
@@ -1384,8 +1425,7 @@
 				"type": "text/javascript",
 				"exec": [
 					""
-				],
-				"id": "d8e1cc31-2e7b-4dbb-a779-83f41daa8a62"
+				]
 			}
 		}
 	],
