@@ -16,7 +16,7 @@ from .Obstacle import Obstacle
 
 # User Data
 from .User import User
-from .UserSubscribe import UserSubscribe
+from .UserChallenge import UserChallenge
 from .Event import Event
 
 # Constante

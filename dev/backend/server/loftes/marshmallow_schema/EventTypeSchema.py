@@ -7,14 +7,15 @@ from marshmallow import (
     post_dump,
     post_load,
     pre_load,
-    validate
+    validate,
 )
 
 import datetime, time
 import json
 
+
 class EventTypeSchema(Schema):
-    id = fields.Int()
+    id = fields.Int(dump_only=True)
 
     code = fields.Str(
         required=True,
@@ -33,10 +34,10 @@ class EventTypeSchema(Schema):
             "null": "Field must not be null.",
         },
     )
-    
+
     class Meta:
         ordered = True
-    
+
     @post_load
     def make_event_type(self, data, **kwargs):
         return EventType(**data)

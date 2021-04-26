@@ -4,7 +4,7 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Challenge, CrossingPoint, DBSession
+from loftes.models import Challenge, CrossingPoint, UserChallenge, User, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.utils import get_project_root
@@ -21,6 +21,7 @@ import logging
 import os
 import shutil
 import socket
+import datetime
 
 
 challenge = Service(name="challenge", path="/challenges", cors_policy=cors_policy)
@@ -172,6 +173,8 @@ def get_challenges(request):
 
     service_informations = ServiceInformations()
 
+    # if request.authenticated_userid != None:
+
     challenges = DBSession.query(Challenge).all()
 
     if len(challenges) == 0:
@@ -179,9 +182,12 @@ def get_challenges(request):
 
     data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
 
-    # response = service_informations.build_response(exception.HTTPOk, data)
+    response = service_informations.build_response(exception.HTTPOk, data)
 
-    return service_informations.build_response(exception.HTTPOk, data)
+    # else:
+    # response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
 
 
 """
@@ -1085,5 +1091,285 @@ def upload_image(request):
 
     else:
         response = service_informations.build_response(exception.HTTPNotFound)
+
+    return response
+
+
+challenge_subscribe = Service(
+    name="challenge_subscribe",
+    path="challenges/{id:\d+}/subscribe",
+    cors_policy=cors_policy,
+)
+
+"""
+@api {post} /challenges/:id/subscribe User's subscription to a challenge
+@apiParam id Challenge's unique ID.
+@apiVersion 0.2.0
+@apiName SubscribeChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+
+@apiSuccessExample Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} UnfinishedChallenge User's subscription to a unfinished challenge.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot subscribe to a unfinished challenge."
+  }
+}
+
+@apiError (Error 403) {Object} ChallengesOwner User's subscription to a challenge that he has created.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot subscribe to a challenge you have created."
+  }
+}
+
+@apiError (Error 403) {Object} AlreadySubscribed User's subscription to a challenge that he has already subscribed.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You are already subscribed to this challenge."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+
+"""
+
+
+@challenge_subscribe.post()
+def subscribe(request):
+
+    service_informations = ServiceInformations()
+
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
+
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        if challenge != None:
+
+            if challenge.draft == False:
+
+                if user.id != challenge.admin_id:
+
+                    can_subscribe = True
+
+                    subscribed_challenges = (
+                        DBSession.query(UserChallenge)
+                        .filter(
+                            UserChallenge.user_id == user.id,
+                            UserChallenge.challenge_id == challenge.id,
+                        )
+                        .all()
+                    )
+
+                    if len(subscribed_challenges) > 0:
+                        for subscribed_challenge in subscribed_challenges:
+                            """If all challenges are finished or the user withdrew
+                            from a challenge, he can subscribe to a challenge again"""
+                            if subscribed_challenge.unsubscribe_date == None:
+                                can_subscribe = False
+                    # else : First time to subscribe a challenge
+
+                    if can_subscribe:
+
+                        try:
+
+                            user_challenge = UserChallenge()
+                            user_challenge.user_id = user.id
+                            user_challenge.challenge_id = challenge.id
+                            user_challenge.subscribe_date = datetime.datetime.now()
+                            user_challenge.unsubscribe_date = None
+
+                            DBSession.add(user_challenge)
+                            DBSession.flush()
+
+                            response = exception.HTTPNoContent()
+
+                        except Exception as e:
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+                            DBSession.close()
+
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            "You are already subscribed to this challenge.",
+                        )
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You cannot subscribe to a challenge you have created.",
+                    )
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You cannot subscribe to a unfinished challenge.",
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+unsubscribe_challenge = Service(
+    name="unsubscribe_challenge",
+    path="challenges/{id:\d+}/unsubscribe",
+    cors_policy=cors_policy,
+)
+
+"""
+@api {post} /challenges/:id/unsubscribe User's unsubscription from a challenge
+@apiParam id Challenge's unique ID.
+@apiVersion 0.2.0
+@apiName UnSubscribeChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+
+@apiSuccessExample Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} NotSubscribedChallenge User's unsubscription from a challenge that he is not subscribed to.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot unsubscribe from a challenge that you are not subscribed to."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+
+"""
+
+
+@unsubscribe_challenge.post()
+def unsubscribe(request):
+
+    service_informations = ServiceInformations()
+
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
+
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        if challenge != None:
+
+            subscribed_challenge = (
+                DBSession.query(UserChallenge)
+                .filter(
+                    UserChallenge.user_id == user.id,
+                    UserChallenge.challenge_id == challenge.id,
+                    UserChallenge.unsubscribe_date == None,
+                )
+                .first()
+            )
+
+            if subscribed_challenge != None:
+
+                try:
+
+                    DBSession.query(UserChallenge).filter(
+                        UserChallenge.id == subscribed_challenge.id
+                    ).update({UserChallenge.unsubscribe_date: datetime.datetime.now()})
+
+                    DBSession.flush()
+
+                    response = service_informations.build_response(
+                        exception.HTTPNoContent
+                    )
+
+                except Exception as e:
+                    response = service_informations.build_response(
+                        exception.HTTPInternalServerError
+                    )
+                    logging.getLogger(__name__).warn("Returning: %s", str(e))
+                    DBSession.close()
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You cannot unsubscribe from a challenge that you are not subscribed to.",
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response

@@ -23,7 +23,7 @@ from .models.User import *
 from .models.Challenge import *
 from .models.CrossingPoint import *
 from .models.Segment import *
-from .models.UserSubscribe import *
+from .models.UserChallenge import *
 from .models.EventType import *
 
 
@@ -350,9 +350,9 @@ def fill(argv=sys.argv):
     session.add(c3)
     session.commit()
 
-    us = UserSubscribe(user_id="1", challenge_id="1", subscribe_date="2020-03-18")
-    session.add(us)
-    session.commit()
+    # us = UserChallenge(user_id="1", challenge_id="1", subscribe_date="2020-03-18")
+    # session.add(us)
+    # session.commit()
 
     # Crossing points
 
