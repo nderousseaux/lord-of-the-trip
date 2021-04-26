@@ -8,9 +8,7 @@ from loftes.marshmallow_schema import UserSchema
 
 import pyramid.httpexceptions as exception
 
-user = Service(name='user',
-               path='/user',
-               cors_policy=cors_policy)
+user = Service(name="user", path="/user", cors_policy=cors_policy)
 # @user.get()
 # def get_users(request):
 
@@ -37,13 +35,13 @@ user = Service(name='user',
 #     except Exception as e:
 #         response = exception.HTTPNotImplemented()
 #         print(e)
-    
+
 #     return response
 
 # user_id = Service(name='user_id',
 #                   path='/user/{id}',
 #                   cors_policy=cors_policy)
-              
+
 # @user_id.get()
 # def get_user_by_id(request):
 
@@ -59,7 +57,7 @@ user = Service(name='user',
 #     except Exception as e:
 #         response = exception.HTTPNotImplemented(e)
 #         print(e)
-    
+
 #     return response
 
 # @user_id.put()
@@ -71,14 +69,14 @@ user = Service(name='user',
 
 #         userdata = DBSession.query(User).filter(User.id_user == id).update(request.json)
 #         DBSession.flush()
-        
+
 #         response = exception.HTTPCreated()
 #         response.text = json.dumps(QuestionSchema().dump(questiondata))
 
 #     except Exception as e:
 #         response = exception.HTTPNotImplemented(e)
 #         print(e)
-    
+
 #     return response
 
 # @user_id.delete()
@@ -92,7 +90,7 @@ user = Service(name='user',
 #         DBSession.delete(userdata)
 
 #         response = exception.HTTPAccepted
-        
+
 #     except Exception as e:
 #         response = exception.HTTPNotImplemented()
-#         print(e)   
+#         print(e)
