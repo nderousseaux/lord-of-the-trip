@@ -1,5 +1,243 @@
 define({ "api": [
   {
+    "type": "post",
+    "url": "/login",
+    "title": "User's Authentication",
+    "version": "0.2.0",
+    "name": "Login",
+    "group": "Authentication",
+    "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>User's email</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>User's password</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n\"email\":\"lemaitre@gmail.com\",\n\"password\":\"Conquérantdelunivers\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"user\": {\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"LeMaitre\",\n    \"email\": \"lemaitre@gmail.com\",\n    \"is_admin\": false\n  },\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MTkwNDYxMTEsImV4cCI6MTYxOTA0OTcxMX0.cQBvaaj7czxA5kUp9DrmK_GYw-M8IG8cT5pJLj62ome26q30TQZC4lZSvqRmpQpzkhRd-BFBzu8EDklNTaMgyQ\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/AuthenticationView.py",
+    "groupTitle": "Authentication"
+  },
+  {
+    "type": "post",
+    "url": "/signup",
+    "title": "Create a new User",
+    "version": "0.2.0",
+    "name": "SignUp",
+    "group": "Authentication",
+    "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "first_name",
+            "description": "<p>User's first name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "last_name",
+            "description": "<p>User's last name</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "pseudo",
+            "description": "<p>User's pseudo</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>User's email</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "password",
+            "description": "<p>User's password</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n\"first_name\":\"Missy\",\n\"last_name\":\"Of Gallifrey\",\n\"pseudo\":\"LeMaitre\",\n\"email\":\"lemaitre@gmail.com\",\n\"password\":\"Conquérantdelunivers\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 201 Created\n\n{\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"LeMaitre\",\n    \"email\": \"lemaitre@gmail.com\",\n    \"is_admin\": false\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'first_name': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'last_name': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'email': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'pseudo': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'password': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"This email is already in use. Please use another one.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"This pseudo is already in use. Please use another one.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'email': ['Not a valid email address.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Pseudo can contain only letters, numbers and underscores.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/AuthenticationView.py",
+    "groupTitle": "Authentication"
+  },
+  {
+    "type": "get",
+    "url": "/whoami",
+    "title": "Request a user informations",
+    "version": "0.2.0",
+    "name": "Whoami",
+    "group": "Authentication",
+    "success": {
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"first_name\": \"Missy\",\n  \"last_name\": \"Of Gallifrey\",\n  \"pseudo\": \"Le maitre\",\n  \"email\": \"lemaitre@gmail.com\",\n  \"is_admin\": false\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>The User is not found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/AuthenticationView.py",
+    "groupTitle": "Authentication"
+  },
+  {
     "type": "delete",
     "url": "/challenges/:id",
     "title": "Delete a challenge",
@@ -97,6 +335,13 @@ define({ "api": [
             "group": "OK 200",
             "type": "Date",
             "optional": false,
+            "field": "start_date",
+            "description": "<p>Challenge's validation date</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Date",
+            "optional": false,
             "field": "end_date",
             "description": "<p>Challenge's end date</p>"
           },
@@ -120,6 +365,13 @@ define({ "api": [
             "optional": false,
             "field": "scalling",
             "description": "<p>Challenge's scale in meters</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Float",
+            "optional": false,
+            "field": "step_length",
+            "description": "<p>Challenge's step length in meters</p>"
           },
           {
             "group": "OK 200",
@@ -168,7 +420,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\": 3,\n  \"scalling\": 3,\n  \"draft\": false,\n  \"start_crossing_point\": {\n    \"id\": 2,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n  },\n  \"end_crossing_point\": {\n    \"id\": 3,\n    \"name\": \"La passe du magicien\",\n    \"position_x\": 0.2,\n    \"position_y\": 0.4\n  },\n  \"segments\": [\n    {\n      \"id\": 2,\n      \"name\": \"La route d'Ettinsmoor\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 3,\n      \"name\": \"La traversée du grand désert\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 4,\n      \"name\": \"La traversée du Grand Océan Oriental\",\n      \"start_crossing_point\": {\n        \"id\": 5,\n        \"name\": \"Le pont des centaures\",\n        \"position_x\": 0.3,\n        \"position_y\": 0.5\n      },\n      \"end_crossing_point\": {\n        \"id\": 8,\n        \"name\": \"La table de pierre\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.5\n      },\n      \"coordinates\": []\n    }\n  ],\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"mail\": \"lemaitre@gmail.com\"\n  }\n  \"event_sum\": 395\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-04-22T11:57:00\"\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\": 3,\n  \"scalling\": 3,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"start_crossing_point\": {\n    \"id\": 2,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n  },\n  \"end_crossing_point\": {\n    \"id\": 3,\n    \"name\": \"La passe du magicien\",\n    \"position_x\": 0.2,\n    \"position_y\": 0.4\n  },\n  \"segments\": [\n    {\n      \"id\": 2,\n      \"name\": \"La route d'Ettinsmoor\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 3,\n      \"name\": \"La traversée du grand désert\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 4,\n      \"name\": \"La traversée du Grand Océan Oriental\",\n      \"start_crossing_point\": {\n        \"id\": 5,\n        \"name\": \"Le pont des centaures\",\n        \"position_x\": 0.3,\n        \"position_y\": 0.5\n      },\n      \"end_crossing_point\": {\n        \"id\": 8,\n        \"name\": \"La table de pierre\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.5\n      },\n      \"coordinates\": []\n    }\n  ],\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"email\": \"lemaitre@gmail.com\"\n  }\n  \"event_sum\": 395\n}",
           "type": "json"
         }
       ]
@@ -285,7 +537,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": 1,\n      \"scalling\": 4,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [\n        {\n          \"id\": 1,\n          \"name\": \"A travers le bois d'entre les mondes\",\n          \"start_crossing_point\": {\n            \"id\": 1,\n            \"name\": \"L'armoire\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 2,\n          \"name\": \"La route d'Ettinsmoor\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": null\n        },\n        {\n          \"id\": 3,\n          \"name\": \"La traversée du grand désert\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 4,\n          \"name\": \"La traversée du Grand Océan Oriental\",\n          \"start_crossing_point\": {\n            \"id\": 5,\n            \"name\": \"Le pont des centaures\",\n            \"position_x\": 0.3,\n            \"position_y\": 0.5\n          },\n          \"end_crossing_point\": {\n            \"id\": 8,\n            \"name\": \"La table de pierre\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.5\n          },\n          \"coordinates\": null\n        }\n      ],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"mail\": \"lemaitre@gmail.com\"\n      }\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": 2,\n      \"scalling\": 4,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"mail\": \"lemaitre@gmail.com\"\n      }\n    }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"start_date\": \"2021-04-22T11:57:00\"\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": 1,\n      \"scalling\": 4,\n      \"step_length\": 0.7,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [\n        {\n          \"id\": 1,\n          \"name\": \"A travers le bois d'entre les mondes\",\n          \"start_crossing_point\": {\n            \"id\": 1,\n            \"name\": \"L'armoire\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 2,\n          \"name\": \"La route d'Ettinsmoor\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": null\n        },\n        {\n          \"id\": 3,\n          \"name\": \"La traversée du grand désert\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 4,\n          \"name\": \"La traversée du Grand Océan Oriental\",\n          \"start_crossing_point\": {\n            \"id\": 5,\n            \"name\": \"Le pont des centaures\",\n            \"position_x\": 0.3,\n            \"position_y\": 0.5\n          },\n          \"end_crossing_point\": {\n            \"id\": 8,\n            \"name\": \"La table de pierre\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.5\n          },\n          \"coordinates\": null\n        }\n      ],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"email\": \"lemaitre@gmail.com\"\n      }\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"start_date\": \"2021-04-22T11:57:00\"\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": 2,\n      \"scalling\": 4,\n      \"step_length\": 0.7,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"email\": \"lemaitre@gmail.com\"\n      }\n    }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -386,6 +638,13 @@ define({ "api": [
           },
           {
             "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "step_length",
+            "description": "<p>Challenge's step length in meters</p>"
+          },
+          {
+            "group": "Body parameters",
             "type": "Number",
             "optional": false,
             "field": "start_crossing_point_id",
@@ -457,6 +716,11 @@ define({ "api": [
         },
         {
           "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Crossing point does not exist.\"\n  }\n}",
           "type": "json"
         },
@@ -521,18 +785,25 @@ define({ "api": [
             "optional": false,
             "field": "scalling",
             "description": "<p>Challenge's scale in meters</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "step_length",
+            "description": "<p>Challenge's step length in meters</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n\"name\":\"A la recherche d'Aslan\",\n\"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n\"end_date\":\"2022-10-18\",\n\"alone_only\":\"0\",\n\"level\":3,\n\"scalling\":10000\n}",
+          "content": "\n{\n\"name\":\"A la recherche d'Aslan\",\n\"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n\"end_date\":\"2022-10-18\",\n\"alone_only\":\"0\",\n\"level\":3,\n\"scalling\":10000,\n  \"step_length\": 0.7\n}",
           "type": "json"
         },
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\":3,\n  \"scalling\": 3,\n  \"draft\": false,\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"mail\": \"lemaitre@gmail.com\"\n  }\n}",
+          "content": "HTTP/1.1 201 Created\n\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": null\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\":3,\n  \"scalling\": 3,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"email\": \"lemaitre@gmail.com\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -568,6 +839,11 @@ define({ "api": [
         {
           "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Invalid isoformat string: '2022-10-'\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -736,6 +1012,13 @@ define({ "api": [
           },
           {
             "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "step_length",
+            "description": "<p>Challenge's step length in meters</p>"
+          },
+          {
+            "group": "Body parameters",
             "type": "Number",
             "optional": false,
             "field": "start_crossing_point_id",
@@ -753,7 +1036,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n  \"name\":\"A la recherche d'Aslan\",\n  \"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\":\"2022-10-18\",\n  \"alone_only\":0,\n  \"level\":3,\n  \"scalling\":10000,\n  \"start_crossing_point_id\":1,\n  \"end_crossing_point_id\":2\n}",
+          "content": "\n{\n  \"name\":\"A la recherche d'Aslan\",\n  \"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\":\"2022-10-18\",\n  \"alone_only\":0,\n  \"level\":3,\n  \"scalling\":10000,\n  \"step_length\": 0.7,\n  \"start_crossing_point_id\":1,\n  \"end_crossing_point_id\":2\n}",
           "type": "json"
         },
         {
@@ -807,7 +1090,194 @@ define({ "api": [
         },
         {
           "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Crossing point does not exist.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ChallengeView.py",
+    "groupTitle": "Challenge"
+  },
+  {
+    "type": "post",
+    "url": "/challenges/:id/subscribe",
+    "title": "User's subscription to a challenge",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "SubscribeChallenge",
+    "group": "Challenge",
+    "success": {
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UnfinishedChallenge",
+            "description": "<p>User's subscription to a unfinished challenge.</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengesOwner",
+            "description": "<p>User's subscription to a challenge that he has created.</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "AlreadySubscribed",
+            "description": "<p>User's subscription to a challenge that he has already subscribed.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot subscribe to a unfinished challenge.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot subscribe to a challenge you have created.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You are already subscribed to this challenge.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ChallengeView.py",
+    "groupTitle": "Challenge"
+  },
+  {
+    "type": "post",
+    "url": "/challenges/:id/unsubscribe",
+    "title": "User's unsubscription from a challenge",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "UnSubscribeChallenge",
+    "group": "Challenge",
+    "success": {
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "NotSubscribedChallenge",
+            "description": "<p>User's unsubscription from a challenge that he is not subscribed to.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot unsubscribe from a challenge that you are not subscribed to.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1273,6 +1743,11 @@ define({ "api": [
           "type": "json"
         },
         {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The given value 'La passe du faune' is already used as a crossing point name for this challenge.\"\n  }\n}",
+          "type": "json"
+        },
+        {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
           "type": "json"
@@ -1399,302 +1874,6 @@ define({ "api": [
     },
     "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/CrossingPointView.py",
     "groupTitle": "CrossingPoint"
-  },
-  {
-    "type": "get",
-    "url": "/challenges/:challenge_id/events/:id",
-    "title": "Request an event informations.",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Event's unique ID.</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.1.0",
-    "name": "GetEvent",
-    "group": "Event",
-    "success": {
-      "fields": {
-        "OK 200": [
-          {
-            "group": "OK 200",
-            "type": "Number",
-            "optional": false,
-            "field": "id",
-            "description": "<p>Crossing point's ID</p>"
-          },
-          {
-            "group": "OK 200",
-            "type": "Number",
-            "optional": false,
-            "field": "duration",
-            "description": "<p>Event's duration</p>"
-          },
-          {
-            "group": "OK 200",
-            "type": "Number",
-            "optional": false,
-            "field": "move_type",
-            "description": "<p>Event's move type. If 0 it is walking, 1 is running and 2 is riding a bicycle</p>"
-          },
-          {
-            "group": "OK 200",
-            "type": "Date",
-            "optional": false,
-            "field": "event_date",
-            "description": "<p>Event's date start in format datetime</p>"
-          },
-          {
-            "group": "OK 200",
-            "type": "Number",
-            "optional": false,
-            "field": "distance",
-            "description": "<p>Event's distance passed</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"events\": [\n    {\n      \"id\": 1,\n      \"duration\": 300,\n      \"move_type\": 1,\n      \"event_date\": \"2021-10-18T00:00:00\",\n      \"distance\": 250\n    }\n  ]\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 404": [
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
-            "field": "RessourceNotFound",
-            "description": "<p>No events were found.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
-    "groupTitle": "Event"
-  },
-  {
-    "type": "get",
-    "url": "/challenges/:challenge_id/events",
-    "title": "Request all events informations of challenge's id.",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.1.0",
-    "name": "GetEvents",
-    "group": "Event",
-    "success": {
-      "fields": {
-        "OK 200": [
-          {
-            "group": "OK 200",
-            "type": "Array",
-            "optional": false,
-            "field": "Event",
-            "description": "<p>All events created of challenge's id.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"events\": [\n    {\n      \"id\": 1,\n      \"duration\": 300,\n      \"move_type\": 1,\n      \"event_date\": \"2021-10-18T00:00:00\",\n      \"distance\": 250\n    }\n  ]\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 404": [
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
-            "field": "RessourceNotFound",
-            "description": "<p>No events were found.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
-    "groupTitle": "Event"
-  },
-  {
-    "type": "post",
-    "url": "/challenges/:challenge_id/events",
-    "title": "Create a new event of challenge's id.",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.1.0",
-    "name": "PostEvent",
-    "group": "Event",
-    "success": {
-      "fields": {
-        "Body parameters": [
-          {
-            "group": "Body parameters",
-            "type": "Number",
-            "optional": false,
-            "field": "duration",
-            "description": "<p>Event's duration</p>"
-          },
-          {
-            "group": "Body parameters",
-            "type": "Number",
-            "optional": false,
-            "field": "move_type",
-            "description": "<p>Event's move type. If 0 it is walking, 1 is running and 2 is riding a bicycle</p>"
-          },
-          {
-            "group": "Body parameters",
-            "type": "Date",
-            "optional": false,
-            "field": "event_date",
-            "description": "<p>Event's date start in fomrat datetime</p>"
-          },
-          {
-            "group": "Body parameters",
-            "type": "Number",
-            "optional": false,
-            "field": "distance",
-            "description": "<p>Event's distance passed</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Body:",
-          "content": "\n{\n    \"duration\": 300,\n    \"move_type\": 1,\n    \"event_date\": \"2021-10-18T00:00:00\",\n    \"distance\": 250\n}",
-          "type": "json"
-        },
-        {
-          "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n\n\n{\n    \"id\": 1,\n    \"duration\": 300,\n    \"move_type\": 1,\n    \"event_date\": \"2021-10-18T00:00:00\",\n    \"distance\": 250\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "fields": {
-        "Error 400": [
-          {
-            "group": "Error 400",
-            "type": "Object",
-            "optional": false,
-            "field": "BadRequest",
-            "description": "<p>Malformed request syntax.</p>"
-          }
-        ],
-        "Error 404": [
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
-            "field": "RessourceNotFound",
-            "description": "<p>No events were found.</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Invalid isoformat string: '2022-10-'\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
-    "groupTitle": "Event"
   },
   {
     "type": "delete",
@@ -1828,57 +2007,18 @@ define({ "api": [
             "field": "coordinates",
             "description": "<p>Array of segment's coordinates</p>"
           }
-        ],
-        "Body parameters": [
-          {
-            "group": "Body parameters",
-            "type": "String",
-            "optional": false,
-            "field": "name",
-            "description": "<p>Segment's name</p>"
-          },
-          {
-            "group": "Body parameters",
-            "type": "Number",
-            "optional": false,
-            "field": "start_crossing_point_id",
-            "description": "<p>ID of crossing point choosed as start of a segment</p>"
-          },
-          {
-            "group": "Body parameters",
-            "type": "Number",
-            "optional": false,
-            "field": "end_crossing_point_id",
-            "description": "<p>ID of crossing point choosed as end of a segment</p>"
-          },
-          {
-            "group": "Body parameters",
-            "type": "Array",
-            "optional": false,
-            "field": "coordinates",
-            "description": "<p>Array of segment's coordinates</p>"
-          }
         ]
       },
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n    \"id\": 1,\n    \"name\": \"A travers le bois d'entre les mondes\",\n    \"start_crossing_point\": {\n    \"id\": 1,\n    \"name\": \"L'armoire\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n    },\n    \"end_crossing_point\": {\n    \"id\": 2,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n    },\n    \"coordinates\": [],\n    \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n            \"id\": 10,\n            \"name\": \"cr 1\",\n            \"position_x\": 0.417391,\n            \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n            \"id\": 12,\n            \"name\": \"cr 3\",\n            \"position_x\": 0.573043,\n            \"position_y\": 0.492283\n        },\n        \"admin\": {\n            \"id\": 1,\n            \"first_name\": \"Missy\",\n            \"last_name\": \"Of Gallifrey\",\n            \"pseudo\": \"Le maitre\",\n            \"mail\": \"lemaitre@gmail.com\"\n        }\n    }\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n    \"id\": 1,\n    \"name\": \"A travers le bois d'entre les mondes\",\n    \"start_crossing_point\": {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"end_crossing_point\": {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"coordinates\": [],\n    \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n            \"id\": 10,\n            \"name\": \"cr 1\",\n            \"position_x\": 0.417391,\n            \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n            \"id\": 12,\n            \"name\": \"cr 3\",\n            \"position_x\": 0.573043,\n            \"position_y\": 0.492283\n        },\n        \"admin\": {\n            \"id\": 1,\n            \"first_name\": \"Missy\",\n            \"last_name\": \"Of Gallifrey\",\n            \"pseudo\": \"Le maitre\",\n            \"email\": \"lemaitre@gmail.com\"\n        }\n    }\n}",
           "type": "json"
         }
       ]
     },
     "error": {
       "fields": {
-        "Error 400": [
-          {
-            "group": "Error 400",
-            "type": "Object",
-            "optional": false,
-            "field": "BadRequest",
-            "description": "<p>Malformed request syntax.</p>"
-          }
-        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -1897,16 +2037,6 @@ define({ "api": [
         ]
       },
       "examples": [
-        {
-          "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'name': ['Field must not be null.']}\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'name': ['Invalid value']}\"\n  }\n}",
-          "type": "json"
-        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
@@ -1956,7 +2086,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"segments\": [\n    {\n      \"id\": 1,\n      \"name\": \"A travers le bois d'entre les mondes\",\n      \"start_crossing_point\": {\n        \"id\": 1,\n        \"name\": \"L'armoire\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"coordinates\": [],\n      \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n          \"id\": 10,\n          \"name\": \"cr 1\",\n          \"position_x\": 0.417391,\n          \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n          \"id\": 12,\n          \"name\": \"cr 3\",\n          \"position_x\": 0.573043,\n          \"position_y\": 0.492283\n        },\n        \"admin\": {\n          \"id\": 1,\n          \"first_name\": \"Missy\",\n          \"last_name\": \"Of Gallifrey\",\n          \"pseudo\": \"Le maitre\",\n          \"mail\": \"lemaitre@gmail.com\"\n        }\n      }\n    }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"segments\": [\n    {\n      \"id\": 1,\n      \"name\": \"A travers le bois d'entre les mondes\",\n      \"start_crossing_point\": {\n        \"id\": 1,\n        \"name\": \"L'armoire\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"coordinates\": [],\n      \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n          \"id\": 10,\n          \"name\": \"cr 1\",\n          \"position_x\": 0.417391,\n          \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n          \"id\": 12,\n          \"name\": \"cr 3\",\n          \"position_x\": 0.573043,\n          \"position_y\": 0.492283\n        },\n        \"admin\": {\n          \"id\": 1,\n          \"first_name\": \"Missy\",\n          \"last_name\": \"Of Gallifrey\",\n          \"pseudo\": \"Le maitre\",\n          \"email\": \"lemaitre@gmail.com\"\n        }\n      }\n    }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -2107,6 +2237,16 @@ define({ "api": [
           "type": "json"
         },
         {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The segment's coordinates must be of the type array.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The coordinates must have x and y positions.\"\n  }\n}",
+          "type": "json"
+        },
+        {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
           "type": "json"
@@ -2181,13 +2321,22 @@ define({ "api": [
         },
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n\n\n{\n    \"id\": 1,\n    \"name\": \"A travers le bois d'entre les mondes\",\n    \"start_crossing_point\": {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"end_crossing_point\": {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"coordinates\": [\n      {\n        \"position_x\": 355,\n        \"position_y\": 365.125\n      },\n      {\n        \"position_x\": 300,\n        \"position_y\": 347.125\n      }\n    ],\n    \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n            \"id\": 10,\n            \"name\": \"cr 1\",\n            \"position_x\": 0.417391,\n            \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n            \"id\": 12,\n            \"name\": \"cr 3\",\n            \"position_x\": 0.573043,\n            \"position_y\": 0.492283\n        },\n        \"admin\": {\n            \"id\": 1,\n            \"first_name\": \"Missy\",\n            \"last_name\": \"Of Gallifrey\",\n            \"pseudo\": \"Le maitre\",\n            \"mail\": \"lemaitre@gmail.com\"\n        }\n    }\n}",
+          "content": "HTTP/1.1 201 Created\n\n\n{\n    \"id\": 1,\n    \"name\": \"A travers le bois d'entre les mondes\",\n    \"start_crossing_point\": {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"end_crossing_point\": {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"coordinates\": [\n      {\n        \"position_x\": 355,\n        \"position_y\": 365.125\n      },\n      {\n        \"position_x\": 300,\n        \"position_y\": 347.125\n      }\n    ],\n    \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n            \"id\": 10,\n            \"name\": \"cr 1\",\n            \"position_x\": 0.417391,\n            \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n            \"id\": 12,\n            \"name\": \"cr 3\",\n            \"position_x\": 0.573043,\n            \"position_y\": 0.492283\n        },\n        \"admin\": {\n            \"id\": 1,\n            \"first_name\": \"Missy\",\n            \"last_name\": \"Of Gallifrey\",\n            \"pseudo\": \"Le maitre\",\n            \"email\": \"lemaitre@gmail.com\"\n        }\n    }\n}",
           "type": "json"
         }
       ]
     },
     "error": {
       "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -2206,6 +2355,16 @@ define({ "api": [
         ]
       },
       "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The segment's coordinates must be of the type array.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The coordinates must have x and y positions.\"\n  }\n}",
+          "type": "json"
+        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
@@ -2329,6 +2488,16 @@ define({ "api": [
         {
           "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'name': ['Invalid value']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The segment's coordinates must be of the type array.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The coordinates must have x and y positions.\"\n  }\n}",
           "type": "json"
         },
         {

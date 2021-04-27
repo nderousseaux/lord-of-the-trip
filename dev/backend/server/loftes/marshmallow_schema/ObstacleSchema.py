@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 from loftes.models import Obstacle
 
@@ -10,6 +11,21 @@ class ObstacleSchema(Schema):
     id = fields.Int()
     segment_id = fields.Int(load_only=True)
     libelle = fields.Str(required=True,
+=======
+from loftes.models import Obstacle
+
+from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate
+from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
+
+import json
+
+
+class ObstacleSchema(Schema):
+    id = fields.Int(dump_only=True)
+    segment_id = fields.Int(load_only=True)
+    libelle = fields.Str(
+        required=True,
+>>>>>>> d9c7892babc6b99a4893ef3cfe08a55304bbdf3b
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={
             "required": "This field is mandatory.",
@@ -24,9 +40,21 @@ class ObstacleSchema(Schema):
         },
     )
     description = fields.Str()
+<<<<<<< HEAD
     type_question = fields.Int()
     nb_point = fields.Int()
     result = fields.Str()    
+=======
+    type_question = fields.Int(
+        required=True,
+        error_messages={
+            "required": "This field is mandatory.",
+            "null": "Field must not be null.",
+        },
+    )
+    nb_point = fields.Int()
+    result = fields.Str()
+>>>>>>> d9c7892babc6b99a4893ef3cfe08a55304bbdf3b
     # segment_info = fields.Nested(lambda: SegmentSchema())
 
     class Meta:
@@ -45,6 +73,7 @@ class ObstacleSchema(Schema):
         if "libelle" in data:
             if data["libelle"] == None:
                 raise ValueError("Field libelle must not be null.")
+<<<<<<< HEAD
         
         if "progress" in data:
             if data["progress"] == None:
@@ -56,3 +85,15 @@ class ObstacleSchema(Schema):
         
         return data
         #return self.pre_load(data, True)
+=======
+
+        if "progress" in data:
+            if data["progress"] == None:
+                raise ValueError("Field progress must not be null.")
+
+        if "type_question" in data:
+            if data["type_question"] == None:
+                raise ValueError("Field type question must not be null.")
+
+        return data
+>>>>>>> d9c7892babc6b99a4893ef3cfe08a55304bbdf3b

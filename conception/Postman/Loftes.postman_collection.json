@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d5260c26-d181-4b61-bdf7-647516fdd3d1",
+		"_postman_id": "7baed3e7-0d3f-4950-ab70-7a394b9a5e3f",
 		"name": "Loftes",
 		"description": "Pour le faire tourner, changez dans variable la valeur de bas_url\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -185,6 +185,64 @@
 								"challenges",
 								"1",
 								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChallengeSubscribe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MTkwNDkyMjcsImV4cCI6MTYxOTA1MjgyN30.vAQ1IMG4UkOwwPIe9Pd6GoE0cwVd42XkmS3ByrkSEBbkYxFTyoyMusO1zj1k6H7L0k5koWFvdFoHJtVrBl8mDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/subscribe",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"subscribe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChallengeUnsubscribe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGFiaWNuQGhvdG1haWwuY29tIiwiaWF0IjoxNjE5NDcwMjE3LCJleHAiOjE2MTk0NzM4MTd9.U964gWZXH38CuNbB3UOszz4BSTFsr_uwzx_xq1Fgwd1pL9NqSIuWI-RkngstDb1uM81vwm2eLt8jJHVBVryufA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/unsubscribe",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"unsubscribe"
 							]
 						}
 					},
@@ -754,8 +812,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Events",
@@ -766,7 +823,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -809,7 +865,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "35025c99-42c0-401e-9d5f-bed9f14b6ec6",
 								"exec": [
 									""
 								],
@@ -853,7 +908,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c1d532bf-6a2c-4cb6-b656-78dba760057f",
 								"exec": [
 									""
 								],
@@ -920,8 +974,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "EventsType",
@@ -932,7 +985,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7fae8a69-795e-4f02-bc3b-e0638249b362",
 								"exec": [
 									""
 								],
@@ -970,7 +1022,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "fc4b9a8e-230b-4563-a239-5886f43a4212",
 								"exec": [
 									""
 								],
@@ -1011,7 +1062,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e0dc8de1-7439-4d5d-ae4a-48912a785443",
 								"exec": [
 									""
 								],
@@ -1047,8 +1097,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Obstacles",
@@ -1059,7 +1108,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1104,7 +1152,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1146,7 +1193,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1190,7 +1236,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1233,7 +1278,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1276,7 +1320,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "aa2db8d6-1a03-4fbe-a544-0549517a5739",
 								"exec": [
 									""
 								],
@@ -1313,8 +1356,73 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"Harry\", \n\t\"last_name\":\"Potter\", \n\t\"pseudo\":\"h_potter\", \n\t\"email\":\"potter@hotmail.com\", \n\t\"password\":\"hogwarts\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/signup",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\":\"lemaitre@gmail.com\", \n\t\"password\":\"Conquérantdelunivers\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/login",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -1341,10 +1449,8 @@
 	],
 	"variable": [
 		{
-			"id": "782e7d24-cd6c-4823-8991-b0ad6d13725f",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

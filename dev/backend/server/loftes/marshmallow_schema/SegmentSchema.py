@@ -6,7 +6,7 @@ import json
 
 
 class SegmentSchema(Schema):
-    id = fields.Int()
+    id = fields.Int(dump_only=True)
     name = fields.Str(
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={
@@ -83,7 +83,23 @@ class SegmentSchema(Schema):
             if data["coordinates"] == None:
                 raise ValueError("The segment must have coordinates.")
 
-            data["coordinates"] = json.dumps(data["coordinates"])
+            if isinstance(data["coordinates"], list):
+
+                has_error_in_array = False
+
+                for coordinate in data["coordinates"]:
+                    if "position_x" not in coordinate or "position_y" not in coordinate:
+                        has_error_in_array = True
+                        break
+
+                if not has_error_in_array:
+                    data["coordinates"] = json.dumps(data["coordinates"])
+                else:
+                    raise ValueError("The coordinates must have x and y positions.")
+            else:
+                raise ValueError("The segment's coordinates must be of the type array.")
+
+                data["coordinates"] = json.dumps(data["coordinates"])
 
         return data
 
@@ -103,28 +119,6 @@ class SegmentSchema(Schema):
 
             if data["name"] == "":
                 raise ValueError("Invalid value.")
-
-        # if "start_crossing_point_id" in data:
-        #     # Check if crossing point exist
-        #     start_crossing_point = (
-        #         DBSession()
-        #         .query(CrossingPoint)
-        #         .get(int(data["start_crossing_point_id"]))
-        #     )
-
-        #     if start_crossing_point != None:
-        #         if start_crossing_point.id == segment.end_crossing_point.id:
-        #             raise ValueError("The segment cannot have the same start and end.")
-
-        # if "end_crossing_point_id" in data:
-        #     # Check if crossing point exist.
-        #     end_crossing_point = (
-        #         DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
-        #     )
-
-        #     if end_crossing_point != None:
-        #         if end_crossing_point.id == segment.start_crossing_point.id:
-        #             raise ValueError("The segment cannot have the same start and end.")
 
         if "start_crossing_point_id" in data and "end_crossing_point_id" in data:
             if data["start_crossing_point_id"] == data["end_crossing_point_id"]:

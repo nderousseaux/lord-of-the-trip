@@ -2,13 +2,13 @@ from sqlalchemy import *
 
 from loftes.models import Base
 
+
 class User(Base):
-    __tablename__ = 'User'
+    __tablename__ = "User"
     id = Column(Integer, primary_key=True)
-    first_name = Column(String(255))
-    last_name = Column(String(255))
-    pseudo = Column(String(255), unique=True)
-    mail = Column(String(255), unique=True)
-    # password = Column(PasswordType(max_length=None))
-    password = Column(String(255))
-    is_admin = Column(Boolean,server_default=text("0"))
+    first_name = Column(String(255), nullable=False)
+    last_name = Column(String(255), nullable=False)
+    pseudo = Column(String(255), unique=True, nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
+    is_admin = Column(Boolean, server_default=text("0"), nullable=False)

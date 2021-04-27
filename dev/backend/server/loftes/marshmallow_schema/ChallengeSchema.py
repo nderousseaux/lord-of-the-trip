@@ -22,7 +22,7 @@ import json
 
 
 class ChallengeSchema(Schema):
-    id = fields.Int()
+    id = fields.Int(dump_only=True)
     name = fields.Str(
         required=True,
         validate=validate.NoneOf("", error="Invalid value"),
@@ -36,6 +36,7 @@ class ChallengeSchema(Schema):
     alone_only = fields.Int()
     level = fields.Str()
     scalling = fields.Int()
+    step_length = fields.Float()
     draft = fields.Bool()
     start_crossing_point_id = fields.Int(load_only=True)
     end_crossing_point_id = fields.Int(load_only=True)
@@ -44,12 +45,12 @@ class ChallengeSchema(Schema):
     segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
     admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
-    #event_sum = fields.Int(dump_only=True)  
-    #event_sum2 = fields.Int(dump_only=True)
+    event_sum = fields.Int(dump_only=True)
+    # event_sum2 = fields.Int(dump_only=True)
 
     class Meta:
         ordered = True
-    
+
     # @pre_dump
     # def get_eventsum(self,data, **kwargs):
     #     data["event_sum"] = DBSession.query(func.sum(Events.duration)).filter(Events.challenge_id==data["id"]).filter(Events.user_id==1).first()
@@ -57,16 +58,25 @@ class ChallengeSchema(Schema):
 
     @post_load
     def make_challenge(self, data, **kwargs):
-        return Challenge(**data)
-
-    @pre_load
-    def pre_load(self, data, many, **kwargs):
-
         admin = DBSession.query(User).get(1)
         if admin != None:
             data["admin_id"] = admin.id
         else:
             raise PermissionError()
+
+        now = datetime.datetime.now()
+
+        if "end_date" in data and data["end_date"] < now:
+            raise ValueError(
+                "Challenge's end date must be greater of today's date ("
+                + now.strftime("%d-%m-%Y, %H:%M")
+                + ")"
+            )
+
+        return Challenge(**data)
+
+    @pre_load
+    def pre_load(self, data, many, **kwargs):
 
         if "name" in data:
             challenge = (

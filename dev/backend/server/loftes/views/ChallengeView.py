@@ -4,7 +4,7 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Challenge, CrossingPoint, DBSession
+from loftes.models import Challenge, CrossingPoint, UserChallenge, User, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.utils import get_project_root
@@ -13,12 +13,15 @@ from pathlib import Path
 
 import pyramid.httpexceptions as exception
 from pyramid.response import FileResponse
+from pyramid.authentication import AuthTicket
 
 from sqlalchemy import exc
 
 import logging
 import os
 import shutil
+import socket
+import datetime
 
 
 challenge = Service(name="challenge", path="/challenges", cors_policy=cors_policy)
@@ -40,10 +43,12 @@ HTTP/1.1 200 OK
       "id": 1,
       "name": "A la recherche d'Aslan",
       "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+      "start_date": "2021-04-22T11:57:00"
       "end_date": "2020-03-18T00:00:00",
       "alone_only": null,
       "level": 1,
       "scalling": 4,
+      "step_length": 0.7,
       "draft": false,
       "start_crossing_point": null,
       "end_crossing_point": null,
@@ -122,17 +127,19 @@ HTTP/1.1 200 OK
         "first_name": "Missy",
         "last_name": "Of Gallifrey",
         "pseudo": "Le maitre",
-        "mail": "lemaitre@gmail.com"
+        "email": "lemaitre@gmail.com"
       }
     },
     {
       "id": 2,
       "name": "Oops, on a perdu Han Solo",
       "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
+      "start_date": "2021-04-22T11:57:00"
       "end_date": "2020-03-18T00:00:00",
       "alone_only": null,
       "level": 2,
       "scalling": 4,
+      "step_length": 0.7,
       "draft": false,
       "start_crossing_point": null,
       "end_crossing_point": null,
@@ -142,7 +149,7 @@ HTTP/1.1 200 OK
         "first_name": "Missy",
         "last_name": "Of Gallifrey",
         "pseudo": "Le maitre",
-        "mail": "lemaitre@gmail.com"
+        "email": "lemaitre@gmail.com"
       }
     }
   ]
@@ -163,7 +170,11 @@ HTTP/1.1 404 Not Found
 
 @challenge.get()
 def get_challenges(request):
+
     service_informations = ServiceInformations()
+
+    # if request.authenticated_userid != None:
+
     challenges = DBSession.query(Challenge).all()
 
     if len(challenges) == 0:
@@ -171,7 +182,12 @@ def get_challenges(request):
 
     data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
 
-    return service_informations.build_response(exception.HTTPOk, data)
+    response = service_informations.build_response(exception.HTTPOk, data)
+
+    # else:
+    # response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
 
 
 """
@@ -187,6 +203,7 @@ def get_challenges(request):
 @apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
 @apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
 
 @apiSuccessExample {json} Body:
 
@@ -196,7 +213,8 @@ def get_challenges(request):
 	"end_date":"2022-10-18",
 	"alone_only":"0",
 	"level":3,
-	"scalling":10000
+	"scalling":10000,
+  "step_length": 0.7
 }
 
 @apiSuccessExample {json} Success response:
@@ -207,17 +225,19 @@ HTTP/1.1 201 Created
   "id": 1,
   "name": "A la recherche d'Aslan",
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date": null
   "end_date": "2021-12-15T03:16:00",
   "alone_only": 0,
   "level":3,
   "scalling": 3,
+  "step_length": 0.7,
   "draft": false,
   "admin": {
     "id": 1,
     "first_name": "Missy",
     "last_name": "Of Gallifrey",
     "pseudo": "Le maitre",
-    "mail": "lemaitre@gmail.com"
+    "email": "lemaitre@gmail.com"
   }
 }
 
@@ -262,6 +282,17 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
 
@@ -325,10 +356,12 @@ challenge_by_id = Service(
 @apiSuccess (OK 200) {Number} id Challenge's ID
 @apiSuccess (OK 200) {String} name Challenge's name
 @apiSuccess (OK 200) {String} description Challenge's description
+@apiSuccess (OK 200) {Date} start_date Challenge's validation date
 @apiSuccess (OK 200) {Date} end_date Challenge's end date
 @apiSuccess (OK 200) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (OK 200) {Number} level Challenge's difficulty
 @apiSuccess (OK 200) {Number} scalling Challenge's scale in meters
+@apISuccess (OK 200) {Float} step_length Challenge's step length in meters
 @apiSuccess (OK 200) {Bool} draft If true the challenge is in edition mode, if false challenge is published
 @apiSuccess (OK 200) {Object} start_crossing_point Challenge's start crossing point
 @apiSuccess (OK 200) {Object} end_crossing_point Challenge's end crossing point
@@ -343,10 +376,12 @@ HTTP/1.1 200 OK
   "id": 1,
   "name": "A la recherche d'Aslan",
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date": "2021-04-22T11:57:00"
   "end_date": "2021-12-15T03:16:00",
   "alone_only": 0,
   "level": 3,
   "scalling": 3,
+  "step_length": 0.7,
   "draft": false,
   "start_crossing_point": {
     "id": 2,
@@ -418,7 +453,7 @@ HTTP/1.1 200 OK
     "first_name": "Missy",
     "last_name": "Of Gallifrey",
     "pseudo": "Le maitre",
-    "mail": "lemaitre@gmail.com"
+    "email": "lemaitre@gmail.com"
   }
   "event_sum": 395
 }
@@ -465,6 +500,7 @@ def get_challenge(request):
 @apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
 @apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
 @apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
 @apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
 
@@ -477,6 +513,7 @@ def get_challenge(request):
   "alone_only":0,
   "level":3,
   "scalling":10000,
+  "step_length": 0.7,
   "start_crossing_point_id":1,
   "end_crossing_point_id":2
 }
@@ -525,6 +562,17 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
 
@@ -614,6 +662,7 @@ def update_challenge(request):
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
 @apiSuccess (Body parameters) {Bool} draft If true the challenge is in edition mode, if false challenge is published
 @apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
+@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
 @apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
 @apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
 
@@ -667,6 +716,17 @@ HTTP/1.1 400 Bad Request
   "error": {
     "status": "BAD REQUEST",
     "message": "Invalid isoformat string: '2022-10-'"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
 
@@ -784,11 +844,10 @@ def delete_challenge(request):
             challenge.start_crossing_point_id = None
             challenge.end_crossing_point_id = None
 
-            crossing_points_to_delete = (
-                DBSession.query(CrossingPoint)
-                .filter_by(challenge_id=challenge.id)
-                .all()
+            crossing_points_to_delete = DBSession.query(CrossingPoint).filter_by(
+                challenge_id=challenge.id
             )
+
             for crossing_point_to_delete in crossing_points_to_delete:
                 DBSession.delete(crossing_point_to_delete)
 
@@ -966,7 +1025,7 @@ def upload_image(request):
                         path = str(root) + challenge_uploads_path
 
                         if not os.path.isdir(path):
-                            os.makedirs(path, 0o755)
+                            os.makedirs(path, 0o777)
 
                         input_file = request.POST["file"].file
                         input_file_filename = "challenge_" + str(challenge.id)
@@ -1032,5 +1091,285 @@ def upload_image(request):
 
     else:
         response = service_informations.build_response(exception.HTTPNotFound)
+
+    return response
+
+
+challenge_subscribe = Service(
+    name="challenge_subscribe",
+    path="challenges/{id:\d+}/subscribe",
+    cors_policy=cors_policy,
+)
+
+"""
+@api {post} /challenges/:id/subscribe User's subscription to a challenge
+@apiParam id Challenge's unique ID.
+@apiVersion 0.2.0
+@apiName SubscribeChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+
+@apiSuccessExample Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} UnfinishedChallenge User's subscription to a unfinished challenge.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot subscribe to a unfinished challenge."
+  }
+}
+
+@apiError (Error 403) {Object} ChallengesOwner User's subscription to a challenge that he has created.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot subscribe to a challenge you have created."
+  }
+}
+
+@apiError (Error 403) {Object} AlreadySubscribed User's subscription to a challenge that he has already subscribed.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You are already subscribed to this challenge."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+
+"""
+
+
+@challenge_subscribe.post()
+def subscribe(request):
+
+    service_informations = ServiceInformations()
+
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
+
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        if challenge != None:
+
+            if challenge.draft == False:
+
+                if user.id != challenge.admin_id:
+
+                    can_subscribe = True
+
+                    subscribed_challenges = (
+                        DBSession.query(UserChallenge)
+                        .filter(
+                            UserChallenge.user_id == user.id,
+                            UserChallenge.challenge_id == challenge.id,
+                        )
+                        .all()
+                    )
+
+                    if len(subscribed_challenges) > 0:
+                        for subscribed_challenge in subscribed_challenges:
+                            """If all challenges are finished or the user withdrew
+                            from a challenge, he can subscribe to a challenge again"""
+                            if subscribed_challenge.unsubscribe_date == None:
+                                can_subscribe = False
+                    # else : First time to subscribe a challenge
+
+                    if can_subscribe:
+
+                        try:
+
+                            user_challenge = UserChallenge()
+                            user_challenge.user_id = user.id
+                            user_challenge.challenge_id = challenge.id
+                            user_challenge.subscribe_date = datetime.datetime.now()
+                            user_challenge.unsubscribe_date = None
+
+                            DBSession.add(user_challenge)
+                            DBSession.flush()
+
+                            response = exception.HTTPNoContent()
+
+                        except Exception as e:
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+                            DBSession.close()
+
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            "You are already subscribed to this challenge.",
+                        )
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You cannot subscribe to a challenge you have created.",
+                    )
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You cannot subscribe to a unfinished challenge.",
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+unsubscribe_challenge = Service(
+    name="unsubscribe_challenge",
+    path="challenges/{id:\d+}/unsubscribe",
+    cors_policy=cors_policy,
+)
+
+"""
+@api {post} /challenges/:id/unsubscribe User's unsubscription from a challenge
+@apiParam id Challenge's unique ID.
+@apiVersion 0.2.0
+@apiName UnSubscribeChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+
+@apiSuccessExample Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} NotSubscribedChallenge User's unsubscription from a challenge that he is not subscribed to.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot unsubscribe from a challenge that you are not subscribed to."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+
+"""
+
+
+@unsubscribe_challenge.post()
+def unsubscribe(request):
+
+    service_informations = ServiceInformations()
+
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
+
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        if challenge != None:
+
+            subscribed_challenge = (
+                DBSession.query(UserChallenge)
+                .filter(
+                    UserChallenge.user_id == user.id,
+                    UserChallenge.challenge_id == challenge.id,
+                    UserChallenge.unsubscribe_date == None,
+                )
+                .first()
+            )
+
+            if subscribed_challenge != None:
+
+                try:
+
+                    DBSession.query(UserChallenge).filter(
+                        UserChallenge.id == subscribed_challenge.id
+                    ).update({UserChallenge.unsubscribe_date: datetime.datetime.now()})
+
+                    DBSession.flush()
+
+                    response = service_informations.build_response(
+                        exception.HTTPNoContent
+                    )
+
+                except Exception as e:
+                    response = service_informations.build_response(
+                        exception.HTTPInternalServerError
+                    )
+                    logging.getLogger(__name__).warn("Returning: %s", str(e))
+                    DBSession.close()
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You cannot unsubscribe from a challenge that you are not subscribed to.",
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
