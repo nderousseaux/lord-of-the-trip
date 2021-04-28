@@ -42,9 +42,9 @@ class Challenge(Base):
         "UserChallenge", backref="user_subscribed", cascade="all,delete"
     )
 
-    @hybrid_property
-    def event_sum(self):
-        return sum(Events.distance for Events in self.event_sum_user)
+    # @hybrid_property
+    # def event_sum(self):
+    #     return sum(Events.distance for Events in self.event_sum_user)
 
     # @hybrid_property
     # def event_sum2(self):
