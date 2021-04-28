@@ -6,7 +6,7 @@ from marshmallow import ValidationError
 from sqlalchemy import exc
 
 from loftes.cors import cors_policy
-from loftes.models import Event, Challenge, User, Segment, DBSession
+from loftes.models import Event, Challenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
 
@@ -179,11 +179,31 @@ def event_check_response(request):
                 
             DBSession.add(eventdata)
             DBSession.flush()
-
             
-            response = service_informations.build_response(
-                exception.HTTPOk, event_schema.dump(eventdata)
-            )
+            obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
+            if obstacle  == None:
+                response = service_informations.build_response(
+                    exception.HTTPNotFound(),
+                    None,
+                    "Requested resource 'Obstacle' is not found.",
+                ) 
+            else:
+                if (eventdata.response.upper() == obstacle.result.upper()):
+                    event_type = 6
+                else:
+                    event_type = 7
+                
+                eventresponse = Event(
+                    user_id = user.id,    
+                    segment_id = eventdata.segment_id,
+                    event_type_id = event_type)
+                
+                DBSession.add(eventresponse)
+                DBSession.flush()
+
+                response = service_informations.build_response(
+                    exception.HTTPOk, event_schema.dump(eventresponse)
+                )
 
         except ValidationError as validation_error:
             response = service_informations.build_response(
