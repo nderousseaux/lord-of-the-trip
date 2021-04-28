@@ -15,7 +15,6 @@ from sqlalchemy import func
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
-
 # from loftes.marshmallow_schema.EventSchema import EventSchema
 
 import datetime
