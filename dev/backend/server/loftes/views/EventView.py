@@ -9,6 +9,7 @@ from loftes.cors import cors_policy
 from loftes.models import Event, Challenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
+from loftes.resources.ObstacleRessources import check_response
 
 import pyramid.httpexceptions as exception
 import logging
@@ -180,19 +181,21 @@ def event_check_response(request):
             DBSession.add(eventdata)
             DBSession.flush()
             
-            obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
-            if obstacle  == None:
-                response = service_informations.build_response(
-                    exception.HTTPNotFound(),
-                    None,
-                    "Requested resource 'Obstacle' is not found.",
-                ) 
-            else:
-                if (eventdata.response.upper() == obstacle.result.upper()):
-                    event_type = 6
-                else:
-                    event_type = 7
-                
+            # obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
+            # if obstacle  == None:
+            #     response = service_informations.build_response(
+            #         exception.HTTPNotFound(),
+            #         None,
+            #         "Requested resource 'Obstacle' is not found.",
+            #     ) 
+            # else:
+            #     if (eventdata.response.upper() == obstacle.result.upper()):
+            #         event_type = 6
+            #     else:
+            #         event_type = 7
+            
+            event_type = check_response(eventdata.obstacle_id, eventdata.response)
+            if  event_type != 0 :  
                 eventresponse = Event(
                     user_id = user.id,    
                     segment_id = eventdata.segment_id,

@@ -9,14 +9,7 @@ import json
 class ObstacleSchema(Schema):
     id = fields.Int(dump_only=True)
     segment_id = fields.Int(load_only=True)
-    libelle = fields.Str(
-        required=True,
-        validate=validate.NoneOf("", error="Invalid value"),
-        error_messages={
-            "required": "This field is mandatory.",
-            "null": "Field must not be null.",
-        },
-    )
+    libelle = fields.Str()
     progress = fields.Float(
         required=True,
         error_messages={
@@ -25,13 +18,7 @@ class ObstacleSchema(Schema):
         },
     )
     description = fields.Str()
-    type_question = fields.Int(
-        required=True,
-        error_messages={
-            "required": "This field is mandatory.",
-            "null": "Field must not be null.",
-        },
-    )
+    type_question = fields.Int()
     nb_point = fields.Int()
     result = fields.Str()
     # segment_info = fields.Nested(lambda: SegmentSchema())
