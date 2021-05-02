@@ -1,5 +1,3 @@
-// Fonctions mathématiques de conversion
-
 // Converti les degrés en radian (pour le dessin des cercles)
 export const degToRad = (degrees) => {
   return degrees * Math.PI / 180;
@@ -29,6 +27,27 @@ export const percentToPixels = (percent, totalPixels) => {
 export const pixelsToPercent = (pixels, totalPixels) => {
   return pixels / totalPixels;
 };
+
+// La distance entre 2 points en pixels
+export const pixelsLengthBetweenTwoPoints = (startPoint, endPoint) => {
+  let dx = endPoint.position_x - startPoint.position_x;
+  let dy = endPoint.position_y - startPoint.position_y;
+  let dx2 = dx * dx;
+  let dy2 = dy * dy;
+  let pixelsLength = Math.sqrt(dx2 + dy2);
+  return pixelsLength;
+}
+
+// La distance entre 2 points dans la réalité, avec l'échelle et la taille de la map en pixels en paramètre
+export const realLengthBetweenTwoPoints = (startPoint, endPoint, scaling, width) => {
+  let dx = endPoint.position_x - startPoint.position_x;
+  let dy = endPoint.position_y - startPoint.position_y;
+  let dx2 = dx * dx;
+  let dy2 = dy * dy;
+  let pixelsLength = Math.sqrt(dx2 + dy2);
+  let realLength = pixelsLength * scaling / width;
+  return realLength;
+}
 
 export const randomInt = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;

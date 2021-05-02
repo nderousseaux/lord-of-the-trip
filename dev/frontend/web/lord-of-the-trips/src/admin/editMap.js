@@ -5,7 +5,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
-import { percentToPixels, pixelsToPercent, coordinatesEndSegment } from "../utils/utils";
+import { percentToPixels, pixelsToPercent, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
 import Button from '@material-ui/core/Button';
 
 const EditMap = () => {
@@ -21,6 +21,9 @@ const EditMap = () => {
   const [crossingPointsLoaded, setCrossingPointsLoaded] = useState(0);
   const [segments, setSegments] = useState([]);
   const [drawingSegment, setDrawingSegment] = useState(false);
+
+  // Test calcul d'un obstacle
+  const [obstaclePosition, setObstaclePosition] = useState(false);
 
   const queryClient = useQueryClient();
   const history = useHistory();
@@ -102,28 +105,19 @@ const EditMap = () => {
   });
 
   const addCrossingPoint = (x, y) => {
-    let cr = { name: "crossing point", position_x: pixelsToPercent(x, width), position_y: pixelsToPercent(y, height) };
+    let cr = { name: "Crossing point", position_x: pixelsToPercent(x, width), position_y: pixelsToPercent(y, height) };
     createCrossingPointMutation.mutate(cr);
   };
 
   const deleteCrossingPointMutation = useMutation( (crossingPointId) => apiCrossingPoints.deleteCrossingPoint(id, crossingPointId), {
-    onSuccess: () => { queryClient.invalidateQueries(['crossingPoints', id]) },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['crossingPoints', id]);
+      queryClient.invalidateQueries(['segments', id]);
+    },
   });
 
-  // Delete a crossing point if there is no segment starting or ending on it
   const deleteCrossingPoint = (idCrossingPoint) => {
-    let isUsed = false;
-    segments.forEach((segment) => {
-      if(segment.start_crossing_point_id === idCrossingPoint || segment.end_crossing_point_id === idCrossingPoint) {
-        isUsed = true;
-      }
-    });
-    if(drawingSegment.start_crossing_point_id === idCrossingPoint || drawingSegment.end_crossing_point_id === idCrossingPoint) {
-      isUsed = true;
-    }
-    if(isUsed === false) {
-      deleteCrossingPointMutation.mutate(idCrossingPoint);
-    }
+    deleteCrossingPointMutation.mutate(idCrossingPoint);
   };
 
   const updateCrossingPointMutation = useMutation( ({ crossingPoint, crossingPointId }) => apiCrossingPoints.updateCrossingPoint(id, crossingPoint, crossingPointId), {
@@ -168,7 +162,7 @@ const EditMap = () => {
     segment.coordinates.forEach((coordinate) => {
       coord = [...coord, { position_x: pixelsToPercent(coordinate.position_x, width), position_y: pixelsToPercent(coordinate.position_y, height) }];
     });
-    let seg = { name: "segment", start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
+    let seg = { name: "Segment", start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
     createSegmentMutation.mutate(seg);
   };
 
@@ -319,7 +313,6 @@ const EditMap = () => {
     crossingPoints.forEach((crossingPoint) => {
       if(crossingPoint.id === idCrossingPoint) {
         returnCoordinates = { position_x: crossingPoint.position_x, position_y: crossingPoint.position_y };
-        return;
       }
     });
     return returnCoordinates;
@@ -348,40 +341,77 @@ const EditMap = () => {
     return returnCoordinates;
   };
 
-  // Longueur entre le départ et l'arrivé du segment (sans points intermédiaires entre les crossings points)
-  const longueurSegment1 = () => {
-    let scaling = challenge.scalling;
-    let firstSegment = segments[0];
-    let startPointCoordinates = getCoordinatesFromCrossingPoint(firstSegment.start_crossing_point_id);
-    let endPointCoordinates = getCoordinatesFromCrossingPoint(firstSegment.end_crossing_point_id);
-    let dx = endPointCoordinates.position_x - startPointCoordinates.position_x;
-    let dy = endPointCoordinates.position_y - startPointCoordinates.position_y;
-    let dx2 = dx * dx;
-    let dy2 = dy * dy;
-    let longueurPix = Math.sqrt(dx2 + dy2);
-    console.log(longueurPix);
-    let longueur1pix = scaling / width;
-    let longueurRéelle = longueurPix * longueur1pix;
-    console.log(longueurRéelle);
+  // Donne la position (x, y) en pixels d'un obstacle avec comme données le segment et le pourcentage d'avancement sur le segment
+  const getObstaclePosition = (segment, percentage) => {
+    let segmentLenghts = pixelsLengthSegment(segment);
+    console.log(segmentLenghts);
+    // La distance de l'obstacle sur le segment
+    let lengthObstaclePosition = segmentLenghts.totalLength * percentage;
+    // Obtient le morceau de segment sur lequel se trouve l'obstacle
+    let lineWithObstacle;
+    for(let i = 0; i < segmentLenghts.lines.length; i++) {
+      let line = segmentLenghts.lines[i];
+      // La distance de l'obstacle est positive, l'obstacle se trouve sur une prochaine ligne, je soustrait la distance de la ligne a la distance de l'obstacle
+      if(lengthObstaclePosition - line.length >= 0) {
+        lengthObstaclePosition -= line.length;
+      }
+      // La distance de l'obstacle devient négative, l'obstacle est sur la ligne actuelle
+      else {
+        lineWithObstacle = line;
+        break;
+      }
+    };
+    // Pourcentage de l'obstacle sur le morceau de segment
+    let percentageOnLine = lengthObstaclePosition / lineWithObstacle.length;
+    let dx = (lineWithObstacle.endPoint.position_x - lineWithObstacle.startPoint.position_x) * percentageOnLine;
+    let dy = (lineWithObstacle.endPoint.position_y - lineWithObstacle.startPoint.position_y) * percentageOnLine;
+    let obstaclePositionX = lineWithObstacle.startPoint.position_x + dx;
+    let obstaclePositionY = lineWithObstacle.startPoint.position_y + dy;
+    return { position_x: obstaclePositionX, position_y: obstaclePositionY };
+  }
+
+  /* Longueurs du segment en pixels
+   * Résultat :
+   * {
+   *   Mettre un exemple de l'objet JSON
+   * }
+   */
+  const pixelsLengthSegment = (segment) => {
+    let returnObject = { lines: [] };
+    let startPointCoordinates = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
+    let endPointCoordinates = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
+    let points = [startPointCoordinates, ...segment.coordinates, endPointCoordinates];
+    let totalLength = 0;
+    for(let i = 0; i < points.length-1; i++) {
+      let startPoint = points[i];
+      let endPoint = points[i+1];
+      let lineLength = pixelsLengthBetweenTwoPoints(startPoint, endPoint);
+      returnObject = { ...returnObject, lines: [...returnObject.lines, { startPoint: startPoint, endPoint: endPoint, length: lineLength }] };
+      totalLength += lineLength;
+    }
+    returnObject = { ...returnObject, totalLength: totalLength };
+    return returnObject;
   };
 
-  // Longueur du segment avec les points intermédiaire (vrai longueur du segment)
-  // TODO(actuellement copier coller de longueurSegment1)
-  const longueurSegment2 = () => {
-    let scaling = challenge.scalling;
-    let firstSegment = segments[0];
-    let startPointCoordinates = getCoordinatesFromCrossingPoint(firstSegment.start_crossing_point_id);
-    let endPointCoordinates = getCoordinatesFromCrossingPoint(firstSegment.end_crossing_point_id);
-    let dx = endPointCoordinates.position_x - startPointCoordinates.position_x;
-    let dy = endPointCoordinates.position_y - startPointCoordinates.position_y;
-    let dx2 = dx * dx;
-    let dy2 = dy * dy;
-    let longueurPix = Math.sqrt(dx2 + dy2);
-    console.log(longueurPix);
-    let longueur1pix = scaling / width;
-    let longueurRéelle = longueurPix * longueur1pix;
-    console.log(longueurRéelle);
+  /*
+  // Longueurs du segment en vrai
+  const realLengthSegment = (segment) => {
+    let returnObject = { lines: [] };
+    let startPointCoordinates = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
+    let endPointCoordinates = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
+    let points = [startPointCoordinates, ...segment.coordinates, endPointCoordinates];
+    let totalLength = 0;
+    for(let i = 0; i < points.length-1; i++) {
+      let startPoint = points[i];
+      let endPoint = points[i+1];
+      let lineLength = realLengthBetweenTwoPoints(startPoint, endPoint, challenge.scalling, width);
+      returnObject = { ...returnObject, lines: [...returnObject.lines, { startPoint: startPoint, endPoint: endPoint, length: lineLength }] };
+      totalLength += lineLength;
+    }
+    returnObject = { ...returnObject, totalLength: totalLength };
+    return returnObject;
   };
+  */
 
   return <>
     <h3>Edit Map</h3>
@@ -416,7 +446,7 @@ const EditMap = () => {
                 return (
                   segment.coordinates.map(coordinate => {
                     return (
-                      <Circle key={segment.id + " " + coordinate.positionInSegment} x={coordinate.position_x} y={coordinate.position_y} radius={8} draggable stroke={"black"} strokeWidth={2}
+                      <Circle key={segment.id + " " + coordinate.positionInSegment} x={coordinate.position_x} y={coordinate.position_y} radius={5} draggable stroke={"black"} strokeWidth={2}
                       fill={coordinate.isDragging ? "sienna" : "black"}
                       onDragStart={(e) => onDragStartSegmentPoint(e, segment, coordinate)}
                       onDragEnd={(e) => onDragEndSegmentPoint(e, segment, coordinate)} />
@@ -435,6 +465,8 @@ const EditMap = () => {
                                                    onClick={(e) => onClickCrossingPoint(e, crossingPoint.id)}
                                                    onMouseEnter={(e) => onMouseEnterCrossingPoint(e, crossingPoint)}
                                                    onMouseLeave={(e) => onMouseLeaveCrossingPoint(e, crossingPoint)} />)}
+              { /* Test Obstacle */ }
+              {obstaclePosition !== false ? <Circle x={obstaclePosition.position_x} y={obstaclePosition.position_y} radius={16} stroke={"black"} strokeWidth={2} fill={"red"} /> : null}
             </Layer>
           </Stage>
         </div>
@@ -442,8 +474,7 @@ const EditMap = () => {
     <hr />
     <h3>Back to challenge</h3>
     <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button>
-    <button onClick={() => longueurSegment1()}>test longueur segment 1</button>
-    <button onClick={() => longueurSegment2()}>test longueur segment 2</button>
+    <button onClick={() => setObstaclePosition(getObstaclePosition(segments[1], 0.5))}>test obstacle</button>
   </>
 };
 
