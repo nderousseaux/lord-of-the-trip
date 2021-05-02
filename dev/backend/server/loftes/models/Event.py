@@ -13,8 +13,8 @@ class Event(Base):
         "EventType", foreign_keys=[event_type_id]
     )
     move_type = Column(Integer)
-    event_date = Column(BigInteger)
-    duration = Column(Integer)
+    event_date = Column(DateTime)
+    duration = Column(BigInteger)
     footstep = Column(Integer)
     distance = Column(Integer)
     obstacle_id = Column(Integer, ForeignKey('Obstacle.id'))

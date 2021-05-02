@@ -22,7 +22,7 @@ class EventSchema(Schema):
         },
     )
     event_type_info = fields.Nested(EventTypeSchema)
-    event_date = fields.Int()       
+    event_date = fields.DateTime()      
     distance = fields.Int()
     footstep = fields.Int()
     obstacle_id = fields.Int()
@@ -47,5 +47,10 @@ class EventSchema(Schema):
             
             if data["response"] == None:  
                 raise ValueError("You must specified a response for the obstacle.")
+
+        if "event_date" in data:
+            data["event_date"] = datetime.datetime.fromisoformat(
+                data["event_date"]
+            ).isoformat()
 
         return data

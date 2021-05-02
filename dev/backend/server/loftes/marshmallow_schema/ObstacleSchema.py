@@ -9,7 +9,7 @@ import json
 class ObstacleSchema(Schema):
     id = fields.Int(dump_only=True)
     segment_id = fields.Int(load_only=True)
-    libelle = fields.Str()
+    label = fields.Str()
     progress = fields.Float(
         required=True,
         error_messages={

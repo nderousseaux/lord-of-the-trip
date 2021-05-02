@@ -867,11 +867,11 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "67d717ae-488e-4b8b-a087-68b8e8522619",
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "67d717ae-488e-4b8b-a087-68b8e8522619"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -891,11 +891,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/segments/1/events/3",
+							"raw": "{{url_base}}/challenges/1/segments/1/events/3",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
+								"1",
 								"segments",
 								"1",
 								"events",
@@ -911,11 +913,11 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "62b1336b-1329-44c8-9666-24b9edd3bd3c",
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "62b1336b-1329-44c8-9666-24b9edd3bd3c"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -930,7 +932,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"move_type\": 3,\n    \"event_type_id\": 1,\n    \"event_date\":2224567999998,\n    \"distance\":350,\n    \"duration\": 5400\n}",
+							"raw": "{\n    \"move_type\": 3,\n    \"event_type_id\": 1,\n    \"event_date\":\"2021-04-02 12:55:34\",\n    \"distance\":350,\n    \"duration\": 5400\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -938,11 +940,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/segments/1/events",
+							"raw": "{{url_base}}/challenges/1/segments/1/events",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
+								"1",
 								"segments",
 								"1",
 								"events"
@@ -993,11 +997,11 @@
 						}
 					],
 					"request": {
-						"method": "PATCH",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"event_type_id\": 5,\n    \"event_date\":2224567999998,\n    \"obstacle_id\":1,\n    \"response\": \"Jadis\"\n}",
+							"raw": "{\n    \"event_type_id\": 5,\n    \"event_date\":\"2022-10-18 15:00:00\",\n    \"obstacle_id\":2,\n    \"response\": \"L'empereur d'au-delà des Mers\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
