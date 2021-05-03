@@ -37,4 +37,4 @@ class CrossingPoint(Base):
     )
 
 
-Index("idx_name_cp", CrossingPoint.challenge_id, CrossingPoint.name, unique=True)
+#Index("idx_name_cp", CrossingPoint.challenge_id, CrossingPoint.name, unique=True)
