@@ -1158,6 +1158,17 @@ HTTP/1.1 403 Forbidden
   }
 }
 
+@apiError (Error 403) {Object} TerminatedChallenge User's subscription to a challenge that has already been terminated.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot subscribe to a challenge that has already been terminated."
+  }
+}
+
 @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
@@ -1191,6 +1202,17 @@ def subscribe(request):
 
                 if user.id != challenge.admin_id:
 
+                    now = datetime.datetime.now()
+
+                    if challenge.end_date != None and challenge.end_date < now:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            "You cannot subscribe to a challenge that has already been terminated.",
+                        )
+
+                        return response
+
                     can_subscribe = True
 
                     subscribed_challenges = (
@@ -1217,7 +1239,7 @@ def subscribe(request):
                             user_challenge = UserChallenge()
                             user_challenge.user_id = user.id
                             user_challenge.challenge_id = challenge.id
-                            user_challenge.subscribe_date = datetime.datetime.now()
+                            user_challenge.subscribe_date = now
                             user_challenge.unsubscribe_date = None
 
                             DBSession.add(user_challenge)
@@ -1376,6 +1398,7 @@ def unsubscribe(request):
 
     return response
 
+
 verifyChallenge = Service(
     name="verifyChallenge",
     path="challenges/{id:\d+}/verify",
@@ -1430,7 +1453,7 @@ verifyChallenge = Service(
             "position_x": 0.586207,
             "position_y": 0.0824353
         }
-    ]  
+    ]
   }
 
   @apiSuccessExample Success response:
@@ -1470,6 +1493,7 @@ verifyChallenge = Service(
   }
 """
 
+
 @verifyChallenge.post()
 def verify(request):
 
@@ -1488,32 +1512,43 @@ def verify(request):
             # TODO: If user is admin de ce challenge
             is_admin = True
 
-            if is_admin :
+            if is_admin:
 
                 try:
 
-                  # On vérifie qu'aucun crossing point n'est orphelin
-                  orphans = []
+                    # On vérifie qu'aucun crossing point n'est orphelin
+                    orphans = []
 
-                  for crossing in DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id):
-                    if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (crossing.id != challenge.start_crossing_point_id and len(crossing.segments_end) == 0):
-                      orphans.append(crossing)
-                      
+                    for crossing in DBSession.query(CrossingPoint).filter(
+                        CrossingPoint.challenge_id == challenge.id
+                    ):
+                        if (
+                            len(crossing.segments_end) == 0
+                            and len(crossing.segments_start) == 0
+                        ) or (
+                            crossing.id != challenge.start_crossing_point_id
+                            and len(crossing.segments_end) == 0
+                        ):
+                            orphans.append(crossing)
 
-                  loops, deadend = checkChallenge(challenge)
+                    loops, deadend = checkChallenge(challenge)
 
-                  if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
-                    response = service_informations.build_response(
-                        exception.HTTPOk, {
-                          "loop" : [CrossingPointSchema(many=True).dump(loop) for loop in loops],
-                          "deadend": CrossingPointSchema(many=True).dump(deadend),
-                          "orphans": CrossingPointSchema(many=True).dump(orphans)
-                          }
-                    )
-                  else:
-                    response = service_informations.build_response(
-                        exception.HTTPNoContent
-                    )
+                    if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
+                        response = service_informations.build_response(
+                            exception.HTTPOk,
+                            {
+                                "loop": [
+                                    CrossingPointSchema(many=True).dump(loop)
+                                    for loop in loops
+                                ],
+                                "deadend": CrossingPointSchema(many=True).dump(deadend),
+                                "orphans": CrossingPointSchema(many=True).dump(orphans),
+                            },
+                        )
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPNoContent
+                        )
 
                 except Exception as e:
                     response = service_informations.build_response(
