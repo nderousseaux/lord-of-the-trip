@@ -25,6 +25,7 @@ from .models.CrossingPoint import *
 from .models.Segment import *
 from .models.UserChallenge import *
 from .models.EventType import *
+from .models.Obstacle import *
 
 
 def usage(argv):
@@ -350,32 +351,28 @@ def fill(argv=sys.argv):
     session.add(c3)
     session.commit()
 
-    # us = UserChallenge(user_id="1", challenge_id="1", subscribe_date="2020-03-18")
-    # session.add(us)
-    # session.commit()
+    q1 = Obstacle(label = 'Quelle est le vrai nom de la sorcière blanche ?',
+                  progress = 50,    
+                  type_question = 0,
+                  nb_point = 25,
+                  result = 'Jadis',
+                  segment_id = 1)
+    session.add(q1)
+    session.commit()
 
-    # Crossing points
+    q2 = Obstacle(label = 'Qui est le père d\'Aslan ?',
+                  progress = 50,    
+                  type_question = 0,
+                  nb_point = 25,
+                  result = 'L\'empereur d\'au-delà des Mers',
+                  segment_id = 2)
+    session.add(q2)
+    session.commit()
 
-    # segment
-
-    # s3 = Segment(name='La traversée du grand désert',
-    #             start_crossing_point_id='2',
-    #             end_crossing_point_id='3',
-    #             challenge_id='1')
-    # session.add(s3)
-    # session.commit()
-
-    # s4 = Segment(name='La traversée du Grand Océan Oriental',
-    #             start_crossing_point_id='5',
-    #             end_crossing_point_id='8',
-    #             challenge_id='1')
-    # session.add(s4)
-    # session.commit()
-
-    # q = Question(nameQuestion='Question n°1',
-    #     typeQuestion='Question trop cool',
-    #     descriptionQuestion='C\'est une question bien sous tout raport',
-    #     nbPoint='1',
-    #     result='oui')
-    # session.add(q)
-    # session.commit()
+    q3 = Obstacle(label = 'Télécharger une photo',
+                  progress = 50,    
+                  type_question = 1,
+                  nb_point = 30,
+                  segment_id = 3)
+    session.add(q3)
+    session.commit()
