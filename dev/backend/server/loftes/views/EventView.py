@@ -9,7 +9,6 @@ from loftes.cors import cors_policy
 from loftes.models import Event, Challenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
-from loftes.resources.ObstacleRessources import check_response
 
 import pyramid.httpexceptions as exception
 import datetime
