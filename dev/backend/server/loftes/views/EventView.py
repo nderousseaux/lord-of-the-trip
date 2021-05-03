@@ -9,9 +9,9 @@ from loftes.cors import cors_policy
 from loftes.models import Event, Challenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
-from loftes.resources.ObstacleRessources import check_response
 
 import pyramid.httpexceptions as exception
+import datetime
 import logging
 import json
 
@@ -153,7 +153,6 @@ def event_add(request):
 
     return response
 
-############################################
 event_question = Service(
     name='event_question',
     path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/checkresponse',
@@ -177,35 +176,45 @@ def event_check_response(request):
             user = DBSession.query(User).first()
             if user != None:
                 eventdata.user_id = user.id
-                
-            DBSession.add(eventdata)
-            DBSession.flush()
             
-            # obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
-            # if obstacle  == None:
-            #     response = service_informations.build_response(
-            #         exception.HTTPNotFound(),
-            #         None,
-            #         "Requested resource 'Obstacle' is not found.",
-            #     ) 
-            # else:
-            #     if (eventdata.response.upper() == obstacle.result.upper()):
-            #         event_type = 6
-            #     else:
-            #         event_type = 7
+            obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
             
-            event_type = check_response(eventdata.obstacle_id, eventdata.response)
-            if  event_type != 0 :  
-                eventresponse = Event(
-                    user_id = user.id,    
-                    segment_id = eventdata.segment_id,
-                    event_type_id = event_type)
+            if obstacle != None:
                 
-                DBSession.add(eventresponse)
+                DBSession.add(eventdata)
                 DBSession.flush()
+                
+                #Check response
 
+                if (obstacle.type_question == 0):
+                    if (eventdata.response.upper() == obstacle.result.upper()):
+                        event_type = 6
+                    else:
+                        event_type = 7
+
+                    now = datetime.datetime.now()
+                    eventresponse = Event(
+                        user_id = user.id,    
+                        segment_id = eventdata.segment_id,
+                        event_date = now, 
+                        event_type_id = event_type)
+                    
+                    DBSession.add(eventresponse)
+                    DBSession.flush()
+
+                    response = service_informations.build_response(
+                        exception.HTTPOk, event_schema.dump(eventresponse)
+                    )
+                    
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPOk, event_schema.dump(eventdata)
+                    )
+            else:
                 response = service_informations.build_response(
-                    exception.HTTPOk, event_schema.dump(eventresponse)
+                    exception.HTTPNotFound(),
+                    None,
+                    "Requested resource 'Obstacle' is not found.",
                 )
 
         except ValidationError as validation_error:
