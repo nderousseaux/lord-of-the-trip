@@ -4,7 +4,7 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Obstacle, Segment, DBSession
+from loftes.models import Obstacle, Segment, Challenge, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import ObstacleSchema
 
@@ -12,19 +12,26 @@ import pyramid.httpexceptions as exception
 import logging
 import json
 
-obstacle = Service(name='obstacle',
-                   path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/obstacles',
+obstacle_all = Service(name='obstacle_all',
+                   path='/challenges/{challenge_id:\d+}/obstacles',
                    cors_policy=cors_policy)
-@obstacle.get()
+@obstacle_all.get()
 def get_obstacle(request):
 
     service_informations = ServiceInformations()
-    segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
+    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
     
-    if segment != None:
+    if challenge != None:
         
-        obstacle_data = DBSession.query(Obstacle).filter(Obstacle.segment_id==request.matchdict["segment_id"]).all()
-        
+        #obstacle_data = DBSession.query(Obstacle).filter(Obstacle.segment_id==request.matchdict["segment_id"]).all()
+
+        obstacle_data = (
+            DBSession.query(Obstacle)
+            .join(Segment,Obstacle.segment_id==Segment.id)
+            .filter(Segment.challenge_id==request.matchdict["challenge_id"])
+            .all()
+        )  
+
         if len(obstacle_data) == 0:
             return service_informations.build_response(exception.HTTPNotFound())
 
@@ -35,10 +42,14 @@ def get_obstacle(request):
         response = service_informations.build_response(
             exception.HTTPNotFound(),
             None,
-            "Requested ressource 'Segment' is not found.",
+            "Requested ressource 'Challenge' is not found.",
         )    
     
     return response
+
+obstacle = Service(name='obstacle',
+                   path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/obstacles',
+                   cors_policy=cors_policy)
 
 @obstacle.post()
 def obstacle_add(request):
@@ -46,43 +57,50 @@ def obstacle_add(request):
     service_informations = ServiceInformations()
     segment_id = request.matchdict["segment_id"]
     segment = DBSession.query(Segment).get(segment_id)
-    
+    challenge_id = int(request.matchdict["challenge_id"])  
+
     if segment != None:
-        try :
-            obstacle_schema = ObstacleSchema()
-            obstacle_data = obstacle_schema.load(request.json)
-            obstacle_data.segment_id = segment_id
+        if segment.challenge_id == challenge_id:
+            try :
+                obstacle_schema = ObstacleSchema()
+                obstacle_data = obstacle_schema.load(request.json)
+                obstacle_data.segment_id = segment_id
 
-            DBSession.add(obstacle_data)
-            DBSession.flush()
+                DBSession.add(obstacle_data)
+                DBSession.flush()
 
+                response = service_informations.build_response(
+                    exception.HTTPOk, obstacle_schema.dump(obstacle_data)
+                )
+
+            except ValidationError as validation_error:
+                response = service_informations.build_response(
+                    exception.HTTPBadRequest, None, str(validation_error)
+                )
+                DBSession.close()
+
+            except ValueError as value_error:
+                response = service_informations.build_response(
+                    exception.HTTPBadRequest, None, str(value_error)
+                )
+                DBSession.close()
+
+            except PermissionError as pe:
+                response = service_informations.build_response(exception.HTTPUnauthorized)
+                DBSession.close()
+
+            except Exception as e:
+                response = service_informations.build_response(
+                    exception.HTTPInternalServerError
+                )
+                logging.getLogger(__name__).warn("Returning: %s", str(e))
+                DBSession.close()
+        else:
             response = service_informations.build_response(
-                exception.HTTPOk, obstacle_schema.dump(obstacle_data)
-            )
-
-
-        except ValidationError as validation_error:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, str(validation_error)
-            )
-            DBSession.close()
-
-        except ValueError as value_error:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, str(value_error)
-            )
-            DBSession.close()
-
-        except PermissionError as pe:
-            response = service_informations.build_response(exception.HTTPUnauthorized)
-            DBSession.close()
-
-        except Exception as e:
-            response = service_informations.build_response(
-                exception.HTTPInternalServerError
-            )
-            logging.getLogger(__name__).warn("Returning: %s", str(e))
-            DBSession.close()
+                exception.HTTPNotFound(),
+                None,
+                "Requested ressource 'Segment' doesn't exist for 'Challenge'.",
+        )     
 
     else:
         response = service_informations.build_response(

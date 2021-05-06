@@ -891,7 +891,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/events/3",
+							"raw": "{{url_base}}/challenges/1/segments/1/events/19",
 							"host": [
 								"{{url_base}}"
 							],
@@ -901,7 +901,7 @@
 								"segments",
 								"1",
 								"events",
-								"3"
+								"19"
 							]
 						}
 					},
@@ -1001,7 +1001,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"event_type_id\": 5,\n    \"event_date\":\"2022-10-18 15:00:00\",\n    \"obstacle_id\":2,\n    \"response\": \"L'empereur d'au-delà des Mers\"\n}",
+							"raw": "{\n    \"event_type_id\": 5,\n    \"event_date\":\"2022-10-18 15:00:00\",\n    \"obstacle_id\":2,\n    \"response\": \"L'empereur d'au-delà des Mer\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1164,11 +1164,11 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "4895d14b-2ed9-4be0-9008-eb584aa5fe24",
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "4895d14b-2ed9-4be0-9008-eb584aa5fe24"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1188,14 +1188,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/obstacles",
+							"raw": "{{url_base}}/challenges/1/obstacles",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
 								"challenges",
-								"1",
-								"segments",
 								"1",
 								"obstacles"
 							]
@@ -1222,7 +1220,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"libelle\": \"Qui est le père d'Aslan ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"L'empereur d'au-delà des Mers\"\n}",
+							"raw": "{\n    \"label\": \"Qui est le père d'Aslan 2 ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"L'empereur d'au-delà des Mers\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1230,7 +1228,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/obstacles",
+							"raw": "{{url_base}}/challenges/1/segments/7/obstacles",
 							"host": [
 								"{{url_base}}"
 							],
@@ -1238,7 +1236,7 @@
 								"challenges",
 								"1",
 								"segments",
-								"1",
+								"7",
 								"obstacles"
 							]
 						}
