@@ -6,6 +6,7 @@ import apiChallenge from '../api/challenge';
 import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
 import { percentToPixels, pixelsToPercent, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
+import ModalCrossingPoint from './modalCrossingPoint';
 import Button from '@material-ui/core/Button';
 
 const EditMap = () => {
@@ -24,6 +25,10 @@ const EditMap = () => {
 
   // Test calcul d'un obstacle
   const [obstaclePosition, setObstaclePosition] = useState(false);
+
+  // Modal
+  const [dataForModal, setDataForModal] = useState(null);
+  const [openCrossingPointModal, setOpenCrossingPointModal] = useState(false);
 
   const queryClient = useQueryClient();
   const history = useHistory();
@@ -150,6 +155,11 @@ const EditMap = () => {
     setEndChallengeMutation.mutate(idCrossingPoint);
   };
 
+  const openCrossingPointModalFunction = (crossingPoint) => {
+    setDataForModal(crossingPoint);
+    setOpenCrossingPointModal(true);
+  };
+
   const createSegmentMutation = useMutation( (segment) => apiSegments.createSegment(id, segment), {
     onSuccess: () => {
       queryClient.invalidateQueries(['segments', id]);
@@ -230,22 +240,25 @@ const EditMap = () => {
   };
 
   // Click on a Crossing Point
-  const onClickCrossingPoint = (e, idCrossingPoint) => {
+  const onClickCrossingPoint = (e, crossingPoint) => {
     e.cancelBubble = true; // Cancel the click on the stage
     if(radioButtonValue === "3") {
-      deleteCrossingPoint(idCrossingPoint);
+      deleteCrossingPoint(crossingPoint.id);
     }
     else if(radioButtonValue === "4" && drawingSegment === false) {
-      startDrawingSegment(idCrossingPoint);
+      startDrawingSegment(crossingPoint.id);
     }
     else if(radioButtonValue === "4" && drawingSegment !== false) {
-      stopDrawingSegment(idCrossingPoint);
+      stopDrawingSegment(crossingPoint.id);
     }
     else if(radioButtonValue === "6") {
-      setStartChallenge(idCrossingPoint);
+      setStartChallenge(crossingPoint.id);
     }
     else if(radioButtonValue === "7") {
-      setEndChallenge(idCrossingPoint);
+      setEndChallenge(crossingPoint.id);
+    }
+    else if(radioButtonValue === "9") {
+      openCrossingPointModalFunction(crossingPoint);
     }
   };
 
@@ -462,7 +475,7 @@ const EditMap = () => {
                                                    fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, 'green', 0.40, 'green', 0.41, 'black', 0.59, 'black', 0.60, 'orange', 1, 'orange'] : null}
                                                    onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint)}
                                                    onDragEnd={(e) => onDragEndCrossingPoint(e, crossingPoint)}
-                                                   onClick={(e) => onClickCrossingPoint(e, crossingPoint.id)}
+                                                   onClick={(e) => onClickCrossingPoint(e, crossingPoint)}
                                                    onMouseEnter={(e) => onMouseEnterCrossingPoint(e, crossingPoint)}
                                                    onMouseLeave={(e) => onMouseLeaveCrossingPoint(e, crossingPoint)} />)}
               { /* Test Obstacle */ }
@@ -475,6 +488,7 @@ const EditMap = () => {
     <h3>Back to challenge</h3>
     <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button>
     <button onClick={() => setObstaclePosition(getObstaclePosition(segments[1], 0.5))}>test obstacle</button>
+    {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} challengeId={id} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
   </>
 };
 
@@ -492,6 +506,7 @@ const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
     <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
     <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Set End challenge </label>
     <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Change Segment Orientation </label>
+    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Edit with Modal </label>
   </div>
 };
 
