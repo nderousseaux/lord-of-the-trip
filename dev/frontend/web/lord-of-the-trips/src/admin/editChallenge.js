@@ -68,8 +68,9 @@ const EditChallenge = () => {
             <label>New Description : </label> <textarea value={description} onChange={e => setDescription(e.target.value)} rows="2" cols="200" />
           </p>
           <p>
-            <label>Scalling : {challenge.scalling}</label> <br />
-            <label>New Scalling : </label> <input type="number" value={scalling} onChange={e => setScalling(e.target.value)} />
+            <label>Scaling : {challenge.scalling ? challenge.scalling : "0"} meters</label> <br />
+            <label>New Scaling : </label> <input type="number" value={scalling} onChange={e => setScalling(e.target.value)} /> <br />
+            <label>NB : The scaling correspond to the full horizontal length of the map in meters</label>
           </p>
           <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Update challenge</Button>
         </form>

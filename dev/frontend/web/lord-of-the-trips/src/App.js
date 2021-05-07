@@ -34,7 +34,7 @@ const App = () => {
           </Route>
           <Redirect to="/" />
         </Switch>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </HashRouter>
   );

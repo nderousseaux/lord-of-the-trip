@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQueryClient, useMutation } from 'react-query';
-import apiCrossingPoints from '../api/crossingPoints';
+import apiSegments from '../api/segments';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -9,13 +9,13 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-const ModalCrossingPoint = ({ crossingPointObject, challengeId, openState, setOpenState }) => {
+const ModalSegment = ({ segmentObject, challengeId, openState, setOpenState }) => {
   const [name, setName] = useState(null);
   const queryClient = useQueryClient();
 
-  const updateCrossingPointMutation = useMutation( (crossingPoint) => apiCrossingPoints.updateCrossingPoint(challengeId, crossingPoint, crossingPointObject.id), {
+  const updateSegmentMutation = useMutation( (segment) => apiSegments.updateSegment(challengeId, segment, segmentObject.id), {
     onSuccess: () => {
-      queryClient.invalidateQueries(['crossingPoints', challengeId]);
+      queryClient.invalidateQueries(['segments', challengeId]);
       setOpenState(false);
     },
   });
@@ -25,17 +25,18 @@ const ModalCrossingPoint = ({ crossingPointObject, challengeId, openState, setOp
   };
 
   const handleSubmit = () => {
-    updateCrossingPointMutation.mutate({ name: name });
+    updateSegmentMutation.mutate({ name: name });
   };
 
   return (
     <div>
       <Dialog open={openState} onClose={closeModal} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Crossing Point "{crossingPointObject.name}"</DialogTitle>
+        <DialogTitle id="form-dialog-title">Segment "{segmentObject.name}"</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <b>Information : </b> <br />
-            - Current name : {crossingPointObject.name}
+            - Current name : {segmentObject.name} <br />
+            - Length of the segment : {segmentObject.totalLength} meters
           </DialogContentText>
           <hr />
           <form onSubmit={handleSubmit}>
@@ -67,4 +68,4 @@ const ModalCrossingPoint = ({ crossingPointObject, challengeId, openState, setOp
   );
 };
 
-export default ModalCrossingPoint;
+export default ModalSegment;

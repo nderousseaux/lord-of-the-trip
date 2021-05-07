@@ -7,6 +7,7 @@ import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
 import { percentToPixels, pixelsToPercent, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
 import ModalCrossingPoint from './modalCrossingPoint';
+import ModalSegment from './modalSegment';
 import Button from '@material-ui/core/Button';
 
 const EditMap = () => {
@@ -26,9 +27,10 @@ const EditMap = () => {
   // Test calcul d'un obstacle
   const [obstaclePosition, setObstaclePosition] = useState(false);
 
-  // Modal
+  // Modals
   const [dataForModal, setDataForModal] = useState(null);
   const [openCrossingPointModal, setOpenCrossingPointModal] = useState(false);
+  const [openSegmentModal, setOpenSegmentModal] = useState(false);
 
   const queryClient = useQueryClient();
   const history = useHistory();
@@ -211,6 +213,13 @@ const EditMap = () => {
     }
   };
 
+  const openSegmentModalFunction = (segment) => {
+    let segmentLenghts = realLengthSegment(segment);
+    let totalLength = Math.ceil(segmentLenghts.totalLength); // longueur en mêtres du segment arrondi à l'entier supérieur
+    setDataForModal({ ...segment, totalLength: totalLength });
+    setOpenSegmentModal(true);
+  };
+
   const startDrawingSegment = (idCrossingPoint) => {
     setDrawingSegment({ start_crossing_point_id: idCrossingPoint, end_crossing_point_id: null, coordinates: [], onMouseOver: false });
   };
@@ -290,6 +299,9 @@ const EditMap = () => {
     else if(radioButtonValue === "8") {
       changeSegmentOrientation(segment);
     }
+    else if(radioButtonValue === "9") {
+      openSegmentModalFunction(segment);
+    }
   };
 
   const onMouseEnterSegment = (e, segment) => {
@@ -333,7 +345,7 @@ const EditMap = () => {
 
   const formatSegmentPoints = (segment) => {
     let returnCoordinates = [];
-    let lastCoordinates; // Last coordinates before the coordinates of the ending crossing points
+    let lastCoordinates = null; // Last coordinates before the coordinates of the ending crossing points
     let coordinatesStart = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
     if(coordinatesStart !== null) {
       returnCoordinates.push(coordinatesStart.position_x);
@@ -346,7 +358,7 @@ const EditMap = () => {
       lastCoordinates = coordinate;
     });
     let coordinatesEnd = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
-    if(coordinatesEnd !== null) {
+    if(coordinatesEnd !== null && lastCoordinates !== null) {
       let newCoordinatesEnd = coordinatesEndSegment(lastCoordinates.position_x, lastCoordinates.position_y, coordinatesEnd.position_x, coordinatesEnd.position_y, 16);
       returnCoordinates.push(newCoordinatesEnd.x);
       returnCoordinates.push(newCoordinatesEnd.y);
@@ -406,7 +418,6 @@ const EditMap = () => {
     return returnObject;
   };
 
-  /*
   // Longueurs du segment en vrai
   const realLengthSegment = (segment) => {
     let returnObject = { lines: [] };
@@ -424,7 +435,6 @@ const EditMap = () => {
     returnObject = { ...returnObject, totalLength: totalLength };
     return returnObject;
   };
-  */
 
   return <>
     <h3>Edit Map</h3>
@@ -488,7 +498,9 @@ const EditMap = () => {
     <h3>Back to challenge</h3>
     <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button>
     <button onClick={() => setObstaclePosition(getObstaclePosition(segments[1], 0.5))}>test obstacle</button>
+    { /* Render Modals */ }
     {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} challengeId={id} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
+    {dataForModal && openSegmentModal ? <ModalSegment segmentObject={dataForModal} challengeId={id} openState={openSegmentModal} setOpenState={setOpenSegmentModal} /> : null}
   </>
 };
 
@@ -506,7 +518,7 @@ const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
     <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
     <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Set End challenge </label>
     <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Change Segment Orientation </label>
-    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Edit with Modal </label>
+    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Edit with Modal (click on Crossing points or Segments) </label>
   </div>
 };
 
