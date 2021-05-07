@@ -8,7 +8,6 @@ import json
 
 class ObstacleSchema(Schema):
     id = fields.Int(dump_only=True)
-    segment_id = fields.Int(load_only=True)
     label = fields.Str()
     progress = fields.Float(
         required=True,
@@ -18,10 +17,11 @@ class ObstacleSchema(Schema):
         },
     )
     description = fields.Str()
-    type_question = fields.Int()
-    nb_point = fields.Int()
+    question_type = fields.Int()
+    nb_points = fields.Int()
     result = fields.Str()
-    # segment_info = fields.Nested(lambda: SegmentSchema())
+    segment_id = fields.Int(load_only=True)
+    segment = fields.Nested("SegmentSchema", exclude=("obstacles",))
 
     class Meta:
         ordered = True
@@ -36,16 +36,16 @@ class ObstacleSchema(Schema):
 
     def check_json(self, data, **kwargs):
 
-        if "libelle" in data:
-            if data["libelle"] == None:
-                raise ValueError("Field libelle must not be null.")
+        if "label" in data:
+            if data["label"] == None:
+                raise ValueError("Field label must not be null.")
 
         if "progress" in data:
             if data["progress"] == None:
                 raise ValueError("Field progress must not be null.")
 
-        if "type_question" in data:
-            if data["type_question"] == None:
+        if "question_type" in data:
+            if data["question_type"] == None:
                 raise ValueError("Field type question must not be null.")
 
         return data

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9c89ba4b-734a-45a7-8718-0967a2ff9470",
+		"_postman_id": "7baed3e7-0d3f-4950-ab70-7a394b9a5e3f",
 		"name": "Loftes",
 		"description": "Pour le faire tourner, changez dans variable la valeur de bas_url\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -292,8 +292,7 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						],
-						"id": "979037c7-b29d-4aab-8cda-11a8329be992"
+						]
 					}
 				},
 				{
@@ -302,12 +301,10 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						],
-						"id": "d5957aa1-130e-45d6-965f-3c48d34e3073"
+						]
 					}
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Segments",
@@ -321,8 +318,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "9830439c-5c16-4a32-8ca6-82f712f55eae"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -364,8 +360,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5b25a4e2-40ec-4b6f-b6f0-f370aa970e38"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -408,8 +403,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "5f8eaf38-464d-48e1-a188-a0559b87f4db"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -448,8 +442,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "fbe41ff6-ef08-419d-8b82-80c81f3a4c7e"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -489,8 +482,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "3ad27348-737c-4201-b367-bba2780ae06f"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -530,8 +522,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "03743e4c-59e9-472b-acc9-7b7a738472bb"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -562,8 +553,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "CrossingPoint",
@@ -577,8 +567,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "1c6a7cac-58ef-4a8a-a017-84af19a58572"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -621,8 +610,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "b8df7223-2cc7-464e-a41d-bae56cb3457c"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -665,8 +653,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "1f7ef305-f752-4634-819d-e937a3b55c36"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -733,8 +720,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "ce536068-1577-4b23-ab00-970ba9d83f94"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -774,8 +760,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "0f66010e-f1f7-4db0-b210-183cfb57bce9"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -815,8 +800,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "065811e5-4b6b-4d44-8061-67af34ee8aaf"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -847,8 +831,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Events",
@@ -862,8 +845,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "942d6fa3-4070-43d7-9b9c-9d1a08a1f0dc"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -902,7 +884,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "67d717ae-488e-4b8b-a087-68b8e8522619",
 								"exec": [
 									""
 								],
@@ -926,17 +907,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/events/19",
+							"raw": "{{url_base}}/segments/1/events/3",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenges",
-								"1",
 								"segments",
 								"1",
 								"events",
-								"19"
+								"3"
 							]
 						}
 					},
@@ -948,7 +927,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "62b1336b-1329-44c8-9666-24b9edd3bd3c",
 								"exec": [
 									""
 								],
@@ -967,7 +945,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"move_type\": 3,\n    \"event_type_id\": 1,\n    \"event_date\":\"2021-04-02 12:55:34\",\n    \"distance\":350,\n    \"duration\": 5400\n}",
+							"raw": "{\n    \"move_type\": 3,\n    \"event_type_id\": 1,\n    \"event_date\":2224567999998,\n    \"distance\":350,\n    \"duration\": 5400\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -975,13 +953,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/events",
+							"raw": "{{url_base}}/segments/1/events",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenges",
-								"1",
 								"segments",
 								"1",
 								"events"
@@ -1016,52 +992,8 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "EVENT_CHECK_RESPONSE",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "a8b911d6-1726-43de-b89e-919be457dc14",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"event_type_id\": 5,\n    \"event_date\":\"2022-10-18 15:00:00\",\n    \"obstacle_id\":2,\n    \"response\": \"L'empereur d'au-delà des Mer\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/events/checkresponse",
-							"host": [
-								"{{url_base}}"
-							],
-							"path": [
-								"challenges",
-								"1",
-								"segments",
-								"1",
-								"events",
-								"checkresponse"
-							]
-						}
-					},
-					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "EventsType",
@@ -1075,8 +1007,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "d19d65b7-5840-4c62-b41e-7baa13fbdb19"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1113,8 +1044,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "16f054fc-4521-442a-9066-7ad9138aeffc"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1154,8 +1084,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "9ee5992c-e6a5-40fe-ab7b-5546b6bf5bd4"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1187,24 +1116,21 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Obstacles",
 			"item": [
 				{
-					"name": "OBSTACLES_ALL",
+					"name": "OBSTACLES_FIND_BY_CHALLENGE",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "4895d14b-2ed9-4be0-9008-eb584aa5fe24",
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "4895d14b-2ed9-4be0-9008-eb584aa5fe24"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1224,14 +1150,67 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/obstacles",
+							"raw": "{{url_base}}challenges/1/obstacles",
+							"host": [
+								"{{url_base}}challenges"
+							],
+							"path": [
+								"1",
+								"obstacles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_FIND_BY_SEGMENT",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_FIND_BY_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/1",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
 								"challenges",
 								"1",
-								"obstacles"
+								"segments",
+								"1",
+								"obstacles",
+								"1"
 							]
 						}
 					},
@@ -1243,7 +1222,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "8e60d7d1-e9a8-4730-95c9-7c6acd27bb0e",
 								"exec": [
 									""
 								],
@@ -1256,7 +1234,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"label\": \"Qui est le père d'Aslan 2 ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"L'empereur d'au-delà des Mers\"\n}",
+							"raw": "{\n    \"label\": \"Quelle est le vrai nom de la sorcière blanche test ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"Jadis\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1264,7 +1242,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/7/obstacles",
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles",
 							"host": [
 								"{{url_base}}"
 							],
@@ -1272,55 +1250,8 @@
 								"challenges",
 								"1",
 								"segments",
-								"7",
+								"1",
 								"obstacles"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "OBSTACLES_FIND_BY_ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "8d3742ec-afb1-48a1-b767-bccd1ee4b696",
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"id": "e4ea9129-ac01-4fd2-9a15-11fa85f6a652"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/2",
-							"host": [
-								"{{url_base}}"
-							],
-							"path": [
-								"challenges",
-								"1",
-								"segments",
-								"1",
-								"obstacles",
-								"2"
 							]
 						}
 					},
@@ -1335,8 +1266,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "97b37a04-f965-49fa-be82-e8017827497c"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1378,8 +1308,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "a8b911d6-1726-43de-b89e-919be457dc14"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1421,8 +1350,7 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript",
-								"id": "b0fe2ed2-5e3b-4e42-99af-418c303bb660"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1455,14 +1383,13 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Authentication",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "Sign up",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1488,7 +1415,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Login",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1514,18 +1441,15 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Whoami",
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": {
-							"raw": ""
-						}
+						"url": null
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		}
 	],
 	"event": [
@@ -1535,8 +1459,7 @@
 				"type": "text/javascript",
 				"exec": [
 					""
-				],
-				"id": "d4ec0904-43b7-4ad3-8a28-f179930e9f18"
+				]
 			}
 		},
 		{
@@ -1545,17 +1468,14 @@
 				"type": "text/javascript",
 				"exec": [
 					""
-				],
-				"id": "c4918abb-b5f3-4f74-8da9-94059a9c60cf"
+				]
 			}
 		}
 	],
 	"variable": [
 		{
-			"id": "234b7570-33ac-4fc8-a35f-eac93f20e289",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }
