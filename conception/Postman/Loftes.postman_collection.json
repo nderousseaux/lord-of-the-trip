@@ -247,6 +247,41 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "ChallengeVerify",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjAwMjQ4NjIsImV4cCI6MTYyMDAyODQ2Mn0.S1F0N-hEdRdfhH1ElL6JxRNbheauYd1w1vb_lygmiwPdU5cyUD_5ooHumJOoTSamnWoaePPlvwahz4TxUihdww",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/:id/verify",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								":id",
+								"verify"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "Requête pour un challenge\n\nDonnées envoyé dans le JSON sous forme de body \n\nChamps obligatoire en création\n - name\n\nChamps utilisable en modification : \n - name\n - description \n - end_date = \tForamt \"YYYY-MM-DD\"\n -  alone_only = 0 ou 1\n - leve\" : Niveau du challenge,\n - scalling\" : niveau\n - draft : true ou false\n - start_crossing_point_id : id du crossing point\n - end_crossing_point_id : id du crossing point\n - admin_id : id de l'administrateur\n\n\n  Exemple pour modification\n    {\n        \"name\":\"First Challenge\",\n        \"description\":\"Description\", \n        \"end_date\":\"2022-10-18\",\n        \"alone_only\" : 1,\n        \"level\" : \"Débutant\",\n        \"scalling\" : 10,\n        \"draft\": true,\n        \"start_crossing_point_id\" : 1,\n        \"end_crossing_point_id\" : 2,\n        \"admin_id\" : 1\n    }",
@@ -1159,7 +1194,7 @@
 			"name": "Obstacles",
 			"item": [
 				{
-					"name": "OBSTACLES_ALL",
+					"name": "OBSTACLES_FIND_BY_CHALLENGE",
 					"event": [
 						{
 							"listen": "test",
@@ -1190,7 +1225,7 @@
 						"url": {
 							"raw": "{{url_base}}/challenges/1/obstacles",
 							"host": [
-								"{{url_base}}"
+								"{{url_base}}challenges"
 							],
 							"path": [
 								"challenges",
@@ -1202,7 +1237,16 @@
 					"response": []
 				},
 				{
-					"name": "OBSTACLES_ADD",
+					"name": "OBSTACLES_FIND_BY_SEGMENT",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_FIND_BY_ID",
 					"event": [
 						{
 							"listen": "test",
@@ -1215,8 +1259,11 @@
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -1244,7 +1291,7 @@
 					"response": []
 				},
 				{
-					"name": "OBSTACLES_FIND_BY_ID",
+					"name": "OBSTACLES_ADD",
 					"event": [
 						{
 							"listen": "test",
@@ -1257,15 +1304,12 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\n    \"label\": \"Quelle est le vrai nom de la sorcière blanche test ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"Jadis\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1282,8 +1326,7 @@
 								"1",
 								"segments",
 								"1",
-								"obstacles",
-								"2"
+								"obstacles"
 							]
 						}
 					},
@@ -1425,7 +1468,7 @@
 			"name": "Authentication",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "Sign up",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1451,7 +1494,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Login",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -1477,7 +1520,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Whoami",
 					"request": {
 						"method": "GET",
 						"header": [],

@@ -7,7 +7,9 @@ from loftes.cors import cors_policy
 from loftes.models import Challenge, CrossingPoint, UserChallenge, User, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
+from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.utils import get_project_root
+from loftes.resources.CheckChallengeRessources import checkChallenge
 
 from pathlib import Path
 
@@ -1156,6 +1158,17 @@ HTTP/1.1 403 Forbidden
   }
 }
 
+@apiError (Error 403) {Object} TerminatedChallenge User's subscription to a challenge that has already been terminated.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot subscribe to a challenge that has already been terminated."
+  }
+}
+
 @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
@@ -1189,6 +1202,17 @@ def subscribe(request):
 
                 if user.id != challenge.admin_id:
 
+                    now = datetime.datetime.now()
+
+                    if challenge.end_date != None and challenge.end_date < now:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            "You cannot subscribe to a challenge that has already been terminated.",
+                        )
+
+                        return response
+
                     can_subscribe = True
 
                     subscribed_challenges = (
@@ -1215,7 +1239,7 @@ def subscribe(request):
                             user_challenge = UserChallenge()
                             user_challenge.user_id = user.id
                             user_challenge.challenge_id = challenge.id
-                            user_challenge.subscribe_date = datetime.datetime.now()
+                            user_challenge.subscribe_date = now
                             user_challenge.unsubscribe_date = None
 
                             DBSession.add(user_challenge)
@@ -1351,6 +1375,180 @@ def unsubscribe(request):
                     response = service_informations.build_response(
                         exception.HTTPNoContent
                     )
+
+                except Exception as e:
+                    response = service_informations.build_response(
+                        exception.HTTPInternalServerError
+                    )
+                    logging.getLogger(__name__).warn("Returning: %s", str(e))
+                    DBSession.close()
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You cannot unsubscribe from a challenge that you are not subscribed to.",
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+verifyChallenge = Service(
+    name="verifyChallenge",
+    path="challenges/{id:\d+}/verify",
+    cors_policy=cors_policy,
+)
+
+"""
+  @api {post} /challenges/:id/verify Verification of graph integrity
+  @apiParam id Challenge's unique ID.
+  @apiVersion 0.2.0
+  @apiName verifyChallenge
+  @apiGroup Challenge
+  @apiSampleRequest off
+
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+  {
+    "loop": [
+        [
+            {
+                "id": 1,
+                "name": "L'armoire",
+                "position_x": 0.142,
+                "position_y": 0.324511
+            },
+            {
+                "id": 2,
+                "name": "La passe du faune",
+                "position_x": 0.524667,
+                "position_y": 0.335221
+            },
+            {
+                "id": 14,
+                "name": "Crossing point",
+                "position_x": 0.586207,
+                "position_y": 0.0824353
+            }
+        ]
+    ],
+    "deadend": [
+        {
+            "id": 14,
+            "name": "Crossing point",
+            "position_x": 0.586207,
+            "position_y": 0.0824353
+        }
+    ],
+    "orphans": [
+        {
+            "id": 14,
+            "name": "Crossing point",
+            "position_x": 0.586207,
+            "position_y": 0.0824353
+        }
+    ]
+  }
+
+  @apiSuccessExample Success response:
+  HTTP/1.1 200 No Content
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} NotSubscribedChallenge User's unsubscription from a challenge that he is not subscribed to.
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You cannot unsubscribe from a challenge that you are not subscribed to."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+"""
+
+
+@verifyChallenge.post()
+def verify(request):
+
+    service_informations = ServiceInformations()
+
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
+
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        if challenge != None:
+
+            # TODO: If user is admin de ce challenge
+            is_admin = True
+
+            if is_admin:
+
+                try:
+
+                    # On vérifie qu'aucun crossing point n'est orphelin
+                    orphans = []
+
+                    for crossing in DBSession.query(CrossingPoint).filter(
+                        CrossingPoint.challenge_id == challenge.id
+                    ):
+                        if (
+                            len(crossing.segments_end) == 0
+                            and len(crossing.segments_start) == 0
+                        ) or (
+                            crossing.id != challenge.start_crossing_point_id
+                            and len(crossing.segments_end) == 0
+                        ):
+                            orphans.append(crossing)
+
+                    loops, deadend = checkChallenge(challenge)
+
+                    if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
+                        response = service_informations.build_response(
+                            exception.HTTPOk,
+                            {
+                                "loop": [
+                                    CrossingPointSchema(many=True).dump(loop)
+                                    for loop in loops
+                                ],
+                                "deadend": CrossingPointSchema(many=True).dump(deadend),
+                                "orphans": CrossingPointSchema(many=True).dump(orphans),
+                            },
+                        )
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPNoContent
+                        )
 
                 except Exception as e:
                     response = service_informations.build_response(
