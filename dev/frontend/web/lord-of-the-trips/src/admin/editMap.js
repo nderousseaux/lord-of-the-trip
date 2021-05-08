@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import { Stage, Layer, Image, Circle, Line } from 'react-konva';
+import { Stage, Layer, Image, Circle, Arrow } from 'react-konva';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useParams, useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
-import { percentToPixels, pixelsToPercent } from "../utils/utils";
+import { percentToPixels, pixelsToPercent, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
+import ModalCrossingPoint from './modalCrossingPoint';
+import ModalSegment from './modalSegment';
+import Button from '@material-ui/core/Button';
 
 const EditMap = () => {
   const [errorDownload, setErrorDownload] = useState(null);
@@ -16,12 +19,18 @@ const EditMap = () => {
   const [radioButtonValue, setRadioButtonValue] = useState("1");
 
   const [crossingPoints, setCrossingPoints] = useState([]);
-  const [idCrossingPoints, setIdCrossingPoints] = useState(1);
   // +1 when there is a change in the crossing points, to set again the start and the end of the challenge (horrible)
   const [crossingPointsLoaded, setCrossingPointsLoaded] = useState(0);
   const [segments, setSegments] = useState([]);
-  const [idSegments, setIdSegments] = useState(1);
   const [drawingSegment, setDrawingSegment] = useState(false);
+
+  // Test calcul d'un obstacle
+  const [obstaclePosition, setObstaclePosition] = useState(false);
+
+  // Modals
+  const [dataForModal, setDataForModal] = useState(null);
+  const [openCrossingPointModal, setOpenCrossingPointModal] = useState(false);
+  const [openSegmentModal, setOpenSegmentModal] = useState(false);
 
   const queryClient = useQueryClient();
   const history = useHistory();
@@ -36,10 +45,10 @@ const EditMap = () => {
   useEffect(() => {
     if(challenge && crossingPointsLoaded !== 0) {
       if(challenge.start_crossing_point) {
-        setCrossingPoints(current => current.map(cr => cr.id !== challenge.start_crossing_point.id ? {...cr, isStartChallenge: false} : {...cr, isStartChallenge: true}));
+        setCrossingPoints(current => current.map(cr => cr.id !== challenge.start_crossing_point.id ? { ...cr, isStartChallenge: false } : { ...cr, isStartChallenge: true }));
       }
       if(challenge.end_crossing_point) {
-        setCrossingPoints(current => current.map(cr => cr.id !== challenge.end_crossing_point.id ? { ...cr, isEndChallenge: false } : {...cr, isEndChallenge: true}));
+        setCrossingPoints(current => current.map(cr => cr.id !== challenge.end_crossing_point.id ? { ...cr, isEndChallenge: false } : { ...cr, isEndChallenge: true }));
       }
     }
   }, [challenge, crossingPointsLoaded]);
@@ -62,7 +71,7 @@ const EditMap = () => {
 
   // Load the segments
   useEffect(() => {
-    if(isLoadingSegments || isErrorSegments || !segmentsRequest) {
+    if(isLoadingSegments || isErrorSegments || !segmentsRequest || !successDownload) {
       setSegments([]);
     }
     else {
@@ -70,7 +79,7 @@ const EditMap = () => {
       segmentsRequest.segments.forEach((segment) => {
         let coord = [];
         segment.coordinates.forEach((coordinate) => {
-          coord = [...coord, { position_x: percentToPixels(coordinate.position_x, width), position_y: percentToPixels(coordinate.position_y, height) }];
+          coord = [...coord, { positionInSegment: coord.length, position_x: percentToPixels(coordinate.position_x, width), position_y: percentToPixels(coordinate.position_y, height), isDragging: false }];
         });
         seg = [...seg, { id: segment.id, start_crossing_point_id: segment.start_crossing_point.id, end_crossing_point_id: segment.end_crossing_point.id, name: segment.name, coordinates: coord, onMouseOver: false }];
       });
@@ -103,32 +112,19 @@ const EditMap = () => {
   });
 
   const addCrossingPoint = (x, y) => {
-    let cr = { name: "cr " + idCrossingPoints, position_x: pixelsToPercent(x, width), position_y: pixelsToPercent(y, height) };
+    let cr = { name: "Crossing point", position_x: pixelsToPercent(x, width), position_y: pixelsToPercent(y, height) };
     createCrossingPointMutation.mutate(cr);
-    setIdCrossingPoints(id => id + 1);
   };
 
   const deleteCrossingPointMutation = useMutation( (crossingPointId) => apiCrossingPoints.deleteCrossingPoint(id, crossingPointId), {
-    onSuccess: () => { queryClient.invalidateQueries(['crossingPoints', id]) },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['crossingPoints', id]);
+      queryClient.invalidateQueries(['segments', id]);
+    },
   });
 
-  // Delete a crossing point if there is no segment starting or ending on it
   const deleteCrossingPoint = (idCrossingPoint) => {
-    let isUsed = false;
-    segments.forEach((segment) => {
-      if(segment.start_crossing_point_id === idCrossingPoint || segment.end_crossing_point_id === idCrossingPoint)
-      {
-        isUsed = true;
-      }
-    });
-    if(drawingSegment.start_crossing_point_id === idCrossingPoint || drawingSegment.end_crossing_point_id === idCrossingPoint)
-    {
-      isUsed = true;
-    }
-    if(isUsed === false)
-    {
-      deleteCrossingPointMutation.mutate(idCrossingPoint);
-    }
+    deleteCrossingPointMutation.mutate(idCrossingPoint);
   };
 
   const updateCrossingPointMutation = useMutation( ({ crossingPoint, crossingPointId }) => apiCrossingPoints.updateCrossingPoint(id, crossingPoint, crossingPointId), {
@@ -161,8 +157,16 @@ const EditMap = () => {
     setEndChallengeMutation.mutate(idCrossingPoint);
   };
 
+  const openCrossingPointModalFunction = (crossingPoint) => {
+    setDataForModal(crossingPoint);
+    setOpenCrossingPointModal(true);
+  };
+
   const createSegmentMutation = useMutation( (segment) => apiSegments.createSegment(id, segment), {
-    onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['segments', id]);
+      setDrawingSegment(false);
+    },
   });
 
   const addSegment = (segment) => {
@@ -170,9 +174,8 @@ const EditMap = () => {
     segment.coordinates.forEach((coordinate) => {
       coord = [...coord, { position_x: pixelsToPercent(coordinate.position_x, width), position_y: pixelsToPercent(coordinate.position_y, height) }];
     });
-    let seg = { name: "seg " + idSegments, start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
+    let seg = { name: "Segment", start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
     createSegmentMutation.mutate(seg);
-    setIdSegments(id => id + 1);
   };
 
   const deleteSegmentMutation = useMutation( (segmentId) => apiSegments.deleteSegment(id, segmentId), {
@@ -183,8 +186,38 @@ const EditMap = () => {
     deleteSegmentMutation.mutate(idSegment);
   };
 
-  const updateSegment = (segment) => {
-    setSegments(current => current.map(seg => seg.id !== segment.id ? seg : segment));
+  const updateSegmentMutation = useMutation( ({ segment, segmentId }) => apiSegments.updateSegment(id, segment, segmentId), {
+    onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
+  });
+
+  const changeSegmentOrientation = (segment) => {
+    let coord = [];
+    segment.coordinates.forEach((coordinate) => {
+      coord = [...coord, { position_x: pixelsToPercent(coordinate.position_x, width), position_y: pixelsToPercent(coordinate.position_y, height) }];
+    });
+    let newSegmentData = { start_crossing_point_id: segment.end_crossing_point_id, end_crossing_point_id: segment.start_crossing_point_id, coordinates: coord.reverse() };
+    updateSegmentMutation.mutate({ segment: newSegmentData, segmentId: segment.id });
+  };
+
+  const updateSegment = (segment, requestApi) => {
+    if(requestApi) {
+      let coord = [];
+      segment.coordinates.forEach((coordinate) => {
+        coord = [...coord, { position_x: pixelsToPercent(coordinate.position_x, width), position_y: pixelsToPercent(coordinate.position_y, height) }];
+      });
+      let newSegmentData = { name: segment.name, start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
+      updateSegmentMutation.mutate({ segment: newSegmentData, segmentId: segment.id });
+    }
+    else {
+      setSegments(current => current.map(seg => seg.id !== segment.id ? seg : segment));
+    }
+  };
+
+  const openSegmentModalFunction = (segment) => {
+    let segmentLenghts = realLengthSegment(segment);
+    let totalLength = Math.ceil(segmentLenghts.totalLength); // longueur en mêtres du segment arrondi à l'entier supérieur
+    setDataForModal({ ...segment, totalLength: totalLength });
+    setOpenSegmentModal(true);
   };
 
   const startDrawingSegment = (idCrossingPoint) => {
@@ -196,8 +229,11 @@ const EditMap = () => {
   };
 
   const stopDrawingSegment = (idCrossingPoint) => {
-    addSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
-    setDrawingSegment(false);
+    // The end crossing point can't be the same as the start
+    if(idCrossingPoint !== drawingSegment.start_crossing_point_id) {
+      setDrawingSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
+      addSegment({ ...drawingSegment, end_crossing_point_id: idCrossingPoint });
+    }
   };
 
   const onDragStartCrossingPoint = (e, crossingPoint) => {
@@ -213,27 +249,25 @@ const EditMap = () => {
   };
 
   // Click on a Crossing Point
-  const onClickCrossingPoint = (e, idCrossingPoint) => {
+  const onClickCrossingPoint = (e, crossingPoint) => {
     e.cancelBubble = true; // Cancel the click on the stage
-    if(radioButtonValue === "3")
-    {
-      deleteCrossingPoint(idCrossingPoint);
+    if(radioButtonValue === "3") {
+      deleteCrossingPoint(crossingPoint.id);
     }
-    else if(radioButtonValue === "4" && drawingSegment === false)
-    {
-      startDrawingSegment(idCrossingPoint);
+    else if(radioButtonValue === "4" && drawingSegment === false) {
+      startDrawingSegment(crossingPoint.id);
     }
-    else if(radioButtonValue === "4" && drawingSegment !== false)
-    {
-      stopDrawingSegment(idCrossingPoint);
+    else if(radioButtonValue === "4" && drawingSegment !== false) {
+      stopDrawingSegment(crossingPoint.id);
     }
-    else if(radioButtonValue === "6")
-    {
-      setStartChallenge(idCrossingPoint);
+    else if(radioButtonValue === "6") {
+      setStartChallenge(crossingPoint.id);
     }
-    else if(radioButtonValue === "7")
-    {
-      setEndChallenge(idCrossingPoint);
+    else if(radioButtonValue === "7") {
+      setEndChallenge(crossingPoint.id);
+    }
+    else if(radioButtonValue === "9") {
+      openCrossingPointModalFunction(crossingPoint);
     }
   };
 
@@ -247,28 +281,42 @@ const EditMap = () => {
     updateCrossingPoint(crossingPoint, false);
   };
 
+  const onDragStartSegmentPoint = (e, segment, coordinate) => {
+    segment.coordinates[coordinate.positionInSegment] = { ...coordinate, isDragging: true };
+    updateSegment(segment, false);
+  };
+
+  const onDragEndSegmentPoint = (e, segment, coordinate) => {
+    segment.coordinates[coordinate.positionInSegment] = { ...coordinate, position_x: e.target.attrs.x, position_y: e.target.attrs.y, isDragging: false };
+    updateSegment(segment, true);
+  };
+
   // Click on a Segment
-  const onClickSegment = (e, idSegment) => {
-    if(radioButtonValue === "5")
-    {
-      deleteSegment(idSegment);
+  const onClickSegment = (e, segment) => {
+    if(radioButtonValue === "5") {
+      deleteSegment(segment.id);
+    }
+    else if(radioButtonValue === "8") {
+      changeSegmentOrientation(segment);
+    }
+    else if(radioButtonValue === "9") {
+      openSegmentModalFunction(segment);
     }
   };
 
   const onMouseEnterSegment = (e, segment) => {
     segment.onMouseOver = true;
-    updateSegment(segment);
+    updateSegment(segment, false);
   };
 
   const onMouseLeaveSegment = (e, segment) => {
     segment.onMouseOver = false;
-    updateSegment(segment);
+    updateSegment(segment, false);
   };
 
   // Click on the drawing Segment
   const onClickDrawingSegment = (e) => {
-    if(radioButtonValue === "5")
-    {
+    if(radioButtonValue === "5") {
       setDrawingSegment(false);
     }
   };
@@ -276,13 +324,11 @@ const EditMap = () => {
   // Click on Canvas
   const clickOnStage = (e) => {
     const pos = e.target.getStage().getPointerPosition();
-    if(radioButtonValue === "2")
-    {
+    if(radioButtonValue === "2") {
       addCrossingPoint(pos.x, pos.y);
     }
     // add Coordinates in the current drawn segment
-    else if(radioButtonValue === "4" && drawingSegment !== false)
-    {
+    else if(radioButtonValue === "4" && drawingSegment !== false) {
       updateDrawingSegment(pos.x, pos.y);
     }
   };
@@ -292,7 +338,6 @@ const EditMap = () => {
     crossingPoints.forEach((crossingPoint) => {
       if(crossingPoint.id === idCrossingPoint) {
         returnCoordinates = { position_x: crossingPoint.position_x, position_y: crossingPoint.position_y };
-        return;
       }
     });
     return returnCoordinates;
@@ -300,21 +345,95 @@ const EditMap = () => {
 
   const formatSegmentPoints = (segment) => {
     let returnCoordinates = [];
+    let lastCoordinates = null; // Last coordinates before the coordinates of the ending crossing points
     let coordinatesStart = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
     if(coordinatesStart !== null) {
       returnCoordinates.push(coordinatesStart.position_x);
       returnCoordinates.push(coordinatesStart.position_y);
+      lastCoordinates = coordinatesStart;
     }
     segment.coordinates.forEach((coordinate) => {
       returnCoordinates.push(coordinate.position_x);
       returnCoordinates.push(coordinate.position_y);
+      lastCoordinates = coordinate;
     });
     let coordinatesEnd = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
-    if(coordinatesEnd !== null) {
-      returnCoordinates.push(coordinatesEnd.position_x);
-      returnCoordinates.push(coordinatesEnd.position_y);
+    if(coordinatesEnd !== null && lastCoordinates !== null) {
+      let newCoordinatesEnd = coordinatesEndSegment(lastCoordinates.position_x, lastCoordinates.position_y, coordinatesEnd.position_x, coordinatesEnd.position_y, 16);
+      returnCoordinates.push(newCoordinatesEnd.x);
+      returnCoordinates.push(newCoordinatesEnd.y);
     }
     return returnCoordinates;
+  };
+
+  // Donne la position (x, y) en pixels d'un obstacle avec comme données le segment et le pourcentage d'avancement sur le segment
+  const getObstaclePosition = (segment, percentage) => {
+    let segmentLenghts = pixelsLengthSegment(segment);
+    console.log(segmentLenghts);
+    // La distance de l'obstacle sur le segment
+    let lengthObstaclePosition = segmentLenghts.totalLength * percentage;
+    // Obtient le morceau de segment sur lequel se trouve l'obstacle
+    let lineWithObstacle;
+    for(let i = 0; i < segmentLenghts.lines.length; i++) {
+      let line = segmentLenghts.lines[i];
+      // La distance de l'obstacle est positive, l'obstacle se trouve sur une prochaine ligne, je soustrait la distance de la ligne a la distance de l'obstacle
+      if(lengthObstaclePosition - line.length >= 0) {
+        lengthObstaclePosition -= line.length;
+      }
+      // La distance de l'obstacle devient négative, l'obstacle est sur la ligne actuelle
+      else {
+        lineWithObstacle = line;
+        break;
+      }
+    };
+    // Pourcentage de l'obstacle sur le morceau de segment
+    let percentageOnLine = lengthObstaclePosition / lineWithObstacle.length;
+    let dx = (lineWithObstacle.endPoint.position_x - lineWithObstacle.startPoint.position_x) * percentageOnLine;
+    let dy = (lineWithObstacle.endPoint.position_y - lineWithObstacle.startPoint.position_y) * percentageOnLine;
+    let obstaclePositionX = lineWithObstacle.startPoint.position_x + dx;
+    let obstaclePositionY = lineWithObstacle.startPoint.position_y + dy;
+    return { position_x: obstaclePositionX, position_y: obstaclePositionY };
+  }
+
+  /* Longueurs du segment en pixels
+   * Résultat :
+   * {
+   *   Mettre un exemple de l'objet JSON
+   * }
+   */
+  const pixelsLengthSegment = (segment) => {
+    let returnObject = { lines: [] };
+    let startPointCoordinates = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
+    let endPointCoordinates = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
+    let points = [startPointCoordinates, ...segment.coordinates, endPointCoordinates];
+    let totalLength = 0;
+    for(let i = 0; i < points.length-1; i++) {
+      let startPoint = points[i];
+      let endPoint = points[i+1];
+      let lineLength = pixelsLengthBetweenTwoPoints(startPoint, endPoint);
+      returnObject = { ...returnObject, lines: [...returnObject.lines, { startPoint: startPoint, endPoint: endPoint, length: lineLength }] };
+      totalLength += lineLength;
+    }
+    returnObject = { ...returnObject, totalLength: totalLength };
+    return returnObject;
+  };
+
+  // Longueurs du segment en vrai
+  const realLengthSegment = (segment) => {
+    let returnObject = { lines: [] };
+    let startPointCoordinates = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
+    let endPointCoordinates = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
+    let points = [startPointCoordinates, ...segment.coordinates, endPointCoordinates];
+    let totalLength = 0;
+    for(let i = 0; i < points.length-1; i++) {
+      let startPoint = points[i];
+      let endPoint = points[i+1];
+      let lineLength = realLengthBetweenTwoPoints(startPoint, endPoint, challenge.scalling, width);
+      returnObject = { ...returnObject, lines: [...returnObject.lines, { startPoint: startPoint, endPoint: endPoint, length: lineLength }] };
+      totalLength += lineLength;
+    }
+    returnObject = { ...returnObject, totalLength: totalLength };
+    return returnObject;
   };
 
   return <>
@@ -326,19 +445,39 @@ const EditMap = () => {
           <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
             <Layer>
               <Image image={image} />
-              {segments.map(segment => <Line key={segment.id} points={formatSegmentPoints(segment)}
-                                        stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : "black"}
-                                        strokeWidth={radioButtonValue === "5" && segment.onMouseOver ? 10 : 5}
-                                        onClick={(e) => onClickSegment(e, segment.id)}
+              { /* Render segments */ }
+              {segments.map(segment => <Arrow key={segment.id} id={segment.id} points={formatSegmentPoints(segment)}
+                                        stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : radioButtonValue === "8" && segment.onMouseOver ? "green" : "black"}
+                                        strokeWidth={(radioButtonValue === "5" || radioButtonValue === "8") && segment.onMouseOver ? 12 : 6}
+                                        fill={radioButtonValue === "5" && segment.onMouseOver ? "red" : radioButtonValue === "8" && segment.onMouseOver ? "green" : "black"}
+                                        pointerLength={16} pointerWidth={16}
+                                        onClick={(e) => onClickSegment(e, segment)}
                                         onMouseEnter={(e) => onMouseEnterSegment(e, segment)}
                                         onMouseLeave={(e) => onMouseLeaveSegment(e, segment)} />)}
-              {drawingSegment !== false ? <Line points={formatSegmentPoints(drawingSegment)}
+              { /* Render the segment currently drawn */ }
+              {drawingSegment !== false ? <Arrow points={formatSegmentPoints(drawingSegment)}
                                           stroke={radioButtonValue === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
-                                          strokeWidth={radioButtonValue === "5" && drawingSegment.onMouseOver ? 10 : 5}
+                                          strokeWidth={radioButtonValue === "5" && drawingSegment.onMouseOver ? 12 : 6}
+                                          fill={radioButtonValue === "5" && drawingSegment.onMouseOver ? "red" : "sienna"}
+                                          pointerLength={16} pointerWidth={16}
                                           onClick={(e) => onClickDrawingSegment(e)}
                                           onMouseEnter={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: true }))}
                                           onMouseLeave={(e) => setDrawingSegment(segment => ({ ...segment, onMouseOver: false }))} />
                                         : null}
+              { /* Render intermediates points on segments */ }
+              {segments.map((segment) => {
+                return (
+                  segment.coordinates.map(coordinate => {
+                    return (
+                      <Circle key={segment.id + " " + coordinate.positionInSegment} x={coordinate.position_x} y={coordinate.position_y} radius={5} draggable stroke={"black"} strokeWidth={2}
+                      fill={coordinate.isDragging ? "sienna" : "black"}
+                      onDragStart={(e) => onDragStartSegmentPoint(e, segment, coordinate)}
+                      onDragEnd={(e) => onDragEndSegmentPoint(e, segment, coordinate)} />
+                    );
+                  })
+                );
+              })}
+              { /* Render crossing points */ }
               {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.position_x} y={crossingPoint.position_y} radius={12} draggable stroke={"black"} strokeWidth={2}
                                                    fill={crossingPoint.isDragging ? "sienna" : radioButtonValue === "3" && crossingPoint.onMouseOver ? "red" : crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "green" : !crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? "orange" : !crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "blue" : null}
                                                    fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : { x: null, y: null }}
@@ -346,16 +485,22 @@ const EditMap = () => {
                                                    fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, 'green', 0.40, 'green', 0.41, 'black', 0.59, 'black', 0.60, 'orange', 1, 'orange'] : null}
                                                    onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint)}
                                                    onDragEnd={(e) => onDragEndCrossingPoint(e, crossingPoint)}
-                                                   onClick={(e) => onClickCrossingPoint(e, crossingPoint.id)}
+                                                   onClick={(e) => onClickCrossingPoint(e, crossingPoint)}
                                                    onMouseEnter={(e) => onMouseEnterCrossingPoint(e, crossingPoint)}
                                                    onMouseLeave={(e) => onMouseLeaveCrossingPoint(e, crossingPoint)} />)}
+              { /* Test Obstacle */ }
+              {obstaclePosition !== false ? <Circle x={obstaclePosition.position_x} y={obstaclePosition.position_y} radius={16} stroke={"black"} strokeWidth={2} fill={"red"} /> : null}
             </Layer>
           </Stage>
         </div>
       : null}
     <hr />
     <h3>Back to challenge</h3>
-    <button onClick={() => history.push(`/editchallenge/${id}`)}>Edit Challenge</button>
+    <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button>
+    <button onClick={() => setObstaclePosition(getObstaclePosition(segments[1], 0.5))}>test obstacle</button>
+    { /* Render Modals */ }
+    {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} challengeId={id} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
+    {dataForModal && openSegmentModal ? <ModalSegment segmentObject={dataForModal} challengeId={id} openState={openSegmentModal} setOpenState={setOpenSegmentModal} /> : null}
   </>
 };
 
@@ -372,6 +517,8 @@ const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
     <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Delete a Segment </label>
     <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
     <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Set End challenge </label>
+    <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Change Segment Orientation </label>
+    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Edit with Modal (click on Crossing points or Segments) </label>
   </div>
 };
 
