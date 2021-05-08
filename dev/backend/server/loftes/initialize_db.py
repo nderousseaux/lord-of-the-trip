@@ -353,8 +353,8 @@ def fill(argv=sys.argv):
 
     q1 = Obstacle(label = 'Quelle est le vrai nom de la sorcière blanche ?',
                   progress = 50,    
-                  type_question = 0,
-                  nb_point = 25,
+                  question_type = 0,
+                  nb_points = 25,
                   result = 'Jadis',
                   segment_id = 1)
     session.add(q1)
@@ -362,8 +362,8 @@ def fill(argv=sys.argv):
 
     q2 = Obstacle(label = 'Qui est le père d\'Aslan ?',
                   progress = 50,    
-                  type_question = 0,
-                  nb_point = 25,
+                  question_type = 0,
+                  nb_points = 25,
                   result = 'L\'empereur d\'au-delà des Mers',
                   segment_id = 2)
     session.add(q2)
@@ -371,8 +371,8 @@ def fill(argv=sys.argv):
 
     q3 = Obstacle(label = 'Télécharger une photo',
                   progress = 50,    
-                  type_question = 1,
-                  nb_point = 30,
+                  question_type = 1,
+                  nb_points = 30,
                   segment_id = 3)
     session.add(q3)
     session.commit()
