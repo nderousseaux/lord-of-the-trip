@@ -158,7 +158,6 @@ def create_obstacle(request):
                 None,
                 "Requested ressource 'Segment' is not found for this challenge.",
             )
-
     else:
         response = service_informations.build_response(
             exception.HTTPNotFound(),
