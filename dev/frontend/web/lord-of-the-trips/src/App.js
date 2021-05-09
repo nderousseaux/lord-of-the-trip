@@ -4,6 +4,7 @@ import { HashRouter, Switch, Route, Redirect, Link } from 'react-router-dom';
 import AdminChallenges from './admin/challenges'
 import EditChallenge from './admin/editChallenge'
 import EditMap from './admin/editMap'
+import './Custom.css';
 
 const queryClient  = new QueryClient({
   defaultConfig: {
@@ -33,7 +34,7 @@ const App = () => {
           </Route>
           <Redirect to="/" />
         </Switch>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </HashRouter>
   );

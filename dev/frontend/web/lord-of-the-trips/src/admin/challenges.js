@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
+import Button from '@material-ui/core/Button';
 
 const AdminChallenges = () => {
   const queryClient = useQueryClient();
@@ -22,9 +23,9 @@ const AdminChallenges = () => {
       <ul>
         {challenges.challenges.map(c => (
           <li key={c.id}>
-            id : {c.id}, name : {c.name} {' '}
-            <button onClick={() => history.push(`/editchallenge/${c.id}`)}>Edit</button> {' '}
-            <button onClick={() => deleteChallenge.mutate(c.id)}>Delete</button>
+            {c.id} : {c.name} {' '}
+            <Button onClick={() => history.push(`/editchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit</Button> {' '}
+            <Button onClick={() => deleteChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Delete</Button>
           </li>
         ))}
       </ul>
@@ -61,7 +62,7 @@ const CreateChallengeForm = () => {
       <form onSubmit={handleSubmit}>
         <label>Name : </label>
         <input type="text" value={name} onChange={e => setName(e.target.value)} /> {' '}
-        <button>Create</button>
+        <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Create</Button>
       </form>
       {error ? <p>{error.message}</p> : null}
     </div>
