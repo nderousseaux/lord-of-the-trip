@@ -1319,7 +1319,7 @@ define({ "api": [
       }
     },
     "version": "0.2.0",
-    "name": "verifyChallenge",
+    "name": "VerifyChallenge",
     "group": "Challenge",
     "success": {
       "examples": [
@@ -1973,7 +1973,821 @@ define({ "api": [
   },
   {
     "type": "delete",
-    "url": "/challenges/:challenge_id/crossing-points/:id",
+    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles/:id",
+    "title": "Delete an obstacle",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Segment's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Obstacle's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "DeleteObstacle",
+    "group": "Obstacle",
+    "success": {
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "SegmentNotFound",
+            "description": "<p>The id of the Segment was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No segments were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ObstacleView.py",
+    "groupTitle": "Obstacle"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles/:id",
+    "title": "Request a obstacle informations of obstacle's id",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Segment's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Obstacle's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "GetObstacle",
+    "group": "Obstacle",
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Obstacle's ID</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "String",
+            "optional": false,
+            "field": "label",
+            "description": "<p>Obstacle's label</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Float",
+            "optional": false,
+            "field": "progress",
+            "description": "<p>Obstacle's progress on segment's line</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "question_type",
+            "description": "<p>Obstacle's question type</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "nb_points",
+            "description": "<p>Obstacle's number of points</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Obstacle's segment's id</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n  \"progress\": 50.0,\n  \"description\": null,\n  \"question_type\": 0,\n  \"nb_points\": 25,\n  \"result\": \"Jadis\",\n  \"segment_id\": 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "SegmentNotFound",
+            "description": "<p>The id of the Segment was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No obstacles were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ObstacleView.py",
+    "groupTitle": "Obstacle"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:challenge_id/obstacles",
+    "title": "Request all obstacles informations of challenge's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "GetObstaclesByChallenge",
+    "group": "Obstacle",
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Obstacles",
+            "description": "<p>All obstacles created of challenge's id.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"obstacles\": [\n    {\n      \"id\": 1,\n      \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n      \"progress\": 50.0,\n      \"description\": null,\n      \"question_type\": 0,\n      \"nb_points\": 25,\n      \"result\": \"Jadis\",\n      \"segment_id\": 1\n    },\n    {\n      \"id\": 2,\n      \"label\": \"Qui est le père d'Aslan ?\",\n      \"progress\": 50.0,\n      \"description\": null,\n      \"question_type\": 0,\n      \"nb_points\": 25,\n      \"result\": \"L'empereur d'au-delà des Mers\",\n      \"segment_id\": 2\n    },\n    {\n      \"id\": 3,\n      \"label\": \"Télécharger une photo\",\n      \"progress\": 50.0,\n      \"description\": null,\n      \"question_type\": 1,\n      \"nb_points\": 30,\n      \"result\": null,\n      \"segment_id\": 3\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No obstacles were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ObstacleView.py",
+    "groupTitle": "Obstacle"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles",
+    "title": "Request all obstacles informations of segment's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Segment's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "GetObstaclesBySegment",
+    "group": "Obstacle",
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Obstacles",
+            "description": "<p>All obstacles created of segment's id.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"obstacles\": [\n    {\n      \"id\": 1,\n      \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n      \"progress\": 50.0,\n      \"description\": null,\n      \"question_type\": 0,\n      \"nb_points\": 25,\n      \"result\": \"Jadis\",\n      \"segment_id\": 1\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "SegmentNotFound",
+            "description": "<p>The id of the Segment was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No obstacles were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ObstacleView.py",
+    "groupTitle": "Obstacle"
+  },
+  {
+    "type": "patch",
+    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles/:_id",
+    "title": "Partially modify an obstacle",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Segment's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Obstacle's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "PatchObstacle",
+    "group": "Obstacle",
+    "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Obstacle's ID</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "label",
+            "description": "<p>Obstacle's label</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "progress",
+            "description": "<p>Obstacle's progress on segment's line</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "question_type",
+            "description": "<p>Obstacle's question type</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "nb_points",
+            "description": "<p>Obstacle's number of points</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Obstacle's segment's id</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n    \"nb_points\": 25\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "SegmentNotFound",
+            "description": "<p>The id of the Segment was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No obstacles were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'label': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'progress': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'question_type': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ObstacleView.py",
+    "groupTitle": "Obstacle"
+  },
+  {
+    "type": "post",
+    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles",
+    "title": "Create a new obstacle of segment's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Segment's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "PostObstacle",
+    "group": "Obstacle",
+    "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "progress",
+            "description": "<p>Obstacle's progress on segment's line</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n\"progress\":14.6\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 201 Created\n\n{\n  \"id\": 4,\n  \"label\": null,\n  \"progress\": 14.6,\n  \"description\": null,\n  \"question_type\": null,\n  \"nb_points\": null,\n  \"result\": null,\n  \"segment_id\": 5\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "SegmentNotFound",
+            "description": "<p>The id of the Segment was not found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'progress': ['This field is mandatory.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'progress': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested ressource 'Segment' is not found for this challenge.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ObstacleView.py",
+    "groupTitle": "Obstacle"
+  },
+  {
+    "type": "put",
+    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles/:id",
+    "title": "Update an obstacle",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Segment's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Obstacle's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "PutObstacle",
+    "group": "Obstacle",
+    "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Obstacle's ID</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "label",
+            "description": "<p>Obstacle's label</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Float",
+            "optional": false,
+            "field": "progress",
+            "description": "<p>Obstacle's progress on segment's line</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "question_type",
+            "description": "<p>Obstacle's question type</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "nb_points",
+            "description": "<p>Obstacle's number of points</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Obstacle's segment's id</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n    \"label\": \"Qui offre des armes aux enfants Pevensie ?\",\n    \"progress\": 70,\n    \"description\": \"\",\n    \"question_type\": 0,\n    \"nb_points\": 25,\n    \"result\": \"Le père Noel\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "SegmentNotFound",
+            "description": "<p>The id of the Segment was not found.</p>"
+          },
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No obstacles were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'label': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'progress': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'question_type': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ObstacleView.py",
+    "groupTitle": "Obstacle"
+  },
+  {
+    "type": "delete",
+    "url": "/challenges/:challenge_id/segments/:id",
     "title": "Delete a segment",
     "parameter": {
       "fields": {
@@ -2043,7 +2857,7 @@ define({ "api": [
   {
     "type": "get",
     "url": "/challenges/:challenge_id/segments/:id",
-    "title": "Request a segment informations of challenge's id",
+    "title": "Request a segment informations of segment's id",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -2417,7 +3231,7 @@ define({ "api": [
         },
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n\n\n{\n    \"id\": 1,\n    \"name\": \"A travers le bois d'entre les mondes\",\n    \"start_crossing_point\": {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"end_crossing_point\": {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"coordinates\": [\n      {\n        \"position_x\": 355,\n        \"position_y\": 365.125\n      },\n      {\n        \"position_x\": 300,\n        \"position_y\": 347.125\n      }\n    ],\n    \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n            \"id\": 10,\n            \"name\": \"cr 1\",\n            \"position_x\": 0.417391,\n            \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n            \"id\": 12,\n            \"name\": \"cr 3\",\n            \"position_x\": 0.573043,\n            \"position_y\": 0.492283\n        },\n        \"admin\": {\n            \"id\": 1,\n            \"first_name\": \"Missy\",\n            \"last_name\": \"Of Gallifrey\",\n            \"pseudo\": \"Le maitre\",\n            \"email\": \"lemaitre@gmail.com\"\n        }\n    }\n}",
+          "content": "HTTP/1.1 201 Created\n\n{\n    \"id\": 1,\n    \"name\": \"A travers le bois d'entre les mondes\",\n    \"start_crossing_point\": {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"end_crossing_point\": {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    \"coordinates\": [\n      {\n        \"position_x\": 355,\n        \"position_y\": 365.125\n      },\n      {\n        \"position_x\": 300,\n        \"position_y\": 347.125\n      }\n    ],\n    \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n            \"id\": 10,\n            \"name\": \"cr 1\",\n            \"position_x\": 0.417391,\n            \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n            \"id\": 12,\n            \"name\": \"cr 3\",\n            \"position_x\": 0.573043,\n            \"position_y\": 0.492283\n        },\n        \"admin\": {\n            \"id\": 1,\n            \"first_name\": \"Missy\",\n            \"last_name\": \"Of Gallifrey\",\n            \"pseudo\": \"Le maitre\",\n            \"email\": \"lemaitre@gmail.com\"\n        }\n    }\n}",
           "type": "json"
         }
       ]

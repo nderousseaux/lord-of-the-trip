@@ -15,6 +15,7 @@
         "PutChallenge",
         "PatchChallenge",
         "DeleteChallenge",
+        "VerifyChallenge",
         "GetChallengeImage",
         "PostChallengeImage",
         "GetCrossingPoints",
@@ -31,6 +32,12 @@
         "DeleteSegment",
         "GetEvents",
         "PostEvent",
-        "GetEvent"
+        "GetEvent",
+        "GetObstaclesByChallenge",
+        "GetObstaclesBySegment",
+        "PostObstacle",
+        "GetObstacle",
+        "PutObstacle",
+        "PatchObstacle"
     ]
 }
