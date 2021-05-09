@@ -1409,7 +1409,7 @@ verifyChallenge = Service(
   @api {post} /challenges/:id/verify Verification of graph integrity
   @apiParam id Challenge's unique ID.
   @apiVersion 0.2.0
-  @apiName verifyChallenge
+  @apiName VerifyChallenge
   @apiGroup Challenge
   @apiSampleRequest off
 

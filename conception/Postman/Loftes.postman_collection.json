@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "7baed3e7-0d3f-4950-ab70-7a394b9a5e3f",
+		"_postman_id": "4dafa0e6-6170-4106-ac1c-b320fb0010bd",
 		"name": "Loftes",
 		"description": "Pour le faire tourner, changez dans variable la valeur de bas_url\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -292,7 +292,8 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						]
+						],
+						"id": "da4957c9-db49-4155-93eb-f4ed23c4ac96"
 					}
 				},
 				{
@@ -301,10 +302,12 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						]
+						],
+						"id": "2a478ce1-2103-4647-b77e-87f9a49336f4"
 					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Segments",
@@ -318,7 +321,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "daa6ee81-7bee-4865-938a-8717c5a0f3c3"
 							}
 						}
 					],
@@ -360,7 +364,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "7d1fa49d-8e22-4c41-b132-1bf7657fc427"
 							}
 						}
 					],
@@ -403,7 +408,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "88ddff3f-c88b-4ffb-a9ac-0d85df479c55"
 							}
 						}
 					],
@@ -442,7 +448,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "b5436e42-412b-46f0-bdb2-7dcbb04dbee5"
 							}
 						}
 					],
@@ -482,7 +489,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "3b28b946-6537-4f90-b268-461f346a650d"
 							}
 						}
 					],
@@ -522,7 +530,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "c9c028b4-f254-4179-8656-3aaf3d401877"
 							}
 						}
 					],
@@ -553,7 +562,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "CrossingPoint",
@@ -567,7 +577,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "f215a06d-677e-4803-803e-2dda2a23a8a7"
 							}
 						}
 					],
@@ -610,7 +621,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "447c7f64-018b-4a83-b687-2d5a52e34706"
 							}
 						}
 					],
@@ -653,7 +665,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "d54743bc-6c65-4954-b903-e8a18776b7b0"
 							}
 						}
 					],
@@ -720,7 +733,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "5db2f02c-403d-464b-9da0-d87e4034b3d1"
 							}
 						}
 					],
@@ -760,7 +774,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "2876c10f-d596-4223-94de-16e1375874ce"
 							}
 						}
 					],
@@ -800,7 +815,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "19df6bdc-bc07-41b9-a8df-2ad322763a14"
 							}
 						}
 					],
@@ -831,7 +847,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Events",
@@ -845,7 +862,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "486bb9e5-2565-4893-8fdf-dde3cae4a0b4"
 							}
 						}
 					],
@@ -884,6 +902,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "82c11115-1e10-4f19-883b-bd6b503a4e8d",
 								"exec": [
 									""
 								],
@@ -907,15 +926,17 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/segments/1/events/3",
+							"raw": "{{url_base}}/challenges/1/segments/1/events/19",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
+								"1",
 								"segments",
 								"1",
 								"events",
-								"3"
+								"19"
 							]
 						}
 					},
@@ -927,6 +948,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "d69827dc-cc9e-439e-b4f5-0b7cf41df709",
 								"exec": [
 									""
 								],
@@ -992,8 +1014,52 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "EVENT_CHECK_RESPONSE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9dbc3eb6-ab5c-4f0b-be72-ab14b16492e2",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event_type_id\": 5,\n    \"event_date\":\"2022-10-18 15:00:00\",\n    \"obstacle_id\":2,\n    \"response\": \"L'empereur d'au-delà des Mer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/1/events/checkresponse",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"1",
+								"events",
+								"checkresponse"
+							]
+						}
+					},
+					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "EventsType",
@@ -1007,7 +1073,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "e47a0fa9-1f6d-4359-86d3-18796b286775"
 							}
 						}
 					],
@@ -1044,7 +1111,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "821f7a96-8fe5-4748-abd9-397a5ddf25ec"
 							}
 						}
 					],
@@ -1084,7 +1152,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "9923cbc9-4262-40dd-a6f4-4c9fcaddd209"
 							}
 						}
 					],
@@ -1116,7 +1185,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Obstacles",
@@ -1127,6 +1197,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "3945db1d-4b6e-4599-a25e-16c67fc4b099",
 								"exec": [
 									""
 								],
@@ -1150,11 +1221,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}challenges/1/obstacles",
+							"raw": "{{url_base}}/challenges/1/obstacles",
 							"host": [
-								"{{url_base}}challenges"
+								"{{url_base}}"
 							],
 							"path": [
+								"challenges",
 								"1",
 								"obstacles"
 							]
@@ -1167,7 +1239,19 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": null
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/7/obstacles",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"7",
+								"obstacles"
+							]
+						}
 					},
 					"response": []
 				},
@@ -1177,6 +1261,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "7eae23f6-c737-4d60-b1f9-2ae59a0dc9f3",
 								"exec": [
 									""
 								],
@@ -1192,7 +1277,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\n    \"label\": \"Qui est le père d'Aslan 2 ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"L'empereur d'au-delà des Mers\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1200,7 +1285,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/1",
+							"raw": "{{url_base}}/challenges/1/segments/2/obstacles/2",
 							"host": [
 								"{{url_base}}"
 							],
@@ -1208,9 +1293,9 @@
 								"challenges",
 								"1",
 								"segments",
-								"1",
+								"2",
 								"obstacles",
-								"1"
+								"2"
 							]
 						}
 					},
@@ -1222,6 +1307,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "fefa1d88-3c3a-4e40-b6bf-9735394b4460",
 								"exec": [
 									""
 								],
@@ -1234,7 +1320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"label\": \"Quelle est le vrai nom de la sorcière blanche test ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"Jadis\"\n}",
+							"raw": "{\n    \"label\": \"Quelle est le vrai nom de la sorcière blanche test ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"question_type\": 0,\n    \"nb_points\": 25,\n    \"result\": \"Jadis\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1263,6 +1349,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "3c13dda5-8bcc-4733-9125-4165ead75c72",
 								"exec": [
 									""
 								],
@@ -1275,7 +1362,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"libelle\": \"Qui offre des armes aux enfants Pevensie ?\",\n    \"progress\": 70,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"Le père Noel\"\n}",
+							"raw": "{\n    \"label\": \"Qui offre des armes aux enfants Pevensie ?\",\n    \"progress\": 70,\n    \"description\": \"\",\n    \"question_type\": 0,\n    \"nb_points\": 25,\n    \"result\": \"Le père Noel\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1283,7 +1370,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/6",
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/7",
 							"host": [
 								"{{url_base}}"
 							],
@@ -1293,7 +1380,7 @@
 								"segments",
 								"1",
 								"obstacles",
-								"6"
+								"7"
 							]
 						}
 					},
@@ -1305,6 +1392,7 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "1b5411aa-acc4-47f7-bd09-dc61983e09ee",
 								"exec": [
 									""
 								],
@@ -1317,7 +1405,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"libelle\": \"Qui Susan Pevensie, rencontre en premier à Narnia ?\",\n    \"result\": \"Mr Tumnus2\",\n    \"segment_id\":1\n}",
+							"raw": "{\n    \"label\": \"Qui Susan Pevensie, rencontre en premier à Narnia ?\",\n    \"result\": \"Mr Tumnus2\",\n    \"segment_id\":1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1350,7 +1438,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "d9faf7a5-bcc0-4ed2-909d-ef1e26ae9509"
 							}
 						}
 					],
@@ -1445,17 +1534,21 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": null
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
+				"id": "58169a72-e9de-44e7-9d7d-88ff5e957656",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1465,6 +1558,7 @@
 		{
 			"listen": "test",
 			"script": {
+				"id": "b3a1a6bd-d431-4d7a-bfcd-aa68dab13130",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1474,8 +1568,10 @@
 	],
 	"variable": [
 		{
+			"id": "b800839c-cfe2-46bb-8d84-fceb3a6e97b6",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }
