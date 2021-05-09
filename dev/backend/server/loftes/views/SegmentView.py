@@ -173,7 +173,6 @@ def get_segments(request):
 @apiSuccessExample {json} Success response:
 HTTP/1.1 201 Created
 
-
 {
     "id": 1,
     "name": "A travers le bois d'entre les mondes",
@@ -339,7 +338,7 @@ segment_id = Service(
 )
 
 """
-@api {get} /challenges/:challenge_id/segments/:id Request a segment informations of challenge's id
+@api {get} /challenges/:challenge_id/segments/:id Request a segment informations of segment's id
 @apiParam challenge_id Challenge's unique ID.
 @apiParam id Segment's unique ID.
 @apiVersion 0.1.0
@@ -792,7 +791,7 @@ def modify_segment(request):
 
 
 """
-@api {delete} /challenges/:challenge_id/crossing-points/:id Delete a segment
+@api {delete} /challenges/:challenge_id/segments/:id Delete a segment
 @apiParam challenge_id Challenge's unique ID.
 @apiParam id Segment's unique ID.
 @apiVersion 0.1.0
