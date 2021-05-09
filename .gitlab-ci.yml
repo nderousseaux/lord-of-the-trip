@@ -10,7 +10,6 @@ deploy:
   stage: deploy
   script:
     - cd ./dev/backend/server
-    - python3.7 -m venv env
     - ./env/bin/pip install -r requirements.txt
     - ./env/bin/pip install -r requirements.in
     - ./env/bin/python setup.py develop
@@ -24,4 +23,4 @@ deploy:
     - master
 
 variables:
-  GIT_CLEAN_FLAGS: -x -f -e dev/backend/server/env/lib/python3.7/site-packages/loftes-0.0-py3.7.egg/uploads/**
+  GIT_CLEAN_FLAGS: -x -f -e dev/backend/server/env/
