@@ -28,20 +28,30 @@ def get_event(request):
     challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
     
     if challenge != None:
-    
-        events = (
-            DBSession.query(Event)
-            .join(Segment,Event.segment_id==Segment.id)
-            .filter(Segment.challenge_id==request.matchdict["challenge_id"])
-            .order_by(Event.event_date.desc())
-            .all()
-        )          
-        
-        if len(events) == 0:
-            return service_informations.build_response(exception.HTTPNotFound())
-               
-        data = {"events": EventSchema(many=True).dump(events)}
-        response = service_informations.build_response(exception.HTTPOk, data)
+
+        user = DBSession.query(User).first()
+        if user != None:
+           
+            events = (
+                DBSession.query(Event)
+                .join(Segment,Event.segment_id==Segment.id)
+                .filter(Segment.challenge_id==request.matchdict["challenge_id"])
+                .order_by(Event.event_date.desc())
+                .all()
+            )          
+            
+            if len(events) == 0:
+                return service_informations.build_response(exception.HTTPNotFound())
+                
+            data = {"events": EventSchema(many=True).dump(events)}
+            response = service_informations.build_response(exception.HTTPOk, data)
+            
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound(),
+                None,
+                "Requested ressource 'User' is not found.",
+            )            
     else:
         response = service_informations.build_response(
             exception.HTTPNotFound(),
@@ -186,7 +196,7 @@ def event_check_response(request):
                 
                 #Check response
 
-                if (obstacle.type_question == 0):
+                if (obstacle.question_type == 0):
                     if (eventdata.response.upper() == obstacle.result.upper()):
                         event_type = 6
                     else:
