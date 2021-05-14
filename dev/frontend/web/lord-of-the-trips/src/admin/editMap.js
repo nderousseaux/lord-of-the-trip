@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Stage, Layer, Image, Circle, Arrow } from 'react-konva';
+import { Stage, Layer, Image, Circle, Arrow, Star } from 'react-konva';
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useParams, useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
+import apiObstacles from '../api/obstacles';
 import { percentToPixels, pixelsToPercent, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
 import ModalCrossingPoint from './modalCrossingPoint';
 import ModalSegment from './modalSegment';
@@ -19,13 +20,13 @@ const EditMap = () => {
   const [radioButtonValue, setRadioButtonValue] = useState("1");
 
   const [crossingPoints, setCrossingPoints] = useState([]);
-  // +1 when there is a change in the crossing points, to set again the start and the end of the challenge (horrible)
+  // +1 when there is a change in the crossing points, to set again the start and the end of the challenge
   const [crossingPointsLoaded, setCrossingPointsLoaded] = useState(0);
   const [segments, setSegments] = useState([]);
+  // +1 when there is a change in the segments, to set obstacles
+  const [segmentsLoaded, setSegmentsLoaded] = useState(0);
   const [drawingSegment, setDrawingSegment] = useState(false);
-
-  // Test calcul d'un obstacle
-  const [obstaclePosition, setObstaclePosition] = useState(false);
+  const [obstacles, setObstacles] = useState([]);
 
   // Modals
   const [dataForModal, setDataForModal] = useState(null);
@@ -37,9 +38,10 @@ const EditMap = () => {
   let { id } = useParams();
   id = parseInt(id);
 
-  const { isLoadingChallenge, isErrorChallenge, errorChallenge, data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
-  const { isLoadingCrossingPoints, isErrorCrossingPoints, data: crossingPointsRequest } = useQuery(['crossingPoints', id], () => apiCrossingPoints.getAllCrossingPoints(id));
-  const { isLoadingSegments, isErrorSegments, data: segmentsRequest } = useQuery(['segments', id], () => apiSegments.getAllSegments(id));
+  const { data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
+  const { data: crossingPointsRequest } = useQuery(['crossingPoints', id], () => apiCrossingPoints.getAllCrossingPoints(id));
+  const { data: segmentsRequest } = useQuery(['segments', id], () => apiSegments.getAllSegments(id));
+  const { data: obstaclesRequest } = useQuery(['obstacles', id], () => apiObstacles.getAllObstacles(id));
 
   // Load the start point and the end point of the challenge
   useEffect(() => {
@@ -53,12 +55,9 @@ const EditMap = () => {
     }
   }, [challenge, crossingPointsLoaded]);
 
-  // Load the crossing points
+  // Load crossing points
   useEffect(() => {
-    if(isLoadingCrossingPoints || isErrorCrossingPoints || !crossingPointsRequest || !successDownload) {
-      setCrossingPoints([]);
-    }
-    else {
+    if(crossingPointsRequest && successDownload) {
       let cr = [];
       crossingPointsRequest.crossing_points.forEach((crossingPoint) => {
         cr = [...cr, { id: crossingPoint.id, position_x: percentToPixels(crossingPoint.position_x, width), position_y: percentToPixels(crossingPoint.position_y, height),
@@ -69,12 +68,9 @@ const EditMap = () => {
     }
   }, [crossingPointsRequest, successDownload]);
 
-  // Load the segments
+  // Load segments
   useEffect(() => {
-    if(isLoadingSegments || isErrorSegments || !segmentsRequest || !successDownload) {
-      setSegments([]);
-    }
-    else {
+    if(segmentsRequest && successDownload) {
       let seg = [];
       segmentsRequest.segments.forEach((segment) => {
         let coord = [];
@@ -84,8 +80,23 @@ const EditMap = () => {
         seg = [...seg, { id: segment.id, start_crossing_point_id: segment.start_crossing_point.id, end_crossing_point_id: segment.end_crossing_point.id, name: segment.name, coordinates: coord, onMouseOver: false }];
       });
       setSegments(seg);
+      setSegmentsLoaded(current => current + 1);
     }
   }, [segmentsRequest, successDownload]);
+
+  // Load obstacles
+  useEffect(() => {
+    if(obstaclesRequest && crossingPointsLoaded !== 0 && segmentsLoaded !== 0) {
+      let obs = [];
+      obstaclesRequest.obstacles.forEach((obstacle) => {
+        let progress = obstacle.progress > 1 ? obstacle.progress / 100 : obstacle.progress; // NB : Met entre 0 et 1 si c'est entre 0 et 100 (provisoire, il faut que en DB ce soit entre 0 et 1)
+        let position = getObstaclePosition(obstacle.segment.id, progress);
+        obs = [...obs, { id: obstacle.id, position_x: position.position_x, position_y: position.position_y, label: obstacle.label, progress: progress, description: obstacle.description,
+               question_type: obstacle.question_type, nb_points: obstacle.nb_points, result: obstacle.result, segmentId: obstacle.segment.id }];
+      });
+      setObstacles(obs);
+    }
+  }, [obstaclesRequest, crossingPointsLoaded, segmentsLoaded]);
 
   const downloadMap = useMutation( () => apiChallenge.downloadMap(id), {
     onError: (error) => {
@@ -343,6 +354,16 @@ const EditMap = () => {
     return returnCoordinates;
   };
 
+  const getSegmentById = (segmentId) => {
+    let returnSegment = null;
+    segments.forEach((segment) => {
+      if(segment.id === segmentId) {
+        returnSegment = segment;
+      }
+    });
+    return returnSegment;
+  };
+
   const formatSegmentPoints = (segment) => {
     let returnCoordinates = [];
     let lastCoordinates = null; // Last coordinates before the coordinates of the ending crossing points
@@ -366,10 +387,10 @@ const EditMap = () => {
     return returnCoordinates;
   };
 
-  // Donne la position (x, y) en pixels d'un obstacle avec comme données le segment et le pourcentage d'avancement sur le segment
-  const getObstaclePosition = (segment, percentage) => {
+  // Donne la position (x, y) en pixels d'un obstacle avec comme données l'id du segment et le pourcentage d'avancement sur le segment
+  const getObstaclePosition = (segmentId, percentage) => {
+    let segment = getSegmentById(segmentId);
     let segmentLenghts = pixelsLengthSegment(segment);
-    console.log(segmentLenghts);
     // La distance de l'obstacle sur le segment
     let lengthObstaclePosition = segmentLenghts.totalLength * percentage;
     // Obtient le morceau de segment sur lequel se trouve l'obstacle
@@ -488,8 +509,8 @@ const EditMap = () => {
                                                    onClick={(e) => onClickCrossingPoint(e, crossingPoint)}
                                                    onMouseEnter={(e) => onMouseEnterCrossingPoint(e, crossingPoint)}
                                                    onMouseLeave={(e) => onMouseLeaveCrossingPoint(e, crossingPoint)} />)}
-              { /* Test Obstacle */ }
-              {obstaclePosition !== false ? <Circle x={obstaclePosition.position_x} y={obstaclePosition.position_y} radius={16} stroke={"black"} strokeWidth={2} fill={"red"} /> : null}
+              { /* Render obstacles */ }
+              {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y} numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"} />)}
             </Layer>
           </Stage>
         </div>
@@ -497,7 +518,6 @@ const EditMap = () => {
     <hr />
     <h3>Back to challenge</h3>
     <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button>
-    <button onClick={() => setObstaclePosition(getObstaclePosition(segments[1], 0.5))}>test obstacle</button>
     { /* Render Modals */ }
     {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} challengeId={id} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
     {dataForModal && openSegmentModal ? <ModalSegment segmentObject={dataForModal} challengeId={id} openState={openSegmentModal} setOpenState={setOpenSegmentModal} /> : null}

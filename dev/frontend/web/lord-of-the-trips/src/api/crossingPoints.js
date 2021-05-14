@@ -24,7 +24,7 @@ const apiCrossingPoints = {
     .then(res => res.json());
   },
 
-  updateCrossingPoint: ( challengeId, crossingPoint, crossingPointId ) => {
+  updateCrossingPoint: (challengeId, crossingPoint, crossingPointId) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
