@@ -9,6 +9,7 @@ import apiObstacles from '../api/obstacles';
 import { percentToPixels, pixelsToPercent, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
 import ModalCrossingPoint from './modalCrossingPoint';
 import ModalSegment from './modalSegment';
+import ModalObstacle from './modalObstacle';
 import Button from '@material-ui/core/Button';
 
 const EditMap = () => {
@@ -32,6 +33,7 @@ const EditMap = () => {
   const [dataForModal, setDataForModal] = useState(null);
   const [openCrossingPointModal, setOpenCrossingPointModal] = useState(false);
   const [openSegmentModal, setOpenSegmentModal] = useState(false);
+  const [openObstacleModal, setOpenObstacleModal] = useState(false);
 
   const queryClient = useQueryClient();
   const history = useHistory();
@@ -39,9 +41,9 @@ const EditMap = () => {
   id = parseInt(id);
 
   const { data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
-  const { data: crossingPointsRequest } = useQuery(['crossingPoints', id], () => apiCrossingPoints.getAllCrossingPoints(id));
-  const { data: segmentsRequest } = useQuery(['segments', id], () => apiSegments.getAllSegments(id));
-  const { data: obstaclesRequest } = useQuery(['obstacles', id], () => apiObstacles.getAllObstacles(id));
+  const { isError: isErrorCrossingPoints, data: crossingPointsRequest } = useQuery(['crossingPoints', id], () => apiCrossingPoints.getAllCrossingPoints(id));
+  const { isError: isErrorSegments, data: segmentsRequest } = useQuery(['segments', id], () => apiSegments.getAllSegments(id));
+  const { isError: isErrorObstacles, data: obstaclesRequest } = useQuery(['obstacles', id], () => apiObstacles.getAllObstacles(id));
 
   // Load the start point and the end point of the challenge
   useEffect(() => {
@@ -57,7 +59,10 @@ const EditMap = () => {
 
   // Load crossing points
   useEffect(() => {
-    if(crossingPointsRequest && successDownload) {
+    if(isErrorCrossingPoints) {
+      setCrossingPoints([]);
+    }
+    else if(crossingPointsRequest && successDownload) {
       let cr = [];
       crossingPointsRequest.crossing_points.forEach((crossingPoint) => {
         cr = [...cr, { id: crossingPoint.id, position_x: percentToPixels(crossingPoint.position_x, width), position_y: percentToPixels(crossingPoint.position_y, height),
@@ -66,11 +71,14 @@ const EditMap = () => {
       setCrossingPoints(cr);
       setCrossingPointsLoaded(current => current + 1);
     }
-  }, [crossingPointsRequest, successDownload]);
+  }, [isErrorCrossingPoints, crossingPointsRequest, successDownload]);
 
   // Load segments
   useEffect(() => {
-    if(segmentsRequest && successDownload) {
+    if(isErrorSegments) {
+      setSegments([]);
+    }
+    else if(segmentsRequest && crossingPointsLoaded !== 0 && successDownload) {
       let seg = [];
       segmentsRequest.segments.forEach((segment) => {
         let coord = [];
@@ -82,21 +90,26 @@ const EditMap = () => {
       setSegments(seg);
       setSegmentsLoaded(current => current + 1);
     }
-  }, [segmentsRequest, successDownload]);
+  }, [isErrorSegments, segmentsRequest, crossingPointsLoaded, successDownload]);
 
   // Load obstacles
   useEffect(() => {
-    if(obstaclesRequest && crossingPointsLoaded !== 0 && segmentsLoaded !== 0) {
+    if(isErrorObstacles) {
+      setObstacles([]);
+    }
+    else if(obstaclesRequest && crossingPointsLoaded !== 0 && segmentsLoaded !== 0) {
       let obs = [];
       obstaclesRequest.obstacles.forEach((obstacle) => {
         let progress = obstacle.progress > 1 ? obstacle.progress / 100 : obstacle.progress; // NB : Met entre 0 et 1 si c'est entre 0 et 100 (provisoire, il faut que en DB ce soit entre 0 et 1)
         let position = getObstaclePosition(obstacle.segment.id, progress);
-        obs = [...obs, { id: obstacle.id, position_x: position.position_x, position_y: position.position_y, label: obstacle.label, progress: progress, description: obstacle.description,
-               question_type: obstacle.question_type, nb_points: obstacle.nb_points, result: obstacle.result, segmentId: obstacle.segment.id }];
+        if(position !== null) { // Avoid crash when user delete a crossing point or a segment that leads to obstacle deletion
+          obs = [...obs, { id: obstacle.id, position_x: position.position_x, position_y: position.position_y, label: obstacle.label, progress: progress, description: obstacle.description,
+                 question_type: obstacle.question_type, nb_points: obstacle.nb_points, result: obstacle.result, segmentId: obstacle.segment.id }];
+        }
       });
       setObstacles(obs);
     }
-  }, [obstaclesRequest, crossingPointsLoaded, segmentsLoaded]);
+  }, [isErrorObstacles, obstaclesRequest, crossingPointsLoaded, segmentsLoaded]);
 
   const downloadMap = useMutation( () => apiChallenge.downloadMap(id), {
     onError: (error) => {
@@ -131,6 +144,7 @@ const EditMap = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['crossingPoints', id]);
       queryClient.invalidateQueries(['segments', id]);
+      queryClient.invalidateQueries(['obstacles', id]);
     },
   });
 
@@ -190,7 +204,10 @@ const EditMap = () => {
   };
 
   const deleteSegmentMutation = useMutation( (segmentId) => apiSegments.deleteSegment(id, segmentId), {
-    onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['segments', id]);
+      queryClient.invalidateQueries(['obstacles', id]);
+    },
   });
 
   const deleteSegment = (idSegment) => {
@@ -247,6 +264,29 @@ const EditMap = () => {
     }
   };
 
+  const createObstacleMutation = useMutation( ({ segmentId, obstacle }) => apiObstacles.createObstacle(id, segmentId, obstacle), {
+    onSuccess: () => { queryClient.invalidateQueries(['obstacles', id]) },
+  });
+
+  const addObstacle = (segmentId) => {
+    let obstacle = { label: "Your question", description: "", progress: 0.5, question_type: 0, nb_points: 1, result: "The response of the question" };
+    createObstacleMutation.mutate({ segmentId: segmentId, obstacle: obstacle });
+  };
+
+  const deleteObstacleMutation = useMutation( ({ segmentId, obstacleId }) => apiObstacles.deleteObstacle(id, segmentId, obstacleId), {
+    onSuccess: () => { queryClient.invalidateQueries(['obstacles', id]) },
+  });
+
+  const deleteObstacle = (obstacle) => {
+    deleteObstacleMutation.mutate({ segmentId: obstacle.segmentId, obstacleId: obstacle.id });
+  };
+
+  const openObstacleModalFunction = (obstacle) => {
+    let segment = getSegmentById(obstacle.segmentId);
+    setDataForModal({ ...obstacle, segment: segment });
+    setOpenObstacleModal(true);
+  };
+
   const onDragStartCrossingPoint = (e, crossingPoint) => {
     crossingPoint.isDragging = true;
     updateCrossingPoint(crossingPoint, false);
@@ -277,7 +317,7 @@ const EditMap = () => {
     else if(radioButtonValue === "7") {
       setEndChallenge(crossingPoint.id);
     }
-    else if(radioButtonValue === "9") {
+    else if(radioButtonValue === "11") {
       openCrossingPointModalFunction(crossingPoint);
     }
   };
@@ -311,6 +351,9 @@ const EditMap = () => {
       changeSegmentOrientation(segment);
     }
     else if(radioButtonValue === "9") {
+      addObstacle(segment.id);
+    }
+    else if(radioButtonValue === "11") {
       openSegmentModalFunction(segment);
     }
   };
@@ -329,6 +372,16 @@ const EditMap = () => {
   const onClickDrawingSegment = (e) => {
     if(radioButtonValue === "5") {
       setDrawingSegment(false);
+    }
+  };
+
+  // Click on a Obstacle
+  const onClickObstacle = (e, obstacle) => {
+    if(radioButtonValue === "10") {
+      deleteObstacle(obstacle);
+    }
+    else if(radioButtonValue === "11") {
+      openObstacleModalFunction(obstacle);
     }
   };
 
@@ -390,7 +443,9 @@ const EditMap = () => {
   // Donne la position (x, y) en pixels d'un obstacle avec comme données l'id du segment et le pourcentage d'avancement sur le segment
   const getObstaclePosition = (segmentId, percentage) => {
     let segment = getSegmentById(segmentId);
+    if(segment === null) return null;
     let segmentLenghts = pixelsLengthSegment(segment);
+    if(segmentLenghts === null) return null;
     // La distance de l'obstacle sur le segment
     let lengthObstaclePosition = segmentLenghts.totalLength * percentage;
     // Obtient le morceau de segment sur lequel se trouve l'obstacle
@@ -416,16 +471,12 @@ const EditMap = () => {
     return { position_x: obstaclePositionX, position_y: obstaclePositionY };
   }
 
-  /* Longueurs du segment en pixels
-   * Résultat :
-   * {
-   *   Mettre un exemple de l'objet JSON
-   * }
-   */
+  // Longueurs du segment en pixels
   const pixelsLengthSegment = (segment) => {
     let returnObject = { lines: [] };
     let startPointCoordinates = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
     let endPointCoordinates = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
+    if(startPointCoordinates === null || endPointCoordinates === null) return null;
     let points = [startPointCoordinates, ...segment.coordinates, endPointCoordinates];
     let totalLength = 0;
     for(let i = 0; i < points.length-1; i++) {
@@ -444,6 +495,7 @@ const EditMap = () => {
     let returnObject = { lines: [] };
     let startPointCoordinates = getCoordinatesFromCrossingPoint(segment.start_crossing_point_id);
     let endPointCoordinates = getCoordinatesFromCrossingPoint(segment.end_crossing_point_id);
+    if(startPointCoordinates === null || endPointCoordinates === null) return null;
     let points = [startPointCoordinates, ...segment.coordinates, endPointCoordinates];
     let totalLength = 0;
     for(let i = 0; i < points.length-1; i++) {
@@ -468,9 +520,9 @@ const EditMap = () => {
               <Image image={image} />
               { /* Render segments */ }
               {segments.map(segment => <Arrow key={segment.id} id={segment.id} points={formatSegmentPoints(segment)}
-                                        stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : radioButtonValue === "8" && segment.onMouseOver ? "green" : "black"}
-                                        strokeWidth={(radioButtonValue === "5" || radioButtonValue === "8") && segment.onMouseOver ? 12 : 6}
-                                        fill={radioButtonValue === "5" && segment.onMouseOver ? "red" : radioButtonValue === "8" && segment.onMouseOver ? "green" : "black"}
+                                        stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : (radioButtonValue === "8" || radioButtonValue === "9" || radioButtonValue === "11") && segment.onMouseOver ? "green" : "black"}
+                                        strokeWidth={(radioButtonValue === "5" || radioButtonValue === "8" || radioButtonValue === "9" || radioButtonValue === "11") && segment.onMouseOver ? 12 : 6}
+                                        fill={radioButtonValue === "5" && segment.onMouseOver ? "red" : (radioButtonValue === "8" || radioButtonValue === "9" || radioButtonValue === "11") && segment.onMouseOver ? "green" : "black"}
                                         pointerLength={16} pointerWidth={16}
                                         onClick={(e) => onClickSegment(e, segment)}
                                         onMouseEnter={(e) => onMouseEnterSegment(e, segment)}
@@ -510,7 +562,8 @@ const EditMap = () => {
                                                    onMouseEnter={(e) => onMouseEnterCrossingPoint(e, crossingPoint)}
                                                    onMouseLeave={(e) => onMouseLeaveCrossingPoint(e, crossingPoint)} />)}
               { /* Render obstacles */ }
-              {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y} numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"} />)}
+              {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y} numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"}
+                                         onClick={(e) => onClickObstacle(e, obstacle)} />)}
             </Layer>
           </Stage>
         </div>
@@ -521,6 +574,7 @@ const EditMap = () => {
     { /* Render Modals */ }
     {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} challengeId={id} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
     {dataForModal && openSegmentModal ? <ModalSegment segmentObject={dataForModal} challengeId={id} openState={openSegmentModal} setOpenState={setOpenSegmentModal} /> : null}
+    {dataForModal && openObstacleModal ? <ModalObstacle obstacleObject={dataForModal} challengeId={id} openState={openObstacleModal} setOpenState={setOpenObstacleModal} /> : null}
   </>
 };
 
@@ -529,16 +583,17 @@ const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
     setRadioButtonValue(e.target.value);
   }
   return <div>
-    <p>Select an action to do on the Map</p>
     <label> <input type="radio" name="action" value="1" checked={radioButtonValue === "1"} onChange={handleOptionChange} /> Nothing </label>
     <label> <input type="radio" name="action" value="2" checked={radioButtonValue === "2"} onChange={handleOptionChange} /> Add Crossing points </label>
     <label> <input type="radio" name="action" value="3" checked={radioButtonValue === "3"} onChange={handleOptionChange} /> Delete Crossing points </label>
-    <label> <input type="radio" name="action" value="4" checked={radioButtonValue === "4"} onChange={handleOptionChange} /> Draw a Segment </label>
-    <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Delete a Segment </label>
+    <label> <input type="radio" name="action" value="4" checked={radioButtonValue === "4"} onChange={handleOptionChange} /> Draw Segments </label>
+    <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Delete Segments </label>
     <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
     <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Set End challenge </label>
-    <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Change Segment Orientation </label>
-    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Edit with Modal (click on Crossing points or Segments) </label>
+    <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Change Segments Orientation </label>
+    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Add obstacles </label>
+    <label> <input type="radio" name="action" value="10" checked={radioButtonValue === "10"} onChange={handleOptionChange} /> Delete obstacles </label>
+    <label> <input type="radio" name="action" value="11" checked={radioButtonValue === "11"} onChange={handleOptionChange} /> Edit with Modal (click on Crossing points / Segments / Obstacles) </label>
   </div>
 };
 

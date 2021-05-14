@@ -34,24 +34,15 @@ const ModalCrossingPoint = ({ crossingPointObject, challengeId, openState, setOp
         <DialogTitle id="form-dialog-title">Crossing Point "{crossingPointObject.name}"</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <b>Information : </b> <br />
-            - Current name : {crossingPointObject.name}
+            <b>Current information : </b> <br />
+            - Name : {crossingPointObject.name}
           </DialogContentText>
           <hr />
           <form onSubmit={handleSubmit}>
             <DialogContentText>
               <b>Update name : </b>
             </DialogContentText>
-            <TextField
-              autoFocus
-              variant="outlined"
-              margin="dense"
-              type="text"
-              label="New name"
-              value={name}
-              onChange={e => setName(e.target.value)}
-              fullWidth
-            />
+            <TextField autoFocus variant="outlined" margin="dense" type="text" label="New name" value={name} onChange={e => setName(e.target.value)} fullWidth />
           </form>
         </DialogContent>
         <DialogActions>
