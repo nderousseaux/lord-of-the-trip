@@ -9,6 +9,7 @@ from loftes.cors import cors_policy
 from loftes.models import Event, Challenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
+from loftes.resources import EventRessources
 
 import pyramid.httpexceptions as exception
 import datetime
@@ -32,14 +33,8 @@ def get_event(request):
         user = DBSession.query(User).first()
         if user != None:
            
-            events = (
-                DBSession.query(Event)
-                .join(Segment,Event.segment_id==Segment.id)
-                .filter(Segment.challenge_id==request.matchdict["challenge_id"])
-                .order_by(Event.event_date.desc())
-                .all()
-            )          
-            
+            events = EventRessources.findAllEventForUserByChallenge(user.id,request.matchdict["challenge_id"])
+
             if len(events) == 0:
                 return service_informations.build_response(exception.HTTPNotFound())
                 
