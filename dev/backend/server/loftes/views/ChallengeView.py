@@ -35,6 +35,7 @@ challenge = Service(name="challenge", path="/challenges", cors_policy=cors_polic
 @apiName GetChallenges
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {Array} Challenges All challenges created
 @apiSuccessExample {json} Success response:
@@ -176,19 +177,21 @@ def get_challenges(request):
 
     service_informations = ServiceInformations()
 
-    # if request.authenticated_userid != None:
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-    challenges = DBSession.query(Challenge).all()
+    if user != None:
 
-    if len(challenges) == 0:
-        return service_informations.build_response(exception.HTTPNotFound())
+        challenges = DBSession.query(Challenge).all()
 
-    data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+        if len(challenges) == 0:
+            return service_informations.build_response(exception.HTTPNotFound())
 
-    response = service_informations.build_response(exception.HTTPOk, data)
+        data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
 
-    # else:
-    # response = service_informations.build_response(exception.HTTPUnauthorized)
+        response = service_informations.build_response(exception.HTTPOk, data)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
@@ -199,6 +202,7 @@ def get_challenges(request):
 @apiName PostChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {String} name Challenge's name
 @apiSuccess (Body parameters) {String} description Challenge's description
@@ -309,27 +313,34 @@ def create_challenge(request):
 
     service_informations = ServiceInformations()
 
-    try:
-        challenge_schema = ChallengeSchema()
-        challenge = challenge_schema.load(request.json)
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-        DBSession.add(challenge)
-        DBSession.flush()
+    if user != None:
 
-        response = service_informations.build_response(exception.HTTPCreated, challenge_schema.dump(challenge))
+        try:
+            challenge_schema = ChallengeSchema()
+            challenge = challenge_schema.load(request.json)
 
-    except ValidationError as validation_error:
-        response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+            DBSession.add(challenge)
+            DBSession.flush()
 
-    except ValueError as value_error:
-        response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+            response = service_informations.build_response(exception.HTTPCreated, challenge_schema.dump(challenge))
 
-    except PermissionError as pe:
+        except ValidationError as validation_error:
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+
+        except ValueError as value_error:
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+
+        except PermissionError as pe:
+            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+        except Exception as e:
+            response = service_informations.build_response(exception.HTTPInternalServerError)
+            logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+    else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
-
-    except Exception as e:
-        response = service_informations.build_response(exception.HTTPInternalServerError)
-        logging.getLogger(__name__).warn("Returning: %s", str(e))
 
     return response
 
@@ -343,6 +354,7 @@ challenge_by_id = Service(name="challenge_by_id", path="challenges/{id:\d+}", co
 @apiName GetChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {Number} id Challenge's ID
 @apiSuccess (OK 200) {String} name Challenge's name
@@ -467,12 +479,21 @@ def get_challenge(request):
 
     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-    if challenge == None:
-        return service_informations.build_response(exception.HTTPNotFound())
+    if user != None:
 
-    return service_informations.build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        if challenge == None:
+            return service_informations.build_response(exception.HTTPNotFound())
+
+        response = service_informations.build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
 
 
 """
@@ -482,6 +503,7 @@ def get_challenge(request):
 @apiName PutChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {String} name Challenge's name
 @apiSuccess (Body parameters) {String} description Challenge's description
@@ -594,32 +616,41 @@ def update_challenge(request):
 
     service_informations = ServiceInformations()
 
-    id = request.matchdict["id"]
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-    challenge = DBSession.query(Challenge).get(id)
+    if user != None:
 
-    if challenge != None:
-        try:
-            DBSession.query(Challenge).filter(Challenge.id == id).update(ChallengeSchema().check_json(request.json))
-            DBSession.flush()
+        id = request.matchdict["id"]
 
-            response = service_informations.build_response(exception.HTTPNoContent)
+        challenge = DBSession.query(Challenge).get(id)
 
-        except ValidationError as validation_error:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+        if challenge != None:
+            try:
+                DBSession.query(Challenge).filter(Challenge.id == id).update(
+                    ChallengeSchema().check_json(request.json)
+                )
+                DBSession.flush()
 
-        except ValueError as value_error:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+                response = service_informations.build_response(exception.HTTPNoContent)
 
-        except PermissionError as pe:
-            response = service_informations.build_response(exception.HTTPUnauthorized)
+            except ValidationError as validation_error:
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
 
-        except Exception as e:
-            response = service_informations.build_response(exception.HTTPInternalServerError)
-            logging.getLogger(__name__).warn("Returning: %s", str(e))
+            except ValueError as value_error:
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+
+            except PermissionError as pe:
+                response = service_informations.build_response(exception.HTTPUnauthorized)
+
+            except Exception as e:
+                response = service_informations.build_response(exception.HTTPInternalServerError)
+                logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
 
     else:
-        response = service_informations.build_response(exception.HTTPNotFound)
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
@@ -631,6 +662,7 @@ def update_challenge(request):
 @apiName PatchChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {String} name Challenge's name
 @apiSuccess (Body parameters) {String} description Challenge's description
@@ -736,32 +768,41 @@ def modify_challenge(request):
 
     service_informations = ServiceInformations()
 
-    id = request.matchdict["id"]
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-    challenge = DBSession.query(Challenge).get(id)
+    if user != None:
 
-    if challenge != None:
-        try:
-            DBSession.query(Challenge).filter(Challenge.id == id).update(ChallengeSchema().check_json(request.json))
-            DBSession.flush()
+        id = request.matchdict["id"]
 
-            response = service_informations.build_response(exception.HTTPNoContent)
+        challenge = DBSession.query(Challenge).get(id)
 
-        except ValidationError as validation_error:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+        if challenge != None:
+            try:
+                DBSession.query(Challenge).filter(Challenge.id == id).update(
+                    ChallengeSchema().check_json(request.json)
+                )
+                DBSession.flush()
 
-        except ValueError as value_error:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+                response = service_informations.build_response(exception.HTTPNoContent)
 
-        except PermissionError as pe:
-            response = service_informations.build_response(exception.HTTPUnauthorized)
+            except ValidationError as validation_error:
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
 
-        except Exception as e:
-            response = service_informations.build_response(exception.HTTPInternalServerError)
-            logging.getLogger(__name__).warn("Returning: %s", str(e))
+            except ValueError as value_error:
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+
+            except PermissionError as pe:
+                response = service_informations.build_response(exception.HTTPUnauthorized)
+
+            except Exception as e:
+                response = service_informations.build_response(exception.HTTPInternalServerError)
+                logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
 
     else:
-        response = service_informations.build_response(exception.HTTPNotFound)
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
@@ -773,6 +814,7 @@ def modify_challenge(request):
 @apiName DeleteChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
@@ -792,39 +834,49 @@ HTTP/1.1 404 Not Found
 
 @challenge_by_id.delete()
 def delete_challenge(request):
+
     service_informations = ServiceInformations()
 
-    id = request.matchdict["id"]
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-    challenge = DBSession.query(Challenge).get(id)
+    if user != None:
 
-    if challenge != None:
-        try:
+        id = request.matchdict["id"]
 
-            if challenge.map_url != None:
-                image = str(get_project_root()) + challenge.map_url
-                if os.path.exists(image):
-                    os.remove(image)
+        challenge = DBSession.query(Challenge).get(id)
 
-            challenge.start_crossing_point_id = None
-            challenge.end_crossing_point_id = None
+        if challenge != None:
+            try:
 
-            crossing_points_to_delete = DBSession.query(CrossingPoint).filter_by(challenge_id=challenge.id)
+                if challenge.map_url != None:
+                    image = str(get_project_root()) + challenge.map_url
+                    if os.path.exists(image):
+                        os.remove(image)
 
-            for crossing_point_to_delete in crossing_points_to_delete:
-                DBSession.delete(crossing_point_to_delete)
+                challenge.start_crossing_point_id = None
+                challenge.end_crossing_point_id = None
 
-            DBSession.delete(challenge)
-            DBSession.flush()
+                crossing_points_to_delete = (
+                    DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                )
 
-            response = service_informations.build_response(exception.HTTPNoContent)
+                for crossing_point_to_delete in crossing_points_to_delete:
+                    DBSession.delete(crossing_point_to_delete)
 
-        except Exception as e:
-            response = service_informations.build_response(exception.HTTPInternalServerError)
-            logging.getLogger(__name__).warn("Returning: %s", str(e))
+                DBSession.delete(challenge)
+                DBSession.flush()
+
+                response = service_informations.build_response(exception.HTTPNoContent)
+
+            except Exception as e:
+                response = service_informations.build_response(exception.HTTPInternalServerError)
+                logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
 
     else:
-        response = service_informations.build_response(exception.HTTPNotFound)
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
@@ -842,6 +894,7 @@ challenge_image = Service(
 @apiName GetChallengeImage
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {File} Image Challenge's map in jpeg/png format.
 
@@ -874,27 +927,34 @@ def download_image(request):
 
     service_informations = ServiceInformations()
 
-    id = request.matchdict["id"]
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-    challenge = DBSession.query(Challenge).get(id)
+    if user != None:
 
-    if challenge != None:
+        id = request.matchdict["id"]
 
-        if challenge.map_url != None:
-            image = str(get_project_root()) + challenge.map_url
+        challenge = DBSession.query(Challenge).get(id)
 
-            if os.path.exists(image):
-                response = FileResponse(image, request=request)
+        if challenge != None:
+
+            if challenge.map_url != None:
+                image = str(get_project_root()) + challenge.map_url
+
+                if os.path.exists(image):
+                    response = FileResponse(image, request=request)
+                else:
+                    response = service_informations.build_response(exception.HTTPNotFound)
+
             else:
                 response = service_informations.build_response(exception.HTTPNotFound)
 
         else:
-            response = service_informations.build_response(exception.HTTPNotFound)
+            response = service_informations.build_response(
+                exception.HTTPNotFound, None, "Requested resource 'Challenge' is not found."
+            )
 
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound, None, "Requested resource 'Challenge' is not found."
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
@@ -906,6 +966,7 @@ def download_image(request):
 @apiName PostChallengeImage
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameter) {File} Image Challenge's map in jpeg/png format.
 
@@ -964,82 +1025,89 @@ def upload_image(request):
 
     service_informations = ServiceInformations()
 
-    id = request.matchdict["id"]
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-    challenge = DBSession.query(Challenge).get(id)
+    if user != None:
 
-    if challenge != None:
+        id = request.matchdict["id"]
 
-        if "file" in request.POST:
+        challenge = DBSession.query(Challenge).get(id)
 
-            file_type = request.POST["file"].type
+        if challenge != None:
 
-            if file_type == "image/jpeg" or file_type == "image/png":
+            if "file" in request.POST:
 
-                if request.POST["file"].bytes_read < 8388608:  # 8MB
+                file_type = request.POST["file"].type
 
-                    try:
+                if file_type == "image/jpeg" or file_type == "image/png":
 
-                        root = get_project_root()
-                        challenge_uploads_path = "/uploads/challenges"
-                        path = str(root) + challenge_uploads_path
+                    if request.POST["file"].bytes_read < 8388608:  # 8MB
 
-                        if not os.path.isdir(path):
-                            os.makedirs(path, 0o777)
+                        try:
 
-                        input_file = request.POST["file"].file
-                        input_file_filename = "challenge_" + str(challenge.id)
-                        input_file_type = "." + file_type.split("/")[1]
-                        input_image = input_file_filename + input_file_type
+                            root = get_project_root()
+                            challenge_uploads_path = "/uploads/challenges"
+                            path = str(root) + challenge_uploads_path
 
-                        # delete old map
-                        if os.path.exists(path) and os.path.isdir(path):
-                            if os.listdir(path):
-                                for filename in os.listdir(path):
-                                    if filename.startswith(input_file_filename):
-                                        os.remove(os.path.join(path, filename))
-                                        break
+                            if not os.path.isdir(path):
+                                os.makedirs(path, 0o777)
 
-                        file_path = os.path.join(
-                            path,
-                            input_image,
+                            input_file = request.POST["file"].file
+                            input_file_filename = "challenge_" + str(challenge.id)
+                            input_file_type = "." + file_type.split("/")[1]
+                            input_image = input_file_filename + input_file_type
+
+                            # delete old map
+                            if os.path.exists(path) and os.path.isdir(path):
+                                if os.listdir(path):
+                                    for filename in os.listdir(path):
+                                        if filename.startswith(input_file_filename):
+                                            os.remove(os.path.join(path, filename))
+                                            break
+
+                            file_path = os.path.join(
+                                path,
+                                input_image,
+                            )
+                            temp_file_path = file_path + "~"
+
+                            input_file.seek(0)
+                            with open(temp_file_path, "wb") as output_file:
+                                shutil.copyfileobj(input_file, output_file)
+
+                            os.rename(temp_file_path, file_path)
+
+                            DBSession.query(Challenge).filter(Challenge.id == id).update(
+                                {Challenge.map_url: challenge_uploads_path + "/" + input_image}
+                            )
+                            DBSession.flush()
+
+                            response = ServiceInformations().build_response(exception.HTTPNoContent)
+
+                        except Exception as e:
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPBadRequest, None, "The size of image is too big."
                         )
-                        temp_file_path = file_path + "~"
-
-                        input_file.seek(0)
-                        with open(temp_file_path, "wb") as output_file:
-                            shutil.copyfileobj(input_file, output_file)
-
-                        os.rename(temp_file_path, file_path)
-
-                        DBSession.query(Challenge).filter(Challenge.id == id).update(
-                            {Challenge.map_url: challenge_uploads_path + "/" + input_image}
-                        )
-                        DBSession.flush()
-
-                        response = ServiceInformations().build_response(exception.HTTPNoContent)
-
-                    except Exception as e:
-                        response = service_informations.build_response(exception.HTTPInternalServerError)
-                        logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                 else:
                     response = service_informations.build_response(
-                        exception.HTTPBadRequest, None, "The size of image is too big."
+                        exception.HTTPUnsupportedMediaType,
+                        None,
+                        "The file's type is not supported on this server.",
                     )
 
             else:
-                response = service_informations.build_response(
-                    exception.HTTPUnsupportedMediaType,
-                    None,
-                    "The file's type is not supported on this server.",
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, "File is not found.")
 
         else:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, "File is not found.")
+            response = service_informations.build_response(exception.HTTPNotFound)
 
     else:
-        response = service_informations.build_response(exception.HTTPNotFound)
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
@@ -1057,6 +1125,7 @@ challenge_subscribe = Service(
 @apiName SubscribeChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
@@ -1239,6 +1308,7 @@ unsubscribe_challenge = Service(
 @apiName UnSubscribeChallenge
 @apiGroup Challenge
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
@@ -1341,91 +1411,92 @@ verifyChallenge = Service(
 )
 
 """
-  @api {post} /challenges/:id/verify Verification of graph integrity
-  @apiParam id Challenge's unique ID.
-  @apiVersion 0.2.0
-  @apiName VerifyChallenge
-  @apiGroup Challenge
-  @apiSampleRequest off
+@api {post} /challenges/:id/verify Verification of graph integrity
+@apiParam id Challenge's unique ID.
+@apiVersion 0.2.0
+@apiName VerifyChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
-  @apiSuccessExample {json} Success response:
-  HTTP/1.1 200 OK
-  {
-    "loop": [
-        [
-            {
-                "id": 1,
-                "name": "L'armoire",
-                "position_x": 0.142,
-                "position_y": 0.324511
-            },
-            {
-                "id": 2,
-                "name": "La passe du faune",
-                "position_x": 0.524667,
-                "position_y": 0.335221
-            },
-            {
-                "id": 14,
-                "name": "Crossing point",
-                "position_x": 0.586207,
-                "position_y": 0.0824353
-            }
-        ]
-    ],
-    "deadend": [
-        {
-            "id": 14,
-            "name": "Crossing point",
-            "position_x": 0.586207,
-            "position_y": 0.0824353
-        }
-    ],
-    "orphans": [
-        {
-            "id": 14,
-            "name": "Crossing point",
-            "position_x": 0.586207,
-            "position_y": 0.0824353
-        }
-    ]
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
+{
+  "loop": [
+      [
+          {
+              "id": 1,
+              "name": "L'armoire",
+              "position_x": 0.142,
+              "position_y": 0.324511
+          },
+          {
+              "id": 2,
+              "name": "La passe du faune",
+              "position_x": 0.524667,
+              "position_y": 0.335221
+          },
+          {
+              "id": 14,
+              "name": "Crossing point",
+              "position_x": 0.586207,
+              "position_y": 0.0824353
+          }
+      ]
+  ],
+  "deadend": [
+      {
+          "id": 14,
+          "name": "Crossing point",
+          "position_x": 0.586207,
+          "position_y": 0.0824353
+      }
+  ],
+  "orphans": [
+      {
+          "id": 14,
+          "name": "Crossing point",
+          "position_x": 0.586207,
+          "position_y": 0.0824353
+      }
+  ]
+}
+
+@apiSuccessExample Success response:
+HTTP/1.1 200 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
   }
+}
 
-  @apiSuccessExample Success response:
-  HTTP/1.1 200 No Content
+@apiError (Error 403) {Object} NotSubscribedChallenge User's unsubscription from a challenge that he is not subscribed to.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
 
-  @apiError (Error 401) {Object} Unauthorized Bad credentials.
-  @apiErrorExample {json} Error 401 response:
-  HTTP/1.1 401 Unauthorized
-
-  {
-    "error": {
-      "status": "UNAUTHORIZED",
-      "message": "Bad credentials."
-    }
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot unsubscribe from a challenge that you are not subscribed to."
   }
+}
 
-  @apiError (Error 403) {Object} NotSubscribedChallenge User's unsubscription from a challenge that he is not subscribed to.
-  @apiErrorExample {json} Error 403 response:
-  HTTP/1.1 403 Forbidden
+@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
 
-  {
-    "error": {
-      "status": "FORBIDDEN",
-      "message": "You cannot unsubscribe from a challenge that you are not subscribed to."
-    }
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
   }
-
-  @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
-
-  {
-    "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource is not found."
-    }
-  }
+}
 """
 
 
