@@ -28,6 +28,7 @@ obstacle_all = Service(
 @apiName GetObstaclesByChallenge
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {Array} Obstacles All obstacles created of challenge's id.
 @apiSuccessExample {json} Success response:
@@ -142,6 +143,7 @@ obstacle = Service(
 @apiName GetObstaclesBySegment
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {Array} Obstacles All obstacles created of segment's id.
 @apiSuccessExample {json} Success response:
@@ -225,6 +227,7 @@ def get_obstacles_by_segment(request):
 @apiName PostObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {Float} progress Obstacle's progress on segment's line
 
@@ -344,6 +347,7 @@ obstacle_id = Service(
 @apiName GetObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {Number} id Obstacle's ID
 @apiSuccess (OK 200) {String} label Obstacle's label
@@ -437,6 +441,7 @@ def get_obstacle_by_id(request):
 @apiName PutObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {Number} id Obstacle's ID
 @apiSuccess (Body parameters) {String} label Obstacle's label
@@ -584,6 +589,7 @@ def get_obstacle_update(request):
 @apiName PatchObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {Number} id Obstacle's ID
 @apiSuccess (Body parameters) {String} label Obstacle's label
@@ -726,6 +732,7 @@ def get_obstacle_modify(request):
 @apiName DeleteObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content

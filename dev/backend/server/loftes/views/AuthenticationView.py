@@ -256,6 +256,7 @@ whoami = Service(name="whoami", path="/whoami", cors_policy=cors_policy)
 @apiName Whoami
 @apiGroup Authentication
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccessExample Success response:
 HTTP/1.1 200 OK
