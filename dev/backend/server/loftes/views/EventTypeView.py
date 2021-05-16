@@ -2,12 +2,14 @@ from cornice import Service
 from marshmallow import ValidationError
 from loftes.cors import cors_policy
 
-from loftes.models import EventType, Event, DBSession
+from loftes.models import EventType, Event, User, DBSession
 from loftes.marshmallow_schema.EventTypeSchema import EventTypeSchema
 
 from loftes.services.ServiceInformations import ServiceInformations
+from loftes.resources import UserCheckRessources
 
 import pyramid.httpexceptions as exception
+from pyramid.authentication import AuthTicket
 import logging
 import json
 
@@ -19,14 +21,20 @@ def get_event_type(request):
 
     service_informations = ServiceInformations()
 
-    event_types = DBSession.query(EventType).all()
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
-    if len(event_types) == 0:
-        return service_informations.build_response(exception.HTTPNotFound())
+        event_types = DBSession.query(EventType).all()
 
-    data = {"eventTypes": EventTypeSchema(many=True).dump(event_types)}
+        if len(event_types) == 0:
+            return service_informations.build_response(exception.HTTPNotFound())
 
-    response = service_informations.build_response(exception.HTTPOk, data)
+        data = {"eventTypes": EventTypeSchema(many=True).dump(event_types)}
+
+        response = service_informations.build_response(exception.HTTPOk, data)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
@@ -36,32 +44,33 @@ def event_type_add(request):
 
     service_informations = ServiceInformations()
 
-    try:
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
-        event_type_schema = EventTypeSchema()
-        event_type_data = event_type_schema.load(request.json)
+        try:
 
-        DBSession.add(event_type_data)
-        DBSession.flush()
+            event_type_schema = EventTypeSchema()
+            event_type_data = event_type_schema.load(request.json)
 
-        response = service_informations.build_response(exception.HTTPOk, event_type_schema.dump(event_type_data))
+            DBSession.add(event_type_data)
+            DBSession.flush()
 
-    except ValidationError as validation_error:
-        response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
-        DBSession.close()
+            response = service_informations.build_response(exception.HTTPOk, event_type_schema.dump(event_type_data))
 
-    except ValueError as value_error:
-        response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-        DBSession.close()
+        except ValidationError as validation_error:
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
 
-    except PermissionError as pe:
+        except ValueError as value_error:
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+
+        except PermissionError as pe:
+            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+        except Exception as e:
+            response = service_informations.build_response(exception.HTTPInternalServerError)
+            logging.getLogger(__name__).warn("Returning: %s", str(e))
+    else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
-        DBSession.close()
-
-    except Exception as e:
-        response = service_informations.build_response(exception.HTTPInternalServerError)
-        logging.getLogger(__name__).warn("Returning: %s", str(e))
-        DBSession.close()
 
     return response
 
@@ -74,11 +83,16 @@ def get_event_type_by_id(request):
 
     service_informations = ServiceInformations()
 
-    event_type = DBSession.query(EventType).filter(EventType.id == request.matchdict["id"]).first()
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
-    if event_type == None:
-        return service_informations.build_response(exception.HTTPNotFound())
+        event_type = DBSession.query(EventType).filter(EventType.id == request.matchdict["id"]).first()
 
-    response = service_informations.build_response(exception.HTTPOk, EventTypeSchema().dump(event_type))
+        if event_type == None:
+            return service_informations.build_response(exception.HTTPNotFound())
+
+        response = service_informations.build_response(exception.HTTPOk, EventTypeSchema().dump(event_type))
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
