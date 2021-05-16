@@ -98,7 +98,7 @@ def get_obstacles_by_challenge(request):
 
     if challenge != None:
 
-        obstacles = ObstacleResources.findAllObstaclesByChallenge(challenge.id)
+        obstacles = ObstacleResources.find_all_obstacles_by_challenge(challenge.id)
 
         if len(obstacles) == 0:
             return service_informations.build_response(exception.HTTPNotFound())
@@ -199,16 +199,12 @@ def get_obstacles_by_segment(request):
         segment_id = request.matchdict["segment_id"]
 
         segment = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id, Segment.id == segment_id)
-            .first()
+            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
         )
 
         if segment != None:
 
-            obstacles = ObstacleResources.findAllObstaclesBySegment(
-                segment.id, challenge.id
-            )
+            obstacles = ObstacleResources.find_all_obstacles_by_segment(segment.id, challenge.id)
 
             if len(obstacles) == 0:
                 return service_informations.build_response(exception.HTTPNotFound())
@@ -323,9 +319,7 @@ def create_obstacle(request):
         segment_id = request.matchdict["segment_id"]
 
         segment = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id, Segment.id == segment_id)
-            .first()
+            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
         )
 
         if segment != None:
@@ -340,26 +334,18 @@ def create_obstacle(request):
                 DBSession.add(obstacle)
                 DBSession.flush()
 
-                response = service_informations.build_response(
-                    exception.HTTPCreated, obstacle_schema.dump(obstacle)
-                )
+                response = service_informations.build_response(exception.HTTPCreated, obstacle_schema.dump(obstacle))
 
             except ValidationError as validation_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(validation_error)
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
                 DBSession.close()
 
             except ValueError as value_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(value_error)
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
                 DBSession.close()
 
             except Exception as e:
-                response = service_informations.build_response(
-                    exception.HTTPInternalServerError
-                )
+                response = service_informations.build_response(exception.HTTPInternalServerError)
                 logging.getLogger(__name__).warn("Returning: %s", str(e))
                 DBSession.close()
 
@@ -464,9 +450,7 @@ def get_obstacle_by_id(request):
         segment_id = request.matchdict["segment_id"]
 
         segment = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id, Segment.id == segment_id)
-            .first()
+            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
         )
 
         if segment != None:
@@ -483,9 +467,7 @@ def get_obstacle_by_id(request):
             if obstacle == None:
                 return service_informations.build_response(exception.HTTPNotFound())
 
-            response = service_informations.build_response(
-                exception.HTTPOk, ObstacleSchema().dump(obstacle)
-            )
+            response = service_informations.build_response(exception.HTTPOk, ObstacleSchema().dump(obstacle))
 
         else:
             response = service_informations.build_response(
@@ -616,9 +598,7 @@ def get_obstacle_update(request):
         segment_id = request.matchdict["segment_id"]
 
         segment = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id, Segment.id == segment_id)
-            .first()
+            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
         )
 
         if segment != None:
@@ -637,9 +617,7 @@ def get_obstacle_update(request):
                     query.update(ObstacleSchema().check_json(request.json))
                     DBSession.flush()
 
-                    response = service_informations.build_response(
-                        exception.HTTPNoContent
-                    )
+                    response = service_informations.build_response(exception.HTTPNoContent)
 
                 except ValidationError as validation_error:
                     response = service_informations.build_response(
@@ -648,21 +626,15 @@ def get_obstacle_update(request):
                     DBSession.close()
 
                 except ValueError as value_error:
-                    response = service_informations.build_response(
-                        exception.HTTPBadRequest, None, str(value_error)
-                    )
+                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
                     DBSession.close()
 
                 except PermissionError as pe:
-                    response = service_informations.build_response(
-                        exception.HTTPUnauthorized
-                    )
+                    response = service_informations.build_response(exception.HTTPUnauthorized)
                     DBSession.close()
 
                 except Exception as e:
-                    response = service_informations.build_response(
-                        exception.HTTPInternalServerError
-                    )
+                    response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
                     DBSession.close()
 
@@ -792,9 +764,7 @@ def get_obstacle_modify(request):
         segment_id = request.matchdict["segment_id"]
 
         segment = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id, Segment.id == segment_id)
-            .first()
+            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
         )
 
         if segment != None:
@@ -813,9 +783,7 @@ def get_obstacle_modify(request):
                     query.update(ObstacleSchema().check_json(request.json))
                     DBSession.flush()
 
-                    response = service_informations.build_response(
-                        exception.HTTPNoContent
-                    )
+                    response = service_informations.build_response(exception.HTTPNoContent)
 
                 except ValidationError as validation_error:
                     response = service_informations.build_response(
@@ -824,21 +792,15 @@ def get_obstacle_modify(request):
                     DBSession.close()
 
                 except ValueError as value_error:
-                    response = service_informations.build_response(
-                        exception.HTTPBadRequest, None, str(value_error)
-                    )
+                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
                     DBSession.close()
 
                 except PermissionError as pe:
-                    response = service_informations.build_response(
-                        exception.HTTPUnauthorized
-                    )
+                    response = service_informations.build_response(exception.HTTPUnauthorized)
                     DBSession.close()
 
                 except Exception as e:
-                    response = service_informations.build_response(
-                        exception.HTTPInternalServerError
-                    )
+                    response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
                     DBSession.close()
 
@@ -921,9 +883,7 @@ def delete_obstacle(request):
         segment_id = request.matchdict["segment_id"]
 
         segment = (
-            DBSession.query(Segment)
-            .filter(Segment.challenge_id == challenge.id, Segment.id == segment_id)
-            .first()
+            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
         )
 
         if segment != None:
@@ -943,9 +903,7 @@ def delete_obstacle(request):
                     DBSession.delete(obstacle)
                     DBSession.flush()
 
-                    response = service_informations.build_response(
-                        exception.HTTPNoContent
-                    )
+                    response = service_informations.build_response(exception.HTTPNoContent)
 
                 except ValidationError as validation_error:
                     response = service_informations.build_response(
@@ -954,21 +912,15 @@ def delete_obstacle(request):
                     DBSession.close()
 
                 except ValueError as value_error:
-                    response = service_informations.build_response(
-                        exception.HTTPBadRequest, None, str(value_error)
-                    )
+                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
                     DBSession.close()
 
                 except PermissionError as pe:
-                    response = service_informations.build_response(
-                        exception.HTTPUnauthorized
-                    )
+                    response = service_informations.build_response(exception.HTTPUnauthorized)
                     DBSession.close()
 
                 except Exception as e:
-                    response = service_informations.build_response(
-                        exception.HTTPInternalServerError
-                    )
+                    response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
                     DBSession.close()
 

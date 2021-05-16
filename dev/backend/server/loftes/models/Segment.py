@@ -27,8 +27,7 @@ class Segment(Base):
     coordinates = Column(TEXT(length=65535))
     challenge_id = Column(Integer, ForeignKey("Challenge.id"))
     challenge = relationship("Challenge", backref="challenge_segments")
-    obstacles = relationship(
-        "Obstacle", cascade="all,delete", backref="segment_obstacles", lazy=True
-    )
+    obstacles = relationship("Obstacle", cascade="all,delete", backref="segment_obstacles", lazy=True)
+
 
 # Index('idx_name_seg', Segment.challenge_id, Segment.name, unique=True)

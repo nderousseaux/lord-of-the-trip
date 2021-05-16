@@ -130,11 +130,7 @@ def get_crossing_points(request):
 
     if challenge != None:
 
-        crossing_points = (
-            DBSession.query(CrossingPoint)
-            .filter(CrossingPoint.challenge_id == challenge.id)
-            .all()
-        )
+        crossing_points = DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
 
         if len(crossing_points) == 0:
             return service_informations.build_response(exception.HTTPNotFound())
@@ -250,19 +246,15 @@ def create_crossing_point(request):
             DBSession.flush()
 
             response = service_informations.build_response(
-                exception.HTTPOk, crossing_point_schema.dump(crossing_point)
+                exception.HTTPCreated, crossing_point_schema.dump(crossing_point)
             )
 
         except ValidationError as validation_error:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, str(validation_error)
-            )
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
             DBSession.close()
 
         except ValueError as value_error:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, str(value_error)
-            )
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
             DBSession.close()
 
         except PermissionError as pe:
@@ -270,9 +262,7 @@ def create_crossing_point(request):
             DBSession.close()
 
         except Exception as e:
-            response = service_informations.build_response(
-                exception.HTTPInternalServerError
-            )
+            response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
             DBSession.close()
 
@@ -361,9 +351,7 @@ def get_crossing_point(request):
         if crossing_point == None:
             return service_informations.build_response(exception.HTTPNotFound())
 
-        response = service_informations.build_response(
-            exception.HTTPOk, CrossingPointSchema().dump(crossing_point)
-        )
+        response = service_informations.build_response(exception.HTTPOk, CrossingPointSchema().dump(crossing_point))
 
     else:
         response = service_informations.build_response(
@@ -473,27 +461,19 @@ def update_crossing_point(request):
                 response = service_informations.build_response(exception.HTTPNoContent)
 
             except ValidationError as validation_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(validation_error)
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
                 DBSession.close()
 
             except ValueError as value_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(value_error)
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
                 DBSession.close()
 
             except PermissionError as pe:
-                response = service_informations.build_response(
-                    exception.HTTPUnauthorized
-                )
+                response = service_informations.build_response(exception.HTTPUnauthorized)
                 DBSession.close()
 
             except Exception as e:
-                response = service_informations.build_response(
-                    exception.HTTPInternalServerError
-                )
+                response = service_informations.build_response(exception.HTTPInternalServerError)
                 logging.getLogger(__name__).warn("Returning: %s", str(e))
                 DBSession.close()
         else:
@@ -605,27 +585,19 @@ def modify_crossing_point(request):
                 response = service_informations.build_response(exception.HTTPNoContent)
 
             except ValidationError as validation_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(validation_error)
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
                 DBSession.close()
 
             except ValueError as value_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(value_error)
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
                 DBSession.close()
 
             except PermissionError as pe:
-                response = service_informations.build_response(
-                    exception.HTTPUnauthorized
-                )
+                response = service_informations.build_response(exception.HTTPUnauthorized)
                 DBSession.close()
 
             except Exception as e:
-                response = service_informations.build_response(
-                    exception.HTTPInternalServerError
-                )
+                response = service_informations.build_response(exception.HTTPInternalServerError)
                 logging.getLogger(__name__).warn("Returning: %s", str(e))
                 DBSession.close()
         else:
@@ -712,27 +684,19 @@ def delete_crossing_point(request):
                 response = service_informations.build_response(exception.HTTPNoContent)
 
             except ValidationError as validation_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(validation_error)
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
                 DBSession.close()
 
             except ValueError as value_error:
-                response = service_informations.build_response(
-                    exception.HTTPBadRequest, None, str(value_error)
-                )
+                response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
                 DBSession.close()
 
             except PermissionError as pe:
-                response = service_informations.build_response(
-                    exception.HTTPUnauthorized
-                )
+                response = service_informations.build_response(exception.HTTPUnauthorized)
                 DBSession.close()
 
             except Exception as e:
-                response = service_informations.build_response(
-                    exception.HTTPInternalServerError
-                )
+                response = service_informations.build_response(exception.HTTPInternalServerError)
                 logging.getLogger(__name__).warn("Returning: %s", str(e))
                 DBSession.close()
         else:

@@ -289,6 +289,183 @@ define({ "api": [
     "groupTitle": "Challenge"
   },
   {
+    "type": "post",
+    "url": "/challenges/:id/duplicate",
+    "title": "Duplication of challenge",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "DuplicateChallenge",
+    "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer",
+            "description": "<p>Token User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": false,
+            "field": "start_date",
+            "description": "<p>Challenge's start date in format &quot;YYYY-MM-DD&quot;</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": false,
+            "field": "end_date",
+            "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n\"start_date\":\"2021-08-22\",\n\"end_date\":\"2021-09-01\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 201 Created\n{\n  \"id\": 47,\n  \"name\": \"Oops, on a perdu Han Solo *3\",\n  \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n  \"start_date\": \"2021-08-22T00:00:00\",\n  \"end_date\": \"2021-09-01T00:00:00\",\n  \"alone_only\": null,\n  \"level\": \"2\",\n  \"scalling\": 4200,\n  \"step_length\": 0.8,\n  \"draft\": false,\n  \"start_crossing_point\": {\n    \"id\": 364,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.524667,\n    \"position_y\": 0.335221\n  },\n  \"end_crossing_point\": {\n    \"id\": 365,\n    \"name\": \"Le pont des centaures\",\n    \"position_x\": 0.508841,\n    \"position_y\": 0.485851\n  },\n  \"segments\": [],\n  \"admin\": {\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"LeMaitre\",\n    \"email\": \"lemaitre@gmail.com\",\n    \"is_admin\": false\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotOwner",
+            "description": "<p>Duplication of challenge that user is not creator of.</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PermanentChallenge",
+            "description": "<p>Duplication of a permanent challenge.</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeNotTerminated",
+            "description": "<p>Duplication of challenge that is not terminated yet.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          }
+        ],
+        "Error 422": [
+          {
+            "group": "Error 422",
+            "type": "Object",
+            "optional": false,
+            "field": "ErrorOnCreation",
+            "description": "<p>Informations were missing during challenge duplication.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's start date must be greater of today's date (16-05-2021, 14:49)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (16-05-2021, 14:49)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot duplicate a challenge that you did not create.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot duplicate a permanent challenge.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot duplicate a challenge that hasn't been terminated yet.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 422 response:",
+          "content": "HTTP/1.1 422 Unprocessable Entity\n\n{\n  \"error\": {\n    \"status\": \"UNPROCESSABLE ENTITY\",\n    \"message\": \"Challenge's start and end crossing points were missing.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 422 response:",
+          "content": "HTTP/1.1 422 Unprocessable Entity\n\n{\n  \"error\": {\n    \"status\": \"UNPROCESSABLE ENTITY\",\n    \"message\": \"Segment's start and end crossing points were missing.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ChallengeView.py",
+    "groupTitle": "Challenge"
+  },
+  {
     "type": "get",
     "url": "/challenges/:id",
     "title": "Request a challenge informations",
@@ -336,7 +513,7 @@ define({ "api": [
             "type": "Date",
             "optional": false,
             "field": "start_date",
-            "description": "<p>Challenge's validation date</p>"
+            "description": "<p>Challenge's start date</p>"
           },
           {
             "group": "OK 200",
@@ -762,6 +939,13 @@ define({ "api": [
             "group": "Body parameters",
             "type": "Date",
             "optional": false,
+            "field": "start_date",
+            "description": "<p>Challenge's start date in format &quot;YYYY-MM-DD&quot;</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": false,
             "field": "end_date",
             "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
           },
@@ -798,7 +982,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n\"name\":\"A la recherche d'Aslan\",\n\"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n\"end_date\":\"2022-10-18\",\n\"alone_only\":\"0\",\n\"level\":3,\n\"scalling\":10000,\n  \"step_length\": 0.7\n}",
+          "content": "\n{\n\"name\":\"A la recherche d'Aslan\",\n\"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\":\"2021-12-18\",\n\"end_date\":\"2022-10-18\",\n\"alone_only\":\"0\",\n\"level\":3,\n\"scalling\":10000,\n  \"step_length\": 0.7\n}",
           "type": "json"
         },
         {
