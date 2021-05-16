@@ -5,11 +5,9 @@ import { Provider, connect } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import DrawerContent from './src/Components/Drawer/DrawerContent';
-import SelectChallenge from './src/Components/Tab/SelectChallenge';
-import GO from './src/Components/Tab/GO';
+import Main from './src/Components/Main/Main';
 import EditProfile from './src/Components/Stack/EditProfile';
 import Connexion from './src/Components/Stack/Connexion';
 import api from './src/api/api'
@@ -41,34 +39,11 @@ let store = createStore(combineReducers({ main: mainReducer }));
 // Create needed navigators
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
 
 // Create and custom Tab navigator content
 const TabNavigator = (props) => {
   return (
-    <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarIcon: ({ focused, color, size}) => {
-          let iconName;
-
-          switch (route.name) {
-            case 'Select Challenge':
-              iconName = 'ios-list';
-              break;
-            case 'GO !':
-              iconName = 'ios-navigate-outline';
-              break;
-            default:
-              iconName = 'help';
-              break;
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        }
-      })}>
-      <Tab.Screen name="Select Challenge" component={SelectChallenge} />
-      <Tab.Screen name="GO !" component={GO} />
-    </Tab.Navigator>
+    <Main />
   );
 }
 
