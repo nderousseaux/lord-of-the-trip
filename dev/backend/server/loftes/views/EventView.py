@@ -121,20 +121,16 @@ def event_add(request):
 
         except ValidationError as validation_error:
             response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
-            DBSession.close()
 
         except ValueError as value_error:
             response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-            DBSession.close()
 
         except PermissionError as pe:
             response = service_informations.build_response(exception.HTTPUnauthorized)
-            DBSession.close()
 
         except Exception as e:
             response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
-            DBSession.close()
     else:
         response = service_informations.build_response(
             exception.HTTPNotFound(),
@@ -209,20 +205,16 @@ def event_check_response(request):
 
         except ValidationError as validation_error:
             response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
-            DBSession.close()
 
         except ValueError as value_error:
             response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-            DBSession.close()
 
         except PermissionError as pe:
             response = service_informations.build_response(exception.HTTPUnauthorized)
-            DBSession.close()
 
         except Exception as e:
             response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
-            DBSession.close()
     else:
         response = service_informations.build_response(
             exception.HTTPNotFound(),

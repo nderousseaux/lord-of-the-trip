@@ -237,16 +237,13 @@ def signup_user(request):
 
     except ValidationError as validation_error:
         response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
-        DBSession.close()
 
     except ValueError as value_error:
         response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-        DBSession.close()
 
     except Exception as e:
         response = service_informations.build_response(exception.HTTPInternalServerError)
         logging.getLogger(__name__).warn("Returning: %s", str(e))
-        DBSession.close()
 
     return response
 

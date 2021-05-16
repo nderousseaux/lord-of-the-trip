@@ -607,20 +607,16 @@ def update_challenge(request):
 
         except ValidationError as validation_error:
             response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
-            DBSession.close()
 
         except ValueError as value_error:
             response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-            DBSession.close()
 
         except PermissionError as pe:
             response = service_informations.build_response(exception.HTTPUnauthorized)
-            DBSession.close()
 
         except Exception as e:
             response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
-            DBSession.close()
 
     else:
         response = service_informations.build_response(exception.HTTPNotFound)
@@ -753,20 +749,16 @@ def modify_challenge(request):
 
         except ValidationError as validation_error:
             response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
-            DBSession.close()
 
         except ValueError as value_error:
             response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-            DBSession.close()
 
         except PermissionError as pe:
             response = service_informations.build_response(exception.HTTPUnauthorized)
-            DBSession.close()
 
         except Exception as e:
             response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
-            DBSession.close()
 
     else:
         response = service_informations.build_response(exception.HTTPNotFound)
@@ -830,7 +822,6 @@ def delete_challenge(request):
         except Exception as e:
             response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
-            DBSession.close()
 
     else:
         response = service_informations.build_response(exception.HTTPNotFound)
@@ -1031,7 +1022,6 @@ def upload_image(request):
                     except Exception as e:
                         response = service_informations.build_response(exception.HTTPInternalServerError)
                         logging.getLogger(__name__).warn("Returning: %s", str(e))
-                        DBSession.close()
 
                 else:
                     response = service_informations.build_response(
@@ -1205,7 +1195,6 @@ def subscribe(request):
                         except Exception as e:
                             response = service_informations.build_response(exception.HTTPInternalServerError)
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
-                            DBSession.close()
 
                     else:
                         response = service_informations.build_response(
@@ -1328,7 +1317,6 @@ def unsubscribe(request):
                 except Exception as e:
                     response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
-                    DBSession.close()
 
             else:
                 response = service_informations.build_response(
@@ -1487,7 +1475,6 @@ def verify(request):
                 except Exception as e:
                     response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
-                    DBSession.close()
 
             else:
                 response = service_informations.build_response(
