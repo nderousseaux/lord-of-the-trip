@@ -1,29 +1,13 @@
-import React, {useState, useEffect} from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import React, {useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import {Picker} from '@react-native-community/picker';
 import { Text, Button} from 'react-native-elements';
-import api from '../../../api/api';
 var _ = require('lodash');
 
 export default function Start(props) {
 
-    const [isLoading, setLoading] = useState(true);
-    const [challenges, setChallenges] = useState([]);
-    const [selectedChallenge, setSelectedChallenge] = useState([]);
+    const [ challenge, setChallenge ] = useState(props.route.params.challenge);
     const [selectedTransport, setSelectedTransport] = useState("marche");
-    
-
-    useEffect(() => {
-        api.getChallenges()
-        .then((response) => response.data)
-        .then((json) => {
-            setChallenges(json.challenges);
-            return json.challenges
-        })
-        .then((challengesJson) => setSelectedChallenge(challengesJson[0]["id"]))
-        .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
-    }, []);
     
     return(
         <View style={styles.container}>
@@ -31,19 +15,7 @@ export default function Start(props) {
                 <Text h1 style={{ textAlign:"center", fontWeight: "200"}}>Démarrer un enregistrement</Text>
             </View>
             <View style={styles.bodyBox}>
-                {isLoading ? 
-                    <View style={styles.spinnerContainer}><ActivityIndicator size="large" color="#0000ff" /></View> :
-                    <View style={styles.challengeBox}>
-                        <Text h4 style={{ textAlign:"center", fontWeight: "400"}}>Choisir un challenge</Text>
-                        <Picker style={{width: 350, height: 132}} itemStyle={{height: 132}}
-                            selectedValue={selectedChallenge}
-                            onValueChange={(itemValue, itemIndex) => setSelectedChallenge(itemValue)}
-                        >
-                            {challenges?.map((challenge) => <Picker.Item label={challenge["name"]} value={challenge["id"]} key={challenge["id"]} />)}
-                        </Picker>
-                    </View>
-                }
-                <View style={{ flex:2 }}>
+                <View style={{ flex:1 }}>
                 </View>
                 <View style={styles.deplacementBox}>
                     <Text h4 style={{ textAlign:"center", fontWeight: "400"}}>Choisir un moyen de déplacement</Text>
@@ -60,8 +32,9 @@ export default function Start(props) {
                 </View>
                 <Button
                     title="Lancer un enregistrement"
+                    style={styles.Button}
                     onPress={() => props.navigation.navigate("Recording", {
-                        challenge: _.find(challenges, function(c) {return c["id"] == selectedChallenge}), transport: selectedTransport})}
+                        challenge: challenge, transport: selectedTransport})}
                 />
             </View>
         </View>
@@ -90,5 +63,8 @@ const styles = StyleSheet.create({
         flex:2,
         alignItems:'center',
         // backgroundColor: 'purple'
+    },
+    Button:{
+        marginBottom:20
     }
 });
