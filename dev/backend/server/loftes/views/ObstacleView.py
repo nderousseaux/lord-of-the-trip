@@ -4,12 +4,14 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Obstacle, Segment, Challenge, DBSession
+from loftes.models import Obstacle, Segment, Challenge, User, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import ObstacleSchema
 from loftes.resources import ObstacleResources
+from loftes.resources import UserCheckRessources
 
 import pyramid.httpexceptions as exception
+from pyramid.authentication import AuthTicket
 import logging
 import json
 
@@ -26,6 +28,7 @@ obstacle_all = Service(
 @apiName GetObstaclesByChallenge
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {Array} Obstacles All obstacles created of challenge's id.
 @apiSuccessExample {json} Success response:
@@ -94,43 +97,53 @@ HTTP/1.1 404 Not Found
 def get_obstacles_by_challenge(request):
 
     service_informations = ServiceInformations()
-    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
-    if challenge != None:
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
-        obstacles = ObstacleResources.find_all_obstacles_by_challenge(challenge.id)
+        challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
-        if len(obstacles) == 0:
-            return service_informations.build_response(exception.HTTPNotFound())
+        if challenge != None:
 
-        data = {"obstacles": ObstacleSchema(many=True).dump(obstacles)}
+            challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
-        response = service_informations.build_response(exception.HTTPOk, data)
+            if challenge != None:
 
+                obstacles = ObstacleResources.find_all_obstacles_by_challenge(challenge.id)
+
+                if len(obstacles) == 0:
+                    return service_informations.build_response(exception.HTTPNotFound())
+
+                data = {"obstacles": ObstacleSchema(many=True).dump(obstacles)}
+
+                response = service_informations.build_response(exception.HTTPOk, data)
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound(),
+                None,
+                "Requested ressource 'Challenge' is not found.",
+            )
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested ressource 'Challenge' is not found.",
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
 
 obstacle = Service(
     name="obstacle",
-    path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/obstacles",
+    path="/segments/{segment_id:\d+}/obstacles",
     cors_policy=cors_policy,
 )
 
 """
-@api {get} /challenges/:challenge_id/segments/:segment_id/obstacles Request all obstacles informations of segment's id.
-@apiParam challenge_id Challenge's unique ID.
+@api {get} /segments/:segment_id/obstacles Request all obstacles informations of segment's id.
 @apiParam segment_id Segment's unique ID.
 @apiVersion 0.2.0
 @apiName GetObstaclesBySegment
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {Array} Obstacles All obstacles created of segment's id.
 @apiSuccessExample {json} Success response:
@@ -149,17 +162,6 @@ HTTP/1.1 200 OK
       "segment_id": 1
     }
   ]
-}
-
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
-  }
 }
 
 @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
@@ -191,20 +193,13 @@ def get_obstacles_by_segment(request):
 
     service_informations = ServiceInformations()
 
-    challenge_id = request.matchdict["challenge_id"]
-    challenge = DBSession.query(Challenge).get(challenge_id)
-
-    if challenge != None:
-
-        segment_id = request.matchdict["segment_id"]
-
-        segment = (
-            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
-        )
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
+        segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
 
         if segment != None:
 
-            obstacles = ObstacleResources.find_all_obstacles_by_segment(segment.id, challenge.id)
+            obstacles = ObstacleResources.find_all_obstacles_by_segment(segment)
 
             if len(obstacles) == 0:
                 return service_informations.build_response(exception.HTTPNotFound())
@@ -219,25 +214,20 @@ def get_obstacles_by_segment(request):
                 None,
                 "Requested ressource 'Segment' is not found.",
             )
-
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested ressource 'Challenge' is not found.",
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
 
 """
-@api {post} /challenges/:challenge_id/segments/:segment_id/obstacles Create a new obstacle of segment's id.
-@apiParam challenge_id Challenge's unique ID.
+@api {post} /segments/:segment_id/obstacles Create a new obstacle of segment's id.
 @apiParam segment_id Segment's unique ID.
 @apiVersion 0.2.0
 @apiName PostObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {Float} progress Obstacle's progress on segment's line
 
@@ -283,17 +273,6 @@ HTTP/1.1 400 Bad Request
   }
 }
 
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
-  }
-}
-
 @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
@@ -312,15 +291,10 @@ def create_obstacle(request):
 
     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
-    if challenge != None:
-
-        segment_id = request.matchdict["segment_id"]
-
-        segment = (
-            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
-        )
+        segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
 
         if segment != None:
 
@@ -338,16 +312,13 @@ def create_obstacle(request):
 
             except ValidationError as validation_error:
                 response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
-                DBSession.close()
 
             except ValueError as value_error:
                 response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-                DBSession.close()
 
             except Exception as e:
                 response = service_informations.build_response(exception.HTTPInternalServerError)
                 logging.getLogger(__name__).warn("Returning: %s", str(e))
-                DBSession.close()
 
         else:
             response = service_informations.build_response(
@@ -357,30 +328,26 @@ def create_obstacle(request):
             )
 
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested ressource 'Challenge' is not found.",
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
-    return response
+        return response
 
 
 obstacle_id = Service(
     name="obstacle_id",
-    path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/obstacles/{id}",
+    path="/segments/{segment_id:\d+}/obstacles/{id}",
     cors_policy=cors_policy,
 )
 
 """
-@api {get} /challenges/:challenge_id/segments/:segment_id/obstacles/:id Request a obstacle informations of obstacle's id
-@apiParam challenge_id Challenge's unique ID.
+@api {get} /segments/:segment_id/obstacles/:id Request a obstacle informations of obstacle's id
 @apiParam segment_id Segment's unique ID.
 @apiParam id Obstacle's unique ID.
 @apiVersion 0.2.0
 @apiName GetObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (OK 200) {Number} id Obstacle's ID
 @apiSuccess (OK 200) {String} label Obstacle's label
@@ -401,17 +368,6 @@ HTTP/1.1 200 OK
   "nb_points": 25,
   "result": "Jadis",
   "segment_id": 1
-}
-
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
-  }
 }
 
 @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
@@ -443,15 +399,10 @@ def get_obstacle_by_id(request):
 
     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+    segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
 
-    if challenge != None:
-
-        segment_id = request.matchdict["segment_id"]
-
-        segment = (
-            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
-        )
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
         if segment != None:
 
@@ -477,24 +428,20 @@ def get_obstacle_by_id(request):
             )
 
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested ressource 'Challenge' is not found.",
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
 
 """
-@api {put} /challenges/:challenge_id/segments/:segment_id/obstacles/:id Update an obstacle
-@apiParam challenge_id Challenge's unique ID.
+@api {put} /segments/:segment_id/obstacles/:id Update an obstacle
 @apiParam segment_id Segment's unique ID.
 @apiParam id Obstacle's unique ID.
 @apiVersion 0.2.0
 @apiName PutObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {Number} id Obstacle's ID
 @apiSuccess (Body parameters) {String} label Obstacle's label
@@ -551,17 +498,6 @@ HTTP/1.1 400 Bad Request
   }
 }
 
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
-  }
-}
-
 @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
@@ -591,15 +527,10 @@ def get_obstacle_update(request):
 
     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
-    if challenge != None:
-
-        segment_id = request.matchdict["segment_id"]
-
-        segment = (
-            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
-        )
+        segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
 
         if segment != None:
 
@@ -623,20 +554,16 @@ def get_obstacle_update(request):
                     response = service_informations.build_response(
                         exception.HTTPBadRequest, None, str(validation_error)
                     )
-                    DBSession.close()
 
                 except ValueError as value_error:
                     response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-                    DBSession.close()
 
                 except PermissionError as pe:
                     response = service_informations.build_response(exception.HTTPUnauthorized)
-                    DBSession.close()
 
                 except Exception as e:
                     response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
-                    DBSession.close()
 
             else:
                 response = service_informations.build_response(exception.HTTPNotFound())
@@ -647,25 +574,22 @@ def get_obstacle_update(request):
                 None,
                 "Requested resource 'Segment' is not found.",
             )
+
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested resource 'Challenge' is not found.",
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
 
 """
-@api {patch} /challenges/:challenge_id/segments/:segment_id/obstacles/:_id Partially modify an obstacle
-@apiParam challenge_id Challenge's unique ID.
+@api {patch} /segments/:segment_id/obstacles/:id Partially modify an obstacle
 @apiParam segment_id Segment's unique ID.
 @apiParam id Obstacle's unique ID.
 @apiVersion 0.2.0
 @apiName PatchObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccess (Body parameters) {Number} id Obstacle's ID
 @apiSuccess (Body parameters) {String} label Obstacle's label
@@ -717,17 +641,6 @@ HTTP/1.1 400 Bad Request
   }
 }
 
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
-  }
-}
-
 @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
@@ -757,15 +670,10 @@ def get_obstacle_modify(request):
 
     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
-    if challenge != None:
-
-        segment_id = request.matchdict["segment_id"]
-
-        segment = (
-            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
-        )
+        segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
 
         if segment != None:
 
@@ -789,20 +697,16 @@ def get_obstacle_modify(request):
                     response = service_informations.build_response(
                         exception.HTTPBadRequest, None, str(validation_error)
                     )
-                    DBSession.close()
 
                 except ValueError as value_error:
                     response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-                    DBSession.close()
 
                 except PermissionError as pe:
                     response = service_informations.build_response(exception.HTTPUnauthorized)
-                    DBSession.close()
 
                 except Exception as e:
                     response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
-                    DBSession.close()
 
             else:
                 response = service_informations.build_response(exception.HTTPNotFound())
@@ -813,39 +717,25 @@ def get_obstacle_modify(request):
                 None,
                 "Requested resource 'Segment' is not found.",
             )
+
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested resource 'Challenge' is not found.",
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
 
 """
-@api {delete} /challenges/:challenge_id/segments/:segment_id/obstacles/:id Delete an obstacle
-@apiParam challenge_id Challenge's unique ID.
+@api {delete} /segments/:segment_id/obstacles/:id Delete an obstacle
 @apiParam segment_id Segment's unique ID.
 @apiParam id Obstacle's unique ID.
 @apiVersion 0.2.0
 @apiName DeleteObstacle
 @apiGroup Obstacle
 @apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
-
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
-  }
-}
 
 @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
 @apiErrorExample {json} Error 404 response:
@@ -876,15 +766,10 @@ def delete_obstacle(request):
 
     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
 
-    if challenge != None:
-
-        segment_id = request.matchdict["segment_id"]
-
-        segment = (
-            DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == segment_id).first()
-        )
+        segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
 
         if segment != None:
 
@@ -909,20 +794,16 @@ def delete_obstacle(request):
                     response = service_informations.build_response(
                         exception.HTTPBadRequest, None, str(validation_error)
                     )
-                    DBSession.close()
 
                 except ValueError as value_error:
                     response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-                    DBSession.close()
 
                 except PermissionError as pe:
                     response = service_informations.build_response(exception.HTTPUnauthorized)
-                    DBSession.close()
 
                 except Exception as e:
                     response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
-                    DBSession.close()
 
             else:
                 response = service_informations.build_response(exception.HTTPNotFound())
@@ -933,12 +814,7 @@ def delete_obstacle(request):
                 None,
                 "Requested resource 'Segment' is not found.",
             )
-
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound(),
-            None,
-            "Requested resource 'Challenge' is not found.",
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response

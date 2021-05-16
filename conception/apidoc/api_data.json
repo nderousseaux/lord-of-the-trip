@@ -314,8 +314,8 @@
             "group": "Header",
             "type": "String",
             "optional": false,
-            "field": "Bearer",
-            "description": "<p>Token User's login token.</p>"
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
           }
         ]
       }
@@ -2157,17 +2157,11 @@
   },
   {
     "type": "delete",
-    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles/:id",
+    "url": "/segments/:segment_id/obstacles/:id",
     "title": "Delete an obstacle",
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
           {
             "group": "Parameter",
             "optional": false,
@@ -2202,13 +2196,6 @@
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "SegmentNotFound",
             "description": "<p>The id of the Segment was not found.</p>"
           },
@@ -2222,11 +2209,6 @@
         ]
       },
       "examples": [
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
@@ -2244,17 +2226,11 @@
   },
   {
     "type": "get",
-    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles/:id",
+    "url": "/segments/:segment_id/obstacles/:id",
     "title": "Request a obstacle informations of obstacle's id",
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
           {
             "group": "Parameter",
             "optional": false,
@@ -2335,13 +2311,6 @@
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "SegmentNotFound",
             "description": "<p>The id of the Segment was not found.</p>"
           },
@@ -2355,11 +2324,6 @@
         ]
       },
       "examples": [
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
@@ -2451,17 +2415,11 @@
   },
   {
     "type": "get",
-    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles",
+    "url": "/segments/:segment_id/obstacles",
     "title": "Request all obstacles informations of segment's id.",
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
           {
             "group": "Parameter",
             "optional": false,
@@ -2501,13 +2459,6 @@
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "SegmentNotFound",
             "description": "<p>The id of the Segment was not found.</p>"
           },
@@ -2521,11 +2472,6 @@
         ]
       },
       "examples": [
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
@@ -2543,17 +2489,11 @@
   },
   {
     "type": "patch",
-    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles/:_id",
+    "url": "/segments/:segment_id/obstacles/:id",
     "title": "Partially modify an obstacle",
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
           {
             "group": "Parameter",
             "optional": false,
@@ -2648,13 +2588,6 @@
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "SegmentNotFound",
             "description": "<p>The id of the Segment was not found.</p>"
           },
@@ -2685,11 +2618,6 @@
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
           "type": "json"
         },
@@ -2705,17 +2633,11 @@
   },
   {
     "type": "post",
-    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles",
+    "url": "/segments/:segment_id/obstacles",
     "title": "Create a new obstacle of segment's id.",
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
           {
             "group": "Parameter",
             "optional": false,
@@ -2769,13 +2691,6 @@
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "SegmentNotFound",
             "description": "<p>The id of the Segment was not found.</p>"
           }
@@ -2794,11 +2709,6 @@
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested ressource 'Segment' is not found for this challenge.\"\n  }\n}",
           "type": "json"
         }
@@ -2809,17 +2719,11 @@
   },
   {
     "type": "put",
-    "url": "/challenges/:challenge_id/segments/:segment_id/obstacles/:id",
+    "url": "/segments/:segment_id/obstacles/:id",
     "title": "Update an obstacle",
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
           {
             "group": "Parameter",
             "optional": false,
@@ -2914,13 +2818,6 @@
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "SegmentNotFound",
             "description": "<p>The id of the Segment was not found.</p>"
           },
@@ -2947,11 +2844,6 @@
         {
           "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'question_type': ['Field must not be null.']}\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
           "type": "json"
         },
         {

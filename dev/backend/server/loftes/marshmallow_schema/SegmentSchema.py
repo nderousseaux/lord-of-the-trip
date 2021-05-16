@@ -36,7 +36,7 @@ class SegmentSchema(Schema):
     coordinates = fields.Method("deserialize_coordinates")
     challenge_id = fields.Int(load_only=True)
     challenge = fields.Nested("ChallengeSchema", exclude=("segments",))
-    obstacles = fields.List(fields.Nested("ObstacleSchema", exclude=("segment",)))
+    obstacles = fields.List(fields.Nested("ObstacleSchema"))
 
     class Meta:
         ordered = (True,)
