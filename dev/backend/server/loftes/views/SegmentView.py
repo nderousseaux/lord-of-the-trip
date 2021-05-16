@@ -295,7 +295,7 @@ def create_segment(request):
             DBSession.flush()
 
             response = service_informations.build_response(
-                exception.HTTPOk, segment_schema.dump(segment)
+                exception.HTTPCreated, segment_schema.dump(segment)
             )
 
         except ValidationError as validation_error:

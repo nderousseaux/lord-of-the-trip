@@ -53,27 +53,15 @@ class EventTypeSchema(Schema):
         #     raise PermissionError()
 
         if "code" in data:
-            event_types = (
-                DBSession().query(EventType).filter_by(code=data["code"]).first()
-            )
+            event_types = DBSession().query(EventType).filter_by(code=data["code"]).first()
 
             if event_types != None:
-                raise ValueError(
-                    "The given value '"
-                    + data["code"]
-                    + "' is already used as an event type code."
-                )
+                raise ValueError("The given value '" + data["code"] + "' is already used as an event type code.")
 
         if "label" in data:
-            event_types = (
-                DBSession().query(EventType).filter_by(label=data["label"]).first()
-            )
+            event_types = DBSession().query(EventType).filter_by(label=data["label"]).first()
 
             if event_types != None:
-                raise ValueError(
-                    "The given value '"
-                    + data["label"]
-                    + "' is already used as an event type label."
-                )
+                raise ValueError("The given value '" + data["label"] + "' is already used as an event type label.")
 
         return data

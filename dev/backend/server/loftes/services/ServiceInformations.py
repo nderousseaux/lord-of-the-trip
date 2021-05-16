@@ -12,9 +12,7 @@ class ServiceInformations:
             content = {
                 "error": {
                     "status": http_exception.title.upper(),
-                    "message": self.get_error_message_by_code(code)
-                    if message == None
-                    else message,
+                    "message": self.get_error_message_by_code(code) if message == None else message,
                 }
             }
 

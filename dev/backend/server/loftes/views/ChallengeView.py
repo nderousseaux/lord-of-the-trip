@@ -4,12 +4,13 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Challenge, CrossingPoint, UserChallenge, User, DBSession
+from loftes.models import Challenge, CrossingPoint, UserChallenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.utils import get_project_root
 from loftes.resources.CheckChallengeRessources import checkChallenge
+from loftes.resources import ChallengeResources, ObstacleResources
 
 from pathlib import Path
 
@@ -201,6 +202,7 @@ def get_challenges(request):
 
 @apiSuccess (Body parameters) {String} name Challenge's name
 @apiSuccess (Body parameters) {String} description Challenge's description
+@apiSuccess (Body parameters) {Date} start_date Challenge's start date in format "YYYY-MM-DD"
 @apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
 @apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (Body parameters) {Number} level Challenge's difficulty
@@ -212,6 +214,7 @@ def get_challenges(request):
 {
 	"name":"A la recherche d'Aslan",
 	"description":"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date":"2021-12-18",
 	"end_date":"2022-10-18",
 	"alone_only":"0",
 	"level":3,
@@ -313,39 +316,25 @@ def create_challenge(request):
         DBSession.add(challenge)
         DBSession.flush()
 
-        response = service_informations.build_response(
-            exception.HTTPOk, challenge_schema.dump(challenge)
-        )
+        response = service_informations.build_response(exception.HTTPCreated, challenge_schema.dump(challenge))
 
     except ValidationError as validation_error:
-        response = service_informations.build_response(
-            exception.HTTPBadRequest, None, str(validation_error)
-        )
-        DBSession.close()
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
 
     except ValueError as value_error:
-        response = service_informations.build_response(
-            exception.HTTPBadRequest, None, str(value_error)
-        )
-        DBSession.close()
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
 
     except PermissionError as pe:
         response = service_informations.build_response(exception.HTTPUnauthorized)
-        DBSession.close()
 
     except Exception as e:
-        response = service_informations.build_response(
-            exception.HTTPInternalServerError
-        )
+        response = service_informations.build_response(exception.HTTPInternalServerError)
         logging.getLogger(__name__).warn("Returning: %s", str(e))
-        DBSession.close()
 
     return response
 
 
-challenge_by_id = Service(
-    name="challenge_by_id", path="challenges/{id:\d+}", cors_policy=cors_policy
-)
+challenge_by_id = Service(name="challenge_by_id", path="challenges/{id:\d+}", cors_policy=cors_policy)
 
 """
 @api {get} /challenges/:id Request a challenge informations
@@ -358,7 +347,7 @@ challenge_by_id = Service(
 @apiSuccess (OK 200) {Number} id Challenge's ID
 @apiSuccess (OK 200) {String} name Challenge's name
 @apiSuccess (OK 200) {String} description Challenge's description
-@apiSuccess (OK 200) {Date} start_date Challenge's validation date
+@apiSuccess (OK 200) {Date} start_date Challenge's start date
 @apiSuccess (OK 200) {Date} end_date Challenge's end date
 @apiSuccess (OK 200) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
 @apiSuccess (OK 200) {Number} level Challenge's difficulty
@@ -483,9 +472,7 @@ def get_challenge(request):
     if challenge == None:
         return service_informations.build_response(exception.HTTPNotFound())
 
-    return service_informations.build_response(
-        exception.HTTPOk, ChallengeSchema().dump(challenge)
-    )
+    return service_informations.build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
 
 
 """
@@ -613,23 +600,17 @@ def update_challenge(request):
 
     if challenge != None:
         try:
-            DBSession.query(Challenge).filter(Challenge.id == id).update(
-                ChallengeSchema().check_json(request.json)
-            )
+            DBSession.query(Challenge).filter(Challenge.id == id).update(ChallengeSchema().check_json(request.json))
             DBSession.flush()
 
             response = service_informations.build_response(exception.HTTPNoContent)
 
         except ValidationError as validation_error:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, str(validation_error)
-            )
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
             DBSession.close()
 
         except ValueError as value_error:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, str(value_error)
-            )
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
             DBSession.close()
 
         except PermissionError as pe:
@@ -637,9 +618,7 @@ def update_challenge(request):
             DBSession.close()
 
         except Exception as e:
-            response = service_informations.build_response(
-                exception.HTTPInternalServerError
-            )
+            response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
             DBSession.close()
 
@@ -767,23 +746,17 @@ def modify_challenge(request):
 
     if challenge != None:
         try:
-            DBSession.query(Challenge).filter(Challenge.id == id).update(
-                ChallengeSchema().check_json(request.json)
-            )
+            DBSession.query(Challenge).filter(Challenge.id == id).update(ChallengeSchema().check_json(request.json))
             DBSession.flush()
 
             response = service_informations.build_response(exception.HTTPNoContent)
 
         except ValidationError as validation_error:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, str(validation_error)
-            )
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
             DBSession.close()
 
         except ValueError as value_error:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, str(value_error)
-            )
+            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
             DBSession.close()
 
         except PermissionError as pe:
@@ -791,9 +764,7 @@ def modify_challenge(request):
             DBSession.close()
 
         except Exception as e:
-            response = service_informations.build_response(
-                exception.HTTPInternalServerError
-            )
+            response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
             DBSession.close()
 
@@ -846,9 +817,7 @@ def delete_challenge(request):
             challenge.start_crossing_point_id = None
             challenge.end_crossing_point_id = None
 
-            crossing_points_to_delete = DBSession.query(CrossingPoint).filter_by(
-                challenge_id=challenge.id
-            )
+            crossing_points_to_delete = DBSession.query(CrossingPoint).filter_by(challenge_id=challenge.id)
 
             for crossing_point_to_delete in crossing_points_to_delete:
                 DBSession.delete(crossing_point_to_delete)
@@ -859,9 +828,7 @@ def delete_challenge(request):
             response = service_informations.build_response(exception.HTTPNoContent)
 
         except Exception as e:
-            response = service_informations.build_response(
-                exception.HTTPInternalServerError
-            )
+            response = service_informations.build_response(exception.HTTPInternalServerError)
             logging.getLogger(__name__).warn("Returning: %s", str(e))
             DBSession.close()
 
@@ -1055,22 +1022,14 @@ def upload_image(request):
                         os.rename(temp_file_path, file_path)
 
                         DBSession.query(Challenge).filter(Challenge.id == id).update(
-                            {
-                                Challenge.map_url: challenge_uploads_path
-                                + "/"
-                                + input_image
-                            }
+                            {Challenge.map_url: challenge_uploads_path + "/" + input_image}
                         )
                         DBSession.flush()
 
-                        response = ServiceInformations().build_response(
-                            exception.HTTPNoContent
-                        )
+                        response = ServiceInformations().build_response(exception.HTTPNoContent)
 
                     except Exception as e:
-                        response = service_informations.build_response(
-                            exception.HTTPInternalServerError
-                        )
+                        response = service_informations.build_response(exception.HTTPInternalServerError)
                         logging.getLogger(__name__).warn("Returning: %s", str(e))
                         DBSession.close()
 
@@ -1087,9 +1046,7 @@ def upload_image(request):
                 )
 
         else:
-            response = service_informations.build_response(
-                exception.HTTPBadRequest, None, "File is not found."
-            )
+            response = service_informations.build_response(exception.HTTPBadRequest, None, "File is not found.")
 
     else:
         response = service_informations.build_response(exception.HTTPNotFound)
@@ -1188,9 +1145,7 @@ def subscribe(request):
 
     service_informations = ServiceInformations()
 
-    user = (
-        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
-    )
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
     if user != None:
 
@@ -1248,9 +1203,7 @@ def subscribe(request):
                             response = exception.HTTPNoContent()
 
                         except Exception as e:
-                            response = service_informations.build_response(
-                                exception.HTTPInternalServerError
-                            )
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
                             DBSession.close()
 
@@ -1342,9 +1295,7 @@ def unsubscribe(request):
 
     service_informations = ServiceInformations()
 
-    user = (
-        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
-    )
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
     if user != None:
 
@@ -1366,20 +1317,16 @@ def unsubscribe(request):
 
                 try:
 
-                    DBSession.query(UserChallenge).filter(
-                        UserChallenge.id == subscribed_challenge.id
-                    ).update({UserChallenge.unsubscribe_date: datetime.datetime.now()})
+                    DBSession.query(UserChallenge).filter(UserChallenge.id == subscribed_challenge.id).update(
+                        {UserChallenge.unsubscribe_date: datetime.datetime.now()}
+                    )
 
                     DBSession.flush()
 
-                    response = service_informations.build_response(
-                        exception.HTTPNoContent
-                    )
+                    response = service_informations.build_response(exception.HTTPNoContent)
 
                 except Exception as e:
-                    response = service_informations.build_response(
-                        exception.HTTPInternalServerError
-                    )
+                    response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
                     DBSession.close()
 
@@ -1499,9 +1446,7 @@ def verify(request):
 
     service_informations = ServiceInformations()
 
-    user = (
-        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
-    )
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
     if user != None:
 
@@ -1519,15 +1464,9 @@ def verify(request):
                     # On vérifie qu'aucun crossing point n'est orphelin
                     orphans = []
 
-                    for crossing in DBSession.query(CrossingPoint).filter(
-                        CrossingPoint.challenge_id == challenge.id
-                    ):
-                        if (
-                            len(crossing.segments_end) == 0
-                            and len(crossing.segments_start) == 0
-                        ) or (
-                            crossing.id != challenge.start_crossing_point_id
-                            and len(crossing.segments_end) == 0
+                    for crossing in DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id):
+                        if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
+                            crossing.id != challenge.start_crossing_point_id and len(crossing.segments_end) == 0
                         ):
                             orphans.append(crossing)
 
@@ -1537,23 +1476,16 @@ def verify(request):
                         response = service_informations.build_response(
                             exception.HTTPOk,
                             {
-                                "loop": [
-                                    CrossingPointSchema(many=True).dump(loop)
-                                    for loop in loops
-                                ],
+                                "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
                                 "deadend": CrossingPointSchema(many=True).dump(deadend),
                                 "orphans": CrossingPointSchema(many=True).dump(orphans),
                             },
                         )
                     else:
-                        response = service_informations.build_response(
-                            exception.HTTPNoContent
-                        )
+                        response = service_informations.build_response(exception.HTTPNoContent)
 
                 except Exception as e:
-                    response = service_informations.build_response(
-                        exception.HTTPInternalServerError
-                    )
+                    response = service_informations.build_response(exception.HTTPInternalServerError)
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
                     DBSession.close()
 
@@ -1569,5 +1501,486 @@ def verify(request):
 
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+challenge_duplicate = Service(
+    name="challenge_duplicate",
+    path="challenges/{id:\d+}/duplicate",
+    cors_policy=cors_policy,
+)
+
+"""
+@api {post} /challenges/:id/duplicate Duplication of challenge
+@apiParam id Challenge's unique ID.
+@apiVersion 0.2.0
+@apiName DuplicateChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
+
+@apiSuccess (Body parameters) {Date} start_date Challenge's start date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
+
+@apiSuccessExample {json} Body:
+
+{
+	"start_date":"2021-08-22",
+	"end_date":"2021-09-01"
+}
+
+@apiSuccessExample {json} Success response:
+HTTP/1.1 201 Created
+{
+  "id": 47,
+  "name": "Oops, on a perdu Han Solo *3",
+  "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
+  "start_date": "2021-08-22T00:00:00",
+  "end_date": "2021-09-01T00:00:00",
+  "alone_only": null,
+  "level": "2",
+  "scalling": 4200,
+  "step_length": 0.8,
+  "draft": false,
+  "start_crossing_point": {
+    "id": 364,
+    "name": "La passe du faune",
+    "position_x": 0.524667,
+    "position_y": 0.335221
+  },
+  "end_crossing_point": {
+    "id": 365,
+    "name": "Le pont des centaures",
+    "position_x": 0.508841,
+    "position_y": 0.485851
+  },
+  "segments": [],
+  "admin": {
+    "first_name": "Missy",
+    "last_name": "Of Gallifrey",
+    "pseudo": "LeMaitre",
+    "email": "lemaitre@gmail.com",
+    "is_admin": false
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's start date must be greater of today's date (16-05-2021, 14:49)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's end date must be greater of today's date (16-05-2021, 14:49)"
+  }
+}
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} UserNotOwner Duplication of challenge that user is not creator of.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot duplicate a challenge that you did not create."
+  }
+}
+
+@apiError (Error 403) {Object} PermanentChallenge Duplication of a permanent challenge.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot duplicate a permanent challenge."
+  }
+}
+
+@apiError (Error 403) {Object} ChallengeNotTerminated Duplication of challenge that is not terminated yet.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You cannot duplicate a challenge that hasn't been terminated yet."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+
+@apiError (Error 422) {Object} ErrorOnCreation Informations were missing during challenge duplication.
+@apiErrorExample {json} Error 422 response:
+HTTP/1.1 422 Unprocessable Entity
+
+{
+  "error": {
+    "status": "UNPROCESSABLE ENTITY",
+    "message": "Challenge's start and end crossing points were missing."
+  }
+}
+
+@apiError (Error 422) {Object} ErrorOnCreation Informations were missing during challenge duplication.
+@apiErrorExample {json} Error 422 response:
+HTTP/1.1 422 Unprocessable Entity
+
+{
+  "error": {
+    "status": "UNPROCESSABLE ENTITY",
+    "message": "Segment's start and end crossing points were missing."
+  }
+}
+"""
+
+
+@challenge_duplicate.post()
+def duplicate(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        # check if challenge exists
+        if challenge != None:
+
+            # check if user is challenge's administrator
+            if user.id == challenge.admin_id:
+
+                now = datetime.datetime.now()
+
+                # check if challenge is not permanent
+                if challenge.end_date != None:
+
+                    # check if challenge is already finished
+                    if challenge.end_date < now:
+
+                        try:
+
+                            old_challenge = challenge
+
+                            name_splitter = old_challenge.name.split(" *")
+                            old_challenge_name = name_splitter[0]
+
+                            last_challenge_with_same_name = ChallengeResources.find_last_challenge_by_name(
+                                old_challenge_name
+                            )
+
+                            counter_splitter = last_challenge_with_same_name.name.split(" *")
+                            name_counter = int(counter_splitter[1]) if len(counter_splitter) > 1 else 1
+
+                            challenge_schema = ChallengeSchema()
+
+                            new_challenge_data = request.json
+                            new_challenge_data["name"] = old_challenge_name + " *" + str(name_counter + 1)
+
+                            new_challenge = challenge_schema.load(new_challenge_data)
+
+                            # check if new start and end date are not null
+                            if new_challenge.start_date != None and new_challenge.end_date != None:
+                                # new challenge creation
+                                new_challenge.description = old_challenge.description
+                                new_challenge.alone_only = old_challenge.alone_only
+                                new_challenge.level = old_challenge.level
+                                new_challenge.scalling = old_challenge.scalling
+                                new_challenge.step_length = old_challenge.step_length
+                                new_challenge.draft = old_challenge.draft
+                                new_challenge.admin_id = user.id
+
+                                DBSession.add(new_challenge)
+                                DBSession.flush()
+
+                                # new crossing points creation
+                                old_crossing_points = (
+                                    DBSession.query(CrossingPoint)
+                                    .filter(CrossingPoint.challenge_id == old_challenge.id)
+                                    .all()
+                                )
+
+                                for old_crossing_point in old_crossing_points:
+                                    new_crossing_point = CrossingPoint()
+                                    new_crossing_point.name = old_crossing_point.name
+                                    new_crossing_point.position_x = old_crossing_point.position_x
+                                    new_crossing_point.position_y = old_crossing_point.position_y
+                                    new_crossing_point.challenge_id = new_challenge.id
+                                    DBSession.add(new_crossing_point)
+
+                                DBSession.flush()
+
+                                # start crossing point for new challenge
+                                old_start_crossing_point = None
+                                if old_challenge.start_crossing_point_id != None:
+                                    old_start_crossing_point = (
+                                        DBSession().query(CrossingPoint).get(old_challenge.start_crossing_point_id)
+                                    )
+
+                                new_start_crossing_point = None
+                                if old_start_crossing_point != None:
+                                    new_start_crossing_point = (
+                                        DBSession.query(CrossingPoint)
+                                        .filter(
+                                            CrossingPoint.name == old_start_crossing_point.name,
+                                            CrossingPoint.challenge_id == new_challenge.id,
+                                        )
+                                        .first()
+                                    )
+                                # end crossing point for new challenge
+                                old_end_crossing_point = None
+                                if old_challenge.end_crossing_point_id != None:
+                                    old_end_crossing_point = (
+                                        DBSession().query(CrossingPoint).get(old_challenge.end_crossing_point_id)
+                                    )
+
+                                new_end_crossing_point = None
+                                if old_end_crossing_point != None:
+                                    new_end_crossing_point = (
+                                        DBSession.query(CrossingPoint)
+                                        .filter(
+                                            CrossingPoint.name == old_end_crossing_point.name,
+                                            CrossingPoint.challenge_id == new_challenge.id,
+                                        )
+                                        .first()
+                                    )
+
+                                # check if new start and end date are not null
+                                if new_start_crossing_point != None and new_end_crossing_point != None:
+                                    # update of challenge
+                                    DBSession.query(Challenge).filter(Challenge.id == new_challenge.id).update(
+                                        {
+                                            Challenge.start_crossing_point_id: new_start_crossing_point.id,
+                                            Challenge.end_crossing_point_id: new_end_crossing_point.id,
+                                        }
+                                    )
+
+                                    DBSession.flush()
+                                else:
+                                    raise EnvironmentError("Challenge's start and end crossing points were missing.")
+
+                                # challenge's map's url
+                                if old_challenge.map_url != None:
+                                    old_challenge_image = str(get_project_root()) + old_challenge.map_url
+
+                                    if os.path.exists(old_challenge_image):
+                                        map_url_splitter = old_challenge.map_url.split("_")
+                                        image_format = old_challenge.map_url.split(".")[1]
+                                        new_challenge_map_url = (
+                                            map_url_splitter[0] + "_" + str(new_challenge.id) + "." + image_format
+                                        )
+                                        # copy of new file
+                                        shutil.copyfile(
+                                            old_challenge_image, str(get_project_root()) + new_challenge_map_url
+                                        )
+                                        if os.path.exists(str(get_project_root()) + new_challenge_map_url):
+                                            # update of challenge
+                                            DBSession.query(Challenge).filter(Challenge.id == new_challenge.id).update(
+                                                {Challenge.map_url: new_challenge_map_url}
+                                            )
+
+                                            DBSession.flush()
+
+                                # new segments creation
+                                old_segments = (
+                                    DBSession.query(Segment).filter(Segment.challenge_id == old_challenge.id).all()
+                                )
+
+                                for old_segment in old_segments:
+                                    new_segment = Segment()
+                                    new_segment.name = old_segment.name
+                                    new_segment.coordinates = old_segment.coordinates
+                                    new_segment.challenge_id = new_challenge.id
+
+                                    DBSession.add(new_segment)
+
+                                DBSession.flush()
+
+                                # update start and end crossing points for segment
+                                new_segments = (
+                                    DBSession.query(Segment).filter(Segment.challenge_id == new_challenge.id).all()
+                                )
+
+                                for new_segment in new_segments:
+                                    # find old segment by name
+                                    old_segment = (
+                                        DBSession.query(Segment)
+                                        .filter(
+                                            Segment.name == new_segment.name, Segment.challenge_id == old_challenge.id
+                                        )
+                                        .first()
+                                    )
+                                    # find old segment's start crossing point
+                                    old_segment_start_crossing_point = (
+                                        DBSession().query(CrossingPoint).get(old_segment.start_crossing_point_id)
+                                    )
+                                    # find new segment's start crossing point
+                                    new_segment_start_crossing_point = (
+                                        DBSession.query(CrossingPoint)
+                                        .filter(
+                                            CrossingPoint.name == old_segment_start_crossing_point.name,
+                                            CrossingPoint.challenge_id == new_challenge.id,
+                                        )
+                                        .first()
+                                    )
+                                    # find old segment's end crossing point
+                                    old_segment_end_crossing_point = (
+                                        DBSession().query(CrossingPoint).get(old_segment.end_crossing_point_id)
+                                    )
+                                    # find new segment's start crossing point
+                                    new_segment_end_crossing_point = (
+                                        DBSession.query(CrossingPoint)
+                                        .filter(
+                                            CrossingPoint.name == old_segment_end_crossing_point.name,
+                                            CrossingPoint.challenge_id == new_challenge.id,
+                                        )
+                                        .first()
+                                    )
+
+                                    # check if new start and end date are not null
+                                    if (
+                                        new_segment_start_crossing_point != None
+                                        and new_segment_end_crossing_point != None
+                                    ):
+                                        # segment update
+                                        DBSession.query(Segment).filter(Segment.id == new_segment.id).update(
+                                            {
+                                                Segment.start_crossing_point_id: new_segment_start_crossing_point.id,
+                                                Segment.end_crossing_point_id: new_segment_end_crossing_point.id,
+                                            }
+                                        )
+
+                                        DBSession.flush()
+                                    else:
+                                        raise EnvironmentError("Segment's start and end crossing points were missing.")
+
+                                    # check if old segment had obstacles
+                                    if len(old_segment.obstacles) > 0:
+                                        for old_obstacle in old_segment.obstacles:
+                                            new_obstacle = Obstacle()
+                                            new_obstacle.label = old_obstacle.label
+                                            new_obstacle.description = old_obstacle.description
+                                            new_obstacle.progress = old_obstacle.progress
+                                            new_obstacle.question_type = old_obstacle.question_type
+                                            new_obstacle.nb_points = old_obstacle.nb_points
+                                            new_obstacle.result = old_obstacle.result
+                                            new_obstacle.segment_id = new_segment.id
+                                            DBSession.add(new_obstacle)
+
+                                        DBSession.flush()
+
+                                response = service_informations.build_response(
+                                    exception.HTTPCreated,
+                                    challenge_schema.dump(new_challenge),
+                                )
+
+                            else:
+                                return service_informations.build_response(
+                                    exception.HTTPBadRequest,
+                                    None,
+                                    "A mandatory field is missing : start_date or end_date.",
+                                )
+
+                        except ValidationError as validation_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(validation_error)
+                            )
+
+                        except ValueError as value_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(value_error)
+                            )
+
+                        except PermissionError as pe:
+                            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+                        except EnvironmentError as ee:
+                            response = service_informations.build_response(
+                                exception.HTTPUnprocessableEntity, None, str(ee)
+                            )
+
+                        except Exception as e:
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            "You cannot duplicate a challenge that hasn't been terminated yet.",
+                        )
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You cannot duplicate a permanent challenge.",
+                    )
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You cannot duplicate a challenge that you did not create.",
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    # solution pour ce sprint, penser à optimiser
+    if response.status == "422 Unprocessable Entity":
+        if new_challenge != None:
+            if new_challenge.map_url != None:
+                image = str(get_project_root()) + new_challenge.map_url
+                if os.path.exists(image):
+                    os.remove(image)
+
+            new_challenge.start_crossing_point_id = None
+            new_challenge.end_crossing_point_id = None
+
+            crossing_points_to_delete = DBSession.query(CrossingPoint).filter_by(challenge_id=new_challenge.id)
+
+            for crossing_point_to_delete in crossing_points_to_delete:
+                DBSession.delete(crossing_point_to_delete)
+
+            DBSession.delete(new_challenge)
+            DBSession.flush()
 
     return response
