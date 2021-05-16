@@ -12,12 +12,12 @@ def find_all_obstacles_by_challenge(challenge_id):
     return query.all()
 
 
-def find_all_obstacles_by_segment(segment_id, challenge_id):
+def find_all_obstacles_by_segment(segment):
 
     query = (
         DBSession.query(Obstacle)
         .join(Segment, Obstacle.segment_id == Segment.id)
-        .filter(Obstacle.segment_id == segment_id, Segment.challenge_id == challenge_id)
+        .filter(Obstacle.segment_id == segment.id, Segment.challenge_id == segment.challenge.id)
     )
 
     return query.all()

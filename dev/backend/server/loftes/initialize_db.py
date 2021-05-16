@@ -126,7 +126,9 @@ def fill(argv=sys.argv):
     session.commit()
 
     # Challenge
-    cp1 = CrossingPoint(name="L'armoire", challenge_id="1", position_x="0.142", position_y="0.324511")
+    cp1 = CrossingPoint(
+        name="L'armoire", challenge_id="1", position_x="0.142", position_y="0.324511"
+    )
     session.add(cp1)
     session.commit()
 
@@ -185,7 +187,9 @@ def fill(argv=sys.argv):
     session.add(cp7)
     session.commit()
 
-    cp8 = CrossingPoint(name="La table de pierre", challenge_id="1", position_x="0.2", position_y="0.5")
+    cp8 = CrossingPoint(
+        name="La table de pierre", challenge_id="1", position_x="0.2", position_y="0.5"
+    )
     session.add(cp8)
     session.commit()
 
@@ -347,28 +351,28 @@ def fill(argv=sys.argv):
     session.add(c3)
     session.commit()
 
-    q1 = Obstacle(
-        label="Quelle est le vrai nom de la sorcière blanche ?",
-        progress=50,
-        question_type=0,
-        nb_points=25,
-        result="Jadis",
-        segment_id=1,
-    )
+    q1 = Obstacle(label = 'Quelle est le vrai nom de la sorcière blanche ?',
+                  progress = 0.5,    
+                  question_type = 0,
+                  nb_points = 25,
+                  result = 'Jadis',
+                  segment_id = 1)
     session.add(q1)
     session.commit()
 
-    q2 = Obstacle(
-        label="Qui est le père d'Aslan ?",
-        progress=50,
-        question_type=0,
-        nb_points=25,
-        result="L'empereur d'au-delà des Mers",
-        segment_id=2,
-    )
+    q2 = Obstacle(label = 'Qui est le père d\'Aslan ?',
+                  progress = 0.5,    
+                  question_type = 0,
+                  nb_points = 25,
+                  result = 'L\'empereur d\'au-delà des Mers',
+                  segment_id = 2)
     session.add(q2)
     session.commit()
 
-    q3 = Obstacle(label="Télécharger une photo", progress=50, question_type=1, nb_points=30, segment_id=3)
+    q3 = Obstacle(label = 'Télécharger une photo',
+                  progress = 0.5,    
+                  question_type = 1,
+                  nb_points = 30,
+                  segment_id = 3)
     session.add(q3)
     session.commit()

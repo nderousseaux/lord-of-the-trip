@@ -9,8 +9,10 @@ from loftes.cors import cors_policy
 from loftes.models import Segment, Challenge, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import SegmentSchema
+from loftes.resources import UserCheckRessources
 
 import pyramid.httpexceptions as exception
+from pyramid.authentication import AuthTicket
 import logging
 import json
 
