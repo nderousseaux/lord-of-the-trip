@@ -15,6 +15,7 @@ from sqlalchemy import func
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
+
 # from loftes.marshmallow_schema.EventSchema import EventSchema
 
 import datetime
@@ -32,6 +33,7 @@ class ChallengeSchema(Schema):
         },
     )
     description = fields.Str()
+    start_date = fields.DateTime()
     end_date = fields.DateTime()
     alone_only = fields.Int()
     level = fields.Str()
@@ -66,12 +68,26 @@ class ChallengeSchema(Schema):
 
         now = datetime.datetime.now()
 
+        if "start_date" in data and data["start_date"] < now:
+            raise ValueError(
+                "Challenge's start date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
+            )
+
         if "end_date" in data and data["end_date"] < now:
             raise ValueError(
-                "Challenge's end date must be greater of today's date ("
-                + now.strftime("%d-%m-%Y, %H:%M")
-                + ")"
+                "Challenge's end date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
             )
+
+        if "start_date" in data and "end_date" in data:
+            if data["start_date"] > now and data["end_date"] > now:
+                if data["start_date"] > data["end_date"]:
+                    raise ValueError("Challenge's end date must be greater of challenge's start date.")
+            else:
+                raise ValueError(
+                    "Challenge's start and end date must be greater of today's date ("
+                    + now.strftime("%d-%m-%Y, %H:%M")
+                    + ")"
+                )
 
         return Challenge(**data)
 
@@ -79,21 +95,16 @@ class ChallengeSchema(Schema):
     def pre_load(self, data, many, **kwargs):
 
         if "name" in data:
-            challenge = (
-                DBSession().query(Challenge).filter_by(name=data["name"]).first()
-            )
+            challenge = DBSession().query(Challenge).filter_by(name=data["name"]).first()
 
             if challenge != None:
-                raise ValueError(
-                    "The given value '"
-                    + data["name"]
-                    + "' is already used as a challenge name."
-                )
+                raise ValueError("The given value '" + data["name"] + "' is already used as a challenge name.")
+
+        if "start_date" in data:
+            data["start_date"] = datetime.datetime.fromisoformat(data["start_date"]).isoformat()
 
         if "end_date" in data:
-            data["end_date"] = datetime.datetime.fromisoformat(
-                data["end_date"]
-            ).isoformat()
+            data["end_date"] = datetime.datetime.fromisoformat(data["end_date"]).isoformat()
 
         return data
 
@@ -109,18 +120,14 @@ class ChallengeSchema(Schema):
                 raise ValueError("Invalid value.")
 
         if "start_crossing_point_id" in data:
-            start_crossing_point = DBSession.query(CrossingPoint).get(
-                int(data["start_crossing_point_id"])
-            )
+            start_crossing_point = DBSession.query(CrossingPoint).get(int(data["start_crossing_point_id"]))
             if start_crossing_point != None:
                 data["start_crossing_point_id"] = start_crossing_point.id
             else:
                 raise ValueError("Start crossing point does not exist.")
 
         if "end_crossing_point_id" in data:
-            end_crossing_point = DBSession.query(CrossingPoint).get(
-                int(data["end_crossing_point_id"])
-            )
+            end_crossing_point = DBSession.query(CrossingPoint).get(int(data["end_crossing_point_id"]))
             if end_crossing_point != None:
                 data["end_crossing_point_id"] = end_crossing_point.id
             else:

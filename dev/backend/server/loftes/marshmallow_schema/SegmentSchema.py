@@ -57,20 +57,14 @@ class SegmentSchema(Schema):
 
         if "start_crossing_point_id" in data:
             # Check if crossing point exist
-            start_crossing_point = (
-                DBSession()
-                .query(CrossingPoint)
-                .get(int(data["start_crossing_point_id"]))
-            )
+            start_crossing_point = DBSession().query(CrossingPoint).get(int(data["start_crossing_point_id"]))
             if start_crossing_point == None:
                 raise ValueError("Start crossing point does not exist.")
             data["start_crossing_point_id"] = start_crossing_point.id
 
         if "end_crossing_point_id" in data:
             # Check if crossing point exist
-            end_crossing_point = (
-                DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
-            )
+            end_crossing_point = DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
             if end_crossing_point == None:
                 raise ValueError("End crossing point does not exist.")
             data["end_crossing_point_id"] = int(data["end_crossing_point_id"])
@@ -125,20 +119,14 @@ class SegmentSchema(Schema):
                 raise ValueError("The segment cannot have the same start and end.")
 
         elif "start_crossing_point_id" in data and "end_crossing_point_id" not in data:
-            start_crossing_point = (
-                DBSession()
-                .query(CrossingPoint)
-                .get(int(data["start_crossing_point_id"]))
-            )
+            start_crossing_point = DBSession().query(CrossingPoint).get(int(data["start_crossing_point_id"]))
 
             if start_crossing_point != None:
                 if start_crossing_point.id == segment.end_crossing_point.id:
                     raise ValueError("The segment cannot have the same start and end.")
 
         elif "end_crossing_point_id" in data and "start_crossing_point_id" not in data:
-            end_crossing_point = (
-                DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
-            )
+            end_crossing_point = DBSession().query(CrossingPoint).get(int(data["end_crossing_point_id"]))
 
             if end_crossing_point != None:
                 if end_crossing_point.id == segment.start_crossing_point.id:

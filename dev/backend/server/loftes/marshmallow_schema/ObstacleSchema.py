@@ -21,7 +21,7 @@ class ObstacleSchema(Schema):
     question_type = fields.Int()
     nb_points = fields.Int()
     result = fields.Str()
-    #segment = fields.Nested("SegmentSchema", exclude=("obstacles",))
+    segment = fields.Nested("SegmentSchema", exclude=("obstacles",))
 
     class Meta:
         ordered = True

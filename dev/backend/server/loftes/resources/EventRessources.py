@@ -73,14 +73,9 @@ def CheckEventTypeRule(event_type,user_id, challenge_id,segment_id):
             return "You must start the challenge first"
 
     # Event_type = 1 => START 
-    if event_type == 1 :
-        if lastevent != None:
-            if lastevent.event_date > lastsubscribed.subscribe_date:
-                return "You already have start this challenge"
-            else:
-                return ""
-        else :
-            return ""
+    if (event_type == 1) and (lastevent != None):
+        if lastevent.event_date > lastsubscribed.subscribe_date:
+            return "You already have start this challenge"
 
     # Event_type = 2 => ARRIVAL
     if (event_type == 2) and (lastevent.event_type_id != 3) :

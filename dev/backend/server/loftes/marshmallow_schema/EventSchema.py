@@ -14,7 +14,7 @@ class EventSchema(Schema):
     segment_id = fields.Int(load_only=True)
     duration = fields.Int()
     move_type = fields.Int()
-    event_type_id = fields.Int(        
+    event_type_id = fields.Int(
         required=True,
         error_messages={
             "required": "This field is mandatory.",
@@ -22,7 +22,7 @@ class EventSchema(Schema):
         },
     )
     event_type_info = fields.Nested(EventTypeSchema)
-    event_date = fields.DateTime()      
+    event_date = fields.DateTime()
     distance = fields.Int()
     footstep = fields.Int()
     obstacle_id = fields.Int()
@@ -37,20 +37,18 @@ class EventSchema(Schema):
 
     @pre_load
     def pre_load(self, data, many, **kwargs):
-        
+
         if "obstacle_id" in data:
             if data["obstacle_id"] == None:
                 raise ValueError("the obstacle not be null.")
 
-            if "response" not in data: 
+            if "response" not in data:
                 raise ValueError("You must specified a response for the obstacle.")
-            
-            if data["response"] == None:  
+
+            if data["response"] == None:
                 raise ValueError("You must specified a response for the obstacle.")
 
         if "event_date" in data:
-            data["event_date"] = datetime.datetime.fromisoformat(
-                data["event_date"]
-            ).isoformat()
+            data["event_date"] = datetime.datetime.fromisoformat(data["event_date"]).isoformat()
 
         return data

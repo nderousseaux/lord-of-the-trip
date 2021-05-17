@@ -1,25 +1,23 @@
 from loftes.models import Obstacle, Segment, DBSession
 
 
-def findAllObstaclesByChallenge(challenge_id):
+def find_all_obstacles_by_challenge(challenge_id):
 
-    data = (
+    query = (
         DBSession.query(Obstacle)
         .join(Segment, Obstacle.segment_id == Segment.id)
         .filter(Segment.challenge_id == challenge_id)
-        .all()
     )
 
-    return data
+    return query.all()
 
 
-def findAllObstaclesBySegment(segment_id, challenge_id):
+def find_all_obstacles_by_segment(segment):
 
-    data = (
+    query = (
         DBSession.query(Obstacle)
         .join(Segment, Obstacle.segment_id == Segment.id)
-        .filter(Obstacle.segment_id == segment_id, Segment.challenge_id == challenge_id)
-        .all()
+        .filter(Obstacle.segment_id == segment.id, Segment.challenge_id == segment.challenge.id)
     )
 
-    return data
+    return query.all()
