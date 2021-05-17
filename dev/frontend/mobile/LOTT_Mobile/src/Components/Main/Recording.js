@@ -2,11 +2,11 @@ import React from 'react';
 import { View, StyleSheet, Text, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import { Pedometer } from 'expo-sensors';
-import { distanceTotale, vitesseMoyenne } from '../../../utils';
+import { distanceTotale, vitesseMoyenne } from '../../utils';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import apiFonctions from '../../../api/api';
-import ChallengeMap from '../Challenges/ChallengeMap'
+import apiFonctions from '../../api/api';
+import ChallengeMap from './ChallengeCard/ChallengeMap'
 
 class Recording extends React.Component {
     state = {
@@ -182,8 +182,8 @@ class Recording extends React.Component {
                                 }}
                                 onPress={() => {
                                     this.pressedStop();
-                                    this.props.navigation.navigate("Start")
-                                }}
+                                    this.props.navigation.navigate("Infos", {
+                                        challenge: this.props.route.params.challenge})}}
                                 buttonStyle={styles.stop}
                             />
                     </View>
