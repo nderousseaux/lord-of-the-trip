@@ -16,7 +16,7 @@ export default function ChallengeMap(props) {
 
     return(
         <View style={styles.zoomContainer}>
-            <ReactNativeZoomableView
+            {/* <ReactNativeZoomableView
                 zoomEnabled={true}
                 maxZoom={1.5}
                 minZoom={0.95}
@@ -99,7 +99,7 @@ export default function ChallengeMap(props) {
                         onPress={() => {alert(zoomMap)}}
                     />
                 </Svg>
-            </ReactNativeZoomableView>
+            </ReactNativeZoomableView> */}
         </View>
     )
     }

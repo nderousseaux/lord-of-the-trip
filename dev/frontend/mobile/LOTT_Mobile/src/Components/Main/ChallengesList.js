@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
 import { ListItem } from 'react-native-elements';
-import api from '../../../api/api';
+import api from '../../api/api';
 
 export default function ChallengeList(props) {
     
@@ -23,7 +23,7 @@ export default function ChallengeList(props) {
                 ? <View style={styles.spinnerContainer}><ActivityIndicator size="large" color="#0000ff" /></View>
                 : <View style={styles.listContainer}>
                     {challenges?.map((challenge, i) => (
-                        <ListItem key={i} onPress={() => props.navigation.navigate("Card", {
+                        <ListItem key={i} onPress={() => props.navigation.navigate("Infos", {
                             challenge: challenge})}>
                             <ListItem.Content>
                                 <ListItem.Title>{challenge.name}</ListItem.Title>
