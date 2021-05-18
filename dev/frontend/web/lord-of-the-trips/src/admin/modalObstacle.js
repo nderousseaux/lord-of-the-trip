@@ -17,7 +17,7 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
   const [result, setResult] = useState(null);
   const queryClient = useQueryClient();
 
-  const updateObstacleMutation = useMutation( (obstacle) => apiObstacles.updateObstacle(challengeId, obstacleObject.segmentId, obstacle, obstacleObject.id), {
+  const updateObstacleMutation = useMutation( (obstacle) => apiObstacles.updateObstacle(obstacleObject.segmentId, obstacle, obstacleObject.id), {
     onSuccess: () => {
       queryClient.invalidateQueries(['obstacles', challengeId]);
       setOpenState(false);

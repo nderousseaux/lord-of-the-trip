@@ -1,15 +1,19 @@
-import { checkStatus, urlPrefix } from './fetchUtils';
+import { checkStatus, urlPrefix, getToken } from './fetchUtils';
 
 const apiCrossingPoints = {
 
   getAllCrossingPoints: (challengeId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points`)
+    return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
     .then(checkStatus)
     .then(res => res.json());
   },
 
   getCrossingPointById: (challengeId, crossingPointId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`)
+    return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
     .then(checkStatus)
     .then(res => res.json());
   },
@@ -17,7 +21,10 @@ const apiCrossingPoints = {
   createCrossingPoint: (challengeId, crossingPoint) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(crossingPoint)
     })
     .then(checkStatus)
@@ -27,7 +34,10 @@ const apiCrossingPoints = {
   updateCrossingPoint: (challengeId, crossingPoint, crossingPointId) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(crossingPoint)
     })
     .then(checkStatus);
@@ -36,7 +46,10 @@ const apiCrossingPoints = {
   modifyCrossingPoint: (challengeId, crossingPoint, crossingPointId) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(crossingPoint)
     })
     .then(checkStatus);
@@ -45,6 +58,7 @@ const apiCrossingPoints = {
   deleteCrossingPoint: (challengeId, crossingPointId) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
       method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus);
   },

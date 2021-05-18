@@ -1,6 +1,6 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { useHistory } from "react-router-dom";
-import { checkStatus, urlPrefix } from '../api/fetchUtils';
+import { checkStatus, urlPrefix, getToken } from '../api/fetchUtils';
 
 let AuthContext = createContext();
 
@@ -13,9 +13,7 @@ export let AuthProvider = ({children}) => {
   let login = (email, password) => {
     return fetch(`${urlPrefix}/login`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
     })
     .then(checkStatus)
@@ -36,9 +34,7 @@ export let AuthProvider = ({children}) => {
   let signup = (first_name, last_name, pseudo, email, password) => {
     return fetch(`${urlPrefix}/signup`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ first_name, last_name, pseudo, email, password })
     })
     .then(checkStatus)
@@ -48,11 +44,8 @@ export let AuthProvider = ({children}) => {
   };
 
   useEffect(() => {
-    let token = window.localStorage.getItem('token');
     fetch(`${urlPrefix}/whoami`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${getToken()}` }
     })
     .then(checkStatus)
     .then(res => res.json())

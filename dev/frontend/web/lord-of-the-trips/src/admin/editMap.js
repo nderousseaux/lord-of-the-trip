@@ -264,7 +264,7 @@ const EditMap = () => {
     }
   };
 
-  const createObstacleMutation = useMutation( ({ segmentId, obstacle }) => apiObstacles.createObstacle(id, segmentId, obstacle), {
+  const createObstacleMutation = useMutation( ({ segmentId, obstacle }) => apiObstacles.createObstacle(segmentId, obstacle), {
     onSuccess: () => { queryClient.invalidateQueries(['obstacles', id]) },
   });
 
@@ -273,7 +273,7 @@ const EditMap = () => {
     createObstacleMutation.mutate({ segmentId: segmentId, obstacle: obstacle });
   };
 
-  const deleteObstacleMutation = useMutation( ({ segmentId, obstacleId }) => apiObstacles.deleteObstacle(id, segmentId, obstacleId), {
+  const deleteObstacleMutation = useMutation( ({ segmentId, obstacleId }) => apiObstacles.deleteObstacle(segmentId, obstacleId), {
     onSuccess: () => { queryClient.invalidateQueries(['obstacles', id]) },
   });
 

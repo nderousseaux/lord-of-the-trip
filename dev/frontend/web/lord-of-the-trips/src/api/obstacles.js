@@ -1,56 +1,72 @@
-import { checkStatus, urlPrefix } from './fetchUtils';
+import { checkStatus, urlPrefix, getToken } from './fetchUtils';
 
 const apiObstacles = {
 
   getAllObstacles: (challengeId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/obstacles`)
+    return fetch(`${urlPrefix}/challenges/${challengeId}/obstacles`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
     .then(checkStatus)
     .then(res => res.json());
   },
 
-  getObstaclesBySegment: (challengeId, segmentId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}/obstacles`)
+  getObstaclesBySegment: (segmentId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
     .then(checkStatus)
     .then(res => res.json());
   },
 
-  getObstacleById: (challengeId, segmentId, obstacleId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}/obstacles/${obstacleId}`)
+  getObstacleById: (segmentId, obstacleId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles/${obstacleId}`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
     .then(checkStatus)
     .then(res => res.json());
   },
 
-  createObstacle: (challengeId, segmentId, obstacle) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}/obstacles`, {
+  createObstacle: (segmentId, obstacle) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(obstacle)
     })
     .then(checkStatus)
     .then(res => res.json());
   },
 
-  updateObstacle: (challengeId, segmentId, obstacle, obstacleId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}/obstacles/${obstacleId}`, {
+  updateObstacle: (segmentId, obstacle, obstacleId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles/${obstacleId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(obstacle)
     })
     .then(checkStatus);
   },
 
-  modifyObstacle: (challengeId, segmentId, obstacle, obstacleId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}/obstacles/${obstacleId}`, {
+  modifyObstacle: (segmentId, obstacle, obstacleId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles/${obstacleId}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(obstacle)
     })
     .then(checkStatus);
   },
 
-  deleteObstacle: (challengeId, segmentId, obstacleId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}/obstacles/${obstacleId}`, {
+  deleteObstacle: (segmentId, obstacleId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles/${obstacleId}`, {
       method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus);
   },

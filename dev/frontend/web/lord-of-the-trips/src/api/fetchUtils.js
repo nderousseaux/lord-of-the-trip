@@ -1,5 +1,7 @@
 export const urlPrefix = 'https://hephaistos.nathanaelderousseaux.fr/api';
 
+export const getToken = () => window.localStorage.getItem('token');
+
 export const checkStatus = res => {
   if (res.ok) {
     return res;
