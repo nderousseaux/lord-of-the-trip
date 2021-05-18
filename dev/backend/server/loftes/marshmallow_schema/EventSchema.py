@@ -11,7 +11,7 @@ import json
 class EventSchema(Schema):
     id = fields.Int(dump_only=True)
     user_id = fields.Int(load_only=True)
-    segment_id = fields.Int(load_only=True)
+    segment_id = fields.Int()
     duration = fields.Int()
     move_type = fields.Int()
     event_type_id = fields.Int(

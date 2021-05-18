@@ -9,6 +9,7 @@ from loftes.cors import cors_policy
 from loftes.models import Challenge, CrossingPoint, Segment, User, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import CrossingPointSchema
+from loftes.marshmallow_schema import SegmentSchema
 
 import pyramid.httpexceptions as exception
 import logging
@@ -48,10 +49,7 @@ HTTP/1.1 200 OK
       "position_y": 0.1
     },
     {
-      "id": 3,
-      "name": "La passe du magicien",
-      "position_x": 0.2,
-      "position_y": 0.4
+      "id": 3,id
     },
     {
       "id": 4,
@@ -371,6 +369,50 @@ def get_crossing_point(request):
             response = service_informations.build_response(
                 exception.HTTPOk, CrossingPointSchema().dump(crossing_point)
             )
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound(),
+                None,
+                "Requested resource 'Challenge' is not found.",
+            )
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+crossing_point_segment = Service(
+    name="crossingpoint_segment",
+    path="/challenges/{challenge_id:\d+}/crossing-points/{id:\d+}/find-segments",
+    cors_policy=cors_policy,
+)
+
+@crossing_point_segment.get()
+def get_crossing_point_segment(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+
+        if challenge != None:
+
+            segments = (
+              DBSession.query(Segment)
+              .filter(Segment.challenge_id == challenge.id,Segment.start_crossing_point_id == request.matchdict["id"])
+              .all() 
+            )
+
+            if len(segments) == 0:
+                return service_informations.build_response(exception.HTTPNotFound())
+
+            data = {"segments": SegmentSchema(many=True).dump(segments)}
+
+            response = service_informations.build_response(exception.HTTPOk, data)
 
         else:
             response = service_informations.build_response(

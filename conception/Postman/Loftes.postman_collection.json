@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4dafa0e6-6170-4106-ac1c-b320fb0010bd",
+		"_postman_id": "bd651553-c312-49d5-9fb8-70a685e3a70b",
 		"name": "Loftes",
 		"description": "Pour le faire tourner, changez dans variable la valeur de bas_url\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -337,7 +337,7 @@
 						"exec": [
 							""
 						],
-						"id": "da4957c9-db49-4155-93eb-f4ed23c4ac96"
+						"id": "725f75e8-97cd-44e2-bb8e-69b1f76d44f3"
 					}
 				},
 				{
@@ -347,7 +347,7 @@
 						"exec": [
 							""
 						],
-						"id": "2a478ce1-2103-4647-b77e-87f9a49336f4"
+						"id": "42e85034-8505-490f-bdb5-83f5a987a84e"
 					}
 				}
 			],
@@ -366,7 +366,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "daa6ee81-7bee-4865-938a-8717c5a0f3c3"
+								"id": "78796f30-2fd8-4448-b64b-0a6c11399c2a"
 							}
 						}
 					],
@@ -409,7 +409,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "7d1fa49d-8e22-4c41-b132-1bf7657fc427"
+								"id": "f30a9d09-78ad-4836-8461-c36f37885957"
 							}
 						}
 					],
@@ -453,7 +453,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "88ddff3f-c88b-4ffb-a9ac-0d85df479c55"
+								"id": "084356fb-313e-4f03-9d83-df3bb5fb4ced"
 							}
 						}
 					],
@@ -493,7 +493,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "b5436e42-412b-46f0-bdb2-7dcbb04dbee5"
+								"id": "dd4d1e29-953e-41d6-99c4-a6978127d5b9"
 							}
 						}
 					],
@@ -534,7 +534,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "3b28b946-6537-4f90-b268-461f346a650d"
+								"id": "a94399be-73b2-41fd-ae2d-35b3b64e03cb"
 							}
 						}
 					],
@@ -575,7 +575,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "c9c028b4-f254-4179-8656-3aaf3d401877"
+								"id": "bd399980-def3-4e79-b0c6-6078e8c43301"
 							}
 						}
 					],
@@ -622,7 +622,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "f215a06d-677e-4803-803e-2dda2a23a8a7"
+								"id": "e94747b7-57f7-4019-8163-1caa1970fb2f"
 							}
 						}
 					],
@@ -666,7 +666,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "447c7f64-018b-4a83-b687-2d5a52e34706"
+								"id": "cd90535d-c2fd-4135-9b32-1c3e4aebf700"
 							}
 						}
 					],
@@ -710,7 +710,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "d54743bc-6c65-4954-b903-e8a18776b7b0"
+								"id": "6897a4f8-d13b-4cb2-945b-80bc38ea442e"
 							}
 						}
 					],
@@ -778,7 +778,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "5db2f02c-403d-464b-9da0-d87e4034b3d1"
+								"id": "60ab6dec-df78-4cfa-8a2a-a251de9b3818"
 							}
 						}
 					],
@@ -819,7 +819,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "2876c10f-d596-4223-94de-16e1375874ce"
+								"id": "971f2a87-cfa2-478c-bd35-dc88933abf9b"
 							}
 						}
 					],
@@ -860,7 +860,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "19df6bdc-bc07-41b9-a8df-2ad322763a14"
+								"id": "5a8d30d4-7d29-4372-87ab-c182ca255001"
 							}
 						}
 					],
@@ -907,7 +907,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "486bb9e5-2565-4893-8fdf-dde3cae4a0b4"
+								"id": "b2b521df-04d4-4fce-83dc-c3d4a8aa11a5"
 							}
 						}
 					],
@@ -946,7 +946,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "82c11115-1e10-4f19-883b-bd6b503a4e8d",
+								"id": "db51af51-b4e9-4b19-9339-81f578e748c1",
 								"exec": [
 									""
 								],
@@ -992,7 +992,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "d69827dc-cc9e-439e-b4f5-0b7cf41df709",
+								"id": "b54e6448-17b2-442a-874a-5391cb8ebf35",
 								"exec": [
 									""
 								],
@@ -1067,7 +1067,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "9dbc3eb6-ab5c-4f0b-be72-ab14b16492e2",
+								"id": "06f408e2-18c7-49e2-ab59-c58203f7788d",
 								"exec": [
 									""
 								],
@@ -1103,6 +1103,60 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "EVENT_FIND_LAST",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "58db2f7e-b42b-46c5-b044-092aba33b9ba",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjEyNzczMDUsImV4cCI6MTYyMTI4MDkwNX0.w34v0aPi7Z7HW27TGOPgU7kYldaFavgOqO_7m2gDFXaqWj3gmtqGfwJP921X6aAMV83JOTqrMPrm4dY1BDv7Wg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/events/last",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"events",
+								"last"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -1120,7 +1174,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "e47a0fa9-1f6d-4359-86d3-18796b286775"
+								"id": "72f2d207-f0dc-4297-8a0f-e540650cb8fe"
 							}
 						}
 					],
@@ -1158,7 +1212,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "821f7a96-8fe5-4748-abd9-397a5ddf25ec"
+								"id": "75bca3a4-f815-47ea-a968-c61ccfb6c8fb"
 							}
 						}
 					],
@@ -1199,7 +1253,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "9923cbc9-4262-40dd-a6f4-4c9fcaddd209"
+								"id": "e462e257-c53e-4d6e-ac65-dbdd5b907126"
 							}
 						}
 					],
@@ -1243,7 +1297,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3945db1d-4b6e-4599-a25e-16c67fc4b099",
+								"id": "a74952e7-56c9-41ec-ab5c-188d91b2b181",
 								"exec": [
 									""
 								],
@@ -1307,7 +1361,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "7eae23f6-c737-4d60-b1f9-2ae59a0dc9f3",
+								"id": "ad4cdb39-ed35-44d6-bbd7-d957d1a52d69",
 								"exec": [
 									""
 								],
@@ -1353,7 +1407,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "fefa1d88-3c3a-4e40-b6bf-9735394b4460",
+								"id": "a8d3d6b2-4346-4a14-bd4b-2256df8ed670",
 								"exec": [
 									""
 								],
@@ -1395,7 +1449,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3c13dda5-8bcc-4733-9125-4165ead75c72",
+								"id": "d4f46f4e-ab0b-4555-ac51-4ea52543a27f",
 								"exec": [
 									""
 								],
@@ -1438,7 +1492,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "1b5411aa-acc4-47f7-bd09-dc61983e09ee",
+								"id": "2e3a4630-44c0-4d73-9524-68f0b1f495bb",
 								"exec": [
 									""
 								],
@@ -1485,7 +1539,7 @@
 									""
 								],
 								"type": "text/javascript",
-								"id": "d9faf7a5-bcc0-4ed2-909d-ef1e26ae9509"
+								"id": "73d593f2-1566-46f5-af0f-02feffcf6528"
 							}
 						}
 					],
@@ -1595,7 +1649,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "58169a72-e9de-44e7-9d7d-88ff5e957656",
+				"id": "8b84de9c-aacf-4691-859b-3d108ef80e90",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1605,7 +1659,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "b3a1a6bd-d431-4d7a-bfcd-aa68dab13130",
+				"id": "94341a06-bcca-42f2-b63f-05da0b57601f",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -1615,7 +1669,7 @@
 	],
 	"variable": [
 		{
-			"id": "b800839c-cfe2-46bb-8d84-fceb3a6e97b6",
+			"id": "0c2c2bba-ff45-44f3-a403-0881cad91aac",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		}
