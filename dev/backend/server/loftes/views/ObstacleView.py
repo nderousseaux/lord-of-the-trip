@@ -305,10 +305,20 @@ def create_obstacle(request):
                 obstacle_schema = ObstacleSchema()
                 obstacle = obstacle_schema.load(obstacle_data)
 
-                DBSession.add(obstacle)
-                DBSession.flush()
+                obstacle_check = ObstacleResources.check_obstacles_position(segment,obstacle.progress)
+                
+                if obstacle_check == None:
 
-                response = service_informations.build_response(exception.HTTPCreated, obstacle_schema.dump(obstacle))
+                  DBSession.add(obstacle)
+                  DBSession.flush()
+
+                  response = service_informations.build_response(exception.HTTPCreated, obstacle_schema.dump(obstacle))
+                else:
+                  response = service_informations.build_response(
+                        exception.HTTPNotFound(),
+                        None,
+                        "You cannot put 2 obstacles in the same position on the same segment.",
+                  )
 
             except ValidationError as validation_error:
                 response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
@@ -328,7 +338,7 @@ def create_obstacle(request):
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
 
-        return response
+    return response
 
 
 obstacle_id = Service(
