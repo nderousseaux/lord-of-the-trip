@@ -1942,7 +1942,7 @@ def duplicate(request):
             if user.id == challenge.admin_id:
 
                 # check if challenge is draft
-                if challenge.draft:
+                if challenge.draft == False:
 
                     now = datetime.datetime.now()
 
