@@ -9,6 +9,7 @@ from loftes.cors import cors_policy
 from loftes.models import Event, Challenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
+from loftes.marshmallow_schema.EventDistanceSchema import EventDistanceSchema
 from loftes.resources import EventRessources
 from loftes.resources import UserCheckRessources
 
@@ -141,6 +142,39 @@ def get_last_event(request):
                 return service_informations.build_response(exception.HTTPNotFound())
 
             return service_informations.build_response(exception.HTTPOk, EventSchema().dump(event))
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound(),
+                None,
+                "Requested ressource 'Challenge' is not found.",
+            )
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+event_distance = Service(
+    name="event_distance", 
+    path="/challenges/{challenge_id:\d+}/events/distance", 
+    cors_policy=cors_policy
+)
+
+@event_distance.get()
+def get_event_distance(request):
+
+    service_informations = ServiceInformations()
+
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+
+        if challenge != None:
+
+            distance = EventRessources.distance_Event_For_User_By_Challenge(user.id,challenge.id)
+
+            return service_informations.build_response(exception.HTTPOk,EventDistanceSchema().dump(distance))
 
         else:
             response = service_informations.build_response(
