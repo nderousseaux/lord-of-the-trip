@@ -6,12 +6,16 @@ define({
   "url": "https://hephaistos.nathanaelderousseaux.fr/api",
   "sampleUrl": "https://hephaistos.nathanaelderousseaux.fr/api",
   "order": [
+    "Login",
+    "SignUp",
+    "Whoami",
     "GetChallenges",
     "PostChallenge",
     "GetChallenge",
     "PutChallenge",
     "PatchChallenge",
     "DeleteChallenge",
+    "VerifyChallenge",
     "GetChallengeImage",
     "PostChallengeImage",
     "GetCrossingPoints",
@@ -28,13 +32,19 @@ define({
     "DeleteSegment",
     "GetEvents",
     "PostEvent",
-    "GetEvent"
+    "GetEvent",
+    "GetObstaclesByChallenge",
+    "GetObstaclesBySegment",
+    "PostObstacle",
+    "GetObstacle",
+    "PutObstacle",
+    "PatchObstacle"
   ],
   "defaultVersion": "0.0.0",
   "apidoc": "0.3.0",
   "generator": {
     "name": "apidoc",
-    "time": "2021-04-08T18:45:28.077Z",
+    "time": "2021-05-18T20:48:57.809Z",
     "url": "https://apidocjs.com",
     "version": "0.27.1"
   }

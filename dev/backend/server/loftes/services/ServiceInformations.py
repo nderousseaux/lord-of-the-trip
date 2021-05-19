@@ -12,9 +12,7 @@ class ServiceInformations:
             content = {
                 "error": {
                     "status": http_exception.title.upper(),
-                    "message": self.get_error_message_by_code(code)
-                    if message == None
-                    else message,
+                    "message": self.get_error_message_by_code(code) if message == None else message,
                 }
             }
 
@@ -31,7 +29,7 @@ class ServiceInformations:
         switcher = {
             400: "Bad Request`.",
             401: "Bad credentials.",
-            403: "Requested resource is forbidden.",
+            403: "You do not have permission to perform this action using the credentials that you supplied.",
             404: "Requested resource is not found.",
             415: "Unsupported media type.",
             500: "The server encountred an internal error and was unable to complete your request.",

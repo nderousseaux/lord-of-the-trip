@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Image, View, Text, StyleSheet, ActivityIndicator, Animated } from 'react-native';
+import { Button } from 'react-native-elements';
 import { useEffect, useState } from 'react';
 import Svg, { Circle, Image as SvgImage, Polyline } from 'react-native-svg';
 import { Card, Paragraph, Title } from 'react-native-paper';
@@ -61,6 +62,13 @@ export default function ChallengeCard(props) {
                     </View>
                     
                     <Map challenge={challenge}></Map>
+
+                    <Button 
+                        title="Let's go !"
+                        style={styles.Button}
+                        onPress={() => props.navigation.navigate("Transport", {
+                            challenge: challenge})}
+                    />
                 </>
             }
         </View>
@@ -109,5 +117,8 @@ const styles = StyleSheet.create({
     PrimaryCard: {
         marginTop: 10,
         paddingVertical: 10 
+    },
+    Button: {
+        marginBottom: 20
     }
 });

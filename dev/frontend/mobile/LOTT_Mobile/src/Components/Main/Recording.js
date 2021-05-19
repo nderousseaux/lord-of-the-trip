@@ -2,11 +2,11 @@ import React from 'react';
 import { View, StyleSheet, Text, Alert } from 'react-native';
 import { Button } from 'react-native-elements';
 import { Pedometer } from 'expo-sensors';
-import { distanceTotale, vitesseMoyenne } from '../../../utils';
+import { distanceTotale, vitesseMoyenne } from '../../utils';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
-import apiFonctions from '../../../api/api';
-import ChallengeMap from '../Challenges/ChallengeMap'
+import apiFonctions from '../../api/api';
+import ChallengeMap from './ChallengeCard/ChallengeMap'
 
 class Recording extends React.Component {
     state = {
@@ -47,10 +47,8 @@ class Recording extends React.Component {
         this._subscription = Pedometer.watchStepCount(result => {
             this.setState({
                 nbPas: result.steps,
+                distance: result.steps * 0.8
             });
-            this.setState({
-                distance: state.nbPas * 0.8,
-            })
         });
     
         Pedometer.isAvailableAsync().then(
@@ -178,14 +176,14 @@ class Recording extends React.Component {
                 <View style={styles.foot}>
                     <View style={styles.left}>
                         <Button 
-                                title="Arrêter"
+                                title="Stop"
                                 titleStyle={{
                                     fontSize: 30,
                                 }}
                                 onPress={() => {
                                     this.pressedStop();
-                                    this.props.navigation.navigate("Start")
-                                }}
+                                    this.props.navigation.navigate("Infos", {
+                                        challenge: this.props.route.params.challenge})}}
                                 buttonStyle={styles.stop}
                             />
                     </View>
@@ -277,7 +275,7 @@ const styles = StyleSheet.create({
         padding: '2%',
     },
     right:{
-        flex:4,
+        flex:6,
         flexDirection:'row'
     },
     stop:{

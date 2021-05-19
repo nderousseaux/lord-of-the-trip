@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "941527fe-40ef-4473-8e0a-06e8d53f1188",
+		"_postman_id": "bd651553-c312-49d5-9fb8-70a685e3a70b",
 		"name": "Loftes",
 		"description": "Pour le faire tourner, changez dans variable la valeur de bas_url\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -171,7 +171,8 @@
 							"formdata": [
 								{
 									"key": "file",
-									"type": "file"
+									"type": "file",
+									"src": []
 								}
 							]
 						},
@@ -188,6 +189,143 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "ChallengeSubscribe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MTkwNDkyMjcsImV4cCI6MTYxOTA1MjgyN30.vAQ1IMG4UkOwwPIe9Pd6GoE0cwVd42XkmS3ByrkSEBbkYxFTyoyMusO1zj1k6H7L0k5koWFvdFoHJtVrBl8mDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/subscribe",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"subscribe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChallengeUnsubscribe",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGFiaWNuQGhvdG1haWwuY29tIiwiaWF0IjoxNjE5NDcwMjE3LCJleHAiOjE2MTk0NzM4MTd9.U964gWZXH38CuNbB3UOszz4BSTFsr_uwzx_xq1Fgwd1pL9NqSIuWI-RkngstDb1uM81vwm2eLt8jJHVBVryufA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/unsubscribe",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"unsubscribe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChallengeVerify",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjAwMjQ4NjIsImV4cCI6MTYyMDAyODQ2Mn0.S1F0N-hEdRdfhH1ElL6JxRNbheauYd1w1vb_lygmiwPdU5cyUD_5ooHumJOoTSamnWoaePPlvwahz4TxUihdww",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/:id/verify",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								":id",
+								"verify"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChallengeDuplicate",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGFiaWNuQGhvdG1haWwuY29tIiwiaWF0IjoxNjE5NDcwMjE3LCJleHAiOjE2MTk0NzM4MTd9.U964gWZXH38CuNbB3UOszz4BSTFsr_uwzx_xq1Fgwd1pL9NqSIuWI-RkngstDb1uM81vwm2eLt8jJHVBVryufA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"start_date\":\"2022-08-21\", \n\t\"end_date\":\"2025-08-21\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/:id/duplicate",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								":id",
+								"duplicate"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "Requête pour un challenge\n\nDonnées envoyé dans le JSON sous forme de body \n\nChamps obligatoire en création\n - name\n\nChamps utilisable en modification : \n - name\n - description \n - end_date = \tForamt \"YYYY-MM-DD\"\n -  alone_only = 0 ou 1\n - leve\" : Niveau du challenge,\n - scalling\" : niveau\n - draft : true ou false\n - start_crossing_point_id : id du crossing point\n - end_crossing_point_id : id du crossing point\n - admin_id : id de l'administrateur\n\n\n  Exemple pour modification\n    {\n        \"name\":\"First Challenge\",\n        \"description\":\"Description\", \n        \"end_date\":\"2022-10-18\",\n        \"alone_only\" : 1,\n        \"level\" : \"Débutant\",\n        \"scalling\" : 10,\n        \"draft\": true,\n        \"start_crossing_point_id\" : 1,\n        \"end_crossing_point_id\" : 2,\n        \"admin_id\" : 1\n    }",
@@ -198,7 +336,8 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						]
+						],
+						"id": "725f75e8-97cd-44e2-bb8e-69b1f76d44f3"
 					}
 				},
 				{
@@ -207,10 +346,12 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						]
+						],
+						"id": "42e85034-8505-490f-bdb5-83f5a987a84e"
 					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Segments",
@@ -224,7 +365,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "78796f30-2fd8-4448-b64b-0a6c11399c2a"
 							}
 						}
 					],
@@ -266,7 +408,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "f30a9d09-78ad-4836-8461-c36f37885957"
 							}
 						}
 					],
@@ -309,7 +452,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "084356fb-313e-4f03-9d83-df3bb5fb4ced"
 							}
 						}
 					],
@@ -348,7 +492,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "dd4d1e29-953e-41d6-99c4-a6978127d5b9"
 							}
 						}
 					],
@@ -388,7 +533,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "a94399be-73b2-41fd-ae2d-35b3b64e03cb"
 							}
 						}
 					],
@@ -428,7 +574,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "bd399980-def3-4e79-b0c6-6078e8c43301"
 							}
 						}
 					],
@@ -459,7 +606,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "CrossingPoint",
@@ -473,7 +621,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "e94747b7-57f7-4019-8163-1caa1970fb2f"
 							}
 						}
 					],
@@ -516,7 +665,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "cd90535d-c2fd-4135-9b32-1c3e4aebf700"
 							}
 						}
 					],
@@ -559,7 +709,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "6897a4f8-d13b-4cb2-945b-80bc38ea442e"
 							}
 						}
 					],
@@ -626,7 +777,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "60ab6dec-df78-4cfa-8a2a-a251de9b3818"
 							}
 						}
 					],
@@ -666,7 +818,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "971f2a87-cfa2-478c-bd35-dc88933abf9b"
 							}
 						}
 					],
@@ -706,7 +859,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "5a8d30d4-7d29-4372-87ab-c182ca255001"
 							}
 						}
 					],
@@ -749,11 +903,11 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "526b0593-87c3-4fbb-84b1-ecf39f966bcc",
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "b2b521df-04d4-4fce-83dc-c3d4a8aa11a5"
 							}
 						}
 					],
@@ -792,7 +946,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "3dad93d4-8a5e-492d-9f8c-e0355f51062d",
+								"id": "db51af51-b4e9-4b19-9339-81f578e748c1",
 								"exec": [
 									""
 								],
@@ -816,15 +970,17 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1/crossing-point/1",
+							"raw": "{{url_base}}/challenges/1/segments/1/events/19",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"challenges",
 								"1",
-								"crossing-point",
-								"1"
+								"segments",
+								"1",
+								"events",
+								"19"
 							]
 						}
 					},
@@ -836,7 +992,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "eed7745c-7594-4eca-bfbe-fb18d6461531",
+								"id": "b54e6448-17b2-442a-874a-5391cb8ebf35",
 								"exec": [
 									""
 								],
@@ -855,7 +1011,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"move_type\": 1,\n    \"event_date\":\"2021-10-18\",\n    \"distance\":250,\n    \"duration\": \"02:05:10\"\n}",
+							"raw": "{\n    \"move_type\": 3,\n    \"event_type_id\": 1,\n    \"event_date\":\"2021-04-02 12:55:34\",\n    \"distance\":350,\n    \"duration\": 5400\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -863,12 +1019,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{url_base}}/challenges/1/events",
+							"raw": "{{url_base}}/challenges/1/segments/1/events",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
 								"challenges",
+								"1",
+								"segments",
 								"1",
 								"events"
 							],
@@ -902,6 +1060,586 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "EVENT_CHECK_RESPONSE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "06f408e2-18c7-49e2-ab59-c58203f7788d",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event_type_id\": 5,\n    \"event_date\":\"2022-10-18 15:00:00\",\n    \"obstacle_id\":2,\n    \"response\": \"L'empereur d'au-delà des Mer\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/1/events/checkresponse",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"1",
+								"events",
+								"checkresponse"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_FIND_LAST",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "58db2f7e-b42b-46c5-b044-092aba33b9ba",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjEyNzczMDUsImV4cCI6MTYyMTI4MDkwNX0.w34v0aPi7Z7HW27TGOPgU7kYldaFavgOqO_7m2gDFXaqWj3gmtqGfwJP921X6aAMV83JOTqrMPrm4dY1BDv7Wg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/events/last",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"events",
+								"last"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "EventsType",
+			"item": [
+				{
+					"name": "EVENT_TYPES_ADD",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "72f2d207-f0dc-4297-8a0f-e540650cb8fe"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\":\"TEST 3\",\n    \"label\":\"test label 3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/event-type",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"event-type"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_TYPES_ALL",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "75bca3a4-f815-47ea-a968-c61ccfb6c8fb"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/event-type",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"event-type"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_TYPES_FIND",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "e462e257-c53e-4d6e-ac65-dbdd5b907126"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"code\":\"TEST 2\",\n    \"label\":\"test label 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/event-type/3",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"event-type",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Obstacles",
+			"item": [
+				{
+					"name": "OBSTACLES_FIND_BY_CHALLENGE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a74952e7-56c9-41ec-ab5c-188d91b2b181",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/obstacles",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"obstacles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_FIND_BY_SEGMENT",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/7/obstacles",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"7",
+								"obstacles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_FIND_BY_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad4cdb39-ed35-44d6-bbd7-d957d1a52d69",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"label\": \"Qui est le père d'Aslan 2 ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"type_question\": 0,\n    \"nb_point\": 25,\n    \"result\": \"L'empereur d'au-delà des Mers\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/2/obstacles/2",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"2",
+								"obstacles",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_ADD",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a8d3d6b2-4346-4a14-bd4b-2256df8ed670",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"label\": \"Quelle est le vrai nom de la sorcière blanche test ?\",\n    \"progress\": 50,\n    \"description\": \"\",\n    \"question_type\": 0,\n    \"nb_points\": 25,\n    \"result\": \"Jadis\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"1",
+								"obstacles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_UPDATE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d4f46f4e-ab0b-4555-ac51-4ea52543a27f",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"label\": \"Qui offre des armes aux enfants Pevensie ?\",\n    \"progress\": 70,\n    \"description\": \"\",\n    \"question_type\": 0,\n    \"nb_points\": 25,\n    \"result\": \"Le père Noel\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/7",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"1",
+								"obstacles",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_MODIFY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2e3a4630-44c0-4d73-9524-68f0b1f495bb",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"label\": \"Qui Susan Pevensie, rencontre en premier à Narnia ?\",\n    \"result\": \"Mr Tumnus2\",\n    \"segment_id\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/5",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"1",
+								"obstacles",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "OBSTACLES_DELETE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"id": "73d593f2-1566-46f5-af0f-02feffcf6528"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/segments/1/obstacles/10",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"segments",
+								"1",
+								"obstacles",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Sign up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"Harry\", \n\t\"last_name\":\"Potter\", \n\t\"pseudo\":\"h_potter\", \n\t\"email\":\"potter@hotmail.com\", \n\t\"password\":\"hogwarts\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/signup",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\":\"lemaitre@gmail.com\", \n\t\"password\":\"Conquérantdelunivers\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/login",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Whoami",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -911,6 +1649,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
+				"id": "8b84de9c-aacf-4691-859b-3d108ef80e90",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -920,6 +1659,7 @@
 		{
 			"listen": "test",
 			"script": {
+				"id": "94341a06-bcca-42f2-b63f-05da0b57601f",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -929,7 +1669,7 @@
 	],
 	"variable": [
 		{
-			"id": "782e7d24-cd6c-4823-8991-b0ad6d13725f",
+			"id": "0c2c2bba-ff45-44f3-a403-0881cad91aac",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		}
