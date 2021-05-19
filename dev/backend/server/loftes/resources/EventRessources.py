@@ -28,6 +28,16 @@ def distance_Event_For_User_By_Challenge(user_id,challenge_id):
 
     return data
 
+def distance_Event_For_User_By_Segment(user_id,segment_id):
+
+    data = (
+        DBSession.query(func.sum(Event.distance).label('distance'))
+        .filter(Event.user_id == user_id)
+        .filter(Event.segment_id == segment_id).first()
+    )
+
+    return data
+
 def findLastEventForUserByChallenge(user_id,challenge_id):
 
     data = (

@@ -154,14 +154,14 @@ def get_last_event(request):
 
     return response
 
-event_distance = Service(
+event_distance_challenge = Service(
     name="event_distance", 
     path="/challenges/{challenge_id:\d+}/events/distance", 
     cors_policy=cors_policy
 )
 
-@event_distance.get()
-def get_event_distance(request):
+@event_distance_challenge.get()
+def get_event_distance_challenge(request):
 
     service_informations = ServiceInformations()
 
@@ -181,6 +181,39 @@ def get_event_distance(request):
                 exception.HTTPNotFound(),
                 None,
                 "Requested ressource 'Challenge' is not found.",
+            )
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+event_distance_segment = Service(
+    name="event_distance_segment", 
+    path="/segments/{segment_id:\d+}/events/distance", 
+    cors_policy=cors_policy
+)
+
+@event_distance_segment.get()
+def get_event_distance_segment(request):
+
+    service_informations = ServiceInformations()
+
+    user = UserCheckRessources.CheckUserConnect(request)
+    if user != None:
+
+        segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
+
+        if segment != None:
+
+            distance = EventRessources.distance_Event_For_User_By_Segment(user.id,segment.id)
+
+            return service_informations.build_response(exception.HTTPOk,EventDistanceSchema().dump(distance))
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound(),
+                None,
+                "Requested ressource 'Segment' is not found.",
             )
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
