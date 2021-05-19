@@ -362,7 +362,6 @@ def fill(argv=sys.argv):
     c3 = Challenge(
         name="A travers le bois d'entre les mondes",
         description="Vous venez d'arriver en plein milieu d'une foret, des bruits inquiténat se font entendre vous devez en sortir. Ou est la sortie ?",
-        end_date="2020-03-18",
         map_url="/uploads/challenges/challenge_3.jpeg",
         level="2",
         scalling="4200",
