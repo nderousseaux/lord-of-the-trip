@@ -194,7 +194,7 @@ def get_challenges(request):
 
     if user != None:
 
-        challenges = DBSession.query(Challenge).all()
+        challenges = DBSession.query(Challenge).filter(Challenge.draft == False).all()
 
         if len(challenges) == 0:
             return service_informations.build_response(exception.HTTPNotFound())
