@@ -259,7 +259,7 @@ def get_obstacles_by_segment(request):
 @apiSuccessExample {json} Body:
 
 {
-	"progress":14.6
+  "progress":14.6
 }
 
 @apiSuccessExample {json} Success response:
@@ -305,7 +305,7 @@ HTTP/1.1 404 Not Found
 {
   "error": {
     "status": "NOT FOUND",
-    "message": "Requested ressource 'Segment' is not found for this challenge."
+    "message": "Requested ressource 'Segment' is not found."
   }
 }
 """
@@ -376,7 +376,7 @@ def create_obstacle(request):
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
                 None,
-                "Requested ressource 'Segment' is not found for this challenge.",
+                "Requested ressource 'Segment' is not found.",
             )
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
@@ -623,7 +623,10 @@ def get_obstacle_update(request):
 
                         try:
 
-                            query.update(ObstacleSchema().check_json(request.json))
+                            obstacle_data = request.json
+                            obstacle_data["segment_id"] = segment.id
+
+                            query.update(ObstacleSchema().check_json(obstacle_data))
                             DBSession.flush()
 
                             response = service_informations.build_response(exception.HTTPNoContent)
@@ -790,7 +793,10 @@ def get_obstacle_modify(request):
 
                         try:
 
-                            query.update(ObstacleSchema().check_json(request.json))
+                            obstacle_data = request.json
+                            obstacle_data["segment_id"] = segment.id
+
+                            query.update(ObstacleSchema().check_json(obstacle_data))
                             DBSession.flush()
 
                             response = service_informations.build_response(exception.HTTPNoContent)
