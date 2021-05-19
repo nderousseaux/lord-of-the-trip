@@ -542,21 +542,22 @@ def get_challenge(request):
 
         challenge = DBSession.query(Challenge).get(request.matchdict["id"])
 
-        # check if user is challenge's admin or challenge is published
-        if user.id == challenge.admin_id or challenge.draft == False:
+        # check if challenge is found
+        if challenge != None:
 
-            # check if challenge is found
-            if challenge == None:
-                return service_informations.build_response(exception.HTTPNotFound())
+            # check if user is challenge's admin or challenge is published
+            if user.id == challenge.admin_id or challenge.draft == False:
 
-            response = service_informations.build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
+                response = service_informations.build_response(exception.HTTPOk, ChallengeSchema().dump(challenge))
 
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You do not have permission to view this resource using the credentials that you supplied.",
+                )
         else:
-            response = service_informations.build_response(
-                exception.HTTPForbidden,
-                None,
-                "You do not have permission to view this resource using the credentials that you supplied.",
-            )
+            response = service_informations.build_response(exception.HTTPNotFound())
 
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
@@ -1377,14 +1378,18 @@ def subscribe(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["id"])
 
+        # check if challenge is found
         if challenge != None:
 
+            # check if challenge is draft
             if challenge.draft == False:
 
+                # check if user is challenge's admin
                 if user.id != challenge.admin_id:
 
                     now = datetime.datetime.now()
@@ -1527,10 +1532,12 @@ def unsubscribe(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["id"])
 
+        # check if challenge is found
         if challenge != None:
 
             subscribed_challenge = (
@@ -1692,48 +1699,51 @@ def verify(request):
 
                     try:
 
-                      # On vérifie qu'aucun crossing point n'est orphelin
-                      orphans = []
+                        # On vérifie qu'aucun crossing point n'est orphelin
+                        orphans = []
 
-                      crossingPoints = DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                        crossingPoints = (
+                            DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                        )
 
-                      # On vérifie qu'il y ai des crossings points
-                      if len(crossingPoints) < 2:
-                        orphans = crossingPoints
+                        # On vérifie qu'il y ai des crossings points
+                        if len(crossingPoints) < 2:
+                            orphans = crossingPoints
 
-                        response = service_informations.build_response(
+                            response = service_informations.build_response(
                                 exception.HTTPOk,
                                 {
                                     "orphans": CrossingPointSchema(many=True).dump(orphans),
                                 },
-                        )
+                            )
 
-                      else:
-                        for crossing in crossingPoints:
-                            if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
-                                crossing.id != challenge.start_crossing_point_id and len(crossing.segments_end) == 0
-                            ):
-                                
-                              orphans.append(crossing)
+                        else:
+                            for crossing in crossingPoints:
+                                if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
+                                    crossing.id != challenge.start_crossing_point_id
+                                    and len(crossing.segments_end) == 0
+                                ):
 
-                            loops, deadend = checkChallenge(challenge)
+                                    orphans.append(crossing)
 
-                            if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
-                                response = service_informations.build_response(
-                                    exception.HTTPOk,
-                                    {
-                                        "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
-                                        "deadend": CrossingPointSchema(many=True).dump(deadend),
-                                        "orphans": CrossingPointSchema(many=True).dump(orphans),
-                                    },
-                                )
-                            else:
-                                response = service_informations.build_response(exception.HTTPNoContent)
+                                loops, deadend = checkChallenge(challenge)
+
+                                if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
+                                    response = service_informations.build_response(
+                                        exception.HTTPOk,
+                                        {
+                                            "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
+                                            "deadend": CrossingPointSchema(many=True).dump(deadend),
+                                            "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                        },
+                                    )
+                                else:
+                                    response = service_informations.build_response(exception.HTTPNoContent)
 
                     except Exception as e:
                         response = service_informations.build_response(exception.HTTPInternalServerError)
                         logging.getLogger(__name__).warn("Returning: %s", str(e))
- 
+
                 else:
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
