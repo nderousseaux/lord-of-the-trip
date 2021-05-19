@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 import Button from '@material-ui/core/Button';
 
-const AdminChallenges = () => {
+const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const history = useHistory();
 
@@ -58,6 +58,7 @@ const CreateChallengeForm = () => {
 
   return (
     <div>
+    <h2>Admin Dashboard</h2>
     <h3>Create a new challenge</h3>
       <form onSubmit={handleSubmit}>
         <label>Name : </label>
@@ -69,4 +70,4 @@ const CreateChallengeForm = () => {
   );
 };
 
-export default AdminChallenges;
+export default AdminDashboard;
