@@ -127,20 +127,34 @@ def get_crossing_points(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
+        # check if challenge is found
         if challenge != None:
 
-            crossing_points = DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+            # check if user is challenge's admin or challenge is published
+            if user.id == challenge.admin_id or challenge.draft == False:
 
-            if len(crossing_points) == 0:
-                return service_informations.build_response(exception.HTTPNotFound())
+                crossing_points = (
+                    DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                )
 
-            data = {"crossing_points": CrossingPointSchema(many=True).dump(crossing_points)}
+                if len(crossing_points) == 0:
+                    return service_informations.build_response(exception.HTTPNotFound())
 
-            response = service_informations.build_response(exception.HTTPOk, data)
+                data = {"crossing_points": CrossingPointSchema(many=True).dump(crossing_points)}
+
+                response = service_informations.build_response(exception.HTTPOk, data)
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You do not have permission to view this resource using the credentials that you supplied.",
+                )
 
         else:
             response = service_informations.build_response(
@@ -240,38 +254,60 @@ def create_crossing_point(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
+        # check if challenge is found
         if challenge != None:
 
-            try:
-                crossing_point_data = request.json
-                crossing_point_data["challenge_id"] = challenge.id
+            # check if user is challenge's admin
+            if user.id == challenge.admin_id:
 
-                crossing_point_schema = CrossingPointSchema()
-                crossing_point = crossing_point_schema.load(crossing_point_data)
+                # check if challenge is draft
+                if challenge.draft:
 
-                DBSession.add(crossing_point)
-                DBSession.flush()
+                    try:
+                        crossing_point_data = request.json
+                        crossing_point_data["challenge_id"] = challenge.id
 
-                response = service_informations.build_response(
-                    exception.HTTPCreated, crossing_point_schema.dump(crossing_point)
-                )
+                        crossing_point_schema = CrossingPointSchema()
+                        crossing_point = crossing_point_schema.load(crossing_point_data)
 
-            except ValidationError as validation_error:
-                response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+                        DBSession.add(crossing_point)
+                        DBSession.flush()
 
-            except ValueError as value_error:
-                response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+                        response = service_informations.build_response(
+                            exception.HTTPCreated, crossing_point_schema.dump(crossing_point)
+                        )
 
-            except PermissionError as pe:
-                response = service_informations.build_response(exception.HTTPUnauthorized)
+                    except ValidationError as validation_error:
+                        response = service_informations.build_response(
+                            exception.HTTPBadRequest, None, str(validation_error)
+                        )
 
-            except Exception as e:
-                response = service_informations.build_response(exception.HTTPInternalServerError)
-                logging.getLogger(__name__).warn("Returning: %s", str(e))
+                    except ValueError as value_error:
+                        response = service_informations.build_response(
+                            exception.HTTPBadRequest, None, str(value_error)
+                        )
+
+                    except PermissionError as pe:
+                        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+                    except Exception as e:
+                        response = service_informations.build_response(exception.HTTPInternalServerError)
+                        logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You do not have permission to modify a published challenge.",
+                    )
+
+            else:
+                response = service_informations.build_response(exception.HTTPForbidden)
 
         else:
             response = service_informations.build_response(
@@ -348,27 +384,39 @@ def get_crossing_point(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
+        # check if challenge is found
         if challenge != None:
 
-            crossing_point = (
-                DBSession.query(CrossingPoint)
-                .filter(
-                    CrossingPoint.challenge_id == challenge.id,
-                    CrossingPoint.id == request.matchdict["id"],
+            # check if user is challenge's admin or challenge is published
+            if user.id == challenge.admin_id or challenge.draft == False:
+
+                crossing_point = (
+                    DBSession.query(CrossingPoint)
+                    .filter(
+                        CrossingPoint.challenge_id == challenge.id,
+                        CrossingPoint.id == request.matchdict["id"],
+                    )
+                    .first()
                 )
-                .first()
-            )
 
-            if crossing_point == None:
-                return service_informations.build_response(exception.HTTPNotFound())
+                if crossing_point == None:
+                    return service_informations.build_response(exception.HTTPNotFound())
 
-            response = service_informations.build_response(
-                exception.HTTPOk, CrossingPointSchema().dump(crossing_point)
-            )
+                response = service_informations.build_response(
+                    exception.HTTPOk, CrossingPointSchema().dump(crossing_point)
+                )
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You do not have permission to view this resource using the credentials that you supplied.",
+                )
 
         else:
             response = service_informations.build_response(
@@ -505,45 +553,66 @@ def update_crossing_point(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
+        # check if challenge is found
         if challenge != None:
 
-            id = request.matchdict["id"]
+            # check if user is challenge's admin
+            if user.id == challenge.admin_id:
 
-            # Check if the crossing point exist
-            query = DBSession.query(CrossingPoint).filter(
-                CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
-            )
-            crossing_point = query.first()
+                # check if challenge is draft
+                if challenge.draft:
 
-            if crossing_point != None:
+                    id = request.matchdict["id"]
 
-                try:
-
-                    query.update(CrossingPointSchema().check_json(request.json))
-                    DBSession.flush()
-
-                    response = service_informations.build_response(exception.HTTPNoContent)
-
-                except ValidationError as validation_error:
-                    response = service_informations.build_response(
-                        exception.HTTPBadRequest, None, str(validation_error)
+                    query = DBSession.query(CrossingPoint).filter(
+                        CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
                     )
 
-                except ValueError as value_error:
-                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+                    crossing_point = query.first()
 
-                except PermissionError as pe:
-                    response = service_informations.build_response(exception.HTTPUnauthorized)
+                    # check if crossing point is found
+                    if crossing_point != None:
 
-                except Exception as e:
-                    response = service_informations.build_response(exception.HTTPInternalServerError)
-                    logging.getLogger(__name__).warn("Returning: %s", str(e))
+                        try:
+
+                            query.update(CrossingPointSchema().check_json(request.json))
+                            DBSession.flush()
+
+                            response = service_informations.build_response(exception.HTTPNoContent)
+
+                        except ValidationError as validation_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(validation_error)
+                            )
+
+                        except ValueError as value_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(value_error)
+                            )
+
+                        except PermissionError as pe:
+                            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+                        except Exception as e:
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+                    else:
+                        response = service_informations.build_response(exception.HTTPNotFound)
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You do not have permission to modify a published challenge.",
+                    )
+
             else:
-                response = service_informations.build_response(exception.HTTPNotFound)
+                response = service_informations.build_response(exception.HTTPForbidden)
 
         else:
             response = service_informations.build_response(
@@ -634,45 +703,66 @@ def modify_crossing_point(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
+        # check if challenge is found
         if challenge != None:
 
-            id = request.matchdict["id"]
+            # check if user is challenge's admin
+            if user.id == challenge.admin_id:
 
-            # Check if the crossing point exist
-            query = DBSession.query(CrossingPoint).filter(
-                CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
-            )
-            crossing_point = query.first()
+                # check if challenge is draft
+                if challenge.draft:
 
-            if crossing_point != None:
+                    id = request.matchdict["id"]
 
-                try:
-
-                    query.update(CrossingPointSchema().check_json(request.json))
-                    DBSession.flush()
-
-                    response = service_informations.build_response(exception.HTTPNoContent)
-
-                except ValidationError as validation_error:
-                    response = service_informations.build_response(
-                        exception.HTTPBadRequest, None, str(validation_error)
+                    query = DBSession.query(CrossingPoint).filter(
+                        CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
                     )
 
-                except ValueError as value_error:
-                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+                    crossing_point = query.first()
 
-                except PermissionError as pe:
-                    response = service_informations.build_response(exception.HTTPUnauthorized)
+                    # check if crossing point is found
+                    if crossing_point != None:
 
-                except Exception as e:
-                    response = service_informations.build_response(exception.HTTPInternalServerError)
-                    logging.getLogger(__name__).warn("Returning: %s", str(e))
+                        try:
+
+                            query.update(CrossingPointSchema().check_json(request.json))
+                            DBSession.flush()
+
+                            response = service_informations.build_response(exception.HTTPNoContent)
+
+                        except ValidationError as validation_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(validation_error)
+                            )
+
+                        except ValueError as value_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(value_error)
+                            )
+
+                        except PermissionError as pe:
+                            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+                        except Exception as e:
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+                    else:
+                        response = service_informations.build_response(exception.HTTPNotFound)
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You do not have permission to modify a published challenge.",
+                    )
+
             else:
-                response = service_informations.build_response(exception.HTTPNotFound)
+                response = service_informations.build_response(exception.HTTPForbidden)
 
         else:
             response = service_informations.build_response(
@@ -731,52 +821,73 @@ def delete_crossing_point(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
+        # check if challenge is found
         if challenge != None:
 
-            id = request.matchdict["id"]
+            # check if user is challenge's admin
+            if user.id == challenge.admin_id:
 
-            # Check if the crossing point exist
-            crossing_point = (
-                DBSession.query(CrossingPoint)
-                .filter(CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id)
-                .first()
-            )
+                # check if challenge is draft
+                if challenge.draft:
 
-            if crossing_point != None:
+                    id = request.matchdict["id"]
 
-                try:
-
-                    if challenge.start_crossing_point_id == crossing_point.id:
-                        challenge.start_crossing_point_id = None
-
-                    if challenge.end_crossing_point_id == crossing_point.id:
-                        challenge.end_crossing_point_id = None
-
-                    DBSession.delete(crossing_point)
-                    DBSession.flush()
-
-                    response = service_informations.build_response(exception.HTTPNoContent)
-
-                except ValidationError as validation_error:
-                    response = service_informations.build_response(
-                        exception.HTTPBadRequest, None, str(validation_error)
+                    crossing_point = (
+                        DBSession.query(CrossingPoint)
+                        .filter(CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id)
+                        .first()
                     )
 
-                except ValueError as value_error:
-                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+                    # check if crossing point is found
+                    if crossing_point != None:
 
-                except PermissionError as pe:
-                    response = service_informations.build_response(exception.HTTPUnauthorized)
+                        try:
 
-                except Exception as e:
-                    response = service_informations.build_response(exception.HTTPInternalServerError)
-                    logging.getLogger(__name__).warn("Returning: %s", str(e))
+                            if challenge.start_crossing_point_id == crossing_point.id:
+                                challenge.start_crossing_point_id = None
+
+                            if challenge.end_crossing_point_id == crossing_point.id:
+                                challenge.end_crossing_point_id = None
+
+                            DBSession.delete(crossing_point)
+                            DBSession.flush()
+
+                            response = service_informations.build_response(exception.HTTPNoContent)
+
+                        except ValidationError as validation_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(validation_error)
+                            )
+
+                        except ValueError as value_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(value_error)
+                            )
+
+                        except PermissionError as pe:
+                            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+                        except Exception as e:
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+                    else:
+                        response = service_informations.build_response(exception.HTTPNotFound)
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You do not have permission to modify a published challenge.",
+                    )
+
             else:
-                response = service_informations.build_response(exception.HTTPNotFound)
+                response = service_informations.build_response(exception.HTTPForbidden)
 
         else:
             response = service_informations.build_response(

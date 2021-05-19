@@ -191,6 +191,19 @@
     "version": "0.2.0",
     "name": "Whoami",
     "group": "Authentication",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "examples": [
         {
@@ -256,6 +269,19 @@
     "version": "0.1.0",
     "name": "DeleteChallenge",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "examples": [
         {
@@ -484,6 +510,19 @@
     "version": "0.1.0",
     "name": "GetChallenge",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -644,6 +683,19 @@
     "version": "0.1.0",
     "name": "GetChallengeImage",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -699,6 +751,19 @@
     "version": "0.1.0",
     "name": "GetChallenges",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -721,6 +786,15 @@
     },
     "error": {
       "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -732,6 +806,11 @@
         ]
       },
       "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
@@ -761,6 +840,19 @@
     "version": "0.1.0",
     "name": "PatchChallenge",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -918,6 +1010,24 @@
     "version": "0.1.0",
     "name": "PostChallenge",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "Body parameters": [
@@ -1002,6 +1112,24 @@
             "field": "BadRequest",
             "description": "<p>Malformed request syntax.</p>"
           }
+        ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
         ]
       },
       "examples": [
@@ -1029,6 +1157,16 @@
           "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
           "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
         }
       ]
     },
@@ -1054,6 +1192,19 @@
     "version": "0.1.0",
     "name": "PostChallengeImage",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameter": [
@@ -1149,6 +1300,19 @@
     "version": "0.1.0",
     "name": "PutChallenge",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -1311,6 +1475,19 @@
     "version": "0.2.0",
     "name": "SubscribeChallenge",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "examples": [
         {
@@ -1426,6 +1603,19 @@
     "version": "0.2.0",
     "name": "UnSubscribeChallenge",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "examples": [
         {
@@ -1505,6 +1695,19 @@
     "version": "0.2.0",
     "name": "VerifyChallenge",
     "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "examples": [
         {
@@ -1595,6 +1798,19 @@
     "version": "0.1.0",
     "name": "DeleteCrossingPoint",
     "group": "CrossingPoint",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "examples": [
         {
@@ -1664,6 +1880,19 @@
     "version": "0.1.0",
     "name": "GetCrossingPoint",
     "group": "CrossingPoint",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -1759,6 +1988,19 @@
     "version": "0.1.0",
     "name": "GetCrossingPoints",
     "group": "CrossingPoint",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -1839,6 +2081,19 @@
     "version": "0.1.0",
     "name": "PatchCrossingPoint",
     "group": "CrossingPoint",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -1951,6 +2206,19 @@
     "version": "0.1.0",
     "name": "PostCrossingPoint",
     "group": "CrossingPoint",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -2062,6 +2330,19 @@
     "version": "0.1.0",
     "name": "PutCrossingPoint",
     "group": "CrossingPoint",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -2180,6 +2461,19 @@
     "version": "0.2.0",
     "name": "DeleteObstacle",
     "group": "Obstacle",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "examples": [
         {
@@ -2249,6 +2543,19 @@
     "version": "0.2.0",
     "name": "GetObstacle",
     "group": "Obstacle",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -2358,6 +2665,19 @@
     "version": "0.2.0",
     "name": "GetObstaclesByChallenge",
     "group": "Obstacle",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -2432,6 +2752,19 @@
     "version": "0.2.0",
     "name": "GetObstaclesBySegment",
     "group": "Obstacle",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -2512,6 +2845,19 @@
     "version": "0.2.0",
     "name": "PatchObstacle",
     "group": "Obstacle",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -2650,6 +2996,19 @@
     "version": "0.2.0",
     "name": "PostObstacle",
     "group": "Obstacle",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -2742,6 +3101,19 @@
     "version": "0.2.0",
     "name": "PutObstacle",
     "group": "Obstacle",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -2886,6 +3258,19 @@
     "version": "0.1.0",
     "name": "DeleteSegment",
     "group": "Segment",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "examples": [
         {
@@ -2955,6 +3340,19 @@
     "version": "0.1.0",
     "name": "GetSegment",
     "group": "Segment",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -3057,6 +3455,19 @@
     "version": "0.1.0",
     "name": "GetSegments",
     "group": "Segment",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -3137,6 +3548,19 @@
     "version": "0.1.0",
     "name": "PatchSegment",
     "group": "Segment",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -3266,6 +3690,19 @@
     "version": "0.1.0",
     "name": "PostSegment",
     "group": "Segment",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [
@@ -3391,6 +3828,19 @@
     "version": "0.1.0",
     "name": "PutSegment",
     "group": "Segment",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Body parameters": [

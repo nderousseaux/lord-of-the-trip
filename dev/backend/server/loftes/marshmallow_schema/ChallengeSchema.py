@@ -60,11 +60,6 @@ class ChallengeSchema(Schema):
 
     @post_load
     def make_challenge(self, data, **kwargs):
-        admin = DBSession.query(User).get(1)
-        if admin != None:
-            data["admin_id"] = admin.id
-        else:
-            raise PermissionError()
 
         now = datetime.datetime.now()
 
