@@ -25,7 +25,7 @@ class ChallengeResources:
     def find_all_unsubscribed_challenges_by_user(self, user_id):
 
         # create query
-        query = DBSession.query(Challenge.id).filter(Challenge.draft == False)
+        query = DBSession.query(Challenge).filter(Challenge.draft == False)
 
         # create subquery
         subquery = (
