@@ -108,6 +108,39 @@ const apiChallenge = {
     .then(checkStatus);
   },
 
+  verifyChallenge: (id) => {
+    return fetch(`${urlPrefix}/challenges/${id}/verify`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus)
+    .then(res => res.json());
+  },
+
+  duplicateChallenge: (id) => {
+    return fetch(`${urlPrefix}/challenges/${id}/duplicate`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus);
+  },
+
+  subscribeChallenge: (challengeId) => {
+    return fetch(`${urlPrefix}/challenges/${challengeId}/subscribe`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus);
+  },
+
+  unsubscribeChallenge: (challengeId) => {
+    return fetch(`${urlPrefix}/challenges/${challengeId}/unsubscribe`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus);
+  },
+
 };
 
 export default apiChallenge;

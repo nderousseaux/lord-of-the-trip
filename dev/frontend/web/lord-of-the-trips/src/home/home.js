@@ -1,6 +1,5 @@
 import { useHistory } from 'react-router-dom';
-import {  useAuth } from '../authentication/auth';
-import Button from '@material-ui/core/Button';
+import { useAuth } from '../authentication/auth';
 import challengePub from './challengePub.png';
 
 const HomePage = () => {

@@ -11,12 +11,11 @@ const AdminDashboard = () => {
   const { isLoading, isError, error, data: challenges } = useQuery('challenges', () => apiChallenge.getAllChallenges());
 
   const deleteChallenge = useMutation( (id) => apiChallenge.deleteChallenge(id), {
-    onSuccess: () => {
-      queryClient.invalidateQueries('challenges')
-    },
+    onSuccess: () => { queryClient.invalidateQueries('challenges') },
   });
 
-  return <>
+  return <div>
+    <h2>Admin Dashboard</h2>
     <CreateChallengeForm />
     <h3>Challenge List</h3>
     {isLoading ? 'Loading...' : isError ? error.message :
@@ -30,7 +29,7 @@ const AdminDashboard = () => {
         ))}
       </ul>
     }
-  </>
+  </div>
 };
 
 const CreateChallengeForm = () => {
@@ -58,7 +57,6 @@ const CreateChallengeForm = () => {
 
   return (
     <div>
-    <h2>Admin Dashboard</h2>
     <h3>Create a new challenge</h3>
       <form onSubmit={handleSubmit}>
         <label>Name : </label>

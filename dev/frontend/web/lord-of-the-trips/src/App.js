@@ -41,25 +41,26 @@ const Header = () => {
   );
 };
 
-const Main = () => {
+const Routes = () => {
+  let { user } = useAuth();
   return (
     <>
-      <AuthProvider>
-        <Header />
-        <hr />
-        <Switch>
-          <Route exact path="/">
-            <HomePage />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/signup">
-            <Signup />
-          </Route>
+      <Switch>
+        <Route exact path="/">
+          <HomePage />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/signup">
+          <Signup />
+        </Route>
+        {user ? <>
           <Route path="/dashboard">
             <UserDashboard />
           </Route>
+        </> : null}
+        {user?.is_admin ? <>
           <Route path="/admindashboard">
             <AdminDashboard />
           </Route>
@@ -69,8 +70,20 @@ const Main = () => {
           <Route path="/editmap/:id">
             <EditMap />
           </Route>
-          <Redirect to="/" />
-        </Switch>
+        </> : null}
+        <Redirect to="/" />
+      </Switch>
+    </>
+  );
+};
+
+const Main = () => {
+  return (
+    <>
+      <AuthProvider>
+        <Header />
+        <hr />
+        <Routes />
         {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </AuthProvider>
     </>
