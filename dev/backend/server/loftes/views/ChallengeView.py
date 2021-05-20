@@ -204,10 +204,10 @@ def get_challenges(request):
         if request.query_string != "":
             splitter = request.query_string.split("=")
             if len(splitter) == 2 and splitter[0] == "draft":
-                if splitter[1] == "true":
+                if splitter[1] == "false":
                     challenges = ChallengeResources().find_all_published_challenges()
                 # if user is not superadmin and he wants to see all challenges
-                elif splitter[1] == "false" and user.id != 1:
+                elif splitter[1] == "true" and user.id != 1:
                     return service_informations.build_response(exception.HTTPForbidden,None,"You do not have permission to view this resource using the credentials that you supplied.",)
 
         if len(challenges) == 0:
