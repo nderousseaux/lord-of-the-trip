@@ -20,8 +20,8 @@ import logging
 import json
 
 event = Service(
-    name="event", 
-    path="/challenges/{challenge_id:\d+}/events", 
+    name="event",
+    path="/challenges/{challenge_id:\d+}/events",
     cors_policy=cors_policy
 )
 
@@ -66,7 +66,7 @@ def get_event(request):
 
 
 event_id = Service(
-    name="event_id", 
+    name="event_id",
     path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/{id:\d+}",
     cors_policy=cors_policy
 )
@@ -119,8 +119,8 @@ def get_event_by_id(request):
     return response
 
 last_event = Service(
-    name="last_event", 
-    path="/challenges/{challenge_id:\d+}/events/last", 
+    name="last_event",
+    path="/challenges/{challenge_id:\d+}/events/last",
     cors_policy=cors_policy
 )
 
@@ -155,8 +155,8 @@ def get_last_event(request):
     return response
 
 event_distance_challenge = Service(
-    name="event_distance", 
-    path="/challenges/{challenge_id:\d+}/events/distance", 
+    name="event_distance",
+    path="/challenges/{challenge_id:\d+}/events/distance",
     cors_policy=cors_policy
 )
 
@@ -188,8 +188,8 @@ def get_event_distance_challenge(request):
     return response
 
 event_distance_segment = Service(
-    name="event_distance_segment", 
-    path="/segments/{segment_id:\d+}/events/distance", 
+    name="event_distance_segment",
+    path="/segments/{segment_id:\d+}/events/distance",
     cors_policy=cors_policy
 )
 
@@ -222,7 +222,7 @@ def get_event_distance_segment(request):
 
 
 event_create = Service(
-    name="event_create", 
+    name="event_create",
     path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events',
     cors_policy=cors_policy
 )
@@ -237,7 +237,7 @@ def event_add(request):
     if user != None:
 
         checkchallenge = EventRessources.CheckChallengeForEvent(request.matchdict["challenge_id"], user.id)
-    
+
         if checkchallenge == "":
 
             segment_id = request.matchdict["segment_id"]
@@ -252,8 +252,8 @@ def event_add(request):
                     eventdata.user_id = user.id
 
                     eventrulescheck = EventRessources.CheckEventTypeRule(
-                        eventdata.event_type_id, 
-                        user.id, request.matchdict["challenge_id"], 
+                        eventdata.event_type_id,
+                        user.id, request.matchdict["challenge_id"],
                         segment_id
                     )
                     if eventrulescheck == None:
@@ -261,10 +261,10 @@ def event_add(request):
                         DBSession.add(eventdata)
                         DBSession.flush()
 
-                        response = service_informations.build_response(exception.HTTPOk, event_schema.dump(eventdata))
+                        response = service_informations.build_response(exception.HTTPCreated, event_schema.dump(eventdata))
                     else:
                         response = service_informations.build_response(
-                            exception.HTTPNotFound(),
+                            exception.HTTPForbidden(),
                             None,
                             eventrulescheck,
                         )
@@ -300,7 +300,7 @@ def event_add(request):
 
 
 event_question = Service(
-    name="event_question", 
+    name="event_question",
     path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/checkresponse',
     cors_policy=cors_policy
 )
@@ -314,7 +314,7 @@ def event_check_response(request):
     if user != None:
 
         checkchallenge = EventRessources.CheckChallengeForEvent(request.matchdict["challenge_id"], user.id)
-    
+
         if checkchallenge == "":
             segment_id = request.matchdict["segment_id"]
             segment = DBSession.query(Segment).get(segment_id)

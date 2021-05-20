@@ -33,6 +33,9 @@ class EventSchema(Schema):
 
     @post_load
     def make_event(self, data, **kwargs):
+
+        data["event_date"] = datetime.datetime.now()
+
         return Event(**data)
 
     @pre_load
@@ -47,8 +50,5 @@ class EventSchema(Schema):
 
             if data["response"] == None:
                 raise ValueError("You must specified a response for the obstacle.")
-
-        if "event_date" in data:
-            data["event_date"] = datetime.datetime.fromisoformat(data["event_date"]).isoformat()
 
         return data
