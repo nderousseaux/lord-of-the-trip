@@ -114,7 +114,7 @@ def fill(argv=sys.argv):
         last_name="Targaryen",
         pseudo="motherOfDragons",
         email="d.targaryen@gmail.com",
-        password=PasswordUtils().hash_password("khaldrog"),
+        password=PasswordUtils().hash_password("khaldrogo"),
         is_admin=True,
     )
 
