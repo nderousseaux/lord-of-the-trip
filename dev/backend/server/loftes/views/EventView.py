@@ -250,6 +250,7 @@ def event_add(request):
                     eventdata = event_schema.load(request.json)
                     eventdata.segment_id = segment_id
                     eventdata.user_id = user.id
+                    eventdata.event_date = datetime.datetime.now()
 
                     eventrulescheck = EventRessources.CheckEventTypeRule(
                         eventdata.event_type_id,
