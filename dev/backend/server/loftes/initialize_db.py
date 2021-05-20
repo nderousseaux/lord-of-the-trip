@@ -397,7 +397,7 @@ def fill(argv=sys.argv):
     session.commit()
 
     # update challenge1
-    session.query(Challenge).filter(Challenge.id == 1).update({Challenge.start_crossing_point_id:1, Challenge.end_crossing_point_id:9})
+    session.query(Challenge).filter(Challenge.id == 1).update({Challenge.start_crossing_point_id:1, Challenge.end_crossing_point_id:3})
     session.commit()
 
     # update challenge2
