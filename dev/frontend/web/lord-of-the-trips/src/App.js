@@ -1,23 +1,25 @@
-import { QueryClient, QueryClientProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query/devtools'
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { HashRouter, Switch, Route, Redirect, Link, useHistory } from 'react-router-dom';
 import { AuthProvider, useAuth } from './authentication/auth';
 import Login from './authentication/Login';
 import Signup from './authentication/Signup';
-import HomePage from './home/home'
-import UserDashboard from './user/dashboard'
-import ViewChallenge from './user/viewChallenge'
-import AdminDashboard from './admin/dashboard'
-import EditChallenge from './admin/editChallenge'
-import EditMap from './admin/editMap'
+import HomePage from './home/home';
+import UserDashboard from './user/dashboard';
+import ViewSubscribedChallenge from './user/viewSubscribedChallenge';
+import ViewNotSubscribedChallenge from './user/viewNotSubscribedChallenge';
+import AdminDashboard from './admin/dashboard';
+import EditChallenge from './admin/editChallenge';
+import EditMap from './admin/editMap';
 import './Custom.css';
 import Button from '@material-ui/core/Button';
 
 const queryClient  = new QueryClient({
-  defaultConfig: {
+  defaultOptions: {
     queries: {
       staleTime: 0,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      retry: false
     }
   }
 });
@@ -61,8 +63,11 @@ const Routes = () => {
         <Route path="/dashboard">
           <UserDashboard />
         </Route>
-        <Route path="/viewchallenge/:id">
-          <ViewChallenge />
+        <Route path="/viewsubscibedchallenge/:id">
+          <ViewSubscribedChallenge />
+        </Route>
+        <Route path="/viewnotsubscibedchallenge/:id">
+          <ViewNotSubscribedChallenge />
         </Route>
 
         {/* Admin routes */}

@@ -1,113 +1,15 @@
 import { useState, useEffect } from "react";
 import { Stage, Layer, Image, Circle, Arrow, Star } from 'react-konva';
-import { useQuery, useQueryClient, useMutation } from 'react-query';
-import { useParams, useHistory } from 'react-router-dom';
+import { useQuery, useMutation } from 'react-query';
 import apiChallenge from '../api/challenge';
 import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
 import apiObstacles from '../api/obstacles';
 import { percentToPixels, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
-import Button from '@material-ui/core/Button';
-
-const flexCenter = {
-  display: 'flex',
-  justifyContent: 'center'
-};
-
-const flexRow = {
-  display: 'flex',
-  flexDirection: 'row'
-};
-
-const flexLeft = {
-  //backgroundColor: 'lightblue',
-  width: '30%',
-  marginRight: '5px'
-};
 
 const flexRight = {
-  //backgroundColor: 'lightgreen',
   width: '70%',
   marginLeft: '5px'
-};
-
-const flex20left = {
-  width: '20%',
-  marginRight: '5px'
-};
-
-const flex20mid = {
-  width: '20%',
-  margin: '0px 5px'
-};
-
-const flex20right = {
-  width: '20%',
-  marginLeft: '5px'
-};
-
-const ViewChallenge = () => {
-  const queryClient = useQueryClient();
-  const history = useHistory();
-  let { id } = useParams();
-  id = parseInt(id);
-
-  const { isLoading, isError, error, data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
-
-  const subscribeChallenge = useMutation( (id) => apiChallenge.subscribeChallenge(id), {
-    onSuccess: () => { queryClient.invalidateQueries('challenges') },
-  });
-
-  return <>
-    {isLoading ? 'Loading...' : isError ? error.message : <>
-      <div> {/* style={flexCenter} */}
-        <Button onClick={() => subscribeChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Subscibe</Button> {' '}
-      </div>
-      <div style={flexRow}>
-        <ViewChallengeInfo challenge={challenge} />
-        <ViewChallengeMap challenge={challenge} />
-      </div>
-    </> }
-  </>
-};
-
-const ViewChallengeInfo = ({ challenge }) => {
-  return (
-    <div style={flexLeft}>
-      <h3>Challenge informations</h3>
-      <p>
-        <b>Name :</b>
-        <p>{challenge.name}</p>
-      </p>
-      <p>
-        <b>Description :</b> <br />
-        <p>{challenge.description}</p>
-      </p>
-      <div style={flexRow}>
-        <div style={flex20left}>
-          <b>End At</b>
-          <p>{challenge.end_date}</p>
-        </div>
-        <div style={flex20mid}>
-          <b>Scaling</b>
-          <p>{challenge.scalling} meters</p>
-          {/* (the width of the map do 1000 meters) */}
-        </div>
-        <div style={flex20mid}>
-          <b>Level</b>
-          <p>{challenge.level}</p>
-        </div>
-        <div style={flex20mid}>
-          <b>In team</b>
-          <p>...</p>
-        </div>
-        <div style={flex20right}>
-          <b>Step lenght</b>
-          <p>{challenge.step_length * 100} cm</p>
-        </div>
-      </div>
-    </div>
-  );
 };
 
 const ViewChallengeMap = ({ challenge }) => {
@@ -338,19 +240,16 @@ const ViewChallengeMap = ({ challenge }) => {
                 <Image image={image} />
                 { /* Render segments */ }
                 {segments.map(segment => <Arrow key={segment.id} id={segment.id} points={formatSegmentPoints(segment)}
-                                          stroke={"black"}
-                                          strokeWidth={6}
-                                          fill={"black"}
-                                          pointerLength={16} pointerWidth={16} />)}
+                                          stroke={"black"} strokeWidth={6} fill={"black"} pointerLength={16} pointerWidth={16} />)}
                 { /* Render crossing points */ }
-                {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.position_x} y={crossingPoint.position_y} radius={12} stroke={"black"} strokeWidth={2}
-                                                     fill={"blue"}
+                {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.position_x} y={crossingPoint.position_y}
+                                                     radius={12} stroke={"black"} strokeWidth={2} fill={"blue"}
                                                      fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : { x: null, y: null }}
                                                      fillLinearGradientEndPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: 5, y: 0 } : { x: null, y: null }}
                                                      fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, 'green', 0.40, 'green', 0.41, 'black', 0.59, 'black', 0.60, 'orange', 1, 'orange'] : null} />)}
                 { /* Render obstacles */ }
-                {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y} numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"}
-                                           />)}
+                {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y}
+                                           numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"} />)}
               </Layer>
             </Stage>
           </div>
@@ -359,4 +258,4 @@ const ViewChallengeMap = ({ challenge }) => {
   );
 };
 
-export default ViewChallenge;
+export default ViewChallengeMap;
