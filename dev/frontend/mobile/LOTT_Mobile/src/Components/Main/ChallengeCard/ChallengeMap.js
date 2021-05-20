@@ -10,7 +10,6 @@ export default function ChallengeMap(props) {
     const [ zoomMap, setZoomMap ] = useState(1);
 
     const ResizeMapDots = (event, gestureState, zoomableViewEventObject) => {
-        console.log(zoomableViewEventObject);
         setZoomMap(zoomableViewEventObject?.zoomLevel);
     }
 
