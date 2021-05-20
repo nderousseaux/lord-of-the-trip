@@ -1,4 +1,4 @@
-from loftes.models import Obstacle
+from loftes.models import Obstacle, DBSession
 
 from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate
 from loftes.marshmallow_schema.SegmentSchema import SegmentSchema
@@ -30,9 +30,24 @@ class ObstacleSchema(Schema):
     def make_obstacle(self, data, **kwargs):
         return Obstacle(**data)
 
-    # @pre_load
-    # def pre_load(self, data, many, **kwargs):
-    #     return data
+    @pre_load
+    def pre_load(self, data, many, **kwargs):
+
+        if "progress" in data:
+
+            obstacle = (
+                DBSession.query(Obstacle)
+                .filter(
+                    Obstacle.segment_id == int(data["segment_id"]),
+                    Obstacle.progress == data["progress"],
+                )
+                .first()
+            )
+
+            if obstacle != None:
+                raise ValueError("There is already one obstacle at this position for this segment.")
+
+            return data
 
     def check_json(self, data, **kwargs):
 
@@ -48,4 +63,4 @@ class ObstacleSchema(Schema):
             if data["question_type"] == None:
                 raise ValueError("Field type question must not be null.")
 
-        return data
+        return self.pre_load(data, True)

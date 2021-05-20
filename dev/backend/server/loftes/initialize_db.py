@@ -16,8 +16,7 @@ from .models import (
     DBSession,
     Base,
 )
-
-from loftes.security import password_utils
+from loftes.security.PasswordUtils import PasswordUtils
 
 from .models.User import *
 from .models.Challenge import *
@@ -98,15 +97,40 @@ def fill(argv=sys.argv):
     session.commit()
 
     # User
-    u = User(
+    u1 = User(
         first_name="Missy",
         last_name="Of Gallifrey",
         pseudo="LeMaitre",
         email="lemaitre@gmail.com",
-        password=password_utils.hash_password("Conquérantdelunivers"),
+        password=PasswordUtils().hash_password("Conquérantdelunivers"),
+        is_admin=True,
     )
 
-    session.add(u)
+    session.add(u1)
+    session.commit()
+
+    u2 = User(
+        first_name="Daenerys",
+        last_name="Targaryen",
+        pseudo="motherOfDragons",
+        email="d.targaryen@gmail.com",
+        password=PasswordUtils().hash_password("khaldrogo"),
+        is_admin=True,
+    )
+
+    session.add(u2)
+    session.commit()
+
+    u3 = User(
+        first_name="Bilbo",
+        last_name="Baggins",
+        pseudo="ring_bearer",
+        email="littlehobbit@yahoo.com",
+        password=PasswordUtils().hash_password("theshire"),
+        is_admin=False,
+    )
+
+    session.add(u3)
     session.commit()
 
     c1 = Challenge(
@@ -126,9 +150,7 @@ def fill(argv=sys.argv):
     session.commit()
 
     # Challenge
-    cp1 = CrossingPoint(
-        name="L'armoire", challenge_id="1", position_x="0.142", position_y="0.324511"
-    )
+    cp1 = CrossingPoint(name="L'armoire", challenge_id="1", position_x="0.142", position_y="0.324511")
     session.add(cp1)
     session.commit()
 
@@ -187,9 +209,7 @@ def fill(argv=sys.argv):
     session.add(cp7)
     session.commit()
 
-    cp8 = CrossingPoint(
-        name="La table de pierre", challenge_id="1", position_x="0.2", position_y="0.5"
-    )
+    cp8 = CrossingPoint(name="La table de pierre", challenge_id="1", position_x="0.2", position_y="0.5")
     session.add(cp8)
     session.commit()
 
@@ -342,7 +362,6 @@ def fill(argv=sys.argv):
     c3 = Challenge(
         name="A travers le bois d'entre les mondes",
         description="Vous venez d'arriver en plein milieu d'une foret, des bruits inquiténat se font entendre vous devez en sortir. Ou est la sortie ?",
-        end_date="2020-03-18",
         map_url="/uploads/challenges/challenge_3.jpeg",
         level="2",
         scalling="4200",
@@ -351,28 +370,28 @@ def fill(argv=sys.argv):
     session.add(c3)
     session.commit()
 
-    q1 = Obstacle(label = 'Quelle est le vrai nom de la sorcière blanche ?',
-                  progress = 0.5,    
-                  question_type = 0,
-                  nb_points = 25,
-                  result = 'Jadis',
-                  segment_id = 1)
+    q1 = Obstacle(
+        label="Quelle est le vrai nom de la sorcière blanche ?",
+        progress=0.5,
+        question_type=0,
+        nb_points=25,
+        result="Jadis",
+        segment_id=1,
+    )
     session.add(q1)
     session.commit()
 
-    q2 = Obstacle(label = 'Qui est le père d\'Aslan ?',
-                  progress = 0.5,    
-                  question_type = 0,
-                  nb_points = 25,
-                  result = 'L\'empereur d\'au-delà des Mers',
-                  segment_id = 2)
+    q2 = Obstacle(
+        label="Qui est le père d'Aslan ?",
+        progress=0.5,
+        question_type=0,
+        nb_points=25,
+        result="L'empereur d'au-delà des Mers",
+        segment_id=2,
+    )
     session.add(q2)
     session.commit()
 
-    q3 = Obstacle(label = 'Télécharger une photo',
-                  progress = 0.5,    
-                  question_type = 1,
-                  nb_points = 30,
-                  segment_id = 3)
+    q3 = Obstacle(label="Télécharger une photo", progress=0.5, question_type=1, nb_points=30, segment_id=3)
     session.add(q3)
     session.commit()
