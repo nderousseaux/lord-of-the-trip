@@ -114,7 +114,7 @@ def fill(argv=sys.argv):
         last_name="Targaryen",
         pseudo="motherOfDragons",
         email="d.targaryen@gmail.com",
-        password=PasswordUtils().hash_password("khaldrogo"),
+        password=PasswordUtils().hash_password("khaldrog"),
         is_admin=True,
     )
 
@@ -394,4 +394,12 @@ def fill(argv=sys.argv):
 
     q3 = Obstacle(label="Télécharger une photo", progress=0.5, question_type=1, nb_points=30, segment_id=3)
     session.add(q3)
+    session.commit()
+
+    # update challenge1
+    session.query(Challenge).filter(Challenge.id == 1).update({Challenge.start_crossing_point_id:1, Challenge.end_crossing_point_id:9})
+    session.commit()
+
+    # update challenge2
+    session.query(Challenge).filter(Challenge.id == 2).update({Challenge.start_crossing_point_id:4, Challenge.end_crossing_point_id:5})
     session.commit()
