@@ -8,10 +8,14 @@ const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const history = useHistory();
 
-  const { isLoading, isError, error, data: challenges } = useQuery('challenges', () => apiChallenge.getAllChallenges());
+  const { isLoading, isError, error, data: challenges } = useQuery('challengesAdmin', () => apiChallenge.getAllChallengesForSuperAdmin()); //getAllChallengesForSuperAdmin
+
+  const duplicateChallenge = useMutation( (id) => apiChallenge.duplicateChallenge(id), {
+    onSuccess: () => { queryClient.invalidateQueries('challengesAdmin') },
+  });
 
   const deleteChallenge = useMutation( (id) => apiChallenge.deleteChallenge(id), {
-    onSuccess: () => { queryClient.invalidateQueries('challenges') },
+    onSuccess: () => { queryClient.invalidateQueries('challengesAdmin') },
   });
 
   return <div>
@@ -24,6 +28,7 @@ const AdminDashboard = () => {
           <li key={c.id}>
             {c.id} : {c.name} {' '}
             <Button onClick={() => history.push(`/editchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit</Button> {' '}
+            {/* <Button onClick={() => duplicateChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Duplicate</Button> {' '} */}
             <Button onClick={() => deleteChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Delete</Button>
           </li>
         ))}
@@ -43,9 +48,9 @@ const CreateChallengeForm = () => {
       setError(error);
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries('challenges')
+      queryClient.invalidateQueries('challengesAdmin');
       setName('');
-      history.push(`/editchallenge/${data.id}`)
+      history.push(`/editchallenge/${data.id}`);
     },
   });
 

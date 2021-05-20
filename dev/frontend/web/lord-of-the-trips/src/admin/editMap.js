@@ -510,11 +510,11 @@ const EditMap = () => {
   };
 
   return <>
-    <h3>Edit Map</h3>
+    <h3>Edit Map <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button> </h3>
     {errorDownload ? <h3>{errorDownload.message}</h3> :
       successDownload ?
         <div>
-          <Menu radioButtonValue={radioButtonValue} setRadioButtonValue={setRadioButtonValue}/>
+          <Menu radioButtonValue={radioButtonValue} setRadioButtonValue={setRadioButtonValue} />
           <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
             <Layer>
               <Image image={image} />
@@ -568,13 +568,12 @@ const EditMap = () => {
           </Stage>
         </div>
       : null}
-    <hr />
-    <h3>Back to challenge</h3>
-    <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button>
     { /* Render Modals */ }
     {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} challengeId={id} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
     {dataForModal && openSegmentModal ? <ModalSegment segmentObject={dataForModal} challengeId={id} openState={openSegmentModal} setOpenState={setOpenSegmentModal} /> : null}
     {dataForModal && openObstacleModal ? <ModalObstacle obstacleObject={dataForModal} challengeId={id} openState={openObstacleModal} setOpenState={setOpenObstacleModal} /> : null}
+    <hr />
+    <VerifyChallenge challenge={challenge} />
   </>
 };
 
@@ -596,5 +595,51 @@ const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
     <label> <input type="radio" name="action" value="11" checked={radioButtonValue === "11"} onChange={handleOptionChange} /> Edit with Modal (click on Crossing points / Segments / Obstacles) </label>
   </div>
 };
+
+const VerifyChallenge = ({ challenge }) => {
+  const [isPublished, setIsPublished] = useState(false);
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  const verifyChallenge = useMutation( (id) => apiChallenge.verifyChallenge(id), {
+    onError: (error) => {
+      setError(error);
+    },
+    onSuccess: (data) => {
+      setResponse(data);
+    },
+  });
+
+  const publishChallenge = useMutation( (id) => apiChallenge.publishChallenge(id), {
+    onSuccess: () => {
+      setIsPublished(true);
+      setResponse(null);
+      setError(null);
+    },
+  });
+
+  const handleClick = e => {
+    e.preventDefault();
+    setResponse(null);
+    setError(null);
+    verifyChallenge.mutate(challenge.id);
+  };
+
+  return <div>
+    {isPublished ? <div>Challenge published !</div> :
+      <Button onClick={handleClick} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Verify challenge</Button>
+    }
+    {response ?
+      response.status === 204 ?
+        <div>
+          Challenge valid <br />
+          <Button onClick={() => publishChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Publish challenge</Button>
+        </div>
+      : <div><pre>{JSON.stringify(response.data, null, 2) }</pre></div>
+    : null}
+    {error ? <div>{error.message}</div> : null}
+  </div>
+};
+
 
 export default EditMap;

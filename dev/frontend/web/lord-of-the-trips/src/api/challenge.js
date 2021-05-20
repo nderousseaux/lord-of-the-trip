@@ -2,8 +2,7 @@ import { checkStatus, urlPrefix, getToken } from './fetchUtils';
 
 const apiChallenge = {
 
-//getAllChallengesForSuperAdmin
-  getAllChallenges: () => {
+  getAllChallengesForSuperAdmin: () => {
     return fetch(`${urlPrefix}/challenges`, {
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
@@ -123,13 +122,37 @@ const apiChallenge = {
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus)
-    .then(res => res.json());
+    .then(response => {
+      if(response.status === 204) {
+        return {
+          status: response.status
+        }
+      }
+      else {
+        return response.json().then(data => ({
+          status: response.status,
+          data
+        }))
+      }
+    })
   },
 
   duplicateChallenge: (id) => {
     return fetch(`${urlPrefix}/challenges/${id}/duplicate`, {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus);
+  },
+
+  publishChallenge: (id) => {
+    return fetch(`${urlPrefix}/challenges/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ draft: false })
     })
     .then(checkStatus);
   },

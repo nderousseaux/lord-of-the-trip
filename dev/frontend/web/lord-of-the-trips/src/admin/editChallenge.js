@@ -170,8 +170,8 @@ const DownloadMap = ({ newUpload, setNewUpload }) => {
 
   return (
     <div>
-    <h3>Download the map of the challenge</h3>
-      <Button onClick={handleImageDownload} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Download Map</Button> {' '}
+    <h3>Display the map of the challenge</h3>
+      <Button onClick={handleImageDownload} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Display Map</Button> {' '}
       {successDownload ? <Button onClick={resetState} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Hide Map</Button> : null}
       {errorDownload ? <h3>{errorDownload.message}</h3> : null}
       {successDownload ? <p> <img src={window.URL.createObjectURL(file)} alt="map" /> </p> : null}
