@@ -101,6 +101,9 @@ class ChallengeSchema(Schema):
         if "end_date" in data:
             data["end_date"] = datetime.datetime.fromisoformat(data["end_date"]).isoformat()
 
+        if "scalling" in data and data["scalling"] < 0:
+            raise ValueError("This value ("+str(data["scalling"])+") is not valid for scalling.")
+
         return data
 
     """This method is used to verify the data in json if methods are PUT or PATCH """
