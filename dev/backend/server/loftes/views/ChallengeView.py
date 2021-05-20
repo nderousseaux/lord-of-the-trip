@@ -27,6 +27,7 @@ import os
 import shutil
 import socket
 import datetime
+import base64
 
 
 challenge = Service(name="challenge", path="/challenges", cors_policy=cors_policy)
@@ -2292,5 +2293,45 @@ def get_challenges_for_user(request):
 
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+challenge_image_mobile = Service(
+    name="challenge_image_mobile",
+    path="challenges/{id:\d+}/image-mobile",
+    cors_policy=cors_policy,
+)
+
+
+@challenge_image_mobile.get()
+def download_image(request):
+
+    service_informations = ServiceInformations()
+
+    challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+    if challenge != None:
+
+        if challenge.map_url != None:
+            image = str(get_project_root()) + challenge.map_url
+
+            if os.path.exists(image):
+                file_image = open(image, "rb")
+                image_read = file_image.read()
+                image_64_encode = base64.encodebytes(image_read)
+
+                response = service_informations.build_response(exception.HTTPOk, image_64_encode)
+
+            else:
+                response = service_informations.build_response(exception.HTTPNotFound)
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound)
+
+    else:
+        response = service_informations.build_response(
+            exception.HTTPNotFound, None, "Requested resource 'Challenge' is not found."
+        )
 
     return response
