@@ -2310,6 +2310,37 @@ def get_challenges_for_user(request):
 
     return response
 
+admin_challenges = Service(
+    name="user_created_challenges",
+    path="admin/challenges",
+    cors_policy=cors_policy,
+)
+
+
+@admin_challenges.get()
+def get_challenges_created_by_admin(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        challenges = DBSession.query(Challenge).filter(Challenge.admin_id == user.id).all()
+
+        if len(challenges) == 0:
+            return service_informations.build_response(exception.HTTPNotFound())
+
+        data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+
+        response = service_informations.build_response(exception.HTTPOk, data)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
 
 challenge_image_mobile = Service(
     name="challenge_image_mobile",
