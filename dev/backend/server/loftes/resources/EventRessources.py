@@ -128,7 +128,7 @@ def CheckEventTypeRule(event_type,user_id, challenge_id,segment_id):
 
     # Except for START, all the other event must follow another
     if (event_type != 1) :
-        if False:
+        if (lastevent == None) or (lastevent.event_date < lastsubscribed.subscribe_date):
             return "You must start the challenge first"
 
     # Event_type = 1 => START
