@@ -117,7 +117,7 @@ def CheckEventTypeRule(event_type,user_id, challenge_id,segment_id):
     lastevent = (
         DBSession.query(Event)
         .filter(Event.user_id == user_id)
-        .join(Segment,Event.segment_id==segment.id)
+        .join(Segment,Event.segment_id==Segment.id)
         .filter(Segment.challenge_id==challenge_id)
         .order_by(Event.id.desc())
         .first()
