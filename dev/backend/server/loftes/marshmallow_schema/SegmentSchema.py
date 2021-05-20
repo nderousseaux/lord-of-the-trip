@@ -1,7 +1,9 @@
 from loftes.models import Segment, Challenge, CrossingPoint, DBSession
-from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate, INCLUDE
+from marshmallow import Schema, fields, pre_dump, post_dump, post_load, pre_load, validate, INCLUDE
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
+
+from loftes.resources import SegmentRessources
 import json
 
 
@@ -34,6 +36,7 @@ class SegmentSchema(Schema):
     )
     end_crossing_point = fields.Nested(CrossingPointSchema)
     coordinates = fields.Method("deserialize_coordinates")
+    length = fields.Int(dump_only=True)
     challenge_id = fields.Int(load_only=True)
     challenge = fields.Nested("ChallengeSchema", exclude=("segments",))
     obstacles = fields.List(fields.Nested("ObstacleSchema"))
@@ -47,6 +50,12 @@ class SegmentSchema(Schema):
         coordinates = json.loads(obj.coordinates) if obj.coordinates != None else []
 
         return coordinates
+
+    @post_dump
+    def get_length(self,data, **kwargs):
+        data["length"] = SegmentRessources.calculate_segment_Length(data["id"])
+
+        return data
 
     @post_load
     def make_segment(self, data, **kwargs):
