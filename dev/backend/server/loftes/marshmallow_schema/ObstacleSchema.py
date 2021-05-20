@@ -35,6 +35,9 @@ class ObstacleSchema(Schema):
 
         if "progress" in data:
 
+            if data["progress"] < 0:
+                raise ValueError("This value ("+str(data["progress"])+") is not valid for progress.")
+
             obstacle = (
                 DBSession.query(Obstacle)
                 .filter(
