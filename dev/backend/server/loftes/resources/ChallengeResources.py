@@ -1,4 +1,6 @@
 from loftes.models import Challenge, UserChallenge, DBSession
+import datetime
+from sqlalchemy import or_
 
 
 class ChallengeResources:
@@ -41,5 +43,13 @@ class ChallengeResources:
 
         # select all from query not in subquery
         query = query.filter(~Challenge.id.in_(subquery))
+
+        return query.all()
+
+    def find_all_published_challenges(self):
+
+        now = datetime.datetime.now()
+
+        query = DBSession.query(Challenge).filter(Challenge.draft == False).filter(or_(Challenge.end_date == None, Challenge.end_date > now))
 
         return query.all()
