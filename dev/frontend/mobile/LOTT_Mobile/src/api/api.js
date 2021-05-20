@@ -3,7 +3,7 @@ const axios = require('axios');
 const api = axios.create()
 
 const config = {
-    headers: { Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwb3R0ZXJAaG90bWFpbC5jb20iLCJpYXQiOjE2MjE1Mjc2OTEsImV4cCI6MTYyMTUzMTI5MX0.NJkBYd0xkIqadAxIhdAPafMjgJ-E4rH8UyZwrk-oIwyO6DyrxG0WXD1ZiUYqwu5JruIbE6j6Qi8S8L6vGSqu_A` }
+    headers: { Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwb3R0ZXJAaG90bWFpbC5jb20iLCJpYXQiOjE2MjE1NDE3NTMsImV4cCI6MTYyMTU0NTM1M30.-v9VMDHRWk-q7RKkWE-tgKl6PdmV1DTGivsclE6OBCXPGvom-qLViyUyQmNpFKSz7zai2nelx0-aeNYC5A0xrg` }
 };
 
 const apiFonctions = {
@@ -20,9 +20,9 @@ const apiFonctions = {
 
     getChallenges(){
         
-        console.log("requete challenges : " + api.defaults.baseURL + "/challenges?draft=false");
+        console.log("requete challenges : " + api.defaults.baseURL + "/user/challenges?subscribed=true");
 
-        return axios.get(api.defaults.baseURL + '/challenges?draft=false', config)
+        return axios.get(api.defaults.baseURL + '/user/challenges?subscribed=true', config)
             .catch(function (error) {
                 if (error.response) {
                     // Request made and server responded
