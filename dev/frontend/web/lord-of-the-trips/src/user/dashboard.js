@@ -25,6 +25,7 @@ const UserDashboard = () => {
         {challenges.challenges.map(c => (
           <li key={c.id}>
             {c.id} : {c.name} {' '}
+            <Button onClick={() => history.push(`/viewchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>View</Button> {' '}
             <Button onClick={() => subscribeChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Subscibe</Button> {' '}
             <Button onClick={() => unsubscribeChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Unsubscribe</Button>
           </li>

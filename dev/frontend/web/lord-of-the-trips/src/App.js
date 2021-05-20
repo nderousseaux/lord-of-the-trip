@@ -6,6 +6,7 @@ import Login from './authentication/Login';
 import Signup from './authentication/Signup';
 import HomePage from './home/home'
 import UserDashboard from './user/dashboard'
+import ViewChallenge from './user/viewChallenge'
 import AdminDashboard from './admin/dashboard'
 import EditChallenge from './admin/editChallenge'
 import EditMap from './admin/editMap'
@@ -55,22 +56,26 @@ const Routes = () => {
         <Route path="/signup">
           <Signup />
         </Route>
-        {user ? <>
-          <Route path="/dashboard">
-            <UserDashboard />
-          </Route>
-        </> : null}
-        {user?.is_admin ? <>
-          <Route path="/admindashboard">
-            <AdminDashboard />
-          </Route>
-          <Route path="/editchallenge/:id">
-            <EditChallenge />
-          </Route>
-          <Route path="/editmap/:id">
-            <EditMap />
-          </Route>
-        </> : null}
+
+        {/* User routes */}
+        <Route path="/dashboard">
+          <UserDashboard />
+        </Route>
+        <Route path="/viewchallenge/:id">
+          <ViewChallenge />
+        </Route>
+
+        {/* Admin routes */}
+        <Route path="/admindashboard">
+          <AdminDashboard />
+        </Route>
+        <Route path="/editchallenge/:id">
+          <EditChallenge />
+        </Route>
+        <Route path="/editmap/:id">
+          <EditMap />
+        </Route>
+
         <Redirect to="/" />
       </Switch>
     </>
