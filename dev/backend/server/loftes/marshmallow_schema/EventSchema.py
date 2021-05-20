@@ -33,9 +33,6 @@ class EventSchema(Schema):
 
     @post_load
     def make_event(self, data, **kwargs):
-
-        data["event_date"] = datetime.datetime.now()
-
         return Event(**data)
 
     @pre_load
