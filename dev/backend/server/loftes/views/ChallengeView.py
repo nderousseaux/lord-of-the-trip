@@ -1713,46 +1713,55 @@ def verify(request):
 
                     try:
 
-                        # On vérifie qu'aucun crossing point n'est orphelin
-                        orphans = []
-
-                        crossingPoints = (
-                            DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
-                        )
-
-                        # On vérifie qu'il y ai des crossings points
-                        if len(crossingPoints) < 2:
-                            orphans = crossingPoints
-
-                            response = service_informations.build_response(
+                        if challenge.start_crossing_point_id is None:
+                          response = service_informations.build_response(
                                 exception.HTTPOk,
                                 {
-                                    "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                    "error": "They are no Start_challenge"
                                 },
                             )
-
                         else:
-                            for crossing in crossingPoints:
-                                if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
-                                    crossing.id != challenge.start_crossing_point_id
-                                    and len(crossing.segments_end) == 0
-                                ):
 
-                                    orphans.append(crossing)
+                          # On vérifie qu'aucun crossing point n'est orphelin
+                          orphans = []
 
-                                loops, deadend = checkChallenge(challenge)
+                          crossingPoints = (
+                              DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                          )
 
-                                if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
-                                    response = service_informations.build_response(
-                                        exception.HTTPOk,
-                                        {
-                                            "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
-                                            "deadend": CrossingPointSchema(many=True).dump(deadend),
-                                            "orphans": CrossingPointSchema(many=True).dump(orphans),
-                                        },
-                                    )
-                                else:
-                                    response = service_informations.build_response(exception.HTTPNoContent)
+                          # On vérifie qu'il y ai des crossings points
+                          if len(crossingPoints) < 2:
+                              orphans = crossingPoints
+
+                              response = service_informations.build_response(
+                                  exception.HTTPOk,
+                                  {
+                                      "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                  },
+                              )
+
+                          else:
+                              for crossing in crossingPoints:
+                                  if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
+                                      crossing.id != challenge.start_crossing_point_id
+                                      and len(crossing.segments_end) == 0
+                                  ):
+
+                                      orphans.append(crossing)
+
+                                  loops, deadend = checkChallenge(challenge)
+
+                                  if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
+                                      response = service_informations.build_response(
+                                          exception.HTTPOk,
+                                          {
+                                              "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
+                                              "deadend": CrossingPointSchema(many=True).dump(deadend),
+                                              "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                          },
+                                      )
+                                  else:
+                                      response = service_informations.build_response(exception.HTTPNoContent)
 
                     except Exception as e:
                         response = service_informations.build_response(exception.HTTPInternalServerError)
