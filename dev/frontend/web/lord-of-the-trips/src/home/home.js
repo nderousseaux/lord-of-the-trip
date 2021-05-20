@@ -1,9 +1,7 @@
-import { useHistory } from 'react-router-dom';
 import { useAuth } from '../authentication/auth';
 import challengePub from './challengePub.png';
 
 const HomePage = () => {
-  const history = useHistory();
   let { user } = useAuth();
 
   return <div>

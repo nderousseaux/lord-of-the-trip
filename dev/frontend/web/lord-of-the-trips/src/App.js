@@ -45,7 +45,7 @@ const Header = () => {
 };
 
 const Routes = () => {
-  let { user } = useAuth();
+  //let { user } = useAuth();
   return (
     <>
       <Switch>

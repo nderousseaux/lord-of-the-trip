@@ -26,6 +26,22 @@ const apiUserChallenge = {
     .then(res => res.json());
   },
 
+  subscribeChallenge: (challengeId) => {
+    return fetch(`${urlPrefix}/challenges/${challengeId}/subscribe`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus);
+  },
+
+  unsubscribeChallenge: (challengeId) => {
+    return fetch(`${urlPrefix}/challenges/${challengeId}/unsubscribe`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus);
+  },
+
 };
 
 export default apiUserChallenge;

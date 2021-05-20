@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useParams, useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
+import apiUserChallenge from '../api/userChallenge';
 import Button from '@material-ui/core/Button';
 import ViewChallengeMap from './viewChallengeMap';
 
@@ -54,7 +55,7 @@ const ViewChallengeInfo = ({ challenge }) => {
   const queryClient = useQueryClient();
   const history = useHistory();
 
-  const unsubscribeChallenge = useMutation( (id) => apiChallenge.unsubscribeChallenge(id), {
+  const unsubscribeChallenge = useMutation( (id) => apiUserChallenge.unsubscribeChallenge(id), {
     onSuccess: () => {
       queryClient.invalidateQueries('subscribedChallenges');
       queryClient.invalidateQueries('notSubscribedChallenges');

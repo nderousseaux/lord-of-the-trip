@@ -1,6 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
-import apiChallenge from '../api/challenge';
 import apiUserChallenge from '../api/userChallenge';
 import Button from '@material-ui/core/Button';
 
@@ -17,7 +16,7 @@ const SubscribedChallenges = () => {
   const history = useHistory();
   const { isLoading, isError, error, data: subscribedChallenges } = useQuery('subscribedChallenges', () => apiUserChallenge.getSubscribedChallenges());
 
-  const unsubscribeChallenge = useMutation( (id) => apiChallenge.unsubscribeChallenge(id), {
+  const unsubscribeChallenge = useMutation( (id) => apiUserChallenge.unsubscribeChallenge(id), {
     onSuccess: () => {
       queryClient.invalidateQueries('subscribedChallenges');
       queryClient.invalidateQueries('notSubscribedChallenges');
@@ -25,7 +24,7 @@ const SubscribedChallenges = () => {
   });
 
   return <div>
-    <h3>Your challenges list</h3>
+    <h3>Your challenges</h3>
     {isLoading ? 'Loading...' : isError ? "You are not subscribed to any challenge :(" :
       <ul>
         {subscribedChallenges.challenges.map(c => (
@@ -45,7 +44,7 @@ const NotSubscribedChallenges = () => {
   const history = useHistory();
   const { isLoading, isError, error, data: notSubscribedChallenges } = useQuery('notSubscribedChallenges', () => apiUserChallenge.getNotSubscribedChallenges());
 
-  const subscribeChallenge = useMutation( (id) => apiChallenge.subscribeChallenge(id), {
+  const subscribeChallenge = useMutation( (id) => apiUserChallenge.subscribeChallenge(id), {
     onSuccess: () => {
       queryClient.invalidateQueries('subscribedChallenges');
       queryClient.invalidateQueries('notSubscribedChallenges');
@@ -53,7 +52,7 @@ const NotSubscribedChallenges = () => {
   });
 
   return <div>
-    <h3>Challenge you can subscribe to</h3>
+    <h3>Challenges you can subscribe to</h3>
     {isLoading ? 'Loading...' : isError ? "No more challenge where you can subscribe :(" :
       <ul>
         {notSubscribedChallenges.challenges.map(c => (

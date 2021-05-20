@@ -17,8 +17,8 @@ const AdminDashboard = () => {
   return <div>
     <h2>Admin Dashboard</h2>
     <CreateChallengeForm />
-    <h3>Challenge List</h3>
-    {isLoading ? 'Loading...' : isError ? error.message :
+    <h3>Your challenges that you created</h3>
+    {isLoading ? 'Loading...' : isError ? "You don't own any challenge, create one" :
       <ul>
         {challenges.challenges.map(c => (
           <li key={c.id}>
