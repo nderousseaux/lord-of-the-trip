@@ -2286,6 +2286,7 @@ def get_challenges_for_user(request):
 
     user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
+    # check if user is authenticated
     if user != None:
 
         challenges = []
@@ -2322,29 +2323,48 @@ def download_image(request):
 
     service_informations = ServiceInformations()
 
-    challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-    if challenge != None:
+    # check if user is authenticated
+    if user != None:
 
-        if challenge.map_url != None:
-            image = str(get_project_root()) + challenge.map_url
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
 
-            if os.path.exists(image):
-                file_image = open(image, "rb")
-                image_read = file_image.read()
-                image_64_encode = base64.encodebytes(image_read)
+        # check if challenge is found
+        if challenge != None:
 
-                response = service_informations.build_response(exception.HTTPOk, image_64_encode)
+            # check if user is challenge's admin or challenge is published
+            if user.id == challenge.admin_id or challenge.draft == False:
+
+                if challenge.map_url != None:
+                    image = str(get_project_root()) + challenge.map_url
+
+                    if os.path.exists(image):
+                        file_image = open(image, "rb")
+                        image_read = file_image.read()
+                        image_64_encode = base64.encodebytes(image_read)
+
+                        response = service_informations.build_response(exception.HTTPOk, image_64_encode)
+
+                    else:
+                        response = service_informations.build_response(exception.HTTPNotFound)
+
+                else:
+                    response = service_informations.build_response(exception.HTTPNotFound)
 
             else:
-                response = service_informations.build_response(exception.HTTPNotFound)
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You do not have permission to view this resource using the credentials that you supplied.",
+                )
 
         else:
-            response = service_informations.build_response(exception.HTTPNotFound)
+            response = service_informations.build_response(
+                exception.HTTPNotFound, None, "Requested resource 'Challenge' is not found."
+            )
 
     else:
-        response = service_informations.build_response(
-            exception.HTTPNotFound, None, "Requested resource 'Challenge' is not found."
-        )
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
