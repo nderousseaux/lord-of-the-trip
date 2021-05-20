@@ -2256,3 +2256,41 @@ def duplicate(request):
             DBSession.flush()
 
     return response
+
+
+user_challenges = Service(
+    name="user_challenges",
+    path="user/challenges",
+    cors_policy=cors_policy,
+)
+
+
+@user_challenges.get()
+def get_challenges_for_user(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    if user != None:
+
+        challenges = []
+        if request.query_string != "":
+            splitter = request.query_string.split("=")
+            if len(splitter) == 2 and splitter[0] == "subscribed":
+                if splitter[1] == "true":
+                    challenges = ChallengeResources().find_all_subscribed_challenges_by_user(user.id)
+                elif splitter[1] == "false":
+                    challenges = ChallengeResources().find_all_unsubscribed_challenges_by_user(user.id)
+
+        if len(challenges) == 0:
+            return service_informations.build_response(exception.HTTPNotFound())
+
+        data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+
+        response = service_informations.build_response(exception.HTTPOk, data)
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
