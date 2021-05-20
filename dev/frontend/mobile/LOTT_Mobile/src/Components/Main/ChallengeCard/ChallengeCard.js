@@ -12,6 +12,15 @@ import api from '../../../api/api';
 export default function ChallengeCard(props) {
 
     const [ challenge, setChallenge ] = useState(props.route.params.challenge);
+    const [ distance, setDistance ] = useState("");
+    const [ lastEvent, setLastEvent ] = useState("start");
+    const [ obstacle, setObstacle ] = useState(null);
+
+    useEffect(() => {
+        api.getDistance(challenge["id"])
+        .then((response) => setDistance(response.data["distance"]))
+        .catch((error) => console.error(error))
+    }, []);
 
     useEffect(() => {
         api.getChallenge(challenge["id"])
@@ -19,12 +28,27 @@ export default function ChallengeCard(props) {
         .catch((error) => console.error(error))
     }, []);
 
+    useEffect(() => {
+        api.lastEvent(challenge["id"])
+        .then((response) => {
+            setLastEvent(response.data)
+            return (response.data["segment_id"])})
+        .then((segmentId) => {
+            api.getObstacle(segmentId)
+            .then((response) => response.data)
+            .then((json) => {
+                setObstacle(json["obstacles"][0])
+            })
+        })
+        .catch((error) => {
+            console.error(error)})
+    }, []);
+
     return(
         <View style={styles.cardContainer}>
             {challenge === null
                 ? <ActivityIndicator size="large" color="#0000ff" />
                 : <>
-                    {console.log(challenge)}
                     <View
                         style={styles.InformationsContainer}
                     >
@@ -41,7 +65,10 @@ export default function ChallengeCard(props) {
                             <Card.Content>
                                 <Paragraph>Niveau : {challenge.level}</Paragraph>
                                 <Paragraph>Date de fin : {new Date(challenge.end_date).toLocaleDateString()}</Paragraph>
-                                <Paragraph>Avancement fait : {challenge.event_sum} mètres</Paragraph>
+                                { distance != null 
+                                    ? <Paragraph>Avancement fait : {distance} mètres</Paragraph>
+                                    : <></>
+                                }
                             </Card.Content>
                         </Card>
                     </View>
@@ -62,13 +89,30 @@ export default function ChallengeCard(props) {
                     </View>
                     
                     <Map challenge={challenge}></Map>
-
-                    <Button 
-                        title="Let's go !"
-                        style={styles.Button}
-                        onPress={() => props.navigation.navigate("Transport", {
-                            challenge: challenge})}
-                    />
+                    { lastEvent != null
+                        ? lastEvent == "start"
+                            ? <Button 
+                                title="Démarrer le challenge"
+                                style={styles.Button}
+                                onPress={() => (console.log("démarrer le challenge"))}
+                            /> 
+                            : lastEvent["event_type_id"] === 4 || lastEvent["event_type_id"] === 7
+                                ? <Button 
+                                    title="Répondre à l'obstacle"
+                                    style={styles.Button}
+                                    onPress={() => props.navigation.navigate("Obstacle", {
+                                        obstacle: obstacle})}
+                                /> 
+                                : <Button 
+                                    title="Let's go !"
+                                    style={styles.Button}
+                                    onPress={() => props.navigation.navigate("Transport", {
+                                        challenge: challenge})}
+                                />
+                        :<></>
+                    }
+                    
+                    
                 </>
             }
         </View>
@@ -115,8 +159,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     PrimaryCard: {
-        marginTop: 10,
-        paddingVertical: 10 
+        margin:10
     },
     Button: {
         marginBottom: 20
