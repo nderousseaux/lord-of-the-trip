@@ -3,7 +3,7 @@ const axios = require('axios');
 const api = axios.create()
 
 const config = {
-    headers: { Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwb3R0ZXJAaG90bWFpbC5jb20iLCJpYXQiOjE2MjE1NDE3NTMsImV4cCI6MTYyMTU0NTM1M30.-v9VMDHRWk-q7RKkWE-tgKl6PdmV1DTGivsclE6OBCXPGvom-qLViyUyQmNpFKSz7zai2nelx0-aeNYC5A0xrg` }
+    headers: { Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwb3R0ZXJAaG90bWFpbC5jb20iLCJpYXQiOjE2MjE1NTM5MzQsImV4cCI6MTYyMTU1NzUzNH0.WlKBa3Zi7Yje8Xu7aOIOMsRVrRF8Ma6H-77VXXyCneHZvNAPwOpjeymN5JBY1TVtNwTSHSrzTvxWChqEryTYIw` }
 };
 
 const apiFonctions = {
@@ -214,6 +214,25 @@ const apiFonctions = {
     },
     getSegment(idChallenge, idSegment){
         return axios.get(api.defaults.baseURL + '/challenges/' + idChallenge + "/segments/" + idSegment, config)
+        .catch(function (error) {
+            if (error.response) {
+                // Request made and server responded
+                console.log(error.response.data);
+                console.log(error.response.status);
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log('Error', error.message);
+            }
+
+        });
+
+    },
+    getChoix(idChallenge, idCrossingPoint){
+        return axios.get(api.defaults.baseURL + '/challenges/' + idChallenge + "/crossing-points/" + idCrossingPoint + "/find-segments", config)
         .catch(function (error) {
             if (error.response) {
                 // Request made and server responded

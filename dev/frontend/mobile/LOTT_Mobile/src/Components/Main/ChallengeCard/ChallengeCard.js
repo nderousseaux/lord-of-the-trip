@@ -44,6 +44,21 @@ export default function ChallengeCard(props) {
             console.error(error)})
     }, []);
 
+    let startChallenge = () => {
+
+        api.getChoix(challenge.id, challenge.start_crossing_point.id)
+        .then((response) => {
+            props.navigation.navigate("Choix", {segments: response.data["segments"], start:true})
+        })
+    }
+    let getChoix = () => {
+
+        api.getChoix(challenge.id, challenge.start_crossing_point.id)
+        .then((response) => {
+            props.navigation.navigate("Choix", {segments: response.data["segments"], start:false})
+        })
+    } 
+
     return(
         <View style={styles.cardContainer}>
             {challenge === null
@@ -94,7 +109,7 @@ export default function ChallengeCard(props) {
                             ? <Button 
                                 title="Démarrer le challenge"
                                 style={styles.Button}
-                                onPress={() => (console.log("démarrer le challenge"))}
+                                onPress={() => startChallenge()}
                             /> 
                             : lastEvent["event_type_id"] === 4 || lastEvent["event_type_id"] === 7
                                 ? <Button 
@@ -103,12 +118,28 @@ export default function ChallengeCard(props) {
                                     onPress={() => props.navigation.navigate("Obstacle", {
                                         obstacle: obstacle})}
                                 /> 
-                                : <Button 
-                                    title="Let's go !"
-                                    style={styles.Button}
-                                    onPress={() => props.navigation.navigate("Transport", {
-                                        challenge: challenge})}
-                                />
+                                : lastEvent["event_type_id"] === 2
+                                    ?
+                                    <Card style={styles.PrimaryCard}>
+                                        <Card.Title
+                                            title="Notes"
+                                        />
+                                        <Card.Content>
+                                            <Text>Vous avez déjà fini le challenge</Text>
+                                        </Card.Content>
+                                    </Card>
+                                    : lastEvent["event_type_id"] === 8
+                                        ? <Button 
+                                        title="Choisir la suite"
+                                        style={styles.Button}
+                                        onPress={() => getChoix()}
+                                        />
+                                        : <Button 
+                                            title="Let's go !"
+                                            style={styles.Button}
+                                            onPress={() => props.navigation.navigate("Transport", {
+                                                challenge: challenge})}
+                                        />
                         :<></>
                     }
                     

@@ -24,6 +24,7 @@ class Recording extends React.Component {
         uniteDuree: "minute",
         intervalTemps: null,
         intervalGps: null,
+        challenge: this.props.route.params.challenge
     }
 
     componentDidMount() {
@@ -143,7 +144,92 @@ class Recording extends React.Component {
                     obstacle: this.state.obstacle});
             }
         }
+
+        console.log("Distance avant fin du segment", this.state.segment["length"] - (this.state.distanceSegment + this.state.distance))
+        if (this.state.segment["length"] - (this.state.distanceSegment + this.state.distance) <= 0){
+            if(this.state.segment["end_crossing_point"]["id"] != this.state.challenge["end_crossing_point"]["id"]){
+                this.stopChoix()
+            }
+            else{
+                this.stopFin()
+            }
+        }
+
       }
+
+    stopChoix = () => {
+        clearInterval(this.state.intervalTemps);
+
+        if ( this.props.route.params.transport !=  "marche" ){
+            clearInterval(this.state.intervalGps);
+        }
+
+        let dateFin = new Date()
+
+        let duree = dateFin.getTime() - this.state.dateDebut.getTime()
+        
+        apiFonctions.addEvent(    
+            this.props.route.params.challenge["id"], 
+            this.state.segment["id"],
+            this.props.route.params.transport, 
+            this.state.dateDebut, 
+            this.state.distance, 
+            duree,
+            3).then(() => {
+                apiFonctions.addEvent(    
+                    this.props.route.params.challenge["id"], 
+                    this.state.segment["id"],
+                    this.props.route.params.transport, 
+                    this.state.dateDebut, 
+                    0,
+                    duree,
+                    8)
+            })
+            .then(() => {
+                apiFonctions.getChoix(this.state.challenge["id"], this.state.segment["end_crossing_point"]["id"])
+                .then((response) => {
+                    this.props.navigation.navigate("Choix", {segments: response.data["segments"], start:false})
+                })
+            })
+                
+    
+        this.createTwoButtonAlert(8);
+    }
+    stopFin = () => {
+        clearInterval(this.state.intervalTemps);
+
+        if ( this.props.route.params.transport !=  "marche" ){
+            clearInterval(this.state.intervalGps);
+        }
+
+        let dateFin = new Date()
+
+        let duree = dateFin.getTime() - this.state.dateDebut.getTime()
+        
+        apiFonctions.addEvent(    
+            this.props.route.params.challenge["id"], 
+            this.state.segment["id"],
+            this.props.route.params.transport, 
+            this.state.dateDebut, 
+            this.state.distance, 
+            duree,
+            3).then(() => {
+                apiFonctions.addEvent(    
+                    this.props.route.params.challenge["id"], 
+                    this.state.segment["id"],
+                    this.props.route.params.transport, 
+                    this.state.dateDebut, 
+                    0,
+                    duree,
+                    2)
+            })
+            .then(() => {
+                this.props.navigation.navigate("Challenges")
+            })
+                
+    
+        this.createTwoButtonAlert(2);
+    }
 
     stopObstacle = () => {
         clearInterval(this.state.intervalTemps);
@@ -213,6 +299,7 @@ class Recording extends React.Component {
             break;
         case 8:
             msg = "Vous avez courru " + Math.round(this.state.distance) + "m ! Pour continuer votre progression, vous devez choisir votre chemin."
+            break;
         case 2:
             msg = "Vous avez courru " + Math.round(this.state.distance) + "m ! Vous avez fini le challenge !"
             break;
@@ -283,7 +370,7 @@ class Recording extends React.Component {
                                 }}
                                 onPress={() => {
                                     this.stop(3);
-                                    this.props.navigation.navigate("Infos", {
+                                    this.props.navigation.navigate("Challenges", {
                                         challenge: this.props.route.params.challenge})}}
                                 buttonStyle={styles.stop}
                             />

@@ -6,6 +6,7 @@ import ChallengeList from './ChallengesList';
 import Transport from './Transport'
 import Recording from './Recording'
 import Obstacle from './Obstacle'
+import Choix from './Choix'
 
 export default function SelectChallenge(props) {
 
@@ -18,6 +19,7 @@ export default function SelectChallenge(props) {
             <listStack.Screen name="Transport" component={Transport} />
             <listStack.Screen name="Recording" component={Recording} options={{ headerLeft:null}} />
             <listStack.Screen name="Obstacle" component={Obstacle} options={{ headerLeft:null}}/>
+            <listStack.Screen name="Choix" component={Choix} options={{ headerLeft:null}}/>
         </listStack.Navigator>
     )
 }

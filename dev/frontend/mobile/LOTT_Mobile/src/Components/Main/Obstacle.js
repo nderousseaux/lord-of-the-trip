@@ -4,7 +4,6 @@ import { Card, Paragraph, Title } from 'react-native-paper';
 import {  useState, useEffect } from 'react';
 import { Text, Button} from 'react-native-elements';
 import api from '../../api/api';
-import { HeaderBackButton } from '@react-navigation/stack';
 
 export default function Obstacle(props) {
     
@@ -74,7 +73,7 @@ export default function Obstacle(props) {
                                 style={styles.Button}
                                 title="Arrêter la course"
                                 type=""
-                                onPress={() => props.navigation.navigate("Infos", {
+                                onPress={() => props.navigation.navigate("Challenges", {
                                     challenge: obstacle["segment"]["challenge"]})}
                                 >
                             </Button>
