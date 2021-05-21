@@ -50,7 +50,7 @@ class ObstacleSchema(Schema):
             if obstacle != None:
                 raise ValueError("There is already one obstacle at this position for this segment.")
 
-            return data
+        return data
 
     def check_json(self, data, **kwargs):
 
