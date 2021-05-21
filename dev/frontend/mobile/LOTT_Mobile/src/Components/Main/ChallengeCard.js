@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import Svg, { Circle, Image as SvgImage, Polyline } from 'react-native-svg';
 import { Card, Paragraph, Title } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
-import Map from './ChallengeMap.js'
-import api from '../../../api/api';
+import ChallengeMap from './ChallengeMap.js'
+import api from '../../api/api';
 
 
 export default function ChallengeCard(props) {
@@ -24,7 +24,6 @@ export default function ChallengeCard(props) {
             {challenge === null
                 ? <ActivityIndicator size="large" color="#0000ff" />
                 : <>
-                    {console.log(challenge)}
                     <View
                         style={styles.InformationsContainer}
                     >
@@ -60,8 +59,8 @@ export default function ChallengeCard(props) {
                             </Card.Content>
                         </Card>
                     </View>
-                    
-                    <Map challenge={challenge}></Map>
+
+                    <ChallengeMap challenge={challenge}></ChallengeMap>
 
                     <Button 
                         title="Let's go !"
@@ -82,41 +81,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#e7e7e7',
     },
     InformationsContainer: {
-        flex: 4,
         overflow: 'hidden'
     },
     DescriptionContainer: {
-        flex: 3,
-        overflow: 'hidden',
-        justifyContent: 'flex-end'
+        overflow: 'scroll',
     },
     ScrollContainer: {
         height: '75%',
-    },
-    zoomContainer: {
-        flex: 3,
-        overflow: 'hidden',
-        margin: 10,
-    },
-    mapBackgroundContainer: {
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    zoomableView: {
-      backgroundColor: 'transparent',
-    },
-    map: {
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'transparent'
     },
     TitleCard: {
         marginVertical: 10,
         marginHorizontal: 10
     },
     PrimaryCard: {
-        marginTop: 10,
-        paddingVertical: 10 
+        paddingVertical: 10,
+        marginBottom: 10,
     },
     Button: {
         marginBottom: 20

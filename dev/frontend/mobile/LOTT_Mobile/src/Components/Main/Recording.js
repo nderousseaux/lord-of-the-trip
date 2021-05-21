@@ -6,7 +6,7 @@ import { distanceTotale, vitesseMoyenne } from '../../utils';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import apiFonctions from '../../api/api';
-import ChallengeMap from './ChallengeCard/ChallengeMap'
+import ChallengeMap from './ChallengeMap'
 
 class Recording extends React.Component {
     state = {
@@ -264,6 +264,7 @@ const styles = StyleSheet.create({
     },
     map:{
         flex:7,
+        justifyContent: 'center'
     },
     foot:{
         flex:1,
