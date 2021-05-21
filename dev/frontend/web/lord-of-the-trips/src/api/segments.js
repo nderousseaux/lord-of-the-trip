@@ -1,15 +1,19 @@
-import { checkStatus, urlPrefix } from './fetchUtils';
+import { checkStatus, urlPrefix, getToken } from './fetchUtils';
 
 const apiSegments = {
 
   getAllSegments: (challengeId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments`)
+    return fetch(`${urlPrefix}/challenges/${challengeId}/segments`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
     .then(checkStatus)
     .then(res => res.json());
   },
 
   getSegmentById: (challengeId, segmentId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`)
+    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
     .then(checkStatus)
     .then(res => res.json());
   },
@@ -17,7 +21,10 @@ const apiSegments = {
   createSegment: (challengeId, segment) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/segments`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(segment)
     })
     .then(checkStatus)
@@ -27,7 +34,10 @@ const apiSegments = {
   updateSegment: (challengeId, segment, segmentId) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(segment)
     })
     .then(checkStatus);
@@ -36,7 +46,10 @@ const apiSegments = {
   modifySegment: (challengeId, segment, segmentId) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(segment)
     })
     .then(checkStatus);
@@ -45,6 +58,7 @@ const apiSegments = {
   deleteSegment: (challengeId, segmentId) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
       method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus);
   },
