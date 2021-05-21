@@ -8,7 +8,7 @@ const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const history = useHistory();
 
-  const { isLoading, isError, error, data: challenges } = useQuery('challengesAdmin', () => apiChallenge.getAllChallengesForSuperAdmin()); //getAllChallengesForSuperAdmin
+  const { isLoading, isError, error, data: challenges } = useQuery('challengesAdmin', () => apiChallenge.getChallengesFromAdmin()); //getAllChallengesForSuperAdmin
 
   const duplicateChallenge = useMutation( (id) => apiChallenge.duplicateChallenge(id), {
     onSuccess: () => { queryClient.invalidateQueries('challengesAdmin') },
