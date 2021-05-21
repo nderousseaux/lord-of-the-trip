@@ -6,7 +6,7 @@ import Svg, { Circle, Image as SvgImage, Polyline } from 'react-native-svg';
 import { Card, Paragraph, Title } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import ChallengeMap from './ChallengeMap.js'
-import api from '../../api/api';
+import api from '../../../api/api';
 
 
 export default function ChallengeCard(props) {

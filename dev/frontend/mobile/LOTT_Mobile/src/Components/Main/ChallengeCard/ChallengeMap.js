@@ -3,8 +3,8 @@ import { View, StyleSheet, Image, Modal, Text, ActivityIndicator } from 'react-n
 import { ReactNativeZoomableView } from '@dudigital/react-native-zoomable-view';
 import { useState, useEffect } from 'react';
 import Svg, { Circle, Defs, Image as SvgImage, Marker, Path, Polygon, Polyline } from 'react-native-svg';
-import api from '../../api/api.js';
-import ChallengeElementModal from './ChallengeElementModal';
+import api from '../../../api/api.js';
+import ChallengeElementModal from '../ChallengeElementModal';
 
 export default function ChallengeMap(props) {
 
