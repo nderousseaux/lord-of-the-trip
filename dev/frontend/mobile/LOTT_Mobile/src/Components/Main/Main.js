@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import ChallengeCard from './ChallengeCard/ChallengeCard';
+import ChallengeCard from './ChallengeCard';
 import ChallengeList from './ChallengesList';
 import Transport from './Transport'
 import Recording from './Recording'

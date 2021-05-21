@@ -15,6 +15,9 @@ export default function ChallengeList(props) {
         .then((json) => setChallenges(json.challenges))
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
+
+        /*setChallenges(api.getChallengesNoRequest().challenges);
+        setLoading(false);*/
     }, []);
 
     return (

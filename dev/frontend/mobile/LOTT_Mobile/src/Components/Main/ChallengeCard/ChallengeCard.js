@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Svg, { Circle, Image as SvgImage, Polyline } from 'react-native-svg';
 import { Card, Paragraph, Title } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
-import Map from './ChallengeMap.js'
+import ChallengeMap from './ChallengeMap.js'
 import api from '../../../api/api';
 
 
@@ -103,7 +103,7 @@ export default function ChallengeCard(props) {
                         </Card>
                     </View>
                     
-                    <Map challenge={challenge}></Map>
+                    <ChallengeMap challenge={challenge}></ChallengeMap>
                     { lastEvent != null
                         ? lastEvent == "start"
                             ? <Button 
@@ -143,7 +143,6 @@ export default function ChallengeCard(props) {
                         :<></>
                     }
                     
-                    
                 </>
             }
         </View>
@@ -157,33 +156,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#e7e7e7',
     },
     InformationsContainer: {
-        flex: 4,
         overflow: 'hidden'
     },
     DescriptionContainer: {
-        flex: 3,
-        overflow: 'hidden',
-        justifyContent: 'flex-end'
+        overflow: 'scroll',
     },
     ScrollContainer: {
         height: '75%',
-    },
-    zoomContainer: {
-        flex: 3,
-        overflow: 'hidden',
-        margin: 10,
-    },
-    mapBackgroundContainer: {
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    zoomableView: {
-      backgroundColor: 'transparent',
-    },
-    map: {
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'transparent'
     },
     TitleCard: {
         marginVertical: 10,
@@ -191,6 +170,7 @@ const styles = StyleSheet.create({
     },
     PrimaryCard: {
         margin:10
+        paddingVertical: 10,
     },
     Button: {
         marginBottom: 20

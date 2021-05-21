@@ -1,10 +1,8 @@
+import * as SecureStore from 'expo-secure-store';
+
 const axios = require('axios');
 
 const api = axios.create()
-
-const config = {
-    headers: { Authorization: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwb3R0ZXJAaG90bWFpbC5jb20iLCJpYXQiOjE2MjE1NTM5MzQsImV4cCI6MTYyMTU1NzUzNH0.WlKBa3Zi7Yje8Xu7aOIOMsRVrRF8Ma6H-77VXXyCneHZvNAPwOpjeymN5JBY1TVtNwTSHSrzTvxWChqEryTYIw` }
-};
 
 const apiFonctions = {
 
@@ -18,11 +16,17 @@ const apiFonctions = {
         return api
     },
 
-    getChallenges(){
+    async getChallenges(){
         
+        const token = await SecureStore.getItemAsync('secure-token');
+
         console.log("requete challenges : " + api.defaults.baseURL + "/user/challenges?subscribed=true");
 
-        return axios.get(api.defaults.baseURL + '/user/challenges?subscribed=true', config)
+        return axios.get(api.defaults.baseURL + '/user/challenges?subscribed=true', {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+                }
+            })
             .catch(function (error) {
                 if (error.response) {
                     // Request made and server responded
@@ -40,9 +44,15 @@ const apiFonctions = {
             });
     },
 
-    getDistance(idChallenge){
+    async getDistance(idChallenge){
         
-        return axios.get(api.defaults.baseURL + '/challenges/' + idChallenge + '/events/distance', config)
+        const token = await SecureStore.getItemAsync('secure-token');
+
+        return axios.get(api.defaults.baseURL + '/challenges/' + idChallenge + '/events/distance',  {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+                }
+            })
             .catch(function (error) {
                 if (error.response) {
                     // Request made and server responded
@@ -60,11 +70,17 @@ const apiFonctions = {
             });
     },
 
-    getChallenge(id){
+    async getChallenge(id){
         
+        const token = await SecureStore.getItemAsync('secure-token');
+
         console.log("requete challenges : " + api.defaults.baseURL + "/challenges/" + id);
 
-        return axios.get(api.defaults.baseURL + '/challenges/' + id, config)
+        return axios.get(api.defaults.baseURL + '/challenges/' + id, {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
             .catch(function (error) {
                 if (error.response) {
                     // Request made and server responded
@@ -82,7 +98,38 @@ const apiFonctions = {
             });
     },
 
-    addEvent(idChallenge, idSegment, moveType, dateDepart, distance, duree, idEvent){
+    async getChallengeMap(id) {
+        
+        const token = await SecureStore.getItemAsync('secure-token');
+
+        console.log("requete challenges : " + api.defaults.baseURL + "/challenges/" + id + "/image-mobile");
+
+        return axios.get(api.defaults.baseURL + "/challenges/" + id + "/image-mobile", {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
+            .catch(function (error) {
+                if (error.response) {
+                    // Request made and server responded
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                } else if (error.request) {
+                    // The request was made but no response was received
+                    console.log(error.request);
+                } else {
+                    // Something happened in setting up the request that triggered an Error
+                    console.log('Error', error.message);
+                }
+
+            });
+    },
+
+    async addEvent(idChallenge, moveType, dateDepart, distance, duree){
+        
+        const token = await SecureStore.getItemAsync('secure-token');
+        
         let codeMove;
         switch(moveType){
             case 'marche':
@@ -103,7 +150,12 @@ const apiFonctions = {
             "distance":distance,
             "duration": duree,
             "event_type_id" : idEvent
-        }, config)
+        }, 
+        {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
         .catch(function (error) {
             if (error.response) {
                 // Request made and server responded
@@ -121,11 +173,17 @@ const apiFonctions = {
         });
     },
 
-    lastEvent(id){
+    async lastEvent(id){
+
+        const token = await SecureStore.getItemAsync('secure-token');
         
         console.log("requete challenges : " + api.defaults.baseURL + "/challenges/" + id + '/events/last');
 
-        return axios.get(api.defaults.baseURL + '/challenges/' + id + '/events/last', config)
+        return axios.get(api.defaults.baseURL + '/challenges/' + id + '/events/last', {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
             .catch(function (error) {
                 if (error.response) {
                     // Request made and server responded
@@ -143,11 +201,17 @@ const apiFonctions = {
             });
     },
 
-    getObstacle(segmentId){
+    async getObstacle(segmentId){
+
+        const token = await SecureStore.getItemAsync('secure-token');
         
         console.log("requete challenges : " + api.defaults.baseURL + "/segments/" +  segmentId + "/obstacles");
 
-        return axios.get(api.defaults.baseURL + '/segments/' + segmentId + "/obstacles", config)
+        return axios.get(api.defaults.baseURL + '/segments/' + segmentId + "/obstacles",  {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
             .catch(function (error) {
                 if (error.response) {
                     // Request made and server responded
@@ -165,7 +229,9 @@ const apiFonctions = {
             });
     },
 
-    sendResponse(idChallenge, idSegment, idObstacle, reponse){
+    async sendResponse(idChallenge, idSegment, idObstacle, reponse){
+
+        const token = await SecureStore.getItemAsync('secure-token');
         
         console.log("requete event : " + api.defaults.baseURL + "/challenges/" + idChallenge + "/segments/" + idSegment + "/events/checkresponse");
 
@@ -175,7 +241,11 @@ const apiFonctions = {
             event_type_id: 5,
             obstacle_id: idObstacle,
             response: reponse 
-        }, config)
+        }, {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
         .catch(function (error) {
             if (error.response) {
                 // Request made and server responded
@@ -193,8 +263,15 @@ const apiFonctions = {
         });
     },
 
-    distanceSegment(idSegment){
-        return axios.get(api.defaults.baseURL + '/segments/' + idSegment + "/events/distance", config)
+    async distanceSegment(idSegment){
+
+        const token = await SecureStore.getItemAsync('secure-token');
+        
+        return axios.get(api.defaults.baseURL + '/segments/' + idSegment + "/events/distance", {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
         .catch(function (error) {
             if (error.response) {
                 // Request made and server responded
@@ -212,8 +289,15 @@ const apiFonctions = {
         });
 
     },
-    getSegment(idChallenge, idSegment){
-        return axios.get(api.defaults.baseURL + '/challenges/' + idChallenge + "/segments/" + idSegment, config)
+    async getSegment(idChallenge, idSegment){
+
+        const token = await SecureStore.getItemAsync('secure-token');
+        
+        return axios.get(api.defaults.baseURL + '/challenges/' + idChallenge + "/segments/" + idSegment, {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
         .catch(function (error) {
             if (error.response) {
                 // Request made and server responded
@@ -231,8 +315,16 @@ const apiFonctions = {
         });
 
     },
-    getChoix(idChallenge, idCrossingPoint){
-        return axios.get(api.defaults.baseURL + '/challenges/' + idChallenge + "/crossing-points/" + idCrossingPoint + "/find-segments", config)
+    
+    async getChoix(idChallenge, idCrossingPoint){
+
+        const token = await SecureStore.getItemAsync('secure-token');
+        
+        return axios.get(api.defaults.baseURL + '/challenges/' + idChallenge + "/crossing-points/" + idCrossingPoint + "/find-segments", {
+            headers: {
+                'Authorization' : `Bearer ${token}`
+            }
+        })
         .catch(function (error) {
             if (error.response) {
                 // Request made and server responded
