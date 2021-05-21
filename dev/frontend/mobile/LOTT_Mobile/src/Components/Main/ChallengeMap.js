@@ -41,7 +41,7 @@ export default function ChallengeMap(props) {
                     <Modal
                         visible={openModal}
                         onRequestClose={() => setOpenModal(false)}
-                        animationType="slide"
+                        animationType="fade"
                         transparent={true}
                     >
                         <View style={{flex: 1}}></View>
@@ -193,17 +193,22 @@ export default function ChallengeMap(props) {
                                                 markerEnd="url(#m2)"
                                             />)
                                         })}
-                                        {/*segment.obstacles?.map((obstacle, j) => {
+                                        {segment.obstacles?.map((obstacle, j) => {
                                             return (
                                                 <Path
                                                     cx={500}
                                                     cy={500}
                                                     fill="red" 
-                                                    stroke="blue" 
+                                                    stroke="black" 
                                                     stroke-width="10" 
-                                                    d="M 0 9 L 10 9 L 13 0 L 16 9 L 26 9 L 18 14 L 21 23 L 13 17 L 5 23 L 8 14 Z" 
+                                                    d="M 0 9 L 10 9 L 13 0 L 16 9 L 26 9 L 18 14 L 21 23 L 13 17 L 5 23 L 8 14 Z"
+                                                    onPress={() => {
+                                                        setModalObstacle(obstacle);
+                                                        setOpenModal(true);
+                                                    }}
+                                                    scale={5}
                                                 />)
-                                        })*/}
+                                        })}
                                         <Circle 
                                             cx={segment.start_crossing_point?.position_x * canvasSize.x} 
                                             cy={segment.start_crossing_point?.position_y * canvasSize.y} 
@@ -212,7 +217,6 @@ export default function ChallengeMap(props) {
                                             strokeWidth={13 * (1000 / mapElementsSize)}
                                             fill="blue" 
                                             key={"start-cir-" + i + "-" + segment.start_crossing_point.id}
-                                            onPress={() => setOpenModal(true)}
                                         />
                                         <Circle 
                                             cx={segment.end_crossing_point?.position_x * canvasSize.x} 
