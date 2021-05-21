@@ -6,7 +6,7 @@ import { distanceTotale, vitesseMoyenne } from '../../utilsGPS';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import apiFonctions from '../../api/api';
-import ChallengeMap from './ChallengeMap'
+import ChallengeMap from './ChallengeCard/ChallengeMap'
 
 class Recording extends React.Component {
     state = {

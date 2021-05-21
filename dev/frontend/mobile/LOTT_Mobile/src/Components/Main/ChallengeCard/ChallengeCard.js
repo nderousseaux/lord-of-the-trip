@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     PrimaryCard: {
-        margin:10
+        margin:10,
         paddingVertical: 10,
     },
     Button: {

@@ -105,7 +105,7 @@ export default function ChallengeMap(props) {
                             </Defs>
 
                             <View style={styles.mapBackgroundContainer}>
-                                <SvgImage 
+                                <Image 
                                     href={{uri: `data:image/gif;base64,${mapBackground}`}}
                                 />
                             </View>
@@ -196,6 +196,7 @@ export default function ChallengeMap(props) {
                                         {segment.obstacles?.map((obstacle, j) => {
                                             return (
                                                 <Path
+                                                    key={obstacle.label}
                                                     cx={500}
                                                     cy={500}
                                                     fill="red" 

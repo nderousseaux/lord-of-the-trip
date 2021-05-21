@@ -9,8 +9,8 @@ import * as SecureStore from 'expo-secure-store';
 
 export default function Connexion(props) {
 
-    const [login, setLogin] = useState('lemaitre@gmail.com');
-    const [password, setPassword] = useState('Conquérantdelunivers');
+    const [login, setLogin] = useState('potter@hotmail.com');
+    const [password, setPassword] = useState('hogwarts');
     const [error, setError] = useState(false);
     const [badCredentials, setBadCredentials] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ export default function Connexion(props) {
                     secureTextEntry={true}
                 />
                 <Button
-                    style={{flex: 3}}
+                    
                     title="Se connecter"
                     onPress={() => {
                         handleConnexion();

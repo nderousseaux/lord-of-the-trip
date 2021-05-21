@@ -126,7 +126,7 @@ const apiFonctions = {
             });
     },
 
-    async addEvent(idChallenge, moveType, dateDepart, distance, duree){
+    async addEvent(idChallenge, idSegment, moveType, dateDepart, distance, duree, idEvent){
         
         const token = await SecureStore.getItemAsync('secure-token');
         
