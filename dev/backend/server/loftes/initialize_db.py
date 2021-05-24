@@ -88,7 +88,10 @@ def fill(argv=sys.argv):
     )
     session.add(et7)
 
-    et8 = EventType(code="CROSS_PT_ARRIVAL", label="Arrivée à un point de passage")
+    et8 = EventType(
+        code="CROSS_PT_ARRIVAL",
+        label="Arrivée à un point de passage",
+    )
     session.add(et8)
 
     et9 = EventType(code="CHOOSE_SEGMENT", label="Choix d'un segment")
@@ -151,7 +154,10 @@ def fill(argv=sys.argv):
 
     # Challenge
     cp1 = CrossingPoint(
-        name="L'armoire", challenge_id="1", position_x="0.142", position_y="0.324511"
+        name="L'armoire",
+        challenge_id="1",
+        position_x="0.142",
+        position_y="0.324511",
     )
     session.add(cp1)
     session.commit()
@@ -212,7 +218,10 @@ def fill(argv=sys.argv):
     session.commit()
 
     cp8 = CrossingPoint(
-        name="La table de pierre", challenge_id="1", position_x="0.2", position_y="0.5"
+        name="La table de pierre",
+        challenge_id="1",
+        position_x="0.2",
+        position_y="0.5",
     )
     session.add(cp8)
     session.commit()
@@ -408,12 +417,18 @@ def fill(argv=sys.argv):
 
     # update challenge1
     session.query(Challenge).filter(Challenge.id == 1).update(
-        {Challenge.start_crossing_point_id: 1, Challenge.end_crossing_point_id: 3}
+        {
+            Challenge.start_crossing_point_id: 1,
+            Challenge.end_crossing_point_id: 3,
+        }
     )
     session.commit()
 
     # update challenge2
     session.query(Challenge).filter(Challenge.id == 2).update(
-        {Challenge.start_crossing_point_id: 4, Challenge.end_crossing_point_id: 5}
+        {
+            Challenge.start_crossing_point_id: 4,
+            Challenge.end_crossing_point_id: 5,
+        }
     )
     session.commit()
