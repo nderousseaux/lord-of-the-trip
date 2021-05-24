@@ -50,6 +50,10 @@ class ChallengeResources:
 
         now = datetime.datetime.now()
 
-        query = DBSession.query(Challenge).filter(Challenge.draft == False).filter(or_(Challenge.end_date == None, Challenge.end_date > now))
+        query = (
+            DBSession.query(Challenge)
+            .filter(Challenge.draft == False)
+            .filter(or_(Challenge.end_date == None, Challenge.end_date > now))
+        )
 
         return query.all()

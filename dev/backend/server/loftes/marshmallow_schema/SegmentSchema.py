@@ -52,7 +52,7 @@ class SegmentSchema(Schema):
         return coordinates
 
     @post_dump
-    def get_length(self,data, **kwargs):
+    def get_length(self, data, **kwargs):
         data["length"] = SegmentRessources.calculate_segment_Length(data["id"])
 
         return data

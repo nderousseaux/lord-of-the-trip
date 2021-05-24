@@ -233,24 +233,16 @@ def signup_user(request):
         DBSession.add(user)
         DBSession.flush()
 
-        response = service_informations.build_response(
-            exception.HTTPCreated, user_schema.dump(user)
-        )
+        response = service_informations.build_response(exception.HTTPCreated, user_schema.dump(user))
 
     except ValidationError as validation_error:
-        response = service_informations.build_response(
-            exception.HTTPBadRequest, None, str(validation_error)
-        )
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
 
     except ValueError as value_error:
-        response = service_informations.build_response(
-            exception.HTTPBadRequest, None, str(value_error)
-        )
+        response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
 
     except Exception as e:
-        response = service_informations.build_response(
-            exception.HTTPInternalServerError
-        )
+        response = service_informations.build_response(exception.HTTPInternalServerError)
         logging.getLogger(__name__).warn("Returning: %s", str(e))
 
     return response
@@ -307,14 +299,10 @@ def whoami_user(request):
 
     service_informations = ServiceInformations()
 
-    user = (
-        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
-    )
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
     if user != None:
-        response = service_informations.build_response(
-            exception.HTTPOk, UserSchema().dump(user)
-        )
+        response = service_informations.build_response(exception.HTTPOk, UserSchema().dump(user))
 
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)

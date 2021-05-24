@@ -102,7 +102,7 @@ class ChallengeSchema(Schema):
             data["end_date"] = datetime.datetime.fromisoformat(data["end_date"]).isoformat()
 
         if "scalling" in data and int(data["scalling"]) < 0:
-            raise ValueError("This value ("+str(data["scalling"])+") is not valid for scalling.")
+            raise ValueError("This value (" + str(data["scalling"]) + ") is not valid for scalling.")
 
         return data
 
