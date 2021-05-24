@@ -150,7 +150,9 @@ def fill(argv=sys.argv):
     session.commit()
 
     # Challenge
-    cp1 = CrossingPoint(name="L'armoire", challenge_id="1", position_x="0.142", position_y="0.324511")
+    cp1 = CrossingPoint(
+        name="L'armoire", challenge_id="1", position_x="0.142", position_y="0.324511"
+    )
     session.add(cp1)
     session.commit()
 
@@ -209,7 +211,9 @@ def fill(argv=sys.argv):
     session.add(cp7)
     session.commit()
 
-    cp8 = CrossingPoint(name="La table de pierre", challenge_id="1", position_x="0.2", position_y="0.5")
+    cp8 = CrossingPoint(
+        name="La table de pierre", challenge_id="1", position_x="0.2", position_y="0.5"
+    )
     session.add(cp8)
     session.commit()
 
@@ -392,14 +396,24 @@ def fill(argv=sys.argv):
     session.add(q2)
     session.commit()
 
-    q3 = Obstacle(label="Télécharger une photo", progress=0.5, question_type=1, nb_points=30, segment_id=3)
+    q3 = Obstacle(
+        label="Télécharger une photo",
+        progress=0.5,
+        question_type=1,
+        nb_points=30,
+        segment_id=3,
+    )
     session.add(q3)
     session.commit()
 
     # update challenge1
-    session.query(Challenge).filter(Challenge.id == 1).update({Challenge.start_crossing_point_id:1, Challenge.end_crossing_point_id:3})
+    session.query(Challenge).filter(Challenge.id == 1).update(
+        {Challenge.start_crossing_point_id: 1, Challenge.end_crossing_point_id: 3}
+    )
     session.commit()
 
     # update challenge2
-    session.query(Challenge).filter(Challenge.id == 2).update({Challenge.start_crossing_point_id:4, Challenge.end_crossing_point_id:5})
+    session.query(Challenge).filter(Challenge.id == 2).update(
+        {Challenge.start_crossing_point_id: 4, Challenge.end_crossing_point_id: 5}
+    )
     session.commit()

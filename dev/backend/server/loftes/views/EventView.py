@@ -20,10 +20,9 @@ import logging
 import json
 
 event = Service(
-    name="event",
-    path="/challenges/{challenge_id:\d+}/events",
-    cors_policy=cors_policy
+    name="event", path="/challenges/{challenge_id:\d+}/events", cors_policy=cors_policy
 )
+
 
 @event.get()
 def get_event(request):
@@ -37,7 +36,9 @@ def get_event(request):
 
         if challenge != None:
 
-            events = EventRessources.findAllEventForUserByChallenge(user.id,request.matchdict["challenge_id"])
+            events = EventRessources.findAllEventForUserByChallenge(
+                user.id, request.matchdict["challenge_id"]
+            )
             # (
             #     DBSession.query(Event)
             #     .filter(Event.user_id == user.id)
@@ -68,8 +69,9 @@ def get_event(request):
 event_id = Service(
     name="event_id",
     path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/{id:\d+}",
-    cors_policy=cors_policy
+    cors_policy=cors_policy,
 )
+
 
 @event_id.get()
 def get_event_by_id(request):
@@ -99,7 +101,9 @@ def get_event_by_id(request):
                 if event == None:
                     return service_informations.build_response(exception.HTTPNotFound())
 
-                return service_informations.build_response(exception.HTTPOk, EventSchema().dump(event))
+                return service_informations.build_response(
+                    exception.HTTPOk, EventSchema().dump(event)
+                )
 
             else:
                 response = service_informations.build_response(
@@ -118,11 +122,13 @@ def get_event_by_id(request):
 
     return response
 
+
 last_event = Service(
     name="last_event",
     path="/challenges/{challenge_id:\d+}/events/last",
-    cors_policy=cors_policy
+    cors_policy=cors_policy,
 )
+
 
 @last_event.get()
 def get_last_event(request):
@@ -136,12 +142,16 @@ def get_last_event(request):
 
         if challenge != None:
 
-            event = EventRessources.findLastEventForUserByChallenge(user.id,request.matchdict["challenge_id"])
+            event = EventRessources.findLastEventForUserByChallenge(
+                user.id, request.matchdict["challenge_id"]
+            )
 
             if event == None:
                 return service_informations.build_response(exception.HTTPNotFound())
 
-            return service_informations.build_response(exception.HTTPOk, EventSchema().dump(event))
+            return service_informations.build_response(
+                exception.HTTPOk, EventSchema().dump(event)
+            )
 
         else:
             response = service_informations.build_response(
@@ -154,11 +164,13 @@ def get_last_event(request):
 
     return response
 
+
 event_distance_challenge = Service(
     name="event_distance",
     path="/challenges/{challenge_id:\d+}/events/distance",
-    cors_policy=cors_policy
+    cors_policy=cors_policy,
 )
+
 
 @event_distance_challenge.get()
 def get_event_distance_challenge(request):
@@ -172,9 +184,13 @@ def get_event_distance_challenge(request):
 
         if challenge != None:
 
-            distance = EventRessources.distance_Event_For_User_By_Challenge(user.id,challenge.id)
+            distance = EventRessources.distance_Event_For_User_By_Challenge(
+                user.id, challenge.id
+            )
 
-            return service_informations.build_response(exception.HTTPOk,EventDistanceSchema().dump(distance))
+            return service_informations.build_response(
+                exception.HTTPOk, EventDistanceSchema().dump(distance)
+            )
 
         else:
             response = service_informations.build_response(
@@ -187,11 +203,13 @@ def get_event_distance_challenge(request):
 
     return response
 
+
 event_distance_segment = Service(
     name="event_distance_segment",
     path="/segments/{segment_id:\d+}/events/distance",
-    cors_policy=cors_policy
+    cors_policy=cors_policy,
 )
+
 
 @event_distance_segment.get()
 def get_event_distance_segment(request):
@@ -205,9 +223,13 @@ def get_event_distance_segment(request):
 
         if segment != None:
 
-            distance = EventRessources.distance_Event_For_User_By_Segment(user.id,segment.id)
+            distance = EventRessources.distance_Event_For_User_By_Segment(
+                user.id, segment.id
+            )
 
-            return service_informations.build_response(exception.HTTPOk,EventDistanceSchema().dump(distance))
+            return service_informations.build_response(
+                exception.HTTPOk, EventDistanceSchema().dump(distance)
+            )
 
         else:
             response = service_informations.build_response(
@@ -223,8 +245,8 @@ def get_event_distance_segment(request):
 
 event_create = Service(
     name="event_create",
-    path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events',
-    cors_policy=cors_policy
+    path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events",
+    cors_policy=cors_policy,
 )
 
 
@@ -236,7 +258,9 @@ def event_add(request):
     user = UserCheckRessources.CheckUserConnect(request)
     if user != None:
 
-        checkchallenge = EventRessources.CheckChallengeForEvent(request.matchdict["challenge_id"], user.id)
+        checkchallenge = EventRessources.CheckChallengeForEvent(
+            request.matchdict["challenge_id"], user.id
+        )
 
         if checkchallenge == "":
 
@@ -254,15 +278,18 @@ def event_add(request):
 
                     eventrulescheck = EventRessources.CheckEventTypeRule(
                         eventdata.event_type_id,
-                        user.id, request.matchdict["challenge_id"],
-                        segment_id
+                        user.id,
+                        request.matchdict["challenge_id"],
+                        segment_id,
                     )
                     if eventrulescheck == None:
 
                         DBSession.add(eventdata)
                         DBSession.flush()
 
-                        response = service_informations.build_response(exception.HTTPCreated, event_schema.dump(eventdata))
+                        response = service_informations.build_response(
+                            exception.HTTPCreated, event_schema.dump(eventdata)
+                        )
                     else:
                         response = service_informations.build_response(
                             exception.HTTPForbidden(),
@@ -270,16 +297,24 @@ def event_add(request):
                             eventrulescheck,
                         )
                 except ValidationError as validation_error:
-                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+                    response = service_informations.build_response(
+                        exception.HTTPBadRequest, None, str(validation_error)
+                    )
 
                 except ValueError as value_error:
-                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+                    response = service_informations.build_response(
+                        exception.HTTPBadRequest, None, str(value_error)
+                    )
 
                 except PermissionError as pe:
-                    response = service_informations.build_response(exception.HTTPUnauthorized)
+                    response = service_informations.build_response(
+                        exception.HTTPUnauthorized
+                    )
 
                 except Exception as e:
-                    response = service_informations.build_response(exception.HTTPInternalServerError)
+                    response = service_informations.build_response(
+                        exception.HTTPInternalServerError
+                    )
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
 
             else:
@@ -302,9 +337,10 @@ def event_add(request):
 
 event_question = Service(
     name="event_question",
-    path='/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/checkresponse',
-    cors_policy=cors_policy
+    path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/checkresponse",
+    cors_policy=cors_policy,
 )
+
 
 @event_question.post()
 def event_check_response(request):
@@ -314,7 +350,9 @@ def event_check_response(request):
     user = UserCheckRessources.CheckUserConnect(request)
     if user != None:
 
-        checkchallenge = EventRessources.CheckChallengeForEvent(request.matchdict["challenge_id"], user.id)
+        checkchallenge = EventRessources.CheckChallengeForEvent(
+            request.matchdict["challenge_id"], user.id
+        )
 
         if checkchallenge == "":
             segment_id = request.matchdict["segment_id"]
@@ -331,11 +369,16 @@ def event_check_response(request):
                     if eventdata.event_type_id == 5:
 
                         eventrulescheck = EventRessources.CheckEventTypeRule(
-                            eventdata.event_type_id, user.id, request.matchdict["challenge_id"], segment_id
+                            eventdata.event_type_id,
+                            user.id,
+                            request.matchdict["challenge_id"],
+                            segment_id,
                         )
                         if eventrulescheck == None:
 
-                            obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
+                            obstacle = DBSession.query(Obstacle).get(
+                                eventdata.obstacle_id
+                            )
 
                             if obstacle != None:
 
@@ -345,7 +388,11 @@ def event_check_response(request):
                                 # Check response
 
                                 if obstacle.question_type == 0:
-                                    if eventdata.response.upper() == obstacle.result.upper():
+                                    # faut optimiser les réponses
+                                    if (
+                                        service_informations.replace_accents(service_informations.replace_specials(eventdata.response)).upper()
+                                        == service_informations.replace_accents(service_informations.replace_specials(obstacle.result)).upper()
+                                    ):
                                         event_type = 6
                                     else:
                                         event_type = 7
@@ -362,7 +409,8 @@ def event_check_response(request):
                                     DBSession.flush()
 
                                     response = service_informations.build_response(
-                                        exception.HTTPOk, event_schema.dump(eventresponse)
+                                        exception.HTTPOk,
+                                        event_schema.dump(eventresponse),
                                     )
 
                                 else:
@@ -389,16 +437,24 @@ def event_check_response(request):
                         )
 
                 except ValidationError as validation_error:
-                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+                    response = service_informations.build_response(
+                        exception.HTTPBadRequest, None, str(validation_error)
+                    )
 
                 except ValueError as value_error:
-                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+                    response = service_informations.build_response(
+                        exception.HTTPBadRequest, None, str(value_error)
+                    )
 
                 except PermissionError as pe:
-                    response = service_informations.build_response(exception.HTTPUnauthorized)
+                    response = service_informations.build_response(
+                        exception.HTTPUnauthorized
+                    )
 
                 except Exception as e:
-                    response = service_informations.build_response(exception.HTTPInternalServerError)
+                    response = service_informations.build_response(
+                        exception.HTTPInternalServerError
+                    )
                     logging.getLogger(__name__).warn("Returning: %s", str(e))
             else:
                 response = service_informations.build_response(
