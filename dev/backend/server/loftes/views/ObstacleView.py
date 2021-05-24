@@ -111,7 +111,9 @@ def get_obstacles_by_challenge(request):
             # check if user is challenge's admin or challenge is published
             if user.id == challenge.admin_id or challenge.draft == False:
 
-                obstacles = ObstacleResources.find_all_obstacles_by_challenge(challenge.id)
+                obstacles = ObstacleResources.find_all_obstacles_by_challenge(
+                    challenge.id
+                )
 
                 if len(obstacles) == 0:
                     return service_informations.build_response(exception.HTTPNotFound())
@@ -359,7 +361,9 @@ def create_obstacle(request):
                         )
 
                     except Exception as e:
-                        response = service_informations.build_response(exception.HTTPInternalServerError)
+                        response = service_informations.build_response(
+                            exception.HTTPInternalServerError
+                        )
                         logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                 else:
@@ -477,7 +481,9 @@ def get_obstacle_by_id(request):
                 if obstacle == None:
                     return service_informations.build_response(exception.HTTPNotFound())
 
-                response = service_informations.build_response(exception.HTTPOk, ObstacleSchema().dump(obstacle))
+                response = service_informations.build_response(
+                    exception.HTTPOk, ObstacleSchema().dump(obstacle)
+                )
 
             else:
                 response = service_informations.build_response(
@@ -629,7 +635,9 @@ def get_obstacle_update(request):
                             query.update(ObstacleSchema().check_json(obstacle_data))
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -642,14 +650,20 @@ def get_obstacle_update(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound())
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound()
+                        )
 
                 else:
                     response = service_informations.build_response(
@@ -799,7 +813,9 @@ def get_obstacle_modify(request):
                             query.update(ObstacleSchema().check_json(obstacle_data))
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -812,14 +828,20 @@ def get_obstacle_modify(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound())
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound()
+                        )
 
                 else:
                     response = service_informations.build_response(
@@ -920,7 +942,9 @@ def delete_obstacle(request):
                             DBSession.delete(obstacle)
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -933,14 +957,20 @@ def delete_obstacle(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound())
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound()
+                        )
 
                 else:
                     response = service_informations.build_response(

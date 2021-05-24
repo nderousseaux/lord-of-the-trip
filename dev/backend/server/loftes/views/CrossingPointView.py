@@ -125,7 +125,9 @@ def get_crossing_points(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -139,13 +141,19 @@ def get_crossing_points(request):
             if user.id == challenge.admin_id or challenge.draft == False:
 
                 crossing_points = (
-                    DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                    DBSession.query(CrossingPoint)
+                    .filter(CrossingPoint.challenge_id == challenge.id)
+                    .all()
                 )
 
                 if len(crossing_points) == 0:
                     return service_informations.build_response(exception.HTTPNotFound())
 
-                data = {"crossing_points": CrossingPointSchema(many=True).dump(crossing_points)}
+                data = {
+                    "crossing_points": CrossingPointSchema(many=True).dump(
+                        crossing_points
+                    )
+                }
 
                 response = service_informations.build_response(exception.HTTPOk, data)
 
@@ -252,7 +260,9 @@ def create_crossing_point(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -279,7 +289,8 @@ def create_crossing_point(request):
                         DBSession.flush()
 
                         response = service_informations.build_response(
-                            exception.HTTPCreated, crossing_point_schema.dump(crossing_point)
+                            exception.HTTPCreated,
+                            crossing_point_schema.dump(crossing_point),
                         )
 
                     except ValidationError as validation_error:
@@ -293,10 +304,14 @@ def create_crossing_point(request):
                         )
 
                     except PermissionError as pe:
-                        response = service_informations.build_response(exception.HTTPUnauthorized)
+                        response = service_informations.build_response(
+                            exception.HTTPUnauthorized
+                        )
 
                     except Exception as e:
-                        response = service_informations.build_response(exception.HTTPInternalServerError)
+                        response = service_informations.build_response(
+                            exception.HTTPInternalServerError
+                        )
                         logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                 else:
@@ -382,7 +397,9 @@ def get_crossing_point(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -430,18 +447,22 @@ def get_crossing_point(request):
 
     return response
 
+
 crossing_point_segment = Service(
     name="crossingpoint_segment",
     path="/challenges/{challenge_id:\d+}/crossing-points/{id:\d+}/find-segments",
     cors_policy=cors_policy,
 )
 
+
 @crossing_point_segment.get()
 def get_crossing_point_segment(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     if user != None:
 
@@ -450,9 +471,12 @@ def get_crossing_point_segment(request):
         if challenge != None:
 
             segments = (
-              DBSession.query(Segment)
-              .filter(Segment.challenge_id == challenge.id,Segment.start_crossing_point_id == request.matchdict["id"])
-              .all() 
+                DBSession.query(Segment)
+                .filter(
+                    Segment.challenge_id == challenge.id,
+                    Segment.start_crossing_point_id == request.matchdict["id"],
+                )
+                .all()
             )
 
             if len(segments) == 0:
@@ -551,7 +575,9 @@ def update_crossing_point(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -570,7 +596,8 @@ def update_crossing_point(request):
                     id = request.matchdict["id"]
 
                     query = DBSession.query(CrossingPoint).filter(
-                        CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
+                        CrossingPoint.challenge_id == challenge.id,
+                        CrossingPoint.id == id,
                     )
 
                     crossing_point = query.first()
@@ -583,7 +610,9 @@ def update_crossing_point(request):
                             query.update(CrossingPointSchema().check_json(request.json))
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -596,13 +625,19 @@ def update_crossing_point(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound
+                        )
 
                 else:
                     response = service_informations.build_response(
@@ -701,7 +736,9 @@ def modify_crossing_point(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -720,7 +757,8 @@ def modify_crossing_point(request):
                     id = request.matchdict["id"]
 
                     query = DBSession.query(CrossingPoint).filter(
-                        CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
+                        CrossingPoint.challenge_id == challenge.id,
+                        CrossingPoint.id == id,
                     )
 
                     crossing_point = query.first()
@@ -733,7 +771,9 @@ def modify_crossing_point(request):
                             query.update(CrossingPointSchema().check_json(request.json))
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -746,13 +786,19 @@ def modify_crossing_point(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound
+                        )
 
                 else:
                     response = service_informations.build_response(
@@ -819,7 +865,9 @@ def delete_crossing_point(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -839,7 +887,10 @@ def delete_crossing_point(request):
 
                     crossing_point = (
                         DBSession.query(CrossingPoint)
-                        .filter(CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id)
+                        .filter(
+                            CrossingPoint.challenge_id == challenge.id,
+                            CrossingPoint.id == id,
+                        )
                         .first()
                     )
 
@@ -857,7 +908,9 @@ def delete_crossing_point(request):
                             DBSession.delete(crossing_point)
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -870,14 +923,20 @@ def delete_crossing_point(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound
+                        )
 
                 else:
                     response = service_informations.build_response(
