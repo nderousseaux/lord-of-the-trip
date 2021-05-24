@@ -117,7 +117,9 @@ def get_segments(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -130,7 +132,11 @@ def get_segments(request):
             # check if user is challenge's admin or challenge is published
             if user.id == challenge.admin_id or challenge.draft == False:
 
-                segments = DBSession.query(Segment).filter(Segment.challenge_id == challenge.id).all()
+                segments = (
+                    DBSession.query(Segment)
+                    .filter(Segment.challenge_id == challenge.id)
+                    .all()
+                )
 
                 if len(segments) == 0:
                     return service_informations.build_response(exception.HTTPNotFound())
@@ -301,7 +307,9 @@ def create_segment(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -322,6 +330,7 @@ def create_segment(request):
                         segment_schema = SegmentSchema()
                         segment = segment_schema.load(request.json, unknown=INCLUDE)
                         segment.challenge_id = challenge.id
+                        print(segment)
 
                         DBSession.add(segment)
                         DBSession.flush()
@@ -341,10 +350,14 @@ def create_segment(request):
                         )
 
                     except PermissionError as pe:
-                        response = service_informations.build_response(exception.HTTPUnauthorized)
+                        response = service_informations.build_response(
+                            exception.HTTPUnauthorized
+                        )
 
                     except Exception as e:
-                        response = service_informations.build_response(exception.HTTPInternalServerError)
+                        response = service_informations.build_response(
+                            exception.HTTPInternalServerError
+                        )
                         logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                 else:
@@ -471,7 +484,9 @@ def get_segment_by_id(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -497,7 +512,9 @@ def get_segment_by_id(request):
                 if segment == None:
                     return service_informations.build_response(exception.HTTPNotFound())
 
-                response = service_informations.build_response(exception.HTTPOk, SegmentSchema().dump(segment))
+                response = service_informations.build_response(
+                    exception.HTTPOk, SegmentSchema().dump(segment)
+                )
 
             else:
                 response = service_informations.build_response(
@@ -628,7 +645,9 @@ def update_segment(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -646,7 +665,9 @@ def update_segment(request):
 
                     id = request.matchdict["id"]
 
-                    query = DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == id)
+                    query = DBSession.query(Segment).filter(
+                        Segment.challenge_id == challenge.id, Segment.id == id
+                    )
                     segment = query.first()
 
                     # check if segment point is found
@@ -654,10 +675,14 @@ def update_segment(request):
 
                         try:
 
-                            query.update(SegmentSchema().check_json(request.json, segment))
+                            query.update(
+                                SegmentSchema().check_json(request.json, segment)
+                            )
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -670,13 +695,19 @@ def update_segment(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound
+                        )
 
                 else:
                     response = service_informations.build_response(
@@ -807,7 +838,9 @@ def modify_segment(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -825,7 +858,9 @@ def modify_segment(request):
 
                     id = request.matchdict["id"]
 
-                    query = DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == id)
+                    query = DBSession.query(Segment).filter(
+                        Segment.challenge_id == challenge.id, Segment.id == id
+                    )
                     segment = query.first()
 
                     # check if segment point is found
@@ -833,10 +868,14 @@ def modify_segment(request):
 
                         try:
 
-                            query.update(SegmentSchema().check_json(request.json, segment))
+                            query.update(
+                                SegmentSchema().check_json(request.json, segment)
+                            )
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -849,13 +888,19 @@ def modify_segment(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound
+                        )
 
                 else:
                     response = service_informations.build_response(
@@ -922,7 +967,9 @@ def delete_segment(request):
 
     service_informations = ServiceInformations()
 
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    user = (
+        DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+    )
 
     # check if user is authenticated
     if user != None:
@@ -941,7 +988,9 @@ def delete_segment(request):
                     id = request.matchdict["id"]
 
                     segment = (
-                        DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == id).first()
+                        DBSession.query(Segment)
+                        .filter(Segment.challenge_id == challenge.id, Segment.id == id)
+                        .first()
                     )
 
                     # check if segment point is found
@@ -952,7 +1001,9 @@ def delete_segment(request):
                             DBSession.delete(segment)
                             DBSession.flush()
 
-                            response = service_informations.build_response(exception.HTTPNoContent)
+                            response = service_informations.build_response(
+                                exception.HTTPNoContent
+                            )
 
                         except ValidationError as validation_error:
                             response = service_informations.build_response(
@@ -965,13 +1016,19 @@ def delete_segment(request):
                             )
 
                         except PermissionError as pe:
-                            response = service_informations.build_response(exception.HTTPUnauthorized)
+                            response = service_informations.build_response(
+                                exception.HTTPUnauthorized
+                            )
 
                         except Exception as e:
-                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            response = service_informations.build_response(
+                                exception.HTTPInternalServerError
+                            )
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
+                        response = service_informations.build_response(
+                            exception.HTTPNotFound
+                        )
 
                 else:
                     response = service_informations.build_response(
