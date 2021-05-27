@@ -48,7 +48,3 @@ export const realLengthBetweenTwoPoints = (startPoint, endPoint, scaling, width)
   let realLength = pixelsLength * scaling / width;
   return realLength;
 }
-
-export const randomInt = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
