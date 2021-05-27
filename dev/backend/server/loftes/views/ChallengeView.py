@@ -2019,7 +2019,8 @@ def duplicate(request):
                                     new_challenge.level = old_challenge.level
                                     new_challenge.scalling = old_challenge.scalling
                                     new_challenge.step_length = old_challenge.step_length
-                                    new_challenge.draft = old_challenge.draft
+                                    # duplicated challenge could be modifiable
+                                    new_challenge.draft = True
                                     new_challenge.admin_id = user.id
 
                                     DBSession.add(new_challenge)
