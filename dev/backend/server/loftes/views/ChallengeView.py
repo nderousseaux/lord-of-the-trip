@@ -2604,3 +2604,140 @@ def publish_challenge(request):
         response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
+
+challenge_unpublish = Service(
+    name="challenge_unpublish",
+    path="challenges/{id:\d+}/unpublish",
+    cors_policy=cors_policy,
+)
+
+"""
+@api {patch} /challenges/:id/unpublish Unpublish one challenge
+@apiParam id Challenge's unique ID.
+@apiVersion 0.3.0
+@apiName UnpublishChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
+
+@apiSuccessExample {json} Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} ChallengeAlreadyUnpublished Unpublish a challenge that has already been unpublished.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to unpublish the challenge that has already been unpublished."
+  }
+}
+
+@apiError (Error 403) {Object} ChallengeAlreadyStarted Unpublish a challenge that has already subscribed users.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to unpublish challenge that has already subscribed users."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
+@challenge_unpublish.patch()
+def unpublish_challenge(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        # check if challenge is found
+        if challenge != None:
+
+            # check if user is challenge's admin
+            if user.id == challenge.admin_id:
+
+                # check if challenge has already been published
+                if challenge.draft == False:
+
+                    can_be_unpublished = True
+
+                    current_subscriptions = UserChallengeResources().find_current_subscriptions(challenge)
+
+                    # if there is no users who are subscribed to challenge, challenge can be unpublished
+                    if len(current_subscriptions) > 0:
+                        can_be_unpublished = False
+
+                    if can_be_unpublished:
+
+                        try:
+
+                            DBSession.query(Challenge).filter(Challenge.id == challenge.id).update(
+                                {Challenge.draft: True}
+                            )
+
+                            DBSession.flush()
+
+                            response = service_informations.build_response(exception.HTTPNoContent)
+
+                        except Exception as e:
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            "You do not have permission to unpublish challenge that has already subscribed users.",
+                        )
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You do not have permission to unpublish the challenge that has already been unpublished.",
+                    )
+
+            else:
+                response = service_informations.build_response(exception.HTTPForbidden())
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound,
+                None,
+                "Requested resource is not found.",
+            )
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
