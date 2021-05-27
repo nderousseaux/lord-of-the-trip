@@ -136,6 +136,18 @@ def fill(argv=sys.argv):
     session.add(u3)
     session.commit()
 
+    u4 = User(
+        first_name="Harry",
+        last_name="Potter",
+        pseudo="h.potter",
+        email="potter@hotmail.com",
+        password=PasswordUtils().hash_password("hogwarts"),
+        is_admin=False,
+    )
+
+    session.add(u4)
+    session.commit()
+
     c1 = Challenge(
         name="A la recherche d'Aslan",
         description="Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",

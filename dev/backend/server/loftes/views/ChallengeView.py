@@ -22,6 +22,8 @@ from loftes.resources import ObstacleResources
 from loftes.resources.ChallengeResources import ChallengeResources
 from loftes.resources.UserChallengeResources import UserChallengeResources
 
+import loftes.error_messages as error_messages
+
 from pathlib import Path
 
 import pyramid.httpexceptions as exception
@@ -47,6 +49,9 @@ challenge = Service(name="challenge", path="/challenges", cors_policy=cors_polic
 @apiGroup Challenge
 @apiSampleRequest off
 @apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
+
+@apiParam {Bool} [draft=False] Status of the challenge
 
 @apiSuccess (OK 200) {Array} Challenges All challenges created
 @apiSuccessExample {json} Success response:
@@ -58,116 +63,29 @@ HTTP/1.1 200 OK
       "id": 1,
       "name": "A la recherche d'Aslan",
       "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
-      "start_date": "2021-04-22T11:57:00"
-      "end_date": "2020-03-18T00:00:00",
+      "start_date": "2021-05-27T10:12:52",
+      "end_date": "2021-03-18T12:00:00",
       "alone_only": null,
-      "level": 1,
-      "scalling": 4,
+      "level": "1",
+      "scalling": 2,
       "step_length": 0.7,
-      "draft": false,
-      "start_crossing_point": null,
-      "end_crossing_point": null,
-      "segments": [
-        {
-          "id": 1,
-          "name": "A travers le bois d'entre les mondes",
-          "start_crossing_point": {
-            "id": 1,
-            "name": "L'armoire",
-            "position_x": 0.1,
-            "position_y": 0.1
-          },
-          "end_crossing_point": {
-            "id": 2,
-            "name": "La passe du faune",
-            "position_x": 0.1,
-            "position_y": 0.1
-          },
-          "coordinates": []
-        },
-        {
-          "id": 2,
-          "name": "La route d'Ettinsmoor",
-          "start_crossing_point": {
-            "id": 2,
-            "name": "La passe du faune",
-            "position_x": 0.1,
-            "position_y": 0.1
-          },
-          "end_crossing_point": {
-            "id": 3,
-            "name": "La passe du magicien",
-            "position_x": 0.2,
-            "position_y": 0.4
-          },
-          "coordinates": null
-        },
-        {
-          "id": 3,
-          "name": "La traversée du grand désert",
-          "start_crossing_point": {
-            "id": 2,
-            "name": "La passe du faune",
-            "position_x": 0.1,
-            "position_y": 0.1
-          },
-          "end_crossing_point": {
-            "id": 3,
-            "name": "La passe du magicien",
-            "position_x": 0.2,
-            "position_y": 0.4
-          },
-          "coordinates": []
-        },
-        {
-          "id": 4,
-          "name": "La traversée du Grand Océan Oriental",
-          "start_crossing_point": {
-            "id": 5,
-            "name": "Le pont des centaures",
-            "position_x": 0.3,
-            "position_y": 0.5
-          },
-          "end_crossing_point": {
-            "id": 8,
-            "name": "La table de pierre",
-            "position_x": 0.2,
-            "position_y": 0.5
-          },
-          "coordinates": null
-        }
-      ],
-      "nb_subscribers": 12,
-      "admin": {
-        "id": 1,
-        "first_name": "Missy",
-        "last_name": "Of Gallifrey",
-        "pseudo": "Le maitre",
-        "email": "lemaitre@gmail.com"
-      }
+      "draft": true,
+      "start_crossing_point_id": 1,
+      "end_crossing_point_id": 1
     },
     {
       "id": 2,
       "name": "Oops, on a perdu Han Solo",
       "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
-      "start_date": "2021-04-22T11:57:00"
-      "end_date": "2020-03-18T00:00:00",
+      "start_date": "2021-05-27T10:12:52",
+      "end_date": "2022-03-18T18:30:00",
       "alone_only": null,
-      "level": 2,
-      "scalling": 4,
-      "step_length": 0.7,
-      "draft": false,
-      "start_crossing_point": null,
-      "end_crossing_point": null,
-      "segments": [],
-      "nb_subscribers": 15,
-      "admin": {
-        "id": 1,
-        "first_name": "Missy",
-        "last_name": "Of Gallifrey",
-        "pseudo": "Le maitre",
-        "email": "lemaitre@gmail.com"
-      }
+      "level": "2",
+      "scalling": 4200,
+      "step_length": 0.8,
+      "draft": true,
+      "start_crossing_point_id": 4,
+      "end_crossing_point_id": 5
     }
   ]
 }
@@ -180,6 +98,17 @@ HTTP/1.1 401 Unauthorized
   "error": {
     "status": "UNAUTHORIZED",
     "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} UserNotAdmin User is not super administrator
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to view this resource using the credentials that you supplied."
   }
 }
 
@@ -221,7 +150,7 @@ def get_challenges(request):
                     return service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to view this resource using the credentials that you supplied.",
+                        error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION,
                     )
 
         if len(challenges) == 0:
@@ -247,13 +176,13 @@ def get_challenges(request):
 @apiPermission admin
 
 @apiSuccess (Body parameters) {String} name Challenge's name
-@apiSuccess (Body parameters) {String} description Challenge's description
-@apiSuccess (Body parameters) {Date} start_date Challenge's start date in format "YYYY-MM-DD"
-@apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
-@apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
-@apiSuccess (Body parameters) {Number} level Challenge's difficulty
-@apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
-@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
+@apiSuccess (Body parameters) {String} [description] Challenge's description
+@apiSuccess (Body parameters) {Date} [start_date] Challenge's start date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Date} [end_date] Challenge's end date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Bool} [alone_only] If true user is the only person to participate in challenge, if false it is a team
+@apiSuccess (Body parameters) {Number} [level] Challenge's difficulty
+@apiSuccess (Body parameters) {Number} [scalling] Challenge's scale in meters
+@apISuccess (Body parameters) {Float} [step_length] Challenge's step length in meters
 
 @apiSuccessExample {json} Body:
 
@@ -271,25 +200,19 @@ def get_challenges(request):
 @apiSuccessExample {json} Success response:
 HTTP/1.1 201 Created
 
-
 {
   "id": 1,
   "name": "A la recherche d'Aslan",
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
-  "start_date": null
-  "end_date": "2021-12-15T03:16:00",
+  "start_date": "2021-12-18T03:16:00",
+  "end_date": "2022-10-18T03:16:00",
   "alone_only": 0,
   "level":3,
-  "scalling": 3,
+  "scalling": 1000,
   "step_length": 0.7,
   "draft": false,
-  "admin": {
-    "id": 1,
-    "first_name": "Missy",
-    "last_name": "Of Gallifrey",
-    "pseudo": "Le maitre",
-    "email": "lemaitre@gmail.com"
-  }
+  "start_crossing_point_id": null,
+  "end_crossing_point_id": null
 }
 
 @apiError (Error 400) {Object} BadRequest Malformed request syntax.
@@ -343,7 +266,40 @@ HTTP/1.1 400 Bad Request
 {
   "error": {
     "status": "BAD REQUEST",
+    "message": "Challenge's start date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
     "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Challenge's start and end date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "This value (-2) is not valid for scalling."
   }
 }
 
@@ -369,6 +325,16 @@ HTTP/1.1 403 Forbidden
   }
 }
 
+@apiError (Error 403) {Object} DraftField Draft field in JSON body
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "The field draft is not used on challenge's creation."
+  }
+}
 
 """
 
@@ -442,12 +408,8 @@ challenge_by_id = Service(name="challenge_by_id", path="challenges/{id:\d+}", co
 @apiSuccess (OK 200) {Number} scalling Challenge's scale in meters
 @apISuccess (OK 200) {Float} step_length Challenge's step length in meters
 @apiSuccess (OK 200) {Bool} draft If true the challenge is in edition mode, if false challenge is published
-@apiSuccess (OK 200) {Object} start_crossing_point Challenge's start crossing point
-@apiSuccess (OK 200) {Object} end_crossing_point Challenge's end crossing point
-@apiSuccess (OK 200) {Array} segments All segments of the challenge
-@apiSuccess (OK 200) {Number} nb_subscribers Number of users subscribed to a challenge
-@apiSuccess (OK 200) {Object} admin Challenge's creator aka administrator
-
+@apiSuccess (OK 200) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
+@apiSuccess (OK 200) {Number} end_crossing_point_id ID of crossing point choosed as start of a challenge
 
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
@@ -456,87 +418,26 @@ HTTP/1.1 200 OK
   "id": 1,
   "name": "A la recherche d'Aslan",
   "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
-  "start_date": "2021-04-22T11:57:00"
-  "end_date": "2021-12-15T03:16:00",
+  "start_date": "2021-12-18T03:16:00",
+  "end_date": "2022-10-18T03:16:00",
   "alone_only": 0,
-  "level": 3,
-  "scalling": 3,
+  "level":3,
+  "scalling": 1000,
   "step_length": 0.7,
   "draft": false,
-  "start_crossing_point": {
-    "id": 2,
-    "name": "La passe du faune",
-    "position_x": 0.1,
-    "position_y": 0.1
-  },
-  "end_crossing_point": {
-    "id": 3,
-    "name": "La passe du magicien",
-    "position_x": 0.2,
-    "position_y": 0.4
-  },
-  "segments": [
-    {
-      "id": 2,
-      "name": "La route d'Ettinsmoor",
-      "start_crossing_point": {
-        "id": 2,
-        "name": "La passe du faune",
-        "position_x": 0.1,
-        "position_y": 0.1
-      },
-      "end_crossing_point": {
-        "id": 3,
-        "name": "La passe du magicien",
-        "position_x": 0.2,
-        "position_y": 0.4
-      },
-      "coordinates": []
-    },
-    {
-      "id": 3,
-      "name": "La traversée du grand désert",
-      "start_crossing_point": {
-        "id": 2,
-        "name": "La passe du faune",
-        "position_x": 0.1,
-        "position_y": 0.1
-      },
-      "end_crossing_point": {
-        "id": 3,
-        "name": "La passe du magicien",
-        "position_x": 0.2,
-        "position_y": 0.4
-      },
-      "coordinates": []
-    },
-    {
-      "id": 4,
-      "name": "La traversée du Grand Océan Oriental",
-      "start_crossing_point": {
-        "id": 5,
-        "name": "Le pont des centaures",
-        "position_x": 0.3,
-        "position_y": 0.5
-      },
-      "end_crossing_point": {
-        "id": 8,
-        "name": "La table de pierre",
-        "position_x": 0.2,
-        "position_y": 0.5
-      },
-      "coordinates": []
-    }
-  ],
-  "nb_subscribers": 12,
-  "admin": {
-    "id": 1,
-    "first_name": "Missy",
-    "last_name": "Of Gallifrey",
-    "pseudo": "Le maitre",
-    "email": "lemaitre@gmail.com"
+  "start_crossing_point_id": null,
+  "end_crossing_point_id": null
+}
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
   }
-  "event_sum": 395
 }
 
 @apiError (Error 403) {Object} PermissionDenied User is not challenge's admin or challenge's is not published yet
@@ -587,7 +488,7 @@ def get_challenge(request):
                 response = service_informations.build_response(
                     exception.HTTPForbidden,
                     None,
-                    "You do not have permission to view this resource using the credentials that you supplied.",
+                    error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION,
                 )
         else:
             response = service_informations.build_response(exception.HTTPNotFound())
@@ -609,27 +510,27 @@ def get_challenge(request):
 @apiPermission admin
 
 @apiSuccess (Body parameters) {String} name Challenge's name
-@apiSuccess (Body parameters) {String} description Challenge's description
-@apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
-@apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
-@apiSuccess (Body parameters) {Number} level Challenge's difficulty
-@apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
-@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
-@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
-@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
+@apiSuccess (Body parameters) {String} [description] Challenge's description
+@apiSuccess (Body parameters) {Date} [start_date] Challenge's start date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Date} [end_date] Challenge's end date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Bool} [alone_only] If true user is the only person to participate in challenge, if false it is a team
+@apiSuccess (Body parameters) {Number} [level] Challenge's difficulty
+@apiSuccess (Body parameters) {Number} [scalling] Challenge's scale in meters
+@apISuccess (Body parameters) {Float} [step_length] Challenge's step length in meters
+@apiSuccess (Body parameters) {Number} [start_crossing_point_id] ID of crossing point choosed as start of a challenge
+@apiSuccess (Body parameters) {Number} [end_crossing_point_id] ID of end point choosed as end of a challenge
 
 @apiSuccessExample {json} Body:
 
 {
-  "name":"A la recherche d'Aslan",
-  "description":"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
-  "end_date":"2022-10-18",
-  "alone_only":0,
-  "level":3,
-  "scalling":10000,
-  "step_length": 0.7,
-  "start_crossing_point_id":1,
-  "end_crossing_point_id":2
+	"name":"A la recherche d'Aslan",
+	"description":"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date":"2021-12-18",
+	"end_date":"2022-10-18",
+	"alone_only":"0",
+	"level":3,
+	"scalling":10000,
+  "step_length": 0.7
 }
 
 @apiSuccessExample Success response:
@@ -686,6 +587,17 @@ HTTP/1.1 400 Bad Request
 {
   "error": {
     "status": "BAD REQUEST",
+    "message": "Challenge's start date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
     "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
@@ -697,7 +609,51 @@ HTTP/1.1 400 Bad Request
 {
   "error": {
     "status": "BAD REQUEST",
-    "message": "Crossing point does not exist."
+    "message": "Challenge's start and end date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "This value (-2) is not valid for scalling."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Start crossing point does not exist."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "End crossing point does not exist."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Nothing to update."
   }
 }
 
@@ -720,6 +676,28 @@ HTTP/1.1 403 Forbidden
   "error": {
     "status": "FORBIDDEN",
     "message": "You do not have permission to perform this action using the credentials that you supplied."
+  }
+}
+
+@apiError (Error 403) {Object} PublishedChallenge Modification of a published challenge
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to modify a published challenge."
+  }
+}
+
+@apiError (Error 403) {Object} DraftField Draft field in JSON body
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "The field draft is not used on challenge's creation."
   }
 }
 
@@ -786,7 +764,7 @@ def update_challenge(request):
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to modify a published challenge.",
+                        error_messages.MODIFY_PUBLISHED_CHALLENGE,
                     )
 
             else:
@@ -808,22 +786,23 @@ def update_challenge(request):
 @apiGroup Challenge
 @apiSampleRequest off
 @apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
 @apiSuccess (Body parameters) {String} name Challenge's name
-@apiSuccess (Body parameters) {String} description Challenge's description
-@apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
-@apiSuccess (Body parameters) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
-@apiSuccess (Body parameters) {Number} level Challenge's difficulty
-@apiSuccess (Body parameters) {Bool} draft If true the challenge is in edition mode, if false challenge is published
-@apiSuccess (Body parameters) {Number} scalling Challenge's scale in meters
-@apISuccess (Body parameters) {Float} step_length Challenge's step length in meters
-@apiSuccess (Body parameters) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
-@apiSuccess (Body parameters) {Number} end_crossing_point_id ID of end point choosed as end of a challenge
+@apiSuccess (Body parameters) {String} [description] Challenge's description
+@apiSuccess (Body parameters) {Date} [start_date] Challenge's start date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Date} [end_date] Challenge's end date in format "YYYY-MM-DD"
+@apiSuccess (Body parameters) {Bool} [alone_only] If true user is the only person to participate in challenge, if false it is a team
+@apiSuccess (Body parameters) {Number} [level] Challenge's difficulty
+@apiSuccess (Body parameters) {Number} [scalling] Challenge's scale in meters
+@apISuccess (Body parameters) {Float} [step_length] Challenge's step length in meters
+@apiSuccess (Body parameters) {Number} [start_crossing_point_id] ID of crossing point choosed as start of a challenge
+@apiSuccess (Body parameters) {Number} [end_crossing_point_id] ID of end point choosed as end of a challenge
 
 @apiSuccessExample {json} Body:
 
 {
-  "draft":false
+  "step_length": 0.8
 }
 
 @apiSuccessExample Success response:
@@ -880,6 +859,17 @@ HTTP/1.1 400 Bad Request
 {
   "error": {
     "status": "BAD REQUEST",
+    "message": "Challenge's start date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
     "message": "Challenge's end date must be greater of today's date (22-04-2021, 12:59)"
   }
 }
@@ -891,7 +881,84 @@ HTTP/1.1 400 Bad Request
 {
   "error": {
     "status": "BAD REQUEST",
-    "message": "Crossing point does not exist."
+    "message": "Challenge's start and end date must be greater of today's date (22-04-2021, 12:59)"
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "This value (-2) is not valid for scalling."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Start crossing point does not exist."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "End crossing point does not exist."
+  }
+}
+
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "Nothing to update."
+  }
+}
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} UserNotAdmin User is not administrator
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to perform this action using the credentials that you supplied."
+  }
+}
+
+@apiError (Error 403) {Object} DraftField Draft field in JSON body
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "The field draft is not used on challenge's creation."
   }
 }
 
@@ -958,7 +1025,7 @@ def modify_challenge(request):
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to modify a published challenge.",
+                        error_messages.MODIFY_PUBLISHED_CHALLENGE,
                     )
 
             else:
@@ -980,9 +1047,21 @@ def modify_challenge(request):
 @apiGroup Challenge
 @apiSampleRequest off
 @apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
+
+@apiError (Error 403) {Object} PublishedChallenge Modification of a published challenge
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to perform this action using the credentials that you supplied."
+  }
+}
 
 @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
@@ -1077,21 +1156,11 @@ challenge_image = Service(
 @apiGroup Challenge
 @apiSampleRequest off
 @apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
 @apiSuccess (OK 200) {File} Image Challenge's map in jpeg/png format.
 
-@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
-  }
-}
-
-@apiError (Error 404) {Object} ImageNotFound Challenge's map is not found.
+@apiError (Error 404) {Object} RessourceNotFound Challenge or challenge's map are not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
 
@@ -1128,23 +1197,21 @@ def download_image(request):
                     if os.path.exists(image):
                         response = FileResponse(image, request=request)
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
+                        response = service_informations.build_response(exception.HTTPNoContent)
 
                 else:
-                    response = service_informations.build_response(exception.HTTPNotFound)
+                    response = service_informations.build_response(exception.HTTPNoContent)
 
             else:
                 response = service_informations.build_response(
                     exception.HTTPForbidden,
                     None,
-                    "You do not have permission to view this resource using the credentials that you supplied.",
+                    error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION,
                 )
 
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound,
-                None,
-                "Requested resource 'Challenge' is not found.",
             )
 
     else:
@@ -1161,6 +1228,7 @@ def download_image(request):
 @apiGroup Challenge
 @apiSampleRequest off
 @apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
 @apiSuccess (Body parameter) {File} Image Challenge's map in jpeg/png format.
 
@@ -1189,6 +1257,50 @@ HTTP/1.1 400 Bad Request
   }
 }
 
+@apiError (Error 400) {Object} BadRequest Malformed request syntax.
+@apiErrorExample {json} Error 400 response:
+HTTP/1.1 400 Bad Request
+
+{
+  "error": {
+    "status": "BAD REQUEST",
+    "message": "The file's type is not supported on this server."
+  }
+}
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} PublishedChallenge Modification of a published challenge
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to modify a published challenge."
+  }
+}
+
+@apiError (Error 403) {Object} UserNotAdmin User is not administrator
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to perform this action using the credentials that you supplied."
+  }
+}
+
 @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
 @apiErrorExample {json} Error 404 response:
 HTTP/1.1 404 Not Found
@@ -1196,7 +1308,7 @@ HTTP/1.1 404 Not Found
 {
   "error": {
     "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
+    "message": "Requested resource is not found."
   }
 }
 
@@ -1253,7 +1365,7 @@ def upload_image(request):
                                     path = str(root) + challenge_uploads_path
 
                                     if not os.path.isdir(path):
-                                        os.makedirs(path, 0o777)
+                                        os.makedirs(path, 0o755)
 
                                     input_file = request.POST["file"].file
                                     input_file_filename = "challenge_" + str(challenge.id)
@@ -1295,25 +1407,25 @@ def upload_image(request):
                                 response = service_informations.build_response(
                                     exception.HTTPBadRequest,
                                     None,
-                                    "The size of image is too big.",
+                                    error_messages.UPLOAD_IMAGE_FILE_SIZE_IS_TOO_BIG,
                                 )
 
                         else:
                             response = service_informations.build_response(
                                 exception.HTTPUnsupportedMediaType,
                                 None,
-                                "The file's type is not supported on this server.",
+                                error_messages.UPLOAD_IMAGE_TYPE_NOT_SUPPORTED,
                             )
                     else:
                         response = service_informations.build_response(
-                            exception.HTTPBadRequest, None, "File is not found."
+                            exception.HTTPBadRequest, None, error_messages.UPLOAD_IMAGE_NOT_FOUND
                         )
 
                 else:
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to modify a published challenge.",
+                        error_messages.MODIFY_PUBLISHED_CHALLENGE,
                     )
 
             else:
@@ -1342,6 +1454,7 @@ challenge_subscribe = Service(
 @apiGroup Challenge
 @apiSampleRequest off
 @apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
@@ -1442,7 +1555,7 @@ def subscribe(request):
                         response = service_informations.build_response(
                             exception.HTTPForbidden,
                             None,
-                            "You do not have permission to subscribe to a challenge that has already been terminated.",
+                            error_messages.SUBSCRIPTION_CHALLENGE_TERMINATED,
                         )
 
                         return response
@@ -1489,21 +1602,21 @@ def subscribe(request):
                         response = service_informations.build_response(
                             exception.HTTPForbidden,
                             None,
-                            "You are already subscribed to this challenge.",
+                            error_messages.SUBSCRIPTION_CHALLENGE_ALREADY_SUBSCRIBED,
                         )
 
                 else:
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to subscribe to a challenge you have created.",
+                        error_messages.SUBSCRIPTION_OWN_CHALLENGE,
                     )
 
             else:
                 response = service_informations.build_response(
                     exception.HTTPForbidden,
                     None,
-                    "You do not have permission to subscribe to a unfinished challenge.",
+                    error_messages.SUBSCRIPTION_CHALLENGE_NOT_CREATED,
                 )
 
         else:
@@ -1529,6 +1642,7 @@ unsubscribe_challenge = Service(
 @apiGroup Challenge
 @apiSampleRequest off
 @apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
 @apiSuccessExample Success response:
 HTTP/1.1 204 No Content
@@ -1614,7 +1728,7 @@ def unsubscribe(request):
                 response = service_informations.build_response(
                     exception.HTTPForbidden,
                     None,
-                    "You cannot unsubscribe from a challenge that you are not subscribed to.",
+                    error_messages.UNSUBSCRIPTION_CHALLENGE_NOT_SUBSCRIBED,
                 )
 
         else:
@@ -1640,6 +1754,7 @@ verifyChallenge = Service(
 @apiGroup Challenge
 @apiSampleRequest off
 @apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
@@ -1741,55 +1856,59 @@ def verify(request):
                 # check if challenge is draft
                 if challenge.draft:
 
+                    if challenge.start_crossing_point_id is None:
+                        return service_informations.build_response(
+                            exception.HTTPBadRequest, None, error_messages.VERIFICATION_CHALLENGE_START_MISSING
+                        )
+
+                    if challenge.end_crossing_point_id is None:
+                        return service_informations.build_response(
+                            exception.HTTPBadRequest, None, error_messages.VERIFICATION_CHALLENGE_END_MISSING
+                        )
+
                     try:
 
-                        if challenge.start_crossing_point_id is None:
+                        # On vérifie qu'aucun crossing point n'est orphelin
+                        orphans = []
+
+                        crossingPoints = (
+                            DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                        )
+
+                        # On vérifie qu'il y ai des crossings points
+                        if len(crossingPoints) < 2:
+                            orphans = crossingPoints
+
                             response = service_informations.build_response(
                                 exception.HTTPOk,
-                                {"error": "They are no Start_challenge"},
+                                {
+                                    "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                },
                             )
+
                         else:
+                            for crossing in crossingPoints:
+                                if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
+                                    crossing.id != challenge.start_crossing_point_id
+                                    and len(crossing.segments_end) == 0
+                                ):
 
-                            # On vérifie qu'aucun crossing point n'est orphelin
-                            orphans = []
+                                    orphans.append(crossing)
 
-                            crossingPoints = (
-                                DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
-                            )
+                                loops, deadend = checkChallenge(challenge)
 
-                            # On vérifie qu'il y ai des crossings points
-                            if len(crossingPoints) < 2:
-                                orphans = crossingPoints
-
-                                response = service_informations.build_response(
-                                    exception.HTTPOk,
-                                    {
-                                        "orphans": CrossingPointSchema(many=True).dump(orphans),
-                                    },
-                                )
-
-                            else:
-                                for crossing in crossingPoints:
-                                    if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
-                                        crossing.id != challenge.start_crossing_point_id
-                                        and len(crossing.segments_end) == 0
-                                    ):
-
-                                        orphans.append(crossing)
-
-                                    loops, deadend = checkChallenge(challenge)
-
-                                    if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
-                                        response = service_informations.build_response(
-                                            exception.HTTPOk,
-                                            {
-                                                "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
-                                                "deadend": CrossingPointSchema(many=True).dump(deadend),
-                                                "orphans": CrossingPointSchema(many=True).dump(orphans),
-                                            },
-                                        )
-                                    else:
-                                        response = service_informations.build_response(exception.HTTPNoContent)
+                                if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
+                                    response = service_informations.build_response(
+                                        exception.HTTPOk,
+                                        None,
+                                        {
+                                            "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
+                                            "deadend": CrossingPointSchema(many=True).dump(deadend),
+                                            "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                        },
+                                    )
+                                else:
+                                    response = service_informations.build_response(exception.HTTPNoContent)
 
                     except Exception as e:
                         response = service_informations.build_response(exception.HTTPInternalServerError)
@@ -1799,7 +1918,7 @@ def verify(request):
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to modify a published challenge.",
+                        error_messages.MODIFY_PUBLISHED_CHALLENGE,
                     )
             else:
                 response = service_informations.build_response(exception.HTTPForbidden)
@@ -1842,35 +1961,17 @@ challenge_duplicate = Service(
 HTTP/1.1 201 Created
 {
   "id": 47,
-  "name": "Oops, on a perdu Han Solo *3",
-  "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
-  "start_date": "2021-08-22T00:00:00",
-  "end_date": "2021-09-01T00:00:00",
+  "name": "A la recherche d'Aslan",
+  "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+  "start_date": "2021-05-27T10:12:52",
+  "end_date": "2021-03-18T12:00:00",
   "alone_only": null,
-  "level": "2",
-  "scalling": 4200,
-  "step_length": 0.8,
-  "draft": false,
-  "start_crossing_point": {
-    "id": 364,
-    "name": "La passe du faune",
-    "position_x": 0.524667,
-    "position_y": 0.335221
-  },
-  "end_crossing_point": {
-    "id": 365,
-    "name": "Le pont des centaures",
-    "position_x": 0.508841,
-    "position_y": 0.485851
-  },
-  "segments": [],
-  "admin": {
-    "first_name": "Missy",
-    "last_name": "Of Gallifrey",
-    "pseudo": "LeMaitre",
-    "email": "lemaitre@gmail.com",
-    "is_admin": false
-  }
+  "level": "1",
+  "scalling": 2,
+  "step_length": 0.7,
+  "draft": true,
+  "start_crossing_point_id": 364,
+  "end_crossing_point_id": 365
 }
 
 @apiError (Error 400) {Object} BadRequest Malformed request syntax.
@@ -2104,7 +2205,7 @@ def duplicate(request):
                                         DBSession.flush()
                                     else:
                                         raise EnvironmentError(
-                                            "Challenge's start and end crossing points were missing."
+                                            error_messages.DUPLICATION_CHALLENGE_START_AND_END_MISSING
                                         )
 
                                     # challenge's map's url
@@ -2203,7 +2304,7 @@ def duplicate(request):
                                             DBSession.flush()
                                         else:
                                             raise EnvironmentError(
-                                                "Segment's start and end crossing points were missing."
+                                                error_messages.DUPLICATION_SEGMENT_START_AND_END_MISSING
                                             )
 
                                         # check if old segment had obstacles
@@ -2230,7 +2331,7 @@ def duplicate(request):
                                     return service_informations.build_response(
                                         exception.HTTPBadRequest,
                                         None,
-                                        "A mandatory field is missing : start_date or end_date.",
+                                        error_messages.DUPLICATE_CHALLENGE_MANDATORY_FIELD,
                                     )
 
                             except ValidationError as validation_error:
@@ -2258,28 +2359,28 @@ def duplicate(request):
                             response = service_informations.build_response(
                                 exception.HTTPForbidden,
                                 None,
-                                "You cannot duplicate a challenge that hasn't been terminated yet.",
+                                error_messages.DUPLICATION_CHALLENGE_NOT_TERMINATED,
                             )
 
                     else:
                         response = service_informations.build_response(
                             exception.HTTPForbidden,
                             None,
-                            "You cannot duplicate a permanent challenge.",
+                            error_messages.DUPLICATION_CHALLENGE_PERMANENT,
                         )
 
                 else:
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to duplicate an unpublished challenge.",
+                        error_messages.DUPLICATION_CHALLENGE_NOT_PUBLISHED,
                     )
 
             else:
                 response = service_informations.build_response(
                     exception.HTTPForbidden,
                     None,
-                    "You cannot duplicate a challenge that you did not create.",
+                    error_messages.DUPLICATION_CHALLENGE_NOT_OWNER,
                 )
 
         else:
@@ -2375,12 +2476,16 @@ def get_challenges_created_by_admin(request):
                 if len(splitter) == 2 and splitter[0] == "draft":
                     if splitter[1] == "false":
                         challenges = challenges = (
-                            DBSession.query(Challenge).filter(Challenge.admin_id == user.id, Challenge.draft == False).all()
+                            DBSession.query(Challenge)
+                            .filter(Challenge.admin_id == user.id, Challenge.draft == False)
+                            .all()
                         )
 
                     elif splitter[1] == "true":
                         challenges = challenges = (
-                            DBSession.query(Challenge).filter(Challenge.admin_id == user.id, Challenge.draft == True).all()
+                            DBSession.query(Challenge)
+                            .filter(Challenge.admin_id == user.id, Challenge.draft == True)
+                            .all()
                         )
 
             if len(challenges) == 0:
@@ -2394,7 +2499,7 @@ def get_challenges_created_by_admin(request):
             response = service_informations.build_response(
                 exception.HTTPForbidden,
                 None,
-                "You do not have permission to view this resource using the credentials that you supplied.",
+                error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION,
             )
 
     else:
@@ -2439,23 +2544,21 @@ def download_image_mobile(request):
                         response = service_informations.build_response(exception.HTTPOk, image_64_encode)
 
                     else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
+                        response = service_informations.build_response(exception.HTTPNoContent)
 
                 else:
-                    response = service_informations.build_response(exception.HTTPNotFound)
+                    response = service_informations.build_response(exception.HTTPNoContent)
 
             else:
                 response = service_informations.build_response(
                     exception.HTTPForbidden,
                     None,
-                    "You do not have permission to view this resource using the credentials that you supplied.",
+                    error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION,
                 )
 
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound,
-                None,
-                "Requested resource 'Challenge' is not found.",
             )
 
     else:
@@ -2568,19 +2671,11 @@ def publish_challenge(request):
 
                     if challenge.start_date != None and challenge.start_date < now:
                         can_be_published = False
-                        reason = (
-                            "You do not have permission to publish a challenge whose start date has already passed ("
-                            + challenge.start_date.strftime("%d-%m-%Y, %H:%M")
-                            + ")."
-                        )
+                        reason = error_messages.PUBLISH_CHALLENGE_START_DATE_HAS_PASSED
 
                     if challenge.end_date != None and challenge.end_date < now:
                         can_be_published = False
-                        reason = (
-                            "You do not have permission to publish a challenge whose end date has already passed ("
-                            + challenge.end_date.strftime("%d-%m-%Y, %H:%M")
-                            + ")."
-                        )
+                        reason = error_messages.PUBLISH_CHALLENGE_END_DATE_HAS_PASSED
 
                     if can_be_published:
 
@@ -2608,8 +2703,7 @@ def publish_challenge(request):
                 else:
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
-                        None,
-                        "You do not have permission to publish the challenge that has already been published.",
+                        error_messages.PUBLISH_CHALLENGE_ALREADY_PUBLISHED,
                     )
 
             else:
@@ -2618,8 +2712,6 @@ def publish_challenge(request):
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound,
-                None,
-                "Requested resource is not found.",
             )
 
     else:
@@ -2628,14 +2720,14 @@ def publish_challenge(request):
     return response
 
 
-challenge_unpublish = Service(
-    name="challenge_unpublish",
-    path="challenges/{id:\d+}/unpublish",
+challenge_revoke = Service(
+    name="challenge_revoke",
+    path="challenges/{id:\d+}/revoke",
     cors_policy=cors_policy,
 )
 
 """
-@api {patch} /challenges/:id/unpublish Unpublish one challenge
+@api {patch} /challenges/:id/revoke Revoke one challenge
 @apiParam id Challenge's unique ID.
 @apiVersion 0.3.0
 @apiName UnpublishChallenge
@@ -2693,8 +2785,8 @@ HTTP/1.1 404 Not Found
 """
 
 
-@challenge_unpublish.patch()
-def unpublish_challenge(request):
+@challenge_revoke.patch()
+def revoke_challenge(request):
 
     service_informations = ServiceInformations()
 
@@ -2714,15 +2806,15 @@ def unpublish_challenge(request):
                 # check if challenge has already been published
                 if challenge.draft == False:
 
-                    can_be_unpublished = True
+                    can_be_revoke = True
 
                     current_subscriptions = UserChallengeResources().find_current_subscriptions(challenge)
 
-                    # if there are no users who are subscribed to challenge, challenge can be unpublished
+                    # if there are no users who are subscribed to challenge, challenge can be revoke
                     if len(current_subscriptions) > 0:
-                        can_be_unpublished = False
+                        can_be_revoke = False
 
-                    if can_be_unpublished:
+                    if can_be_revoke:
 
                         try:
 
@@ -2742,14 +2834,14 @@ def unpublish_challenge(request):
                         response = service_informations.build_response(
                             exception.HTTPForbidden,
                             None,
-                            "You do not have permission to unpublish challenge that has already subscribed users.",
+                            error_messages.REVOKE_CHALLENGE_WITH_SUBSCRIBED_USERS,
                         )
 
                 else:
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to unpublish the challenge that has already been unpublished.",
+                        error_messages.REVOKE_CHALLENGE_ALREADY_REVOKED,
                     )
 
             else:
@@ -2758,8 +2850,6 @@ def unpublish_challenge(request):
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound,
-                None,
-                "Requested resource is not found.",
             )
 
     else:

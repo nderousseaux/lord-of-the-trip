@@ -14,6 +14,7 @@ from loftes.marshmallow_schema.EventToValidateSchema import EventToValidateSchem
 from loftes.resources import EventRessources
 from loftes.resources import UserCheckRessources
 
+import loftes.error_messages as error_messages
 
 import pyramid.httpexceptions as exception
 from pyramid.authentication import AuthTicket
@@ -21,45 +22,49 @@ import datetime
 import logging
 import json
 
-event = Service(name="event", path="/challenges/{challenge_id:\d+}/events", cors_policy=cors_policy)
+events = Service(name="events", path="/challenges/{challenge_id:\d+}/events", cors_policy=cors_policy)
 
 
-@event.get()
-def get_event(request):
+@events.get()
+def get_events(request):
 
     service_informations = ServiceInformations()
 
     user = UserCheckRessources.CheckUserConnect(request)
+
+    # check if user is authenticated
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
+        # check if challenge is found
         if challenge != None:
 
-            events = EventRessources.find_all_events_for_user_by_challenge(user.id, request.matchdict["challenge_id"])
+            events = EventRessources.find_all_events_for_user_by_challenge(user.id, challenge.id)
 
             if len(events) == 0:
-                return service_informations.build_response(exception.HTTPNotFound())
+                return service_informations.build_response(exception.HTTPNoContent())
 
             data = {"events": EventSchema(many=True).dump(events)}
+
             response = service_informations.build_response(exception.HTTPOk, data)
 
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested ressource 'Challenge' is not found.",
             )
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
+
 event_id = Service(
     name="event_id",
-    path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/{id:\d+}",
+    path="/events/{id:\d+}",
     cors_policy=cors_policy,
 )
+
 
 @event_id.get()
 def get_event_by_id(request):
@@ -67,59 +72,39 @@ def get_event_by_id(request):
     service_informations = ServiceInformations()
 
     user = UserCheckRessources.CheckUserConnect(request)
+
+    # check if user is authenticated
     if user != None:
 
-        challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
-        if challenge != None:
+        event = DBSession.query(Event).get(request.matchdict["id"])
 
-            segment_id = request.matchdict["segment_id"]
-            segment = DBSession.query(Segment).get(segment_id)
+        # check if event is found
+        if event != None:
 
-            if segment != None:
+            challenge = event.segment.challenge
 
-                event = (
-                    DBSession.query(Event)
-                    .filter(
-                        Event.segment_id == segment.id,
-                        Event.id == request.matchdict["id"],
-                    )
-                    .first()
-                )
+            if challenge != None:
 
-                if event == None:
-                    return service_informations.build_response(exception.HTTPNotFound())
-
-                return service_informations.build_response(exception.HTTPOk, EventSchema().dump(event))
+                response = service_informations.build_response(exception.HTTPOk, EventSchema().dump(event))
 
             else:
                 response = service_informations.build_response(
-                    exception.HTTPNotFound(),
-                    None,
-                    "Requested resource 'Segment' is not found.",
+                    exception.HTTPUnprocessableEntity, None, error_messages.CHALLENGE_IS_MISSING
                 )
         else:
-            response = service_informations.build_response(
-                exception.HTTPNotFound(),
-                None,
-                "Requested resource 'Challenge' is not found.",
-            )
+            response = service_informations.build_response(exception.HTTPNotFound())
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
 
 
-last_event = Service(
-    name="last_event",
-    path="/challenges/{challenge_id:\d+}/events/last",
-    cors_policy=cors_policy,
-)
-
 event_to_validate = Service(
     name="event_to_validate",
     path="/challenges/events/validation",
     cors_policy=cors_policy,
 )
+
 
 @event_to_validate.get()
 def get_event_to_validate(request):
@@ -133,14 +118,11 @@ def get_event_to_validate(request):
             obstcles_to_validate = EventRessources.get_obstacle_for_validation(user.id)
             if len(obstcles_to_validate) != 0:
                 response = service_informations.build_response(
-                    exception.HTTPOk, 
-                    EventToValidateSchema(many=True).dump(obstcles_to_validate)
+                    exception.HTTPOk, EventToValidateSchema(many=True).dump(obstcles_to_validate)
                 )
             else:
                 response = service_informations.build_response(
                     exception.HTTPNotFound(),
-                    None,
-                    "Requested resource 'Event' to validate is not found.",
                 )
 
         else:
@@ -150,6 +132,14 @@ def get_event_to_validate(request):
         response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
+
+
+last_event = Service(
+    name="last_event",
+    path="/challenges/{challenge_id:\d+}/events/last",
+    cors_policy=cors_policy,
+)
+
 
 @last_event.get()
 def get_last_event(request):
@@ -173,8 +163,6 @@ def get_last_event(request):
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested ressource 'Challenge' is not found.",
             )
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
@@ -187,6 +175,7 @@ event_distance_challenge = Service(
     path="/challenges/{challenge_id:\d+}/events/distance",
     cors_policy=cors_policy,
 )
+
 
 @event_distance_challenge.get()
 def get_event_distance_challenge(request):
@@ -207,8 +196,6 @@ def get_event_distance_challenge(request):
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested ressource 'Challenge' is not found.",
             )
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
@@ -221,6 +208,7 @@ event_distance_segment = Service(
     path="/segments/{segment_id:\d+}/events/distance",
     cors_policy=cors_policy,
 )
+
 
 @event_distance_segment.get()
 def get_event_distance_segment(request):
@@ -241,8 +229,6 @@ def get_event_distance_segment(request):
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested ressource 'Segment' is not found.",
             )
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
@@ -255,6 +241,7 @@ event_create = Service(
     path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events",
     cors_policy=cors_policy,
 )
+
 
 @event_create.post()
 def event_add(request):
@@ -274,7 +261,7 @@ def event_add(request):
             if segment != None:
 
                 try:
-                    
+
                     event_schema = EventSchema()
                     eventdata = event_schema.load(request.json)
                     eventdata.segment_id = segment_id
@@ -283,11 +270,9 @@ def event_add(request):
 
                     if eventdata.event_type_id == 5:
                         response = service_informations.build_response(
-                            exception.HTTPBadRequest, 
-                            None, 
-                            "You must use the check response"
+                            exception.HTTPBadRequest, None, error_messages.EVENT_CHECK_REPONSE
                         )
-                    else :
+                    else:
                         eventrulescheck = EventRessources.check_event_type_rule(
                             eventdata.event_type_id,
                             user.id,
@@ -327,8 +312,6 @@ def event_add(request):
             else:
                 response = service_informations.build_response(
                     exception.HTTPNotFound(),
-                    None,
-                    "Requested resource 'Segment' is not found.",
                 )
         else:
             response = service_informations.build_response(
@@ -347,6 +330,7 @@ event_question = Service(
     path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/checkresponse",
     cors_policy=cors_policy,
 )
+
 
 @event_question.post()
 def event_check_response(request):
@@ -388,7 +372,7 @@ def event_check_response(request):
 
                                 if obstacle.question_type == 0:
                                     # set response proceeded by system for automatique
-                                    eventdata.proceeded = True 
+                                    eventdata.proceeded = True
 
                                 DBSession.add(eventdata)
                                 DBSession.flush()
@@ -432,8 +416,6 @@ def event_check_response(request):
                             else:
                                 response = service_informations.build_response(
                                     exception.HTTPNotFound(),
-                                    None,
-                                    "Requested resource 'Obstacle' is not found.",
                                 )
                         else:
                             response = service_informations.build_response(
@@ -444,8 +426,6 @@ def event_check_response(request):
                     else:
                         response = service_informations.build_response(
                             exception.HTTPNotFound(),
-                            None,
-                            "Event type must be 5 (OBSTACLE_REP).",
                         )
 
                 except ValidationError as validation_error:
@@ -465,8 +445,6 @@ def event_check_response(request):
             else:
                 response = service_informations.build_response(
                     exception.HTTPNotFound(),
-                    None,
-                    "Requested resource 'Segment' is not found.",
                 )
         else:
             response = service_informations.build_response(
@@ -479,11 +457,13 @@ def event_check_response(request):
 
     return response
 
+
 event_question_up = Service(
     name="event_question_up",
     path="/events/{id:\d+}",
     cors_policy=cors_policy,
 )
+
 
 @event_question_up.put()
 def event_set_response_upload(request):
@@ -500,10 +480,10 @@ def event_set_response_upload(request):
                 if event.event_type_id == 5:
 
                     if request.query_string != "":
-                        
+
                         splitter = request.query_string.split("=")
                         if len(splitter) == 2 and splitter[0] == "validation":
-                            
+
                             if splitter[1] == "true":
                                 event_type = 6
                             else:
@@ -511,9 +491,7 @@ def event_set_response_upload(request):
 
                             try:
 
-                                DBSession.query(Event).filter(Event.id == event.id).update(
-                                    {Event.proceeded:1}
-                                )
+                                DBSession.query(Event).filter(Event.id == event.id).update({Event.proceeded: 1})
                                 DBSession.flush()
 
                                 now = datetime.datetime.now()
@@ -522,7 +500,7 @@ def event_set_response_upload(request):
                                     segment_id=event.segment_id,
                                     event_date=now,
                                     event_type_id=event_type,
-                                    obstacle_id=event.obstacle_id
+                                    obstacle_id=event.obstacle_id,
                                 )
 
                                 DBSession.add(eventresponse)
@@ -541,53 +519,37 @@ def event_set_response_upload(request):
                                 )
 
                             except PermissionError as pe:
-                                response = service_informations.build_response(
-                                    exception.HTTPUnauthorized
-                                )
+                                response = service_informations.build_response(exception.HTTPUnauthorized)
 
                             except Exception as e:
-                                response = service_informations.build_response(
-                                    exception.HTTPInternalServerError).logging.getLogger(__name__).warn("Returning: %s", 
-                                    str(e)
+                                response = (
+                                    service_informations.build_response(exception.HTTPInternalServerError)
+                                    .logging.getLogger(__name__)
+                                    .warn("Returning: %s", str(e))
                                 )
 
-                            
                         else:
                             response = service_informations.build_response(
                                 exception.HTTPNotFound(),
-                                None,
-                                "You must set the obstacle's validation value.",
-                            )                    
+                            )
                     else:
                         response = service_informations.build_response(
                             exception.HTTPNotFound(),
-                            None,
-                            "Validation status expected.",
                         )
-                
+
                 else:
                     response = service_informations.build_response(
                         exception.HTTPNotFound(),
-                        None,
-                        "You can only accept or reject an obstacle's OBSTACLE_REP.",
                     )
             else:
                 response = service_informations.build_response(
                     exception.HTTPNotFound(),
-                    None,
-                    "Requested resource 'Obstacle' is not found.",
                 )
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested resource 'Event' is not found.",
             )
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
-
-                                
-    #                             # Set response validation
-

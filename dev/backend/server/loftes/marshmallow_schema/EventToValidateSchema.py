@@ -12,6 +12,6 @@ class EventToValidateSchema(Schema):
     label = fields.Str()
     description = fields.Str()
     response = fields.Str()
-    
+
     class Meta:
         ordered = True

@@ -22,7 +22,8 @@ def find_all_obstacles_by_segment(segment):
 
     return query.all()
 
-def check_obstacles_position(segment,position):
+
+def check_obstacles_position(segment, position):
 
     obstacle = (
         DBSession.query(Obstacle)

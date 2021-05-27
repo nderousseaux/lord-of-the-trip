@@ -27,7 +27,7 @@ def get_event_type(request):
         event_types = DBSession.query(EventType).all()
 
         if len(event_types) == 0:
-            return service_informations.build_response(exception.HTTPNotFound())
+            return service_informations.build_response(exception.HTTPNoContent())
 
         data = {"eventTypes": EventTypeSchema(many=True).dump(event_types)}
 
