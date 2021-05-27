@@ -1,5 +1,5 @@
 *.xcworkspace
 .DS_Store
-dev/backend/sonar-scanner-4.3.0.2102-linux/
-dev/backend/sonar-project.properties
-dev/backend/.scannerwork
+sonar-scanner-4.3.0.2102-linux/
+sonar-project.properties
+.scannerwork/
