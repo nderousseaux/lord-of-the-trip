@@ -1006,7 +1006,7 @@ def delete_challenge(request):
 
                 current_subscriptions = UserChallengeResources().find_current_subscriptions(challenge)
 
-                # if there is no users who are subscribed to challenge, challenge can be deleted
+                # if there are no users who are subscribed to challenge, challenge can be deleted
                 if challenge.draft or len(current_subscriptions) == 0:
                     can_be_deleted = True
 
@@ -2693,7 +2693,7 @@ def unpublish_challenge(request):
 
                     current_subscriptions = UserChallengeResources().find_current_subscriptions(challenge)
 
-                    # if there is no users who are subscribed to challenge, challenge can be unpublished
+                    # if there are no users who are subscribed to challenge, challenge can be unpublished
                     if len(current_subscriptions) > 0:
                         can_be_unpublished = False
 
