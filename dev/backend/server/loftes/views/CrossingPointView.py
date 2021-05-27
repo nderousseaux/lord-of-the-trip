@@ -279,7 +279,8 @@ def create_crossing_point(request):
                         DBSession.flush()
 
                         response = service_informations.build_response(
-                            exception.HTTPCreated, crossing_point_schema.dump(crossing_point)
+                            exception.HTTPCreated,
+                            crossing_point_schema.dump(crossing_point),
                         )
 
                     except ValidationError as validation_error:
@@ -430,11 +431,13 @@ def get_crossing_point(request):
 
     return response
 
+
 crossing_point_segment = Service(
     name="crossingpoint_segment",
     path="/challenges/{challenge_id:\d+}/crossing-points/{id:\d+}/find-segments",
     cors_policy=cors_policy,
 )
+
 
 @crossing_point_segment.get()
 def get_crossing_point_segment(request):
@@ -450,9 +453,12 @@ def get_crossing_point_segment(request):
         if challenge != None:
 
             segments = (
-              DBSession.query(Segment)
-              .filter(Segment.challenge_id == challenge.id,Segment.start_crossing_point_id == request.matchdict["id"])
-              .all() 
+                DBSession.query(Segment)
+                .filter(
+                    Segment.challenge_id == challenge.id,
+                    Segment.start_crossing_point_id == request.matchdict["id"],
+                )
+                .all()
             )
 
             if len(segments) == 0:
@@ -570,7 +576,8 @@ def update_crossing_point(request):
                     id = request.matchdict["id"]
 
                     query = DBSession.query(CrossingPoint).filter(
-                        CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
+                        CrossingPoint.challenge_id == challenge.id,
+                        CrossingPoint.id == id,
                     )
 
                     crossing_point = query.first()
@@ -720,7 +727,8 @@ def modify_crossing_point(request):
                     id = request.matchdict["id"]
 
                     query = DBSession.query(CrossingPoint).filter(
-                        CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id
+                        CrossingPoint.challenge_id == challenge.id,
+                        CrossingPoint.id == id,
                     )
 
                     crossing_point = query.first()
@@ -839,7 +847,10 @@ def delete_crossing_point(request):
 
                     crossing_point = (
                         DBSession.query(CrossingPoint)
-                        .filter(CrossingPoint.challenge_id == challenge.id, CrossingPoint.id == id)
+                        .filter(
+                            CrossingPoint.challenge_id == challenge.id,
+                            CrossingPoint.id == id,
+                        )
                         .first()
                     )
 

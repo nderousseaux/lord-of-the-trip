@@ -523,6 +523,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "OK 200": [
@@ -643,6 +648,15 @@ define({ "api": [
     },
     "error": {
       "fields": {
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PermissionDenied",
+            "description": "<p>User is not challenge's admin or challenge's is not published yet</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -654,6 +668,11 @@ define({ "api": [
         ]
       },
       "examples": [
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
@@ -1282,6 +1301,127 @@ define({ "api": [
     "groupTitle": "Challenge"
   },
   {
+    "type": "patch",
+    "url": "/challenges/:id/publish",
+    "title": "Publication of challenge",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "PublishChallenge",
+    "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeStartDateAlreadyPassed",
+            "description": "<p>Publication of a challenge whose start date has already passed.</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeEndDateAlreadyPassed",
+            "description": "<p>Publication of a challenge whose end date has already passed.</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeAlreadyPublished",
+            "description": "<p>Publication of a challenge that has already been challenged.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to publish a challenge whose start date has already passed (10-05-2021, 19:04).\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to publish a challenge whose end date has already passed (10-05-2021, 19:04).\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to publish the challenge that has already been published.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ChallengeView.py",
+    "groupTitle": "Challenge"
+  },
+  {
     "type": "put",
     "url": "/challenges/:id",
     "title": "Update a challenge",
@@ -1313,6 +1453,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "Body parameters": [
@@ -1405,6 +1550,24 @@ define({ "api": [
             "description": "<p>Malformed request syntax.</p>"
           }
         ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -1444,6 +1607,16 @@ define({ "api": [
         {
           "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Crossing point does not exist.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1556,12 +1729,12 @@ define({ "api": [
         },
         {
           "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot subscribe to a unfinished challenge.\"\n  }\n}",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to subscribe to a unfinished challenge.\"\n  }\n}",
           "type": "json"
         },
         {
           "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot subscribe to a challenge you have created.\"\n  }\n}",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to subscribe to a challenge you have created.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1571,7 +1744,7 @@ define({ "api": [
         },
         {
           "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot subscribe to a challenge that has already been terminated.\"\n  }\n}",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to a challenge that has already been terminated.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1663,7 +1836,7 @@ define({ "api": [
         },
         {
           "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot unsubscribe from a challenge that you are not subscribed to.\"\n  }\n}",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to unsubscribe from a challenge that you are not subscribed to.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -2016,7 +2189,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"crossing_points\": [\n    {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    {\n      \"id\": 3,\n      \"name\": \"La passe du magicien\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.4\n    },\n    {\n      \"id\": 4,\n      \"name\": \"Le carrousel des ours\",\n      \"position_x\": 0.3,\n      \"position_y\": 0.4\n    },\n    {\n      \"id\": 5,\n      \"name\": \"Le pont des centaures\",\n      \"position_x\": 0.3,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 6,\n      \"name\": \"Le pont de la sorcière\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 7,\n      \"name\": \"Le nid des griffons\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 8,\n      \"name\": \"La table de pierre\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 9,\n      \"name\": \"Cair Paravel\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 10,\n      \"name\": \"Test4\",\n      \"position_x\": 13.0099,\n      \"position_y\": 87.1313\n    }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"crossing_points\": [\n    {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    {\n      \"id\": 3,id\n    },\n    {\n      \"id\": 4,\n      \"name\": \"Le carrousel des ours\",\n      \"position_x\": 0.3,\n      \"position_y\": 0.4\n    },\n    {\n      \"id\": 5,\n      \"name\": \"Le pont des centaures\",\n      \"position_x\": 0.3,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 6,\n      \"name\": \"Le pont de la sorcière\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 7,\n      \"name\": \"Le nid des griffons\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 8,\n      \"name\": \"La table de pierre\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 9,\n      \"name\": \"Cair Paravel\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 10,\n      \"name\": \"Test4\",\n      \"position_x\": 13.0099,\n      \"position_y\": 87.1313\n    }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -3024,7 +3197,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n\"progress\":14.6\n}",
+          "content": "\n{\n  \"progress\":14.6\n}",
           "type": "json"
         },
         {
@@ -3068,7 +3241,7 @@ define({ "api": [
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested ressource 'Segment' is not found for this challenge.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested ressource 'Segment' is not found.\"\n  }\n}",
           "type": "json"
         }
       ]

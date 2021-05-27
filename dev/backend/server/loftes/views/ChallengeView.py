@@ -4,7 +4,15 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Challenge, CrossingPoint, UserChallenge, User, Segment, Obstacle, DBSession
+from loftes.models import (
+    Challenge,
+    CrossingPoint,
+    UserChallenge,
+    User,
+    Segment,
+    Obstacle,
+    DBSession,
+)
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
@@ -199,7 +207,7 @@ def get_challenges(request):
 
         # solution pour ce sprint, pensez à changer
         if user.id == 1:
-          challenges = DBSession.query(Challenge).all()
+            challenges = DBSession.query(Challenge).all()
 
         if request.query_string != "":
             splitter = request.query_string.split("=")
@@ -208,7 +216,11 @@ def get_challenges(request):
                     challenges = ChallengeResources().find_all_published_challenges()
                 # if user is not superadmin and he wants to see all challenges
                 elif splitter[1] == "true" and user.id != 1:
-                    return service_informations.build_response(exception.HTTPForbidden,None,"You do not have permission to view this resource using the credentials that you supplied.",)
+                    return service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You do not have permission to view this resource using the credentials that you supplied.",
+                    )
 
         if len(challenges) == 0:
             return service_informations.build_response(exception.HTTPNotFound())
@@ -989,6 +1001,7 @@ def delete_challenge(request):
 
             can_be_deleted = False
 
+            # check if user is challenge's admin
             if user.id == challenge.admin_id:
 
                 current_subscriptions = UserChallengeResources().find_current_subscriptions(challenge)
@@ -1116,7 +1129,9 @@ def download_image(request):
 
         else:
             response = service_informations.build_response(
-                exception.HTTPNotFound, None, "Requested resource 'Challenge' is not found."
+                exception.HTTPNotFound,
+                None,
+                "Requested resource 'Challenge' is not found.",
             )
 
     else:
@@ -1265,7 +1280,9 @@ def upload_image(request):
 
                             else:
                                 response = service_informations.build_response(
-                                    exception.HTTPBadRequest, None, "The size of image is too big."
+                                    exception.HTTPBadRequest,
+                                    None,
+                                    "The size of image is too big.",
                                 )
 
                         else:
@@ -1714,54 +1731,52 @@ def verify(request):
                     try:
 
                         if challenge.start_crossing_point_id is None:
-                          response = service_informations.build_response(
+                            response = service_informations.build_response(
                                 exception.HTTPOk,
-                                {
-                                    "error": "They are no Start_challenge"
-                                },
+                                {"error": "They are no Start_challenge"},
                             )
                         else:
 
-                          # On vérifie qu'aucun crossing point n'est orphelin
-                          orphans = []
+                            # On vérifie qu'aucun crossing point n'est orphelin
+                            orphans = []
 
-                          crossingPoints = (
-                              DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
-                          )
+                            crossingPoints = (
+                                DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                            )
 
-                          # On vérifie qu'il y ai des crossings points
-                          if len(crossingPoints) < 2:
-                              orphans = crossingPoints
+                            # On vérifie qu'il y ai des crossings points
+                            if len(crossingPoints) < 2:
+                                orphans = crossingPoints
 
-                              response = service_informations.build_response(
-                                  exception.HTTPOk,
-                                  {
-                                      "orphans": CrossingPointSchema(many=True).dump(orphans),
-                                  },
-                              )
+                                response = service_informations.build_response(
+                                    exception.HTTPOk,
+                                    {
+                                        "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                    },
+                                )
 
-                          else:
-                              for crossing in crossingPoints:
-                                  if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
-                                      crossing.id != challenge.start_crossing_point_id
-                                      and len(crossing.segments_end) == 0
-                                  ):
+                            else:
+                                for crossing in crossingPoints:
+                                    if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
+                                        crossing.id != challenge.start_crossing_point_id
+                                        and len(crossing.segments_end) == 0
+                                    ):
 
-                                      orphans.append(crossing)
+                                        orphans.append(crossing)
 
-                                  loops, deadend = checkChallenge(challenge)
+                                    loops, deadend = checkChallenge(challenge)
 
-                                  if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
-                                      response = service_informations.build_response(
-                                          exception.HTTPOk,
-                                          {
-                                              "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
-                                              "deadend": CrossingPointSchema(many=True).dump(deadend),
-                                              "orphans": CrossingPointSchema(many=True).dump(orphans),
-                                          },
-                                      )
-                                  else:
-                                      response = service_informations.build_response(exception.HTTPNoContent)
+                                    if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
+                                        response = service_informations.build_response(
+                                            exception.HTTPOk,
+                                            {
+                                                "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
+                                                "deadend": CrossingPointSchema(many=True).dump(deadend),
+                                                "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                            },
+                                        )
+                                    else:
+                                        response = service_informations.build_response(exception.HTTPNoContent)
 
                     except Exception as e:
                         response = service_informations.build_response(exception.HTTPInternalServerError)
@@ -2090,7 +2105,8 @@ def duplicate(request):
                                             )
                                             # copy of new file
                                             shutil.copyfile(
-                                                old_challenge_image, str(get_project_root()) + new_challenge_map_url
+                                                old_challenge_image,
+                                                str(get_project_root()) + new_challenge_map_url,
                                             )
                                             if os.path.exists(str(get_project_root()) + new_challenge_map_url):
                                                 # update of challenge
@@ -2205,7 +2221,9 @@ def duplicate(request):
 
                             except ValidationError as validation_error:
                                 response = service_informations.build_response(
-                                    exception.HTTPBadRequest, None, str(validation_error)
+                                    exception.HTTPBadRequest,
+                                    None,
+                                    str(validation_error),
                                 )
 
                             except ValueError as value_error:
@@ -2319,6 +2337,7 @@ def get_challenges_for_user(request):
 
     return response
 
+
 admin_challenges = Service(
     name="user_created_challenges",
     path="admin/challenges",
@@ -2336,14 +2355,24 @@ def get_challenges_created_by_admin(request):
     # check if user is authenticated
     if user != None:
 
-        challenges = DBSession.query(Challenge).filter(Challenge.admin_id == user.id).all()
+        # check if user has the admin rights
+        if user.is_admin:
 
-        if len(challenges) == 0:
-            return service_informations.build_response(exception.HTTPNotFound())
+            challenges = DBSession.query(Challenge).filter(Challenge.admin_id == user.id).all()
 
-        data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+            if len(challenges) == 0:
+                return service_informations.build_response(exception.HTTPNotFound())
 
-        response = service_informations.build_response(exception.HTTPOk, data)
+            data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
+
+            response = service_informations.build_response(exception.HTTPOk, data)
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPForbidden,
+                None,
+                "You do not have permission to view this resource using the credentials that you supplied.",
+            )
 
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
@@ -2359,7 +2388,7 @@ challenge_image_mobile = Service(
 
 
 @challenge_image_mobile.get()
-def download_image(request):
+def download_image_mobile(request):
 
     service_informations = ServiceInformations()
 
@@ -2401,7 +2430,173 @@ def download_image(request):
 
         else:
             response = service_informations.build_response(
-                exception.HTTPNotFound, None, "Requested resource 'Challenge' is not found."
+                exception.HTTPNotFound,
+                None,
+                "Requested resource 'Challenge' is not found.",
+            )
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+challenge_publish = Service(
+    name="challenge_publish",
+    path="challenges/{id:\d+}/publish",
+    cors_policy=cors_policy,
+)
+
+"""
+@api {patch} /challenges/:id/publish Publication of challenge
+@apiParam id Challenge's unique ID.
+@apiVersion 0.3.0
+@apiName PublishChallenge
+@apiGroup Challenge
+@apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
+
+
+@apiSuccessExample {json} Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} ChallengeStartDateAlreadyPassed Publication of a challenge whose start date has already passed.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to publish a challenge whose start date has already passed (10-05-2021, 19:04)."
+  }
+}
+
+@apiError (Error 403) {Object} ChallengeEndDateAlreadyPassed Publication of a challenge whose end date has already passed.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to publish a challenge whose end date has already passed (10-05-2021, 19:04)."
+  }
+}
+
+@apiError (Error 403) {Object} ChallengeAlreadyPublished Publication of a challenge that has already been challenged.
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to publish the challenge that has already been published."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
+
+
+@challenge_publish.patch()
+def publish_challenge(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        # check if challenge is found
+        if challenge != None:
+
+            # check if user is challenge's admin
+            if user.id == challenge.admin_id:
+
+                # check if challenge has not been already published
+                if challenge.draft != False:
+
+                    can_be_published = True
+                    reason = ""
+                    now = datetime.datetime.now()
+
+                    if challenge.start_date != None and challenge.start_date < now:
+                        can_be_published = False
+                        reason = (
+                            "You do not have permission to publish a challenge whose start date has already passed ("
+                            + challenge.start_date.strftime("%d-%m-%Y, %H:%M")
+                            + ")."
+                        )
+
+                    if challenge.end_date != None and challenge.end_date < now:
+                        can_be_published = False
+                        reason = (
+                            "You do not have permission to publish a challenge whose end date has already passed ("
+                            + challenge.end_date.strftime("%d-%m-%Y, %H:%M")
+                            + ")."
+                        )
+
+                    if can_be_published:
+
+                        try:
+
+                            DBSession.query(Challenge).filter(Challenge.id == challenge.id).update(
+                                {Challenge.draft: False}
+                            )
+
+                            DBSession.flush()
+
+                            response = service_informations.build_response(exception.HTTPNoContent)
+
+                        except Exception as e:
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            reason,
+                        )
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        "You do not have permission to publish the challenge that has already been published.",
+                    )
+
+            else:
+                response = service_informations.build_response(exception.HTTPForbidden())
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound,
+                None,
+                "Requested resource is not found.",
             )
 
     else:
