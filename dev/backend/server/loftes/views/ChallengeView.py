@@ -402,6 +402,9 @@ def create_challenge(request):
             except ValueError as value_error:
                 response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
 
+            except PermissionError as pe:
+                response = service_informations.build_response(exception.HTTPForbidden, None, str(pe))
+
             except Exception as e:
                 response = service_informations.build_response(exception.HTTPInternalServerError)
                 logging.getLogger(__name__).warn("Returning: %s", str(e))
@@ -768,6 +771,9 @@ def update_challenge(request):
                             exception.HTTPBadRequest, None, str(value_error)
                         )
 
+                    except PermissionError as pe:
+                        response = service_informations.build_response(exception.HTTPForbidden, None, str(pe))
+
                     except Exception as e:
                         response = service_informations.build_response(exception.HTTPInternalServerError)
                         logging.getLogger(__name__).warn("Returning: %s", str(e))
@@ -936,6 +942,9 @@ def modify_challenge(request):
                         response = service_informations.build_response(
                             exception.HTTPBadRequest, None, str(value_error)
                         )
+
+                    except PermissionError as pe:
+                        response = service_informations.build_response(exception.HTTPForbidden, None, str(pe))
 
                     except Exception as e:
                         response = service_informations.build_response(exception.HTTPInternalServerError)
@@ -2231,9 +2240,6 @@ def duplicate(request):
                                 response = service_informations.build_response(
                                     exception.HTTPBadRequest, None, str(value_error)
                                 )
-
-                            except PermissionError as pe:
-                                response = service_informations.build_response(exception.HTTPUnauthorized)
 
                             except EnvironmentError as ee:
                                 response = service_informations.build_response(

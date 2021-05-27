@@ -104,6 +104,9 @@ class ChallengeSchema(Schema):
         if "scalling" in data and int(data["scalling"]) < 0:
             raise ValueError("This value (" + str(data["scalling"]) + ") is not valid for scalling.")
 
+        if "draft" in data:
+            raise PermissionError("The field draft is not used on challenge's creation")
+
         return data
 
     """This method is used to verify the data in json if methods are PUT or PATCH """
