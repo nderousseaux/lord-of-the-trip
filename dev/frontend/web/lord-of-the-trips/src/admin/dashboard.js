@@ -27,6 +27,7 @@ const AdminDashboard = () => {
         {challenges.challenges.map(c => (
           <li key={c.id}>
             {c.id} : {c.name} {' '}
+            <Button onClick={() => history.push(`/adminviewchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>View</Button> {' '}
             <Button onClick={() => history.push(`/editchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit</Button> {' '}
             {/* <Button onClick={() => duplicateChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Duplicate</Button> {' '} */}
             <Button onClick={() => deleteChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Delete</Button>

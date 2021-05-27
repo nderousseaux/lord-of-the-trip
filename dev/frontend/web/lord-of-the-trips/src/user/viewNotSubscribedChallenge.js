@@ -5,21 +5,7 @@ import apiUserChallenge from '../api/userChallenge';
 import Button from '@material-ui/core/Button';
 import ChallengeInfo from './challengeInfo';
 import ChallengeMap from './challengeMap';
-
-const flexCenter = {
-  display: 'flex',
-  justifyContent: 'center'
-};
-
-const flexRow = {
-  display: 'flex',
-  flexDirection: 'row'
-};
-
-const flexLeft = {
-  width: '30%',
-  marginRight: '5px'
-};
+import * as css from '../CustomCSS';
 
 const ViewNotSubscribedChallenge = () => {
   let { id } = useParams();
@@ -29,7 +15,7 @@ const ViewNotSubscribedChallenge = () => {
 
   return <>
     {isLoading ? 'Loading...' : isError ? error.message : <>
-      <div style={flexRow}>
+      <div style={css.flexRow}>
         <ViewChallengeInfo challenge={challenge} />
         <ChallengeMap challenge={challenge} />
       </div>
@@ -50,9 +36,9 @@ const ViewChallengeInfo = ({ challenge }) => {
   });
 
   return (
-    <div style={flexLeft}>
+    <div style={css.flexLeft}>
       <ChallengeInfo challenge={challenge} />
-      <div style={flexCenter}>
+      <div style={css.flexCenter}>
         <Button onClick={() => subscribeChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Subscibe</Button> {' '}
       </div>
     </div>

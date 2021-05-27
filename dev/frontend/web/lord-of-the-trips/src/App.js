@@ -11,6 +11,7 @@ import ViewNotSubscribedChallenge from './user/viewNotSubscribedChallenge';
 import AdminDashboard from './admin/dashboard';
 import EditChallenge from './admin/editChallenge';
 import EditMap from './admin/editMap';
+import AdminViewChallenge from './admin/viewChallenge/viewChallenge';
 import './Custom.css';
 import Button from '@material-ui/core/Button';
 
@@ -79,6 +80,9 @@ const Routes = () => {
         </Route>
         <Route path="/editmap/:id">
           <EditMap />
+        </Route>
+        <Route path="/adminviewchallenge/:id">
+          <AdminViewChallenge />
         </Route>
 
         <Redirect to="/" />

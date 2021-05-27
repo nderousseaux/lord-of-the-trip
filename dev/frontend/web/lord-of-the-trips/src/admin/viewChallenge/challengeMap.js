@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Stage, Layer, Image, Circle, Arrow, Star } from 'react-konva';
 import { useQuery, useMutation } from 'react-query';
-import apiChallenge from '../api/challenge';
-import apiCrossingPoints from '../api/crossingPoints';
-import apiSegments from '../api/segments';
-import apiObstacles from '../api/obstacles';
-import { percentToPixels, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
-import * as css from '../CustomCSS';
+import apiChallenge from '../../api/challenge';
+import apiCrossingPoints from '../../api/crossingPoints';
+import apiSegments from '../../api/segments';
+import apiObstacles from '../../api/obstacles';
+import { percentToPixels, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../../utils/utils";
+import * as css from '../../CustomCSS';
 
 const ChallengeMap = ({ challenge }) => {
   const [errorDownload, setErrorDownload] = useState(null);

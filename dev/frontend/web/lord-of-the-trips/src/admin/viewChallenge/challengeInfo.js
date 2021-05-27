@@ -1,4 +1,4 @@
-import * as css from '../CustomCSS';
+import * as css from '../../CustomCSS';
 
 const ChallengeInfo = ({ challenge }) => {
 
@@ -21,7 +21,6 @@ const ChallengeInfo = ({ challenge }) => {
         <div style={css.flex20mid}>
           <b>Scaling</b>
           <p>{challenge.scalling} meters</p>
-          {/* (the width of the map do 1000 meters) */}
         </div>
         <div style={css.flex20mid}>
           <b>Level</b>
