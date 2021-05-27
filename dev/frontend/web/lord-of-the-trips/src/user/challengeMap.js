@@ -12,7 +12,7 @@ const flexRight = {
   marginLeft: '5px'
 };
 
-const ViewChallengeMap = ({ challenge }) => {
+const ChallengeMap = ({ challenge }) => {
   const [errorDownload, setErrorDownload] = useState(null);
   const [successDownload, setSuccessDownload] = useState(false);
   const [image, setImage] = useState(null);
@@ -258,4 +258,4 @@ const ViewChallengeMap = ({ challenge }) => {
   );
 };
 
-export default ViewChallengeMap;
+export default ChallengeMap;
