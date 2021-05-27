@@ -2537,8 +2537,8 @@ def publish_challenge(request):
             # check if user is challenge's admin
             if user.id == challenge.admin_id:
 
-                # check if challenge has not been already published
-                if challenge.draft != False:
+                # check if challenge has not already been published
+                if challenge.draft:
 
                     can_be_published = True
                     reason = ""
