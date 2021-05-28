@@ -223,7 +223,7 @@ def get_challenges(request):
                     )
 
         if len(challenges) == 0:
-            return service_informations.build_response(exception.HTTPNotFound())
+            return service_informations.build_response(exception.HTTPNoContent())
 
         data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
 
@@ -2333,7 +2333,7 @@ def get_challenges_for_user(request):
                     challenges = ChallengeResources().find_all_unsubscribed_challenges_by_user(user.id)
 
         if len(challenges) == 0:
-            return service_informations.build_response(exception.HTTPNotFound())
+            return service_informations.build_response(exception.HTTPNoContent())
 
         data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
 
@@ -2365,10 +2365,22 @@ def get_challenges_created_by_admin(request):
         # check if user has the admin rights
         if user.is_admin:
 
-            challenges = DBSession.query(Challenge).filter(Challenge.admin_id == user.id).all()
+            challenges = []
+            if request.query_string != "":
+                splitter = request.query_string.split("=")
+                if len(splitter) == 2 and splitter[0] == "draft":
+                    if splitter[1] == "false":
+                        challenges = challenges = (
+                            DBSession.query(Challenge).filter(Challenge.admin_id == user.id, Challenge.draft == False).all()
+                        )
+
+                    elif splitter[1] == "true":
+                        challenges = challenges = (
+                            DBSession.query(Challenge).filter(Challenge.admin_id == user.id, Challenge.draft == True).all()
+                        )
 
             if len(challenges) == 0:
-                return service_informations.build_response(exception.HTTPNotFound())
+                return service_informations.build_response(exception.HTTPNoContent())
 
             data = {"challenges": ChallengeSchema(many=True).dump(challenges)}
 
@@ -2611,6 +2623,7 @@ def publish_challenge(request):
 
     return response
 
+
 challenge_unpublish = Service(
     name="challenge_unpublish",
     path="challenges/{id:\d+}/unpublish",
@@ -2674,6 +2687,8 @@ HTTP/1.1 404 Not Found
   }
 }
 """
+
+
 @challenge_unpublish.patch()
 def unpublish_challenge(request):
 
