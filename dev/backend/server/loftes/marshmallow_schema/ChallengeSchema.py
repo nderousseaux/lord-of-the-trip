@@ -113,6 +113,10 @@ class ChallengeSchema(Schema):
 
     def check_json(self, data, **kwargs):
 
+
+        if len(data) == 0:
+            raise ValueError('Nothing to update.')
+
         if "name" in data:
             if data["name"] == None:
                 raise ValueError("Field must not be null.")
