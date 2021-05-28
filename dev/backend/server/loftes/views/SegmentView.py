@@ -322,7 +322,6 @@ def create_segment(request):
                         segment_schema = SegmentSchema()
                         segment = segment_schema.load(request.json, unknown=INCLUDE)
                         segment.challenge_id = challenge.id
-                        print(segment)
 
                         DBSession.add(segment)
                         DBSession.flush()
