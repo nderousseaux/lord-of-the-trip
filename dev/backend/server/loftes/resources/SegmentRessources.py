@@ -3,26 +3,37 @@ from loftes.models import Segment, Challenge, CrossingPoint,  DBSession
 import json
 import math
 
-def calculate_Length_betweeb_Two_Points(start_point,end_point, scalling):
+from PIL import Image
+from loftes.utils import get_project_root
+
+def calculate_length_between_two_points(start_point,end_point, map_length, map_heigth):
         
-        distance_x = end_point['position_x'] - start_point['position_x']
-        distance_y = end_point['position_y'] - start_point['position_y']
+        distance_x = (end_point['position_x'] - start_point['position_x']) * map_length
+        distance_y = (end_point['position_y'] - start_point['position_y']) * map_heigth
 
         distance_x2 = distance_x * distance_x
         distance_y2 = distance_y * distance_y
 
-        pixel_length = math.sqrt(distance_x2 + distance_y2)
-
-        real_length = pixel_length * scalling
+        real_length = math.sqrt(distance_x2 + distance_y2)
 
         return real_length
 
-def calculate_segment_Length(segment_id):
+def calculate_segment_length(segment_id):
 
   segment = DBSession.query(Segment).get(segment_id)
   if segment != None:
 
     challenge = DBSession.query(Challenge).get(segment.challenge_id)
+
+    #Get image dimension
+    url = str(get_project_root()) + challenge.map_url
+    img = Image.open(url)
+    dim = img.size
+    size_length = dim[0]
+    size_heigth = dim[1] 
+
+    map_heigth = (challenge.scalling * size_heigth) / size_length
+
     start_crossing_point = DBSession.query(CrossingPoint).get(segment.start_crossing_point_id)
     end_crossing_point = DBSession.query(CrossingPoint).get(segment.end_crossing_point_id)
 
@@ -45,7 +56,7 @@ def calculate_segment_Length(segment_id):
     length = 0
     for i in range(0,n):
 
-      point_length = calculate_Length_betweeb_Two_Points(list_coordinates[i],list_coordinates[i+1], challenge.scalling)
+      point_length = calculate_length_between_two_points(list_coordinates[i],list_coordinates[i+1], challenge.scalling, map_heigth)
       
       length += point_length
     
