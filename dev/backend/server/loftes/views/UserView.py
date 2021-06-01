@@ -1,96 +1,100 @@
-from loftes.cors import cors_policy
-
 from cornice import Service
 
+from loftes.cors import cors_policy
 from loftes.models import User, DBSession
 
 from loftes.marshmallow_schema import UserSchema
+from loftes.services.ServiceInformations import ServiceInformations
+from loftes.security.PasswordUtils import PasswordUtils
+
+from marshmallow import ValidationError
+
+import logging
 
 import pyramid.httpexceptions as exception
 
-user = Service(name="user", path="/user", cors_policy=cors_policy)
-# @user.get()
-# def get_users(request):
+user = Service(
+    name="user", 
+    path="/user/update", 
+    cors_policy=cors_policy)
 
-#     userdata = DBSession.query(User).all()
+@user.put()
+def update_user(request):
 
-#     if len(userdata) == 0:
-#         raise exception.HTTPError("Aucune utilisateur")
+    service_informations = ServiceInformations()
 
-#     res = UserSchema(many=True).dump(userdata)
-#     return res
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-# @user.post()
-# def user_add(request):
+    # check if user is authenticated
+    if user != None:
 
-#    try:
-#         userdata = UserSchema().load(request.json)
+        query = DBSession.query(User).filter(User.id==user.id)
+        try:
 
-#         DBSession.add(userdata)
-#         DBSession.flush()
+            query.update(UserSchema().check_json(request.json))
+            DBSession.flush()
+            response = service_informations.build_response(exception.HTTPNoContent)
 
-#         response = exception.HTTPCreated()
-#         response.text = json.dumps(UserSchema().dump(userdata))
+        except ValidationError as validation_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(validation_error)
+            )
 
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented()
-#         print(e)
+        except ValueError as value_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(value_error)
+            )
 
-#     return response
+        except PermissionError as pe:
+            response = service_informations.build_response(exception.HTTPUnauthorized)
 
-# user_id = Service(name='user_id',
-#                   path='/user/{id}',
-#                   cors_policy=cors_policy)
+        except Exception as e:
+            response = service_informations.build_response(exception.HTTPInternalServerError)
+            logging.getLogger(__name__).warn("Returning: %s", str(e))
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
-# @user_id.get()
-# def get_user_by_id(request):
+    return response
 
-#     try:
+user_patch = Service(
+    name="user_patch", 
+    path="/user/modify", 
+    cors_policy=cors_policy)
 
-#         id = request.matchdict['id']
+@user_patch.patch()
+def modify_user(request):
 
-#         userdata  = DBSession.query(User).get(id)
+    service_informations = ServiceInformations()
 
-#         res = UserSchema().dump(userdata)
-#         response.text = res
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented(e)
-#         print(e)
+    # check if user is authenticated
+    if user != None:
 
-#     return response
+        query = DBSession.query(User).filter(User.id==user.id)
+        try:
 
-# @user_id.put()
-# def modify_user(request):
+            query.update(UserSchema().check_json(request.json))
+            DBSession.flush()
+            response = service_informations.build_response(exception.HTTPNoContent)
 
-#     try:
-#         id = request.matchdict['id']
-#         UserSchema().load(request.json)
+        except ValidationError as validation_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(validation_error)
+            )
 
-#         userdata = DBSession.query(User).filter(User.id_user == id).update(request.json)
-#         DBSession.flush()
+        except ValueError as value_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(value_error)
+            )
 
-#         response = exception.HTTPCreated()
-#         response.text = json.dumps(QuestionSchema().dump(questiondata))
+        except PermissionError as pe:
+            response = service_informations.build_response(exception.HTTPUnauthorized)
 
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented(e)
-#         print(e)
+        except Exception as e:
+            response = service_informations.build_response(exception.HTTPInternalServerError)
+            logging.getLogger(__name__).warn("Returning: %s", str(e))
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
-#     return response
-
-# @user_id.delete()
-# def delete_user(request):
-
-#     try:
-#         id = request.matchdict['id']
-
-#         userdata = DBSession.query(User).get(id)
-
-#         DBSession.delete(userdata)
-
-#         response = exception.HTTPAccepted
-
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented()
-#         print(e)
+    return response
