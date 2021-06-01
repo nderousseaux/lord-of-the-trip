@@ -1,2 +1,5 @@
 *.xcworkspace
 .DS_Store
+sonar-scanner-4.3.0.2102-linux/
+sonar-project.properties
+.scannerwork/

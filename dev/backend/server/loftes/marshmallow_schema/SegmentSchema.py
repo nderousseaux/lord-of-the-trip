@@ -53,7 +53,7 @@ class SegmentSchema(Schema):
 
     @post_dump
     def get_length(self, data, **kwargs):
-        data["length"] = SegmentRessources.calculate_segment_Length(data["id"])
+        data["length"] = SegmentRessources.calculate_segment_length(data["id"])
 
         return data
 

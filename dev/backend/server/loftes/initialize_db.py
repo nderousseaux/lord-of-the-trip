@@ -18,13 +18,13 @@ from .models import (
 )
 from loftes.security.PasswordUtils import PasswordUtils
 
-from .models.User import *
-from .models.Challenge import *
-from .models.CrossingPoint import *
-from .models.Segment import *
-from .models.UserChallenge import *
-from .models.EventType import *
-from .models.Obstacle import *
+from .models.User import User
+from .models.Challenge import Challenge
+from .models.CrossingPoint import CrossingPoint
+from .models.Segment import Segment
+from .models.UserChallenge import UserChallenge
+from .models.EventType import EventType
+from .models.Obstacle import Obstacle
 
 
 def usage(argv):
@@ -56,8 +56,8 @@ def fill(argv=sys.argv):
     config_uri = argv[1]
     settings = get_appsettings(config_uri)
     engine = engine_from_config(settings, "sqlalchemy.")
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    session_maker = sessionmaker(bind=engine)
+    session = session_maker()
 
     # DATA
 

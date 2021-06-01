@@ -27,6 +27,7 @@ class EventSchema(Schema):
     footstep = fields.Int()
     obstacle_id = fields.Int()
     response = fields.Str()
+    proceeded = fields.Bool(load_only=True)
 
     class Meta:
         ordered = True
@@ -38,14 +39,19 @@ class EventSchema(Schema):
     @pre_load
     def pre_load(self, data, many, **kwargs):
 
+        if data["event_type_id"] == 4 and "obstacle_id" not in data:
+            raise ValueError("the obstacle not be null.")
+
         if "obstacle_id" in data:
             if data["obstacle_id"] == None:
                 raise ValueError("the obstacle not be null.")
+            
+            if data["event_type_id"] == 5:
 
-            if "response" not in data:
-                raise ValueError("You must specified a response for the obstacle.")
+                if "response" not in data:
+                    raise ValueError("You must specified a response for the obstacle.")
 
-            if data["response"] == None:
-                raise ValueError("You must specified a response for the obstacle.")
+                if data["response"] == None:
+                    raise ValueError("You must specified a response for the obstacle.")
 
         return data

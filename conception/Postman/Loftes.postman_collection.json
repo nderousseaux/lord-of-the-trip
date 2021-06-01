@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a1e2e43c-1344-4c67-8423-048596371acb",
+		"_postman_id": "5a960853-22c6-4b3a-8cc1-a13e6e5044b3",
 		"name": "Loftes",
 		"description": "Pour le faire tourner, changez dans variable la valeur de bas_url\n",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -380,7 +380,8 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						]
+						],
+						"id": "8f143052-cf49-4c87-8d19-7db6f759c110"
 					}
 				},
 				{
@@ -389,10 +390,12 @@
 						"type": "text/javascript",
 						"exec": [
 							""
-						]
+						],
+						"id": "537d7da5-562e-4e47-99ac-60c238486d8b"
 					}
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Segments",
@@ -406,7 +409,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "b24077ee-ab0c-438d-b8c3-fc02d6f8c77c"
 							}
 						}
 					],
@@ -448,7 +452,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "dee125c8-56fd-4d6f-a1e7-7162a8881be1"
 							}
 						}
 					],
@@ -491,7 +496,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "1cb136a9-1787-4e25-86d6-b06d8832308b"
 							}
 						}
 					],
@@ -530,7 +536,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "64709269-37da-4c21-a4b9-a5d0ef47b3bd"
 							}
 						}
 					],
@@ -570,7 +577,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "23433435-7aba-44a6-9680-effc3dfcd2de"
 							}
 						}
 					],
@@ -610,7 +618,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "c21d7d15-9d4e-4a67-92a2-63e880c9f8e7"
 							}
 						}
 					],
@@ -641,7 +650,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "CrossingPoint",
@@ -655,7 +665,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "1bfadf30-f1fa-4e3d-8a17-0c94b0955979"
 							}
 						}
 					],
@@ -698,7 +709,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "1c37267b-d487-40c5-865c-ac19903c55d8"
 							}
 						}
 					],
@@ -741,7 +753,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "9d416320-924e-4558-a4f5-a8dcd2df08ee"
 							}
 						}
 					],
@@ -808,7 +821,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "e35b60af-9b94-43f1-b26f-1b7f421c80d8"
 							}
 						}
 					],
@@ -848,7 +862,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "6303f46d-615a-42f7-970c-6b6dd00ba4b7"
 							}
 						}
 					],
@@ -888,7 +903,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "15ff7dc7-d9c2-411d-8740-63f54a4052d5"
 							}
 						}
 					],
@@ -918,8 +934,64 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "CROSSING_POINT_FIND_START_SEGMENT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "edade855-d7aa-49c2-80b3-f17692a8193f",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjI0OTI0MTcsImV4cCI6MTYyMjQ5NjAxN30.x7f5j2j1z7YWHuztTlrsuwUtSwkKR8LYEVEssk_KH1jRJDCGuQq7Szcak59HxWJQ43h1ZyrQVS3MnoR3MXtcuQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/crossing-points/5/find-segments",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"crossing-points",
+								"5",
+								"find-segments"
+							]
+						}
+					},
+					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Events",
@@ -933,7 +1005,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "9d72fca4-1f2f-46c0-822e-e0fb1d926868"
 							}
 						}
 					],
@@ -975,7 +1048,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "1d7336ba-da73-4f12-9423-31fcc4950fee"
 							}
 						}
 					],
@@ -1018,7 +1092,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "2fcf7ff7-a6f7-4cb3-8705-633591aebc5e"
 							}
 						}
 					],
@@ -1080,8 +1155,332 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "EVENT_CHECK_RESPONSE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "38ef76ed-f007-499d-9d74-b753df9d1122",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjIzODY0MzgsImV4cCI6MTYyMjM5MDAzOH0.TN576HyWqtAtBDXy3t9HraYTwG2g72nmj8hvZs6EUpK5mWvWSoyLKzUSEsLHFeihjl4oZai0nYNRB4hG-McI0w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event_type_id\": 5,\n    \"obstacle_id\":4,\n    \"response\": \"/uploads/challenges/challenge_3.jpeg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/2/segments/13/events/checkresponse",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"2",
+								"segments",
+								"13",
+								"events",
+								"checkresponse"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_VALIDATION_RESPONSE_UP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d170633f-5dc1-4d0c-9bb9-0ff6c3dd3e96",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjIzODY0MzgsImV4cCI6MTYyMjM5MDAzOH0.TN576HyWqtAtBDXy3t9HraYTwG2g72nmj8hvZs6EUpK5mWvWSoyLKzUSEsLHFeihjl4oZai0nYNRB4hG-McI0w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/events/16?validation=true",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"events",
+								"16"
+							],
+							"query": [
+								{
+									"key": "validation",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_FIND_LAST",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0bd0dd45-d38d-4e74-b60b-c7a5c1568cd5",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjI0OTI0MTcsImV4cCI6MTYyMjQ5NjAxN30.x7f5j2j1z7YWHuztTlrsuwUtSwkKR8LYEVEssk_KH1jRJDCGuQq7Szcak59HxWJQ43h1ZyrQVS3MnoR3MXtcuQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/events/last",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"events",
+								"last"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_DISTANCE_BY_CHALLENGE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d1e791dc-6a4b-42a9-94e2-9a5636e88df5",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjI0OTI0MTcsImV4cCI6MTYyMjQ5NjAxN30.x7f5j2j1z7YWHuztTlrsuwUtSwkKR8LYEVEssk_KH1jRJDCGuQq7Szcak59HxWJQ43h1ZyrQVS3MnoR3MXtcuQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/1/events/distance",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"1",
+								"events",
+								"distance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENT_DISTANCE_BY_SEGMENT",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9deb27ec-c73f-48e6-bb23-e6de85530531",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjI0OTI0MTcsImV4cCI6MTYyMjQ5NjAxN30.x7f5j2j1z7YWHuztTlrsuwUtSwkKR8LYEVEssk_KH1jRJDCGuQq7Szcak59HxWJQ43h1ZyrQVS3MnoR3MXtcuQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/segments/2/events/distance",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"segments",
+								"2",
+								"events",
+								"distance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EVENTS_TO_VALIDATE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "541ced68-1959-41e1-8101-b8f599c914b6",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjI0OTI0MTcsImV4cCI6MTYyMjQ5NjAxN30.x7f5j2j1z7YWHuztTlrsuwUtSwkKR8LYEVEssk_KH1jRJDCGuQq7Szcak59HxWJQ43h1ZyrQVS3MnoR3MXtcuQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url_base}}/challenges/events/validation",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
+								"events",
+								"validation"
+							]
+						}
+					},
+					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "EventsType",
@@ -1095,7 +1494,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "f419b3e0-2a00-4e61-ba47-ff82cab99862"
 							}
 						}
 					],
@@ -1132,7 +1532,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "74584c60-f11f-49cc-ae2e-f7e50a99fa59"
 							}
 						}
 					],
@@ -1172,7 +1573,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "918b332c-1b47-4659-9fbb-93a45aa43f1f"
 							}
 						}
 					],
@@ -1204,7 +1606,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Obstacles",
@@ -1218,7 +1621,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "0cee7197-b3ce-40be-a9a1-a7ab76bb40ca"
 							}
 						}
 					],
@@ -1279,7 +1683,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "59770b48-9f6e-4ed7-9332-3d91395fac12"
 							}
 						}
 					],
@@ -1324,7 +1729,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "9b379e13-5e3c-49af-a7c8-1adcf7bd766b"
 							}
 						}
 					],
@@ -1365,7 +1771,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "d9f34d9f-73f4-4ac1-809a-1286c1c6b866"
 							}
 						}
 					],
@@ -1407,7 +1814,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "4485214b-35d3-45c2-9f4b-bdc33436b6ed"
 							}
 						}
 					],
@@ -1449,7 +1857,8 @@
 								"exec": [
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "3dffb246-7765-432d-a374-6eb2395667b3"
 							}
 						}
 					],
@@ -1482,7 +1891,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "Authentication",
@@ -1524,7 +1934,8 @@
 									"    pm.collectionVariables.set(\"token\", pm.response.json().token);\r",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"id": "637e615b-4887-46ff-b36b-00ea53821b37"
 							}
 						}
 					],
@@ -1626,7 +2037,8 @@
 				"type": "text/javascript",
 				"exec": [
 					""
-				]
+				],
+				"id": "2f4ffdd8-c8fd-47fb-bd4e-cf22f2394bc8"
 			}
 		},
 		{
@@ -1635,18 +2047,22 @@
 				"type": "text/javascript",
 				"exec": [
 					""
-				]
+				],
+				"id": "84743f28-dcb8-4909-911b-80f5a62fb637"
 			}
 		}
 	],
 	"variable": [
 		{
+			"id": "ea38413c-2bd3-4e79-b3be-ad80d717bd71",
 			"key": "url_base",
 			"value": "https://hephaistos.nathanaelderousseaux.fr/api/"
 		},
 		{
+			"id": "1d2721c9-0c30-4efc-8207-c63fe93e831d",
 			"key": "token",
 			"value": ""
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

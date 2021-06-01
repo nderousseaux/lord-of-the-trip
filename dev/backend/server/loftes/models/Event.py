@@ -18,3 +18,4 @@ class Event(Base):
     distance = Column(Integer)
     obstacle_id = Column(Integer, ForeignKey("Obstacle.id"))
     response = Column(String(255))
+    proceeded = Column(Boolean, server_default=text("0"))
