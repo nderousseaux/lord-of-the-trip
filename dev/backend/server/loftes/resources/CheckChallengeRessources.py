@@ -46,7 +46,7 @@ def listElementBetweenItem(seq, item):
 
     for elem in seq:
         if not recording and elem == item:
-            recording == True
+            recording = True
             subList.append(elem)
 
         elif recording and elem != item:

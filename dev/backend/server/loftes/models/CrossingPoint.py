@@ -7,7 +7,7 @@ from loftes.models import Base
 class CrossingPoint(Base):
     __tablename__ = "CrossingPoint"
     id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255))
     position_x = Column(Float(precision=2), nullable=False)
     position_y = Column(Float(precision=2), nullable=False)
     challenge_id = Column(Integer, ForeignKey("Challenge.id"))
@@ -35,6 +35,4 @@ class CrossingPoint(Base):
         backref="challenge_end_crossing-points",
         cascade="all,delete",
     )
-
-
-# Index("idx_name_cp", CrossingPoint.challenge_id, CrossingPoint.name, unique=True)
+    

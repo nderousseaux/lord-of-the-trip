@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 
 from loftes.models import Base
 
-
 class Segment(Base):
     __tablename__ = "Segment"
     id = Column(Integer, primary_key=True)
@@ -28,6 +27,3 @@ class Segment(Base):
     challenge_id = Column(Integer, ForeignKey("Challenge.id"))
     challenge = relationship("Challenge", backref="challenge_segments")
     obstacles = relationship("Obstacle", cascade="all,delete", backref="segment_obstacles", lazy=True)
-
-
-# Index('idx_name_seg', Segment.challenge_id, Segment.name, unique=True)

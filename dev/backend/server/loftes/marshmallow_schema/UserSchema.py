@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, pre_load, post_load, validate
 from loftes.models import Base, User, DBSession
 from loftes.security.PasswordUtils import PasswordUtils
 from loftes.services.ServiceInformations import ServiceInformations
-from loftes.resources.UserRessources import check_data
+from loftes.resources.UserResources import check_data
 import hashlib, binascii, os, re
 
 

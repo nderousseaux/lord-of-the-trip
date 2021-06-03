@@ -54,16 +54,13 @@ class ObstacleSchema(Schema):
 
     def check_json(self, data, **kwargs):
 
-        if "label" in data:
-            if data["label"] == None:
+        if "label" in data and (data["label"] == None or data["label"] == ""):
                 raise ValueError("Field label must not be null.")
 
-        if "progress" in data:
-            if data["progress"] == None:
+        if "progress" in data and (data["progress"] == None or data["progress"] == ""):
                 raise ValueError("Field progress must not be null.")
 
-        if "question_type" in data:
-            if data["question_type"] == None:
+        if "question_type" in data and (data["question_type"] == None or data["question_type"] == ""):
                 raise ValueError("Field type question must not be null.")
 
         return self.pre_load(data, True)
