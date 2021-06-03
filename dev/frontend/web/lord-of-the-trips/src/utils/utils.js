@@ -1,8 +1,3 @@
-// Converti les degrés en radian (pour le dessin des cercles)
-export const degToRad = (degrees) => {
-  return degrees * Math.PI / 180;
-};
-
 // Donne les coordonnées de la pointe de la flèche d'un segment
 // x1 et y1 : coordonnées du point avant celui de fin du segment
 // x2 et y2 : coordonnées du point de passage de fin du segment
@@ -34,8 +29,7 @@ export const pixelsLengthBetweenTwoPoints = (startPoint, endPoint) => {
   let dy = endPoint.position_y - startPoint.position_y;
   let dx2 = dx * dx;
   let dy2 = dy * dy;
-  let pixelsLength = Math.sqrt(dx2 + dy2);
-  return pixelsLength;
+  return Math.sqrt(dx2 + dy2);
 }
 
 // La distance entre 2 points dans la réalité, avec l'échelle et la taille de la map en pixels en paramètre
@@ -45,6 +39,5 @@ export const realLengthBetweenTwoPoints = (startPoint, endPoint, scaling, width)
   let dx2 = dx * dx;
   let dy2 = dy * dy;
   let pixelsLength = Math.sqrt(dx2 + dy2);
-  let realLength = pixelsLength * scaling / width;
-  return realLength;
+  return pixelsLength * scaling / width;
 }

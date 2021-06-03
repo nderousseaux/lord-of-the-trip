@@ -1,5 +1,4 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { HashRouter, Switch, Route, Redirect, Link, useHistory } from 'react-router-dom';
 import { AuthProvider, useAuth } from './authentication/auth';
 import Login from './authentication/Login';
@@ -46,7 +45,6 @@ const Header = () => {
 };
 
 const Routes = () => {
-  //let { user } = useAuth();
   return (
     <>
       <Switch>
@@ -98,7 +96,6 @@ const Main = () => {
         <Header />
         <hr />
         <Routes />
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </AuthProvider>
     </>
   );

@@ -14,7 +14,7 @@ const UserDashboard = () => {
 const SubscribedChallenges = () => {
   const queryClient = useQueryClient();
   const history = useHistory();
-  const { isLoading, isError, error, data: subscribedChallenges } = useQuery('subscribedChallenges', () => apiUserChallenge.getSubscribedChallenges());
+  const { isLoading, isError, data: subscribedChallenges } = useQuery('subscribedChallenges', () => apiUserChallenge.getSubscribedChallenges());
 
   const unsubscribeChallenge = useMutation( (id) => apiUserChallenge.unsubscribeChallenge(id), {
     onSuccess: () => {
@@ -42,7 +42,7 @@ const SubscribedChallenges = () => {
 const NotSubscribedChallenges = () => {
   const queryClient = useQueryClient();
   const history = useHistory();
-  const { isLoading, isError, error, data: notSubscribedChallenges } = useQuery('notSubscribedChallenges', () => apiUserChallenge.getNotSubscribedChallenges());
+  const { isLoading, isError, data: notSubscribedChallenges } = useQuery('notSubscribedChallenges', () => apiUserChallenge.getNotSubscribedChallenges());
 
   const subscribeChallenge = useMutation( (id) => apiUserChallenge.subscribeChallenge(id), {
     onSuccess: () => {

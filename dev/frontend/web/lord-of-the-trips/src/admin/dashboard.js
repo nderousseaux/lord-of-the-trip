@@ -50,7 +50,7 @@ const CreateChallengeForm = () => {
 const EditableChallenges = () => {
   const queryClient = useQueryClient();
   const history = useHistory();
-  const { isLoading, isError, error, data: editableChallenges } = useQuery('editableChallenges', () => apiChallenge.getEditableChallengesFromAdmin());
+  const { isLoading, isError, data: editableChallenges } = useQuery('editableChallenges', () => apiChallenge.getEditableChallengesFromAdmin());
 
   const deleteChallenge = useMutation( (id) => apiChallenge.deleteChallenge(id), {
     onSuccess: () => {
@@ -78,7 +78,7 @@ const EditableChallenges = () => {
 const PublishedChallenges = () => {
   const queryClient = useQueryClient();
   const history = useHistory();
-  const { isLoading, isError, error, data: publishedChallenges } = useQuery('publishedChallenges', () => apiChallenge.getPublishedChallengesFromAdmin());
+  const { isLoading, isError, data: publishedChallenges } = useQuery('publishedChallenges', () => apiChallenge.getPublishedChallengesFromAdmin());
 
   const duplicateChallenge = useMutation( (id) => apiChallenge.duplicateChallenge(id), {
     onSuccess: () => {
