@@ -243,7 +243,7 @@ const EditMap = () => {
 
   const openSegmentModalFunction = (segment) => {
     let segmentLenghts = realLengthSegment(segment);
-    let totalLength = Math.ceil(segmentLenghts.totalLength); // longueur en mêtres du segment arrondi à l'entier supérieur
+    let totalLength = Math.ceil(segmentLenghts.totalLength);
     setDataForModal({ ...segment, totalLength: totalLength });
     setOpenSegmentModal(true);
   };
@@ -562,7 +562,8 @@ const EditMap = () => {
                                                    onMouseEnter={(e) => onMouseEnterCrossingPoint(e, crossingPoint)}
                                                    onMouseLeave={(e) => onMouseLeaveCrossingPoint(e, crossingPoint)} />)}
               { /* Render obstacles */ }
-              {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y} numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"}
+              {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y}
+                                         numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"}
                                          onClick={(e) => onClickObstacle(e, obstacle)} />)}
             </Layer>
           </Stage>

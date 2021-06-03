@@ -24,7 +24,7 @@ const AdminViewChallenge = () => {
           </div>
           : null }
         </div>
-        <ChallengeMap challenge={challenge} />
+        <ChallengeMap challenge={challenge} isAdmin={true} />
       </div>
     </> }
   </>
