@@ -351,25 +351,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Unpublish Challenge",
-					"request": {
-						"method": "PATCH",
-						"header": [],
-						"url": {
-							"raw": "{{url_base}}/challenge/1/publish",
-							"host": [
-								"{{url_base}}"
-							],
-							"path": [
-								"challenge",
-								"1",
-								"publish"
-							]
-						}
-					},
-					"response": []
 				}
 			],
 			"description": "Requête pour un challenge\n\nDonnées envoyé dans le JSON sous forme de body \n\nChamps obligatoire en création\n - name\n\nChamps utilisable en modification : \n - name\n - description \n - end_date = \tForamt \"YYYY-MM-DD\"\n -  alone_only = 0 ou 1\n - leve\" : Niveau du challenge,\n - scalling\" : niveau\n - draft : true ou false\n - start_crossing_point_id : id du crossing point\n - end_crossing_point_id : id du crossing point\n - admin_id : id de l'administrateur\n\n\n  Exemple pour modification\n    {\n        \"name\":\"First Challenge\",\n        \"description\":\"Description\", \n        \"end_date\":\"2022-10-18\",\n        \"alone_only\" : 1,\n        \"level\" : \"Débutant\",\n        \"scalling\" : 10,\n        \"draft\": true,\n        \"start_crossing_point_id\" : 1,\n        \"end_crossing_point_id\" : 2,\n        \"admin_id\" : 1\n    }",
@@ -1904,7 +1885,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"first_name\":\"Harry\", \n\t\"last_name\":\"Potter\", \n\t\"pseudo\":\"h_potter\", \n\t\"email\":\"potter@hotmail.com\", \n\t\"password\":\"hogwarts\"\n}",
+							"raw": "{\n\t\"first_name\":\"Ororo\", \n\t\"last_name\":\"Munroe\", \n\t\"pseudo\":\"O_Munroe\", \n\t\"email\":\"storm2@hotmail.com\", \n\t\"password\":\"tornadeXmen\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1929,13 +1910,13 @@
 						{
 							"listen": "test",
 							"script": {
+								"id": "637e615b-4887-46ff-b36b-00ea53821b37",
 								"exec": [
 									"pm.test(\"Test connexion\", function () {\r",
 									"    pm.collectionVariables.set(\"token\", pm.response.json().token);\r",
 									"});"
 								],
-								"type": "text/javascript",
-								"id": "637e615b-4887-46ff-b36b-00ea53821b37"
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1993,23 +1974,98 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		},
 		{
 			"name": "User",
 			"item": [
 				{
-					"name": "All subscribers of a challenge",
+					"name": "UserUpdate",
 					"request": {
-						"method": "GET",
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJncmFuZ2VyQGhvdG1haWwuY29tIiwiaWF0IjoxNjIyNTc1OTg4LCJleHAiOjE2MjI1Nzk1ODh9.tonxr-VR2h21Yx3WzTZSrnakfzmTHJQa09UT-qSImohVmBMQWjzch9Saaa8vf9tDcQF0QyTlSDTBrY41i_g6Rw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"Hermione\", \n\t\"password\":\"Pattenrond\"\n}"
+						},
 						"url": {
-							"raw": "{{url_base}}/challenge/1/subscribers",
+							"raw": "{{url_base}}/user/update",
 							"host": [
 								"{{url_base}}"
 							],
 							"path": [
-								"challenge",
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserModify",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJncmFuZ2VyQGhvdG1haWwuY29tIiwiaWF0IjoxNjIyNTc5Mzg2LCJleHAiOjE2MjI1ODI5ODZ9.whoqnsLvBCUXIDSitJEHauQwJjv5GWgpFYlVE6mmJIsntw67RRGg_XR3Ze5eEeoybJ_066_QVQIYKh8V2V0pVQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"Hermione\", \n\t\"last_name\":\"Granger\"\n}"
+						},
+						"url": {
+							"raw": "{{url_base}}/user/modify",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"user",
+								"modify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All subscribers of a challenge",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZW1haXRyZUBnbWFpbC5jb20iLCJpYXQiOjE2MjI3MDI5OTgsImV4cCI6MTYyMjcwNjU5OH0.HPZNOSeZZUJA-NomYGdHaTaohVFVfBY92yAW7aL7JwCAV5Awp8Ur4swBkrpbFfC0L46TLSuV-8bMI2jVzQAE-g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_base}}/challenges/1/subscribers",
+							"host": [
+								"{{url_base}}"
+							],
+							"path": [
+								"challenges",
 								"1",
 								"subscribers"
 							]
@@ -2017,7 +2073,8 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"auth": {
@@ -2034,32 +2091,32 @@
 		{
 			"listen": "prerequest",
 			"script": {
+				"id": "2f4ffdd8-c8fd-47fb-bd4e-cf22f2394bc8",
 				"type": "text/javascript",
 				"exec": [
 					""
-				],
-				"id": "2f4ffdd8-c8fd-47fb-bd4e-cf22f2394bc8"
+				]
 			}
 		},
 		{
 			"listen": "test",
 			"script": {
+				"id": "84743f28-dcb8-4909-911b-80f5a62fb637",
 				"type": "text/javascript",
 				"exec": [
 					""
-				],
-				"id": "84743f28-dcb8-4909-911b-80f5a62fb637"
+				]
 			}
 		}
 	],
 	"variable": [
 		{
-			"id": "ea38413c-2bd3-4e79-b3be-ad80d717bd71",
+			"id": "7ce6b86a-29dd-44ec-b7b3-1dd189f5422e",
 			"key": "url_base",
-			"value": "https://hephaistos.nathanaelderousseaux.fr/api/"
+			"value": "http://localhost:6543"
 		},
 		{
-			"id": "1d2721c9-0c30-4efc-8207-c63fe93e831d",
+			"id": "a8b47e92-fd6f-4857-8ca5-640a75cebb4d",
 			"key": "token",
 			"value": ""
 		}
