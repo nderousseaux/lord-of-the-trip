@@ -1928,7 +1928,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\":\"granger@hotmail.com\", \n\t\"password\":\"Pattenrond\"\n}",
+							"raw": "{\n\t\"email\":\"lemaitre@gmail.com\", \n\t\"password\":\"Conquérantdelunivers\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2111,12 +2111,12 @@
 	],
 	"variable": [
 		{
-			"id": "96d453f9-75b8-48b2-a8e2-dc2012266d4e",
+			"id": "7ce6b86a-29dd-44ec-b7b3-1dd189f5422e",
 			"key": "url_base",
 			"value": "http://localhost:6543"
 		},
 		{
-			"id": "7261dcac-28f7-484f-ac09-4495fb2bb77b",
+			"id": "a8b47e92-fd6f-4857-8ca5-640a75cebb4d",
 			"key": "token",
 			"value": ""
 		}
