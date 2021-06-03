@@ -1850,6 +1850,115 @@
     "groupTitle": "Challenge"
   },
   {
+    "type": "patch",
+    "url": "/challenges/:id/unpublish",
+    "title": "Unpublish one challenge",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "UnpublishChallenge",
+    "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeAlreadyUnpublished",
+            "description": "<p>Unpublish a challenge that has already been unpublished.</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "ChallengeAlreadyStarted",
+            "description": "<p>Unpublish a challenge that has already subscribed users.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>The id of the Challenge was not found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to unpublish the challenge that has already been unpublished.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to unpublish challenge that has already subscribed users.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ChallengeView.py",
+    "groupTitle": "Challenge"
+  },
+  {
     "type": "post",
     "url": "/challenges/:id/verify",
     "title": "Verification of graph integrity",
@@ -4123,5 +4232,101 @@
     },
     "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/SegmentView.py",
     "groupTitle": "Segment"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:id/subscribers",
+    "title": "Request all subscribers of a challenge",
+    "version": "0.3.0",
+    "name": "GetSubscribers",
+    "group": "User",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Subscribers",
+            "description": "<p>All users subscribed</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"subscribers\": [\n    {\n      \"first_name\": \"Bilbo\",\n      \"last_name\": \"Baggins\",\n      \"pseudo\": \"ring_bearer\",\n      \"email\": \"littlehobbit@yahoo.com\",\n      \"is_admin\": false\n    },\n    {\n      \"first_name\": \"Daenerys\",\n      \"last_name\": \"Targaryen\",\n      \"pseudo\": \"motherOfDragons\",\n      \"email\": \"d.targaryen@gmail.com\",\n      \"is_admin\": true\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PermissionDenied",
+            "description": "<p>User is not challenge's admin</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No challenges were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/UserView.py",
+    "groupTitle": "User"
   }
 ]
