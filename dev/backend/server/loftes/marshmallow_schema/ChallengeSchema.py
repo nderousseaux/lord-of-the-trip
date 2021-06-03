@@ -15,6 +15,7 @@ from sqlalchemy import func
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
+from loftes.resources.UserResources import UserResources
 
 # from loftes.marshmallow_schema.EventSchema import EventSchema
 
@@ -45,6 +46,7 @@ class ChallengeSchema(Schema):
     start_crossing_point = fields.Nested(CrossingPointSchema)
     end_crossing_point = fields.Nested(CrossingPointSchema)
     segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
+    nb_subscribers = fields.Int(dump_only=True)
     admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
     event_sum = fields.Int(dump_only=True)
@@ -52,6 +54,14 @@ class ChallengeSchema(Schema):
 
     class Meta:
         ordered = True
+
+    @pre_dump
+    def get_nb_subscribers(self, data, **kwargs):
+
+        subscribers = UserResources().find_all_subscribers_by_challenge(data)
+        data.nb_subscribers = len(subscribers)
+
+        return data
 
     # @pre_dump
     # def get_eventsum(self,data, **kwargs):
@@ -102,13 +112,20 @@ class ChallengeSchema(Schema):
             data["end_date"] = datetime.datetime.fromisoformat(data["end_date"]).isoformat()
 
         if "scalling" in data and int(data["scalling"]) < 0:
-            raise ValueError("This value ("+str(data["scalling"])+") is not valid for scalling.")
+            raise ValueError("This value (" + str(data["scalling"]) + ") is not valid for scalling.")
+
+        if "draft" in data:
+            raise PermissionError("The field draft is not used on challenge's creation")
 
         return data
 
     """This method is used to verify the data in json if methods are PUT or PATCH """
 
     def check_json(self, data, **kwargs):
+
+
+        if len(data) == 0:
+            raise ValueError('Nothing to update.')
 
         if "name" in data:
             if data["name"] == None:

@@ -2,95 +2,347 @@ from loftes.cors import cors_policy
 
 from cornice import Service
 
-from loftes.models import User, DBSession
+from loftes.models import User, Challenge, DBSession
 
 from loftes.marshmallow_schema import UserSchema
+from loftes.services.ServiceInformations import ServiceInformations
+from loftes.resources.UserResources import UserResources
+from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
+
+from marshmallow import ValidationError
+
+import logging
 
 import pyramid.httpexceptions as exception
 
-user = Service(name="user", path="/user", cors_policy=cors_policy)
-# @user.get()
-# def get_users(request):
+challenge_subscribers= Service(
+    name="challenge_subscribers",
+    path="challenges/{id:\d+}/subscribers",
+    cors_policy=cors_policy,
+)
 
-#     userdata = DBSession.query(User).all()
+"""
+@api {get} /challenges/:id/subscribers Request all subscribers of a challenge
+@apiVersion 0.3.0
+@apiName GetSubscribers
+@apiGroup User
+@apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
-#     if len(userdata) == 0:
-#         raise exception.HTTPError("Aucune utilisateur")
+@apiSuccess (OK 200) {Array} Subscribers All users subscribed
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
 
-#     res = UserSchema(many=True).dump(userdata)
-#     return res
+{
+  "subscribers": [
+    {
+      "first_name": "Bilbo",
+      "last_name": "Baggins",
+      "pseudo": "ring_bearer",
+      "email": "littlehobbit@yahoo.com",
+      "is_admin": false
+    },
+    {
+      "first_name": "Daenerys",
+      "last_name": "Targaryen",
+      "pseudo": "motherOfDragons",
+      "email": "d.targaryen@gmail.com",
+      "is_admin": true
+    }
+  ]
+}
 
-# @user.post()
-# def user_add(request):
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
 
-#    try:
-#         userdata = UserSchema().load(request.json)
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
 
-#         DBSession.add(userdata)
-#         DBSession.flush()
+@apiError (Error 403) {Object} PermissionDenied User is not challenge's admin
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
 
-#         response = exception.HTTPCreated()
-#         response.text = json.dumps(UserSchema().dump(userdata))
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to view this resource using the credentials that you supplied."
+  }
+}
 
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented()
-#         print(e)
+@apiError (Error 404) {Object} RessourceNotFound No challenges were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
 
-#     return response
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
+@challenge_subscribers.get()
+def get_all_subscribers(request):
 
-# user_id = Service(name='user_id',
-#                   path='/user/{id}',
-#                   cors_policy=cors_policy)
+    service_informations = ServiceInformations()
 
-# @user_id.get()
-# def get_user_by_id(request):
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-#     try:
+    # check if user is authenticated
+    if user != None:
 
-#         id = request.matchdict['id']
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
 
-#         userdata  = DBSession.query(User).get(id)
+        # check if challenge is found
+        if challenge != None:
 
-#         res = UserSchema().dump(userdata)
-#         response.text = res
+            # check if user is challenge's admin or challenge is published
+            if user.id == challenge.admin_id:
 
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented(e)
-#         print(e)
+                subscribers = UserResources().find_all_subscribers_by_challenge(challenge)
 
-#     return response
+                if len(subscribers) > 0:
 
-# @user_id.put()
-# def modify_user(request):
+                    data = {"subscribers": UserSchema(many=True).dump(subscribers)}
 
-#     try:
-#         id = request.matchdict['id']
-#         UserSchema().load(request.json)
+                    response = service_informations.build_response(exception.HTTPOk, data)
+                else:
+                    response = service_informations.build_response(exception.HTTPNotFound())
 
-#         userdata = DBSession.query(User).filter(User.id_user == id).update(request.json)
-#         DBSession.flush()
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden,
+                    None,
+                    "You do not have permission to view this resource using the credentials that you supplied.",
+                )
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound())
 
-#         response = exception.HTTPCreated()
-#         response.text = json.dumps(QuestionSchema().dump(questiondata))
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
 
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented(e)
-#         print(e)
+    return response
 
-#     return response
+user_update = Service(
+    name="user_update", 
+    path="/user/update", 
+    cors_policy=cors_policy
+)
 
-# @user_id.delete()
-# def delete_user(request):
+@user_update.put()
+def update_user(request):
 
-#     try:
-#         id = request.matchdict['id']
+    service_informations = ServiceInformations()
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
-#         userdata = DBSession.query(User).get(id)
+    # check if user is authenticated
+    if user != None:
 
-#         DBSession.delete(userdata)
+        query = DBSession.query(User).filter(User.id==user.id)
+        try:
 
-#         response = exception.HTTPAccepted
+            query.update(UserSchema().check_json(request.json))
+            DBSession.flush()
+            response = service_informations.build_response(exception.HTTPNoContent)
 
-#     except Exception as e:
-#         response = exception.HTTPNotImplemented()
-#         print(e)
+        except ValidationError as validation_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(validation_error)
+            )
+
+        except ValueError as value_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(value_error)
+            )
+
+        except PermissionError as pe:
+            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+        except Exception as e:
+            response = service_informations.build_response(exception.HTTPInternalServerError)
+            logging.getLogger(__name__).warn("Returning: %s", str(e))
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+user_patch = Service(
+    name="user_patch", 
+    path="/user/modify", 
+    cors_policy=cors_policy
+    )
+
+@user_patch.patch()
+def modify_user(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        query = DBSession.query(User).filter(User.id==user.id)
+        try:
+
+            query.update(UserSchema().check_json(request.json))
+            DBSession.flush()
+            response = service_informations.build_response(exception.HTTPNoContent)
+
+        except ValidationError as validation_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(validation_error)
+            )
+
+        except ValueError as value_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(value_error)
+            )
+
+        except PermissionError as pe:
+            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+        except Exception as e:
+            response = service_informations.build_response(exception.HTTPInternalServerError)
+            logging.getLogger(__name__).warn("Returning: %s", str(e))
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+user = Service(
+    name="user", 
+    path="/user/update", 
+    cors_policy=cors_policy)
+
+@user.put()
+def update_user(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        query = DBSession.query(User).filter(User.id==user.id)
+        try:
+
+            query.update(UserSchema().check_json(request.json))
+            DBSession.flush()
+            response = service_informations.build_response(exception.HTTPNoContent)
+
+        except ValidationError as validation_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(validation_error)
+            )
+
+        except ValueError as value_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(value_error)
+            )
+
+        except PermissionError as pe:
+            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+        except Exception as e:
+            response = service_informations.build_response(exception.HTTPInternalServerError)
+            logging.getLogger(__name__).warn("Returning: %s", str(e))
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+user_patch = Service(
+    name="user_patch", 
+    path="/user/modify", 
+    cors_policy=cors_policy)
+
+@user_patch.patch()
+def modify_user(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        query = DBSession.query(User).filter(User.id==user.id)
+        try:
+
+            query.update(UserSchema().check_json(request.json))
+            DBSession.flush()
+            response = service_informations.build_response(exception.HTTPNoContent)
+
+        except ValidationError as validation_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(validation_error)
+            )
+
+        except ValueError as value_error:
+            response = service_informations.build_response(
+                exception.HTTPBadRequest, None, str(value_error)
+            )
+
+        except PermissionError as pe:
+            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+        except Exception as e:
+            response = service_informations.build_response(exception.HTTPInternalServerError)
+            logging.getLogger(__name__).warn("Returning: %s", str(e))
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response

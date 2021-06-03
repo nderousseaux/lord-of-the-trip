@@ -1,4 +1,5 @@
 from pyramid.response import Response
+import unicodedata
 
 
 class ServiceInformations:
@@ -36,3 +37,13 @@ class ServiceInformations:
         }
 
         return switcher.get(code, "ERROR")
+
+    def replace_accents(self, text):
+
+        text = unicodedata.normalize("NFD", text).encode("ascii", "ignore").decode("utf-8")
+
+        return str(text)
+
+    def replace_specials(self, text):
+
+        return text.translate({ord(c): "" for c in "!'@#$%^&*()[]{};:,./<>?\|`~-=_+ "})

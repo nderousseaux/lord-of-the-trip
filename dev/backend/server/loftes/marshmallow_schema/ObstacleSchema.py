@@ -36,7 +36,7 @@ class ObstacleSchema(Schema):
         if "progress" in data:
 
             if int(data["progress"]) < 0:
-                raise ValueError("This value ("+str(data["progress"])+") is not valid for progress.")
+                raise ValueError("This value (" + str(data["progress"]) + ") is not valid for progress.")
 
             obstacle = (
                 DBSession.query(Obstacle)
@@ -50,7 +50,7 @@ class ObstacleSchema(Schema):
             if obstacle != None:
                 raise ValueError("There is already one obstacle at this position for this segment.")
 
-            return data
+        return data
 
     def check_json(self, data, **kwargs):
 

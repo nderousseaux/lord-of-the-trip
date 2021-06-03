@@ -3,7 +3,7 @@ from sqlalchemy import func
 
 import datetime
 
-def findAllEventForUserByChallenge(user_id,challenge_id):
+def find_all_events_for_user_by_challenge(user_id,challenge_id):
 
     data = (
         DBSession.query(Event)
@@ -17,7 +17,7 @@ def findAllEventForUserByChallenge(user_id,challenge_id):
 
     return data
 
-def distance_Event_For_User_By_Challenge(user_id,challenge_id):
+def distance_event_for_user_by_challenge(user_id,challenge_id):
 
     data = (
         DBSession.query(func.sum(Event.distance).label('distance'))
@@ -28,7 +28,7 @@ def distance_Event_For_User_By_Challenge(user_id,challenge_id):
 
     return data
 
-def distance_Event_For_User_By_Segment(user_id,segment_id):
+def distance_event_for_user_by_segment(user_id,segment_id):
 
     data = (
         DBSession.query(func.sum(Event.distance).label('distance'))
@@ -38,28 +38,7 @@ def distance_Event_For_User_By_Segment(user_id,segment_id):
 
     return data
 
-def distance_Event_For_User_By_Challenge(user_id,challenge_id):
-
-    data = (
-        DBSession.query(func.sum(Event.distance).label('distance'))
-        .filter(Event.user_id == user_id)
-        .join(Segment,Event.segment_id==Segment.id)
-        .filter(Segment.challenge_id==challenge_id).first()
-    )
-
-    return data
-
-def distance_Event_For_User_By_Segment(user_id,segment_id):
-
-    data = (
-        DBSession.query(func.sum(Event.distance).label('distance'))
-        .filter(Event.user_id == user_id)
-        .filter(Event.segment_id == segment_id).first()
-    )
-
-    return data
-
-def findLastEventForUserByChallenge(user_id,challenge_id):
+def find_last_event_for_user_by_challenge(user_id,challenge_id):
 
     data = (
         DBSession.query(Event)
@@ -73,7 +52,7 @@ def findLastEventForUserByChallenge(user_id,challenge_id):
 
     return data
 
-def CheckChallengeForEvent(challenge_id, user_id):
+def check_challenge_for_event(challenge_id, user_id):
 
     challenge = DBSession.query(Challenge).get(challenge_id)
 
@@ -101,7 +80,7 @@ def CheckChallengeForEvent(challenge_id, user_id):
 
     return response
 
-def CheckEventTypeRule(event_type,user_id, challenge_id,segment_id):
+def check_event_type_rule(event_type,user_id, challenge_id,segment_id):
 
     # Get last challenge subscription
     lastsubscribed = (
@@ -169,3 +148,27 @@ def CheckEventTypeRule(event_type,user_id, challenge_id,segment_id):
     # Event_type = 9 => CHOOSE_SEGMENT
     if (event_type == 9) and (lastevent.event_type_id != 8) :
         return "The last event before 'CHOOSE_SEGMENT' must be 'CROSS_PT_ARRIVAL', not '" + eventtype.code + "'"
+
+def get_obstacle_for_validation(user_id):
+
+    # Get all obstacle to validate for challenge
+  
+    obstcles_to_validate = (
+        DBSession.query(
+            (Challenge.id).label("challenge_id"),
+            (Challenge.name).label("challenge_name"),
+            (Event.id).label("event_id"),
+            (Obstacle.label).label("label"),
+            (Obstacle.description).label("description"),
+            (Event.response).label("response")
+        )   
+        .join(Segment,Event.segment_id==Segment.id)
+        .join(Challenge,Challenge.id==Segment.challenge_id)
+        .join(Obstacle,Obstacle.id==Event.obstacle_id)
+        .filter(Event.proceeded==False, Event.event_type_id==5)
+        .filter(Challenge.admin_id==user_id)
+        .filter(Segment.challenge_id==Challenge.id)
+        .order_by(Event.id.desc()).all()
+    )
+
+    return obstcles_to_validate

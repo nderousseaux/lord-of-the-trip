@@ -18,13 +18,13 @@ from .models import (
 )
 from loftes.security.PasswordUtils import PasswordUtils
 
-from .models.User import *
-from .models.Challenge import *
-from .models.CrossingPoint import *
-from .models.Segment import *
-from .models.UserChallenge import *
-from .models.EventType import *
-from .models.Obstacle import *
+from .models.User import User
+from .models.Challenge import Challenge
+from .models.CrossingPoint import CrossingPoint
+from .models.Segment import Segment
+from .models.UserChallenge import UserChallenge
+from .models.EventType import EventType
+from .models.Obstacle import Obstacle
 
 
 def usage(argv):
@@ -56,8 +56,8 @@ def fill(argv=sys.argv):
     config_uri = argv[1]
     settings = get_appsettings(config_uri)
     engine = engine_from_config(settings, "sqlalchemy.")
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    session_maker = sessionmaker(bind=engine)
+    session = session_maker()
 
     # DATA
 
@@ -88,7 +88,10 @@ def fill(argv=sys.argv):
     )
     session.add(et7)
 
-    et8 = EventType(code="CROSS_PT_ARRIVAL", label="Arrivée à un point de passage")
+    et8 = EventType(
+        code="CROSS_PT_ARRIVAL",
+        label="Arrivée à un point de passage",
+    )
     session.add(et8)
 
     et9 = EventType(code="CHOOSE_SEGMENT", label="Choix d'un segment")
@@ -150,7 +153,12 @@ def fill(argv=sys.argv):
     session.commit()
 
     # Challenge
-    cp1 = CrossingPoint(name="L'armoire", challenge_id="1", position_x="0.142", position_y="0.324511")
+    cp1 = CrossingPoint(
+        name="L'armoire",
+        challenge_id="1",
+        position_x="0.142",
+        position_y="0.324511",
+    )
     session.add(cp1)
     session.commit()
 
@@ -209,7 +217,12 @@ def fill(argv=sys.argv):
     session.add(cp7)
     session.commit()
 
-    cp8 = CrossingPoint(name="La table de pierre", challenge_id="1", position_x="0.2", position_y="0.5")
+    cp8 = CrossingPoint(
+        name="La table de pierre",
+        challenge_id="1",
+        position_x="0.2",
+        position_y="0.5",
+    )
     session.add(cp8)
     session.commit()
 
@@ -392,14 +405,30 @@ def fill(argv=sys.argv):
     session.add(q2)
     session.commit()
 
-    q3 = Obstacle(label="Télécharger une photo", progress=0.5, question_type=1, nb_points=30, segment_id=3)
+    q3 = Obstacle(
+        label="Télécharger une photo",
+        progress=0.5,
+        question_type=1,
+        nb_points=30,
+        segment_id=3,
+    )
     session.add(q3)
     session.commit()
 
     # update challenge1
-    session.query(Challenge).filter(Challenge.id == 1).update({Challenge.start_crossing_point_id:1, Challenge.end_crossing_point_id:3})
+    session.query(Challenge).filter(Challenge.id == 1).update(
+        {
+            Challenge.start_crossing_point_id: 1,
+            Challenge.end_crossing_point_id: 3,
+        }
+    )
     session.commit()
 
     # update challenge2
-    session.query(Challenge).filter(Challenge.id == 2).update({Challenge.start_crossing_point_id:4, Challenge.end_crossing_point_id:5})
+    session.query(Challenge).filter(Challenge.id == 2).update(
+        {
+            Challenge.start_crossing_point_id: 4,
+            Challenge.end_crossing_point_id: 5,
+        }
+    )
     session.commit()
