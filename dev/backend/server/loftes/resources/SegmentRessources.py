@@ -25,42 +25,51 @@ def calculate_segment_length(segment_id):
 
     challenge = DBSession.query(Challenge).get(segment.challenge_id)
 
-    #Get image dimension
-    url = str(get_project_root()) + challenge.map_url
-    img = Image.open(url)
-    dim = img.size
-    size_length = dim[0]
-    size_heigth = dim[1] 
+    if challenge.map_url != None and challenge.map_url != '':
 
-    map_heigth = (challenge.scalling * size_heigth) / size_length
+      #Get image dimension
+      url = str(get_project_root()) + challenge.map_url
+      try:
+        img = Image.open(url)
+        dim = img.size
+        size_length = dim[0]
+        size_heigth = dim[1] 
 
-    start_crossing_point = DBSession.query(CrossingPoint).get(segment.start_crossing_point_id)
-    end_crossing_point = DBSession.query(CrossingPoint).get(segment.end_crossing_point_id)
+        map_heigth = (challenge.scalling * size_heigth) / size_length
 
-    list_coordinates = json.loads(segment.coordinates)
-    start = {
-      "position_x": start_crossing_point.position_x,
-      "position_y": start_crossing_point.position_y
-    }
-    list_coordinates.insert(0, start)
+        start_crossing_point = DBSession.query(CrossingPoint).get(segment.start_crossing_point_id)
+        end_crossing_point = DBSession.query(CrossingPoint).get(segment.end_crossing_point_id)
 
-    end = {
-      "position_x": end_crossing_point.position_x,
-      "position_y": end_crossing_point.position_y
-    }
-    list_coordinates.append(end)
+        list_coordinates = json.loads(segment.coordinates)
+        start = {
+          "position_x": start_crossing_point.position_x,
+          "position_y": start_crossing_point.position_y
+        }
+        list_coordinates.insert(0, start)
 
-    n = len(list_coordinates) - 1
-    #ICI start + End
+        end = {
+          "position_x": end_crossing_point.position_x,
+          "position_y": end_crossing_point.position_y
+        }
+        list_coordinates.append(end)
 
-    length = 0
-    for i in range(0,n):
+        n = len(list_coordinates) - 1
+        #ICI start + End
 
-      point_length = calculate_length_between_two_points(list_coordinates[i],list_coordinates[i+1], challenge.scalling, map_heigth)
-      
-      length += point_length
-    
-    return length
+        length = 0
+        for i in range(0,n):
+
+          point_length = calculate_length_between_two_points(list_coordinates[i],list_coordinates[i+1], challenge.scalling, map_heigth)
+          
+          length += point_length
+        
+        return length
+
+      except OSError as e:
+        return 0
+
+    else:
+      return 0
 
   else:
     return 0

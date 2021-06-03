@@ -9,12 +9,7 @@ import json
 
 class SegmentSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str(
-        validate=validate.NoneOf("", error="Invalid value"),
-        error_messages={
-            "null": "Field must not be null.",
-        },
-    )
+    name = fields.Str()
     start_crossing_point_id = fields.Int(
         load_only=True,
         required=True,
@@ -102,8 +97,6 @@ class SegmentSchema(Schema):
             else:
                 raise ValueError("The segment's coordinates must be of the type array.")
 
-                data["coordinates"] = json.dumps(data["coordinates"])
-
         return data
 
     def check_json(self, data, segment, **kwargs):
@@ -116,12 +109,22 @@ class SegmentSchema(Schema):
             if data["name"] == "":
                 raise ValueError("Invalid value.")
 
-        if "name" in data:
-            if data["name"] == None:
-                raise ValueError("Field must not be null.")
+            challenge_id = kwargs.get("challenge_id",None)
+            
+            if challenge_id != None:
+                segment = (
+                    DBSession()
+                    .query(Segment)
+                    .filter(Segment.name==data["name"],Segment.challenge_id==challenge_id)
+                    .first()
+                )
 
-            if data["name"] == "":
-                raise ValueError("Invalid value.")
+                if segment != None:
+                    raise ValueError(
+                        "The given value '"
+                        + data["name"]
+                        + "' is already used as a crossing point name for this challenge."
+                    )
 
         if "start_crossing_point_id" in data and "end_crossing_point_id" in data:
             if data["start_crossing_point_id"] == data["end_crossing_point_id"]:

@@ -1,4 +1,4 @@
-from loftes.models import CrossingPoint, Challenge, DBSession
+from loftes.models import CrossingPoint, Challenge, Segment, DBSession
 from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate
 
 
@@ -31,21 +31,6 @@ class CrossingPointSchema(Schema):
     @pre_load
     def pre_load(self, data, many, **kwargs):
 
-        # if "name" in data:
-        #     crossing_point = (
-        #         DBSession()
-        #         .query(CrossingPoint)
-        #         .filter_by(name=data["name"], challenge_id=data["challenge_id"])
-        #         .first()
-        #     )
-
-        #     if crossing_point != None:
-        #         raise ValueError(
-        #             "The given value '"
-        #             + data["name"]
-        #             + "' is already used as a crossing point name for this challenge."
-        #         )
-
         # Check mandatory field
         if "position_x" in data:
             data["position_x"] = float(data["position_x"])
@@ -59,10 +44,28 @@ class CrossingPointSchema(Schema):
     def check_json(self, data, **kwargs):
 
         if "name" in data:
+            
             if data["name"] == None:
                 raise ValueError("Field must not be null.")
 
             if data["name"] == "":
                 raise ValueError("Invalid value.")
+
+            challenge_id = kwargs.get("challenge_id",None)
+            
+            if challenge_id != None:
+                crossing_point = (
+                    DBSession()
+                    .query(CrossingPoint)
+                    .filter(CrossingPoint.name==data["name"],CrossingPoint.challenge_id==challenge_id)
+                    .first()
+                )
+
+                if crossing_point != None:
+                    raise ValueError(
+                        "The given value '"
+                        + data["name"]
+                        + "' is already used as a crossing point name for this challenge."
+                    )
 
         return self.pre_load(data, True)
