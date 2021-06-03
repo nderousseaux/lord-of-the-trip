@@ -6,13 +6,9 @@ import apiCrossingPoints from '../api/crossingPoints';
 import apiSegments from '../api/segments';
 import apiObstacles from '../api/obstacles';
 import { percentToPixels, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, realLengthBetweenTwoPoints } from "../utils/utils";
+import * as css from '../CustomCSS';
 
-const flexRight = {
-  width: '70%',
-  marginLeft: '5px'
-};
-
-const ViewChallengeMap = ({ challenge }) => {
+const ChallengeMap = ({ challenge }) => {
   const [errorDownload, setErrorDownload] = useState(null);
   const [successDownload, setSuccessDownload] = useState(false);
   const [image, setImage] = useState(null);
@@ -181,7 +177,7 @@ const ViewChallengeMap = ({ challenge }) => {
         lineWithObstacle = line;
         break;
       }
-    };
+    }
     // Pourcentage de l'obstacle sur le morceau de segment
     let percentageOnLine = lengthObstaclePosition / lineWithObstacle.length;
     let dx = (lineWithObstacle.endPoint.position_x - lineWithObstacle.startPoint.position_x) * percentageOnLine;
@@ -230,7 +226,7 @@ const ViewChallengeMap = ({ challenge }) => {
   };
 
   return (
-    <div style={flexRight}>
+    <div style={css.flexRight}>
       <h3>Challenge Map</h3>
       {errorDownload ? <h3>{errorDownload.message}</h3> :
         successDownload ?
@@ -258,4 +254,4 @@ const ViewChallengeMap = ({ challenge }) => {
   );
 };
 
-export default ViewChallengeMap;
+export default ChallengeMap;

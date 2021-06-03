@@ -10,8 +10,16 @@ const apiChallenge = {
     .then(res => res.json());
   },
 
-  getChallengesFromAdmin: () => {
-    return fetch(`${urlPrefix}/admin/challenges`, {
+  getEditableChallengesFromAdmin: () => {
+    return fetch(`${urlPrefix}/admin/challenges?draft=true`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus)
+    .then(res => res.json());
+  },
+
+  getPublishedChallengesFromAdmin: () => {
+    return fetch(`${urlPrefix}/admin/challenges?draft=false`, {
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus)
@@ -145,13 +153,9 @@ const apiChallenge = {
   },
 
   publishChallenge: (id) => {
-    return fetch(`${urlPrefix}/challenges/${id}`, {
+    return fetch(`${urlPrefix}/challenges/${id}/publish`, {
       method: 'PATCH',
-      headers: {
-        'Authorization': 'Bearer ' + getToken(),
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ draft: false })
+      headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus);
   },

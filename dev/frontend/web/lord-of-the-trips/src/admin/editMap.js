@@ -461,7 +461,7 @@ const EditMap = () => {
         lineWithObstacle = line;
         break;
       }
-    };
+    }
     // Pourcentage de l'obstacle sur le morceau de segment
     let percentageOnLine = lengthObstaclePosition / lineWithObstacle.length;
     let dx = (lineWithObstacle.endPoint.position_x - lineWithObstacle.startPoint.position_x) * percentageOnLine;

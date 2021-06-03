@@ -1,5 +1,4 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { HashRouter, Switch, Route, Redirect, Link, useHistory } from 'react-router-dom';
 import { AuthProvider, useAuth } from './authentication/auth';
 import Login from './authentication/Login';
@@ -11,6 +10,7 @@ import ViewNotSubscribedChallenge from './user/viewNotSubscribedChallenge';
 import AdminDashboard from './admin/dashboard';
 import EditChallenge from './admin/editChallenge';
 import EditMap from './admin/editMap';
+import AdminViewChallenge from './admin/viewChallenge';
 import './Custom.css';
 import Button from '@material-ui/core/Button';
 
@@ -45,7 +45,6 @@ const Header = () => {
 };
 
 const Routes = () => {
-  //let { user } = useAuth();
   return (
     <>
       <Switch>
@@ -80,6 +79,9 @@ const Routes = () => {
         <Route path="/editmap/:id">
           <EditMap />
         </Route>
+        <Route path="/adminviewchallenge/:id">
+          <AdminViewChallenge />
+        </Route>
 
         <Redirect to="/" />
       </Switch>
@@ -94,7 +96,6 @@ const Main = () => {
         <Header />
         <hr />
         <Routes />
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </AuthProvider>
     </>
   );
