@@ -137,6 +137,7 @@ HTTP/1.1 200 OK
           "coordinates": null
         }
       ],
+      "nb_subscribers": 12,
       "admin": {
         "id": 1,
         "first_name": "Missy",
@@ -159,6 +160,7 @@ HTTP/1.1 200 OK
       "start_crossing_point": null,
       "end_crossing_point": null,
       "segments": [],
+      "nb_subscribers": 15,
       "admin": {
         "id": 1,
         "first_name": "Missy",
@@ -443,8 +445,9 @@ challenge_by_id = Service(name="challenge_by_id", path="challenges/{id:\d+}", co
 @apiSuccess (OK 200) {Object} start_crossing_point Challenge's start crossing point
 @apiSuccess (OK 200) {Object} end_crossing_point Challenge's end crossing point
 @apiSuccess (OK 200) {Array} segments All segments of the challenge
+@apiSuccess (OK 200) {Number} nb_subscribers Number of users subscribed to a challenge
 @apiSuccess (OK 200) {Object} admin Challenge's creator aka administrator
-@apiSuccess (OK 200) {Number} event_sum Sum of distance passed of all challenge's events
+
 
 @apiSuccessExample {json} Success response:
 HTTP/1.1 200 OK
@@ -525,6 +528,7 @@ HTTP/1.1 200 OK
       "coordinates": []
     }
   ],
+  "nb_subscribers": 12,
   "admin": {
     "id": 1,
     "first_name": "Missy",
