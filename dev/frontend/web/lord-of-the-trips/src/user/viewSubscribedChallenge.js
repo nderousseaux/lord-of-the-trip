@@ -17,7 +17,7 @@ const ViewSubscribedChallenge = () => {
     {isLoading ? 'Loading...' : isError ? error.message : <>
       <div style={css.flexRow}>
         <ViewChallengeInfo challenge={challenge} />
-        <ChallengeMap challenge={challenge} />
+        <ChallengeMap challenge={challenge} isAdmin={false} />
       </div>
     </> }
   </>

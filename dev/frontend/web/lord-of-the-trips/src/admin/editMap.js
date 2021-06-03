@@ -136,7 +136,7 @@ const EditMap = () => {
   });
 
   const addCrossingPoint = (x, y) => {
-    let cr = { name: "Crossing point", position_x: pixelsToPercent(x, width), position_y: pixelsToPercent(y, height) };
+    let cr = { position_x: pixelsToPercent(x, width), position_y: pixelsToPercent(y, height) };
     createCrossingPointMutation.mutate(cr);
   };
 
@@ -158,7 +158,7 @@ const EditMap = () => {
 
   const updateCrossingPoint = (crossingPoint, requestApi) => {
     if(requestApi) {
-      let cr = { name: crossingPoint.name, position_x: pixelsToPercent(crossingPoint.position_x, width), position_y: pixelsToPercent(crossingPoint.position_y, height) };
+      let cr = { position_x: pixelsToPercent(crossingPoint.position_x, width), position_y: pixelsToPercent(crossingPoint.position_y, height) };
       updateCrossingPointMutation.mutate({ crossingPoint: cr, crossingPointId: crossingPoint.id });
     }
     else {
@@ -199,7 +199,7 @@ const EditMap = () => {
     segment.coordinates.forEach((coordinate) => {
       coord = [...coord, { position_x: pixelsToPercent(coordinate.position_x, width), position_y: pixelsToPercent(coordinate.position_y, height) }];
     });
-    let seg = { name: "Segment", start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
+    let seg = { start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
     createSegmentMutation.mutate(seg);
   };
 
@@ -233,7 +233,7 @@ const EditMap = () => {
       segment.coordinates.forEach((coordinate) => {
         coord = [...coord, { position_x: pixelsToPercent(coordinate.position_x, width), position_y: pixelsToPercent(coordinate.position_y, height) }];
       });
-      let newSegmentData = { name: segment.name, start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
+      let newSegmentData = { start_crossing_point_id: segment.start_crossing_point_id, end_crossing_point_id: segment.end_crossing_point_id, coordinates: coord };
       updateSegmentMutation.mutate({ segment: newSegmentData, segmentId: segment.id });
     }
     else {
@@ -286,6 +286,16 @@ const EditMap = () => {
     setDataForModal({ ...obstacle, segment: segment });
     setOpenObstacleModal(true);
   };
+
+  const dragBoundFunction = (pos) => {
+    let x = pos.x;
+    let y = pos.y;
+    if(pos.x < 0) x = 0;
+    else if(pos.x > width) x = width;
+    if(pos.y < 0) y = 0;
+    else if(pos.y > height) y = height;
+    return { x, y };
+  }
 
   const onDragStartCrossingPoint = (e, crossingPoint) => {
     crossingPoint.isDragging = true;
@@ -542,7 +552,7 @@ const EditMap = () => {
                 return (
                   segment.coordinates.map(coordinate => {
                     return (
-                      <Circle key={segment.id + " " + coordinate.positionInSegment} x={coordinate.position_x} y={coordinate.position_y} radius={5} draggable stroke={"black"} strokeWidth={2}
+                      <Circle key={segment.id + " " + coordinate.positionInSegment} x={coordinate.position_x} y={coordinate.position_y} radius={5} draggable={challenge?.draft} dragBoundFunc={dragBoundFunction} stroke={"black"} strokeWidth={2}
                       fill={coordinate.isDragging ? "sienna" : "black"}
                       onDragStart={(e) => onDragStartSegmentPoint(e, segment, coordinate)}
                       onDragEnd={(e) => onDragEndSegmentPoint(e, segment, coordinate)} />
@@ -551,7 +561,7 @@ const EditMap = () => {
                 );
               })}
               { /* Render crossing points */ }
-              {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.position_x} y={crossingPoint.position_y} radius={12} draggable stroke={"black"} strokeWidth={2}
+              {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.position_x} y={crossingPoint.position_y} radius={12} draggable={challenge?.draft} dragBoundFunc={dragBoundFunction} stroke={"black"} strokeWidth={2}
                                                    fill={crossingPoint.isDragging ? "sienna" : radioButtonValue === "3" && crossingPoint.onMouseOver ? "red" : crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "green" : !crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? "orange" : !crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "blue" : null}
                                                    fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : { x: null, y: null }}
                                                    fillLinearGradientEndPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: 5, y: 0 } : { x: null, y: null }}
