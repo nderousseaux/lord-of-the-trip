@@ -1,6 +1,7 @@
 from loftes.models import User, UserChallenge, DBSession
 import hashlib, binascii, os, re
 
+
 class UserResources:
     def find_all_subscribers_by_challenge(self, challenge):
 
@@ -16,7 +17,7 @@ class UserResources:
 
         return query.all()
 
-    def check_data(self,data):
+    def check_data(self, data):
 
         if "email" in data:
             user = DBSession().query(User).filter_by(email=data["email"]).first()
@@ -32,4 +33,3 @@ class UserResources:
 
             if user != None:
                 raise ValueError("This pseudo is already in use. Please use another one.")
-        

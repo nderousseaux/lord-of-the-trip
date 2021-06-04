@@ -19,7 +19,7 @@ class SegmentSchema(Schema):
             "null": "Field must not be null.",
         },
     )
-    # start_crossing_point = fields.Nested(CrossingPointSchema)
+    start_crossing_point = fields.Nested(CrossingPointSchema)
     end_crossing_point_id = fields.Int(
         load_only=True,
         required=True,
@@ -29,12 +29,12 @@ class SegmentSchema(Schema):
             "null": "Field must not be null.",
         },
     )
-    # end_crossing_point = fields.Nested(CrossingPointSchema)
+    end_crossing_point = fields.Nested(CrossingPointSchema)
     coordinates = fields.Method("deserialize_coordinates")
     length = fields.Int(dump_only=True)
     challenge_id = fields.Int(load_only=True)
-    # challenge = fields.Nested("ChallengeSchema", exclude=("segments",))
-    # obstacles = fields.List(fields.Nested("ObstacleSchema"))
+    challenge = fields.Nested("ChallengeSchema", exclude=("segments",))
+    obstacles = fields.List(fields.Nested("ObstacleSchema"))
 
     class Meta:
         ordered = (True,)
@@ -109,13 +109,13 @@ class SegmentSchema(Schema):
             if data["name"] == "":
                 raise ValueError("Invalid value.")
 
-            challenge_id = kwargs.get("challenge_id",None)
-            
+            challenge_id = kwargs.get("challenge_id", None)
+
             if challenge_id != None:
                 segment = (
                     DBSession()
                     .query(Segment)
-                    .filter(Segment.name==data["name"],Segment.challenge_id==challenge_id)
+                    .filter(Segment.name == data["name"], Segment.challenge_id == challenge_id)
                     .first()
                 )
 

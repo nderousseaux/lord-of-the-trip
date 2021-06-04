@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 
 from loftes.models import Base
 
+
 class Segment(Base):
     __tablename__ = "Segment"
     id = Column(Integer, primary_key=True)

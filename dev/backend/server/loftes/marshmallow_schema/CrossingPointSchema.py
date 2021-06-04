@@ -44,20 +44,20 @@ class CrossingPointSchema(Schema):
     def check_json(self, data, **kwargs):
 
         if "name" in data:
-            
+
             if data["name"] == None:
                 raise ValueError("Field must not be null.")
 
             if data["name"] == "":
                 raise ValueError("Invalid value.")
 
-            challenge_id = kwargs.get("challenge_id",None)
-            
+            challenge_id = kwargs.get("challenge_id", None)
+
             if challenge_id != None:
                 crossing_point = (
                     DBSession()
                     .query(CrossingPoint)
-                    .filter(CrossingPoint.name==data["name"],CrossingPoint.challenge_id==challenge_id)
+                    .filter(CrossingPoint.name == data["name"], CrossingPoint.challenge_id == challenge_id)
                     .first()
                 )
 
