@@ -587,7 +587,7 @@ def update_crossing_point(request):
 
                         try:
                             
-                            query.update(CrossingPointSchema().check_json(request.json,challenge_id=request.matchdict["challenge_id"]))
+                            query.update(CrossingPointSchema().check_json(request.json,challenge_id=crossing_point.challenge_id))
                             DBSession.flush()
 
                             response = service_informations.build_response(exception.HTTPNoContent)
@@ -738,7 +738,7 @@ def modify_crossing_point(request):
 
                         try:
 
-                            query.update(CrossingPointSchema().check_json(request.json,challenge_id=request.matchdict["challenge_id"]))
+                            query.update(CrossingPointSchema().check_json(request.json,challenge_id=crossing_point.challenge_id))
                             DBSession.flush()
 
                             response = service_informations.build_response(exception.HTTPNoContent)
