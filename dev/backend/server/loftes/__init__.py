@@ -23,6 +23,6 @@ def main(global_config, **settings):
     config.set_authorization_policy(ACLAuthorizationPolicy())
     # Enable JWT authentication.
     config.include("pyramid_jwt")
-    config.set_jwt_authentication_policy("secret", auth_type="Bearer", expiration=3600)
+    config.set_jwt_authentication_policy("secret", auth_type="Bearer", expiration=21600)
 
     return config.make_wsgi_app()

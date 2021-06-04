@@ -21,7 +21,7 @@ class ObstacleSchema(Schema):
     question_type = fields.Int()
     nb_points = fields.Int()
     result = fields.Str()
-    segment = fields.Nested("SegmentSchema", exclude=("obstacles",))
+    # segment = fields.Nested("SegmentSchema", exclude=("obstacles",))
 
     class Meta:
         ordered = True
@@ -47,7 +47,7 @@ class ObstacleSchema(Schema):
                 .first()
             )
 
-            if obstacle != None:
+            if obstacle != None and obstacle.id != data['id']:
                 raise ValueError("There is already one obstacle at this position for this segment.")
 
         return data

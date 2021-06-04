@@ -282,6 +282,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "examples": [
         {
@@ -293,6 +298,24 @@ define({ "api": [
     },
     "error": {
       "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PublishedChallenge",
+            "description": "<p>Modification of a published challenge</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -304,6 +327,16 @@ define({ "api": [
         ]
       },
       "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
@@ -603,51 +636,39 @@ define({ "api": [
           },
           {
             "group": "OK 200",
-            "type": "Object",
+            "type": "Number",
             "optional": false,
-            "field": "start_crossing_point",
-            "description": "<p>Challenge's start crossing point</p>"
-          },
-          {
-            "group": "OK 200",
-            "type": "Object",
-            "optional": false,
-            "field": "end_crossing_point",
-            "description": "<p>Challenge's end crossing point</p>"
-          },
-          {
-            "group": "OK 200",
-            "type": "Array",
-            "optional": false,
-            "field": "segments",
-            "description": "<p>All segments of the challenge</p>"
-          },
-          {
-            "group": "OK 200",
-            "type": "Object",
-            "optional": false,
-            "field": "admin",
-            "description": "<p>Challenge's creator aka administrator</p>"
+            "field": "start_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as start of a challenge</p>"
           },
           {
             "group": "OK 200",
             "type": "Number",
             "optional": false,
-            "field": "event_sum",
-            "description": "<p>Sum of distance passed of all challenge's events</p>"
+            "field": "end_crossing_point_id",
+            "description": "<p>ID of crossing point choosed as start of a challenge</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-04-22T11:57:00\"\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\": 3,\n  \"scalling\": 3,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"start_crossing_point\": {\n    \"id\": 2,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.1,\n    \"position_y\": 0.1\n  },\n  \"end_crossing_point\": {\n    \"id\": 3,\n    \"name\": \"La passe du magicien\",\n    \"position_x\": 0.2,\n    \"position_y\": 0.4\n  },\n  \"segments\": [\n    {\n      \"id\": 2,\n      \"name\": \"La route d'Ettinsmoor\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 3,\n      \"name\": \"La traversée du grand désert\",\n      \"start_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 3,\n        \"name\": \"La passe du magicien\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.4\n      },\n      \"coordinates\": []\n    },\n    {\n      \"id\": 4,\n      \"name\": \"La traversée du Grand Océan Oriental\",\n      \"start_crossing_point\": {\n        \"id\": 5,\n        \"name\": \"Le pont des centaures\",\n        \"position_x\": 0.3,\n        \"position_y\": 0.5\n      },\n      \"end_crossing_point\": {\n        \"id\": 8,\n        \"name\": \"La table de pierre\",\n        \"position_x\": 0.2,\n        \"position_y\": 0.5\n      },\n      \"coordinates\": []\n    }\n  ],\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"email\": \"lemaitre@gmail.com\"\n  }\n  \"event_sum\": 395\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-12-18T03:16:00\",\n  \"end_date\": \"2022-10-18T03:16:00\",\n  \"alone_only\": 0,\n  \"level\":3,\n  \"scalling\": 1000,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"start_crossing_point_id\": null,\n  \"end_crossing_point_id\": null\n}",
           "type": "json"
         }
       ]
     },
     "error": {
       "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
         "Error 403": [
           {
             "group": "Error 403",
@@ -668,6 +689,11 @@ define({ "api": [
         ]
       },
       "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
         {
           "title": "Error 403 response:",
           "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
@@ -783,6 +809,25 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Bool",
+            "optional": true,
+            "field": "draft",
+            "defaultValue": "False",
+            "description": "<p>Status of the challenge</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "OK 200": [
@@ -798,7 +843,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"start_date\": \"2021-04-22T11:57:00\"\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": 1,\n      \"scalling\": 4,\n      \"step_length\": 0.7,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [\n        {\n          \"id\": 1,\n          \"name\": \"A travers le bois d'entre les mondes\",\n          \"start_crossing_point\": {\n            \"id\": 1,\n            \"name\": \"L'armoire\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 2,\n          \"name\": \"La route d'Ettinsmoor\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": null\n        },\n        {\n          \"id\": 3,\n          \"name\": \"La traversée du grand désert\",\n          \"start_crossing_point\": {\n            \"id\": 2,\n            \"name\": \"La passe du faune\",\n            \"position_x\": 0.1,\n            \"position_y\": 0.1\n          },\n          \"end_crossing_point\": {\n            \"id\": 3,\n            \"name\": \"La passe du magicien\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.4\n          },\n          \"coordinates\": []\n        },\n        {\n          \"id\": 4,\n          \"name\": \"La traversée du Grand Océan Oriental\",\n          \"start_crossing_point\": {\n            \"id\": 5,\n            \"name\": \"Le pont des centaures\",\n            \"position_x\": 0.3,\n            \"position_y\": 0.5\n          },\n          \"end_crossing_point\": {\n            \"id\": 8,\n            \"name\": \"La table de pierre\",\n            \"position_x\": 0.2,\n            \"position_y\": 0.5\n          },\n          \"coordinates\": null\n        }\n      ],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"email\": \"lemaitre@gmail.com\"\n      }\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"start_date\": \"2021-04-22T11:57:00\"\n      \"end_date\": \"2020-03-18T00:00:00\",\n      \"alone_only\": null,\n      \"level\": 2,\n      \"scalling\": 4,\n      \"step_length\": 0.7,\n      \"draft\": false,\n      \"start_crossing_point\": null,\n      \"end_crossing_point\": null,\n      \"segments\": [],\n      \"admin\": {\n        \"id\": 1,\n        \"first_name\": \"Missy\",\n        \"last_name\": \"Of Gallifrey\",\n        \"pseudo\": \"Le maitre\",\n        \"email\": \"lemaitre@gmail.com\"\n      }\n    }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2021-03-18T12:00:00\",\n      \"alone_only\": null,\n      \"level\": \"1\",\n      \"scalling\": 2,\n      \"step_length\": 0.7,\n      \"draft\": true,\n      \"start_crossing_point_id\": 1,\n      \"end_crossing_point_id\": 1\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2022-03-18T18:30:00\",\n      \"alone_only\": null,\n      \"level\": \"2\",\n      \"scalling\": 4200,\n      \"step_length\": 0.8,\n      \"draft\": true,\n      \"start_crossing_point_id\": 4,\n      \"end_crossing_point_id\": 5\n    }\n  ]\n}",
           "type": "json"
         }
       ]
@@ -812,6 +857,15 @@ define({ "api": [
             "optional": false,
             "field": "Unauthorized",
             "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not super administrator</p>"
           }
         ],
         "Error 404": [
@@ -828,6 +882,11 @@ define({ "api": [
         {
           "title": "Error 401 response:",
           "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -872,6 +931,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "Body parameters": [
@@ -885,63 +949,63 @@ define({ "api": [
           {
             "group": "Body parameters",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "description",
             "description": "<p>Challenge's description</p>"
           },
           {
             "group": "Body parameters",
             "type": "Date",
-            "optional": false,
+            "optional": true,
+            "field": "start_date",
+            "description": "<p>Challenge's start date in format &quot;YYYY-MM-DD&quot;</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": true,
             "field": "end_date",
             "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
           },
           {
             "group": "Body parameters",
             "type": "Bool",
-            "optional": false,
+            "optional": true,
             "field": "alone_only",
             "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "level",
             "description": "<p>Challenge's difficulty</p>"
           },
           {
             "group": "Body parameters",
-            "type": "Bool",
-            "optional": false,
-            "field": "draft",
-            "description": "<p>If true the challenge is in edition mode, if false challenge is published</p>"
-          },
-          {
-            "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "scalling",
             "description": "<p>Challenge's scale in meters</p>"
           },
           {
             "group": "Body parameters",
             "type": "Float",
-            "optional": false,
+            "optional": true,
             "field": "step_length",
             "description": "<p>Challenge's step length in meters</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "start_crossing_point_id",
             "description": "<p>ID of crossing point choosed as start of a challenge</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "end_crossing_point_id",
             "description": "<p>ID of end point choosed as end of a challenge</p>"
           }
@@ -950,7 +1014,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n  \"draft\":false\n}",
+          "content": "\n{\n  \"step_length\": 0.8\n}",
           "type": "json"
         },
         {
@@ -969,6 +1033,38 @@ define({ "api": [
             "optional": false,
             "field": "BadRequest",
             "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PublishedChallenge",
+            "description": "<p>Modification of a published challenge</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "DraftField",
+            "description": "<p>Draft field in JSON body</p>"
           }
         ],
         "Error 404": [
@@ -1004,12 +1100,52 @@ define({ "api": [
         },
         {
           "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's start date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
           "type": "json"
         },
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Crossing point does not exist.\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's start and end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"This value (-2) is not valid for scalling.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Start crossing point does not exist.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"End crossing point does not exist.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to modify a published challenge.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"The field draft is not used on challenge's creation.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1060,49 +1196,49 @@ define({ "api": [
           {
             "group": "Body parameters",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "description",
             "description": "<p>Challenge's description</p>"
           },
           {
             "group": "Body parameters",
             "type": "Date",
-            "optional": false,
+            "optional": true,
             "field": "start_date",
             "description": "<p>Challenge's start date in format &quot;YYYY-MM-DD&quot;</p>"
           },
           {
             "group": "Body parameters",
             "type": "Date",
-            "optional": false,
+            "optional": true,
             "field": "end_date",
             "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
           },
           {
             "group": "Body parameters",
             "type": "Bool",
-            "optional": false,
+            "optional": true,
             "field": "alone_only",
             "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "level",
             "description": "<p>Challenge's difficulty</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "scalling",
             "description": "<p>Challenge's scale in meters</p>"
           },
           {
             "group": "Body parameters",
             "type": "Float",
-            "optional": false,
+            "optional": true,
             "field": "step_length",
             "description": "<p>Challenge's step length in meters</p>"
           }
@@ -1116,7 +1252,7 @@ define({ "api": [
         },
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": null\n  \"end_date\": \"2021-12-15T03:16:00\",\n  \"alone_only\": 0,\n  \"level\":3,\n  \"scalling\": 3,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"admin\": {\n    \"id\": 1,\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"Le maitre\",\n    \"email\": \"lemaitre@gmail.com\"\n  }\n}",
+          "content": "HTTP/1.1 201 Created\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-12-18T03:16:00\",\n  \"end_date\": \"2022-10-18T03:16:00\",\n  \"alone_only\": 0,\n  \"level\":3,\n  \"scalling\": 1000,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"start_crossing_point_id\": null,\n  \"end_crossing_point_id\": null\n}",
           "type": "json"
         }
       ]
@@ -1148,6 +1284,13 @@ define({ "api": [
             "optional": false,
             "field": "UserNotAdmin",
             "description": "<p>User is not administrator</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "DraftField",
+            "description": "<p>Draft field in JSON body</p>"
           }
         ]
       },
@@ -1174,7 +1317,22 @@ define({ "api": [
         },
         {
           "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's start date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's start and end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"This value (-2) is not valid for scalling.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1185,6 +1343,11 @@ define({ "api": [
         {
           "title": "Error 403 response:",
           "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"The field draft is not used on challenge's creation.\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -1471,56 +1634,63 @@ define({ "api": [
           {
             "group": "Body parameters",
             "type": "String",
-            "optional": false,
+            "optional": true,
             "field": "description",
             "description": "<p>Challenge's description</p>"
           },
           {
             "group": "Body parameters",
             "type": "Date",
-            "optional": false,
+            "optional": true,
+            "field": "start_date",
+            "description": "<p>Challenge's start date in format &quot;YYYY-MM-DD&quot;</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "Date",
+            "optional": true,
             "field": "end_date",
             "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
           },
           {
             "group": "Body parameters",
             "type": "Bool",
-            "optional": false,
+            "optional": true,
             "field": "alone_only",
             "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "level",
             "description": "<p>Challenge's difficulty</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "scalling",
             "description": "<p>Challenge's scale in meters</p>"
           },
           {
             "group": "Body parameters",
             "type": "Float",
-            "optional": false,
+            "optional": true,
             "field": "step_length",
             "description": "<p>Challenge's step length in meters</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "start_crossing_point_id",
             "description": "<p>ID of crossing point choosed as start of a challenge</p>"
           },
           {
             "group": "Body parameters",
             "type": "Number",
-            "optional": false,
+            "optional": true,
             "field": "end_crossing_point_id",
             "description": "<p>ID of end point choosed as end of a challenge</p>"
           }
@@ -1529,7 +1699,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n  \"name\":\"A la recherche d'Aslan\",\n  \"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"end_date\":\"2022-10-18\",\n  \"alone_only\":0,\n  \"level\":3,\n  \"scalling\":10000,\n  \"step_length\": 0.7,\n  \"start_crossing_point_id\":1,\n  \"end_crossing_point_id\":2\n}",
+          "content": "\n{\n\"name\":\"A la recherche d'Aslan\",\n\"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\":\"2021-12-18\",\n\"end_date\":\"2022-10-18\",\n\"alone_only\":\"0\",\n\"level\":3,\n\"scalling\":10000,\n  \"step_length\": 0.7\n}",
           "type": "json"
         },
         {
@@ -1566,6 +1736,20 @@ define({ "api": [
             "optional": false,
             "field": "UserNotAdmin",
             "description": "<p>User is not administrator</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PublishedChallenge",
+            "description": "<p>Modification of a published challenge</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "DraftField",
+            "description": "<p>Draft field in JSON body</p>"
           }
         ],
         "Error 404": [
@@ -1601,12 +1785,32 @@ define({ "api": [
         },
         {
           "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's start date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
           "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
           "type": "json"
         },
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Crossing point does not exist.\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's start and end date must be greater of today's date (22-04-2021, 12:59)\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"This value (-2) is not valid for scalling.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Start crossing point does not exist.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"End crossing point does not exist.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1617,6 +1821,16 @@ define({ "api": [
         {
           "title": "Error 403 response:",
           "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to modify a published challenge.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"The field draft is not used on challenge's creation.\"\n  }\n}",
           "type": "json"
         },
         {
