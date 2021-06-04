@@ -12,4 +12,4 @@ class User(Base):
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     is_admin = Column(Boolean, server_default=text("0"), nullable=False)
-    photo = Column(String(500))
+    photo_url = Column(String(500))

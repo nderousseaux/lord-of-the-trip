@@ -19,7 +19,6 @@ class ObstacleSchema(Schema):
     )
     description = fields.Str()
     question_type = fields.Int()
-    nb_points = fields.Int()
     result = fields.Str()
     segment = fields.Nested("SegmentSchema", exclude=("obstacles",))
 
@@ -38,7 +37,7 @@ class ObstacleSchema(Schema):
             if int(data["progress"]) < 0:
                 raise ValueError("This value (" + str(data["progress"]) + ") is not valid for progress.")
 
-            obstacle = (
+            obstacle_on_position = (
                 DBSession.query(Obstacle)
                 .filter(
                     Obstacle.segment_id == int(data["segment_id"]),
@@ -47,8 +46,14 @@ class ObstacleSchema(Schema):
                 .first()
             )
 
-            if obstacle != None and obstacle.id != data["id"]:
-                raise ValueError("There is already one obstacle at this position for this segment.")
+            if obstacle_on_position != None:
+
+                if "id" in data and data["id"] != None:
+
+                    obstacle_updated = DBSession.query(Obstacle).get(data["id"])
+
+                    if obstacle_on_position.id != obstacle_updated.id:
+                        raise ValueError("There is already one obstacle at this position for this segment.")
 
         return data
 
