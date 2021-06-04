@@ -13,7 +13,7 @@ class UserResources:
 
         return query.all()
 
-    def check_data(data):
+    def check_data(self,data):
 
         if "email" in data:
             user = DBSession().query(User).filter_by(email=data["email"]).first()
