@@ -6,10 +6,12 @@ from marshmallow import ValidationError, INCLUDE
 from sqlalchemy import exc
 
 from loftes.cors import cors_policy
-from loftes.models import Segment, Challenge, User, DBSession
+from loftes.models import Segment, Challenge, User, CrossingPoint, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import SegmentSchema
 from loftes.resources import UserCheckRessources
+
+import loftes.error_messages as error_messages
 
 import pyramid.httpexceptions as exception
 from pyramid.authentication import AuthTicket
@@ -133,7 +135,7 @@ def get_segments(request):
                 segments = DBSession.query(Segment).filter(Segment.challenge_id == challenge.id).all()
 
                 if len(segments) == 0:
-                    return service_informations.build_response(exception.HTTPNotFound())
+                    return service_informations.build_response(exception.HTTPNoContent)
 
                 data = {"segments": SegmentSchema(many=True).dump(segments)}
 
@@ -143,14 +145,79 @@ def get_segments(request):
                 response = service_informations.build_response(
                     exception.HTTPForbidden,
                     None,
-                    "You do not have permission to view this resource using the credentials that you supplied.",
+                    error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION,
                 )
 
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested resource 'Challenge' is not found.",
+            )
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+crossing_point_segments = Service(
+    name="crossingpoint_segments",
+    path="/crossing-points/{id:\d+}/segments",
+    cors_policy=cors_policy,
+)
+
+
+@crossing_point_segments.get()
+def get_crossing_point_segments(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    if user != None:
+
+        crossing_point = DBSession.query(CrossingPoint).get(request.matchdict["id"])
+
+        # check if crossing point is found
+        if crossing_point != None:
+
+            challenge = crossing_point.challenge
+
+            if challenge != None:
+
+                # check if user is challenge's admin
+                if user.id == challenge.admin_id or challenge.draft:
+
+                    segments = (
+                        DBSession.query(Segment)
+                        .filter(
+                            Segment.challenge_id == challenge.id,
+                            Segment.start_crossing_point_id == crossing_point.id,
+                        )
+                        .all()
+                    )
+
+                    if len(segments) == 0:
+                        return service_informations.build_response(exception.HTTPNoContent())
+
+                    data = {"segments": SegmentSchema(many=True).dump(segments)}
+
+                    response = service_informations.build_response(exception.HTTPOk, data)
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden,
+                        None,
+                        error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION,
+                    )
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPUnprocessableEntity, None, error_messages.CHALLENGE_IS_MISSING
+                )
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound(),
             )
 
     else:
@@ -351,18 +418,14 @@ def create_segment(request):
                     response = service_informations.build_response(
                         exception.HTTPForbidden,
                         None,
-                        "You do not have permission to modify a published challenge.",
+                        error_messages.MODIFY_PUBLISHED_CHALLENGE,
                     )
 
             else:
                 response = service_informations.build_response(exception.HTTPForbidden)
 
         else:
-            response = service_informations.build_response(
-                exception.HTTPNotFound(),
-                None,
-                "Requested resource 'Challenge' is not found.",
-            )
+            response = service_informations.build_response(exception.HTTPNotFound)
 
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
@@ -372,7 +435,7 @@ def create_segment(request):
 
 segment_id = Service(
     name="segment_id",
-    path="/challenges/{challenge_id:\d+}/segments/{id:\d+}",
+    path="/segments/{id:\d+}",
     cors_policy=cors_policy,
 )
 
@@ -476,41 +539,33 @@ def get_segment_by_id(request):
     # check if user is authenticated
     if user != None:
 
-        challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+        segment = DBSession.query(Segment).get(request.matchdict["id"])
 
-        # check if challenge is found
-        if challenge != None:
+        # check if segment is found
+        if segment != None:
 
-            # check if user is challenge's admin or challenge is published
-            if user.id == challenge.admin_id or challenge.draft == False:
+            challenge = segment.challenge
 
-                segment = (
-                    DBSession.query(Segment)
-                    .filter(
-                        Segment.challenge_id == challenge.id,
-                        Segment.id == request.matchdict["id"],
+            if challenge != None:
+
+                # check if user is challenge's admin or challenge is published
+                if user.id == challenge.admin_id or challenge.draft == False:
+
+                    response = service_informations.build_response(exception.HTTPOk, SegmentSchema().dump(segment))
+
+                else:
+                    response = service_informations.build_response(
+                        exception.HTTPForbidden, None, error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION
                     )
-                    .first()
-                )
-
-                # check if segment point is found
-                if segment == None:
-                    return service_informations.build_response(exception.HTTPNotFound())
-
-                response = service_informations.build_response(exception.HTTPOk, SegmentSchema().dump(segment))
 
             else:
                 response = service_informations.build_response(
-                    exception.HTTPForbidden,
-                    None,
-                    "You do not have permission to view this resource using the credentials that you supplied.",
+                    exception.HTTPUnprocessableEntity, None, error_messages.CHALLENGE_IS_MISSING
                 )
 
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested resource 'Challenge' is not found.",
             )
 
     else:
@@ -632,28 +687,27 @@ def update_segment(request):
     # check if user is authenticated
     if user != None:
 
-        challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+        segment = DBSession.query(Segment).get(request.matchdict["id"])
 
-        # check if challenge is found
-        if challenge != None:
+        # check if segment is found
+        if segment != None:
 
-            # check if user is challenge's admin
-            if user.id == challenge.admin_id:
+            challenge = segment.challenge
 
-                # check if challenge is draft
-                if challenge.draft:
+            # check if challenge is found
+            if challenge != None:
 
-                    id = request.matchdict["id"]
+                # check if user is challenge's admin
+                if user.id == challenge.admin_id:
 
-                    query = DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == id)
-                    segment = query.first()
-
-                    # check if segment point is found
-                    if segment != None:
+                    # check if challenge is draft
+                    if challenge.draft:
 
                         try:
 
-                            query.update(SegmentSchema().check_json(request.json, segment, challenge_id=segment.challenge_id))
+                            DBSession.query(Segment).filter(Segment.id == segment.id).update(
+                                SegmentSchema().check_json(request.json, segment)
+                            )
                             DBSession.flush()
 
                             response = service_informations.build_response(exception.HTTPNoContent)
@@ -674,24 +728,22 @@ def update_segment(request):
                         except Exception as e:
                             response = service_informations.build_response(exception.HTTPInternalServerError)
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
-                    else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
 
-                else:
-                    response = service_informations.build_response(
-                        exception.HTTPForbidden,
-                        None,
-                        "You do not have permission to modify a published challenge.",
-                    )
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            error_messages.MODIFY_PUBLISHED_CHALLENGE,
+                        )
 
             else:
-                response = service_informations.build_response(exception.HTTPForbidden)
+                response = service_informations.build_response(
+                    exception.HTTPUnprocessableEntity, None, error_messages.CHALLENGE_IS_MISSING
+                )
 
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested resource 'Challenge' is not found.",
             )
 
     else:
@@ -811,28 +863,27 @@ def modify_segment(request):
     # check if user is authenticated
     if user != None:
 
-        challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+        segment = DBSession.query(Segment).get(request.matchdict["id"])
 
-        # check if challenge is found
-        if challenge != None:
+        # check if segment is found
+        if segment != None:
 
-            # check if user is challenge's admin
-            if user.id == challenge.admin_id:
+            challenge = segment.challenge
 
-                # check if challenge is draft
-                if challenge.draft:
+            # check if challenge is found
+            if challenge != None:
 
-                    id = request.matchdict["id"]
+                # check if user is challenge's admin
+                if user.id == challenge.admin_id:
 
-                    query = DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == id)
-                    segment = query.first()
-
-                    # check if segment point is found
-                    if segment != None:
+                    # check if challenge is draft
+                    if challenge.draft:
 
                         try:
 
-                            query.update(SegmentSchema().check_json(request.json, segment, challenge_id=segment.challenge_id))
+                            DBSession.query(Segment).filter(Segment.id == segment.id).update(
+                                SegmentSchema().check_json(request.json, segment)
+                            )
                             DBSession.flush()
 
                             response = service_informations.build_response(exception.HTTPNoContent)
@@ -853,24 +904,22 @@ def modify_segment(request):
                         except Exception as e:
                             response = service_informations.build_response(exception.HTTPInternalServerError)
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
-                    else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
 
-                else:
-                    response = service_informations.build_response(
-                        exception.HTTPForbidden,
-                        None,
-                        "You do not have permission to modify a published challenge.",
-                    )
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            error_messages.MODIFY_PUBLISHED_CHALLENGE,
+                        )
 
             else:
-                response = service_informations.build_response(exception.HTTPForbidden)
+                response = service_informations.build_response(
+                    exception.HTTPUnprocessableEntity, None, error_messages.CHALLENGE_IS_MISSING
+                )
 
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested resource 'Challenge' is not found.",
             )
 
     else:
@@ -926,28 +975,23 @@ def delete_segment(request):
     # check if user is authenticated
     if user != None:
 
-        challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
+        segment = DBSession.query(Segment).get(request.matchdict["id"])
 
-        # check if challenge is found
-        if challenge != None:
+        # check if segment is found
+        if segment != None:
 
-            # check if user is challenge's admin
-            if user.id == challenge.admin_id:
+            challenge = segment.challenge
 
-                # check if challenge is draft
-                if challenge.draft:
+            # check if challenge is found
+            if challenge != None:
 
-                    id = request.matchdict["id"]
+                # check if user is challenge's admin
+                if user.id == challenge.admin_id:
 
-                    segment = (
-                        DBSession.query(Segment).filter(Segment.challenge_id == challenge.id, Segment.id == id).first()
-                    )
-
-                    # check if segment point is found
-                    if segment != None:
+                    # check if challenge is draft
+                    if challenge.draft:
 
                         try:
-
                             DBSession.delete(segment)
                             DBSession.flush()
 
@@ -969,24 +1013,22 @@ def delete_segment(request):
                         except Exception as e:
                             response = service_informations.build_response(exception.HTTPInternalServerError)
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
-                    else:
-                        response = service_informations.build_response(exception.HTTPNotFound)
 
-                else:
-                    response = service_informations.build_response(
-                        exception.HTTPForbidden,
-                        None,
-                        "You do not have permission to modify a published challenge.",
-                    )
+                    else:
+                        response = service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            error_messages.MODIFY_PUBLISHED_CHALLENGE,
+                        )
 
             else:
-                response = service_informations.build_response(exception.HTTPForbidden)
+                response = service_informations.build_response(
+                    exception.HTTPUnprocessableEntity, None, error_messages.CHALLENGE_IS_MISSING
+                )
 
         else:
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
-                None,
-                "Requested resource 'Challenge' is not found.",
             )
 
     else:

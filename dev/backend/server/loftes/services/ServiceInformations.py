@@ -28,7 +28,7 @@ class ServiceInformations:
     def get_error_message_by_code(self, code):
 
         switcher = {
-            400: "Bad Request`.",
+            400: "Bad Request.",
             401: "Bad credentials.",
             403: "You do not have permission to perform this action using the credentials that you supplied.",
             404: "Requested resource is not found.",

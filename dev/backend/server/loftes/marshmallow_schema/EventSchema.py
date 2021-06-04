@@ -45,7 +45,7 @@ class EventSchema(Schema):
         if "obstacle_id" in data:
             if data["obstacle_id"] == None:
                 raise ValueError("the obstacle not be null.")
-            
+
             if data["event_type_id"] == 5:
 
                 if "response" not in data:

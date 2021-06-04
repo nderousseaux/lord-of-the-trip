@@ -1,4 +1,1 @@
-cors_policy = {
-    'origins': ('*',),
-    'headers': ('authorization','X-Requested-With')
-}
+cors_policy = {"origins": ("*",), "headers": ("authorization", "X-Requested-With")}

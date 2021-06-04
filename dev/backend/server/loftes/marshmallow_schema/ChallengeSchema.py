@@ -41,13 +41,12 @@ class ChallengeSchema(Schema):
     scalling = fields.Int()
     step_length = fields.Float()
     draft = fields.Bool()
-    start_crossing_point_id = fields.Int(load_only=True)
-    end_crossing_point_id = fields.Int(load_only=True)
-    start_crossing_point = fields.Nested(CrossingPointSchema)
-    end_crossing_point = fields.Nested(CrossingPointSchema)
-    segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
-    nb_subscribers = fields.Int(dump_only=True)
-    admin = fields.Nested(UserSchema)
+    start_crossing_point_id = fields.Int()
+    end_crossing_point_id = fields.Int()
+    # start_crossing_point = fields.Nested(CrossingPointSchema)
+    # end_crossing_point = fields.Nested(CrossingPointSchema)
+    # segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
+    # admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
     event_sum = fields.Int(dump_only=True)
     # event_sum2 = fields.Int(dump_only=True)
@@ -115,7 +114,7 @@ class ChallengeSchema(Schema):
             raise ValueError("This value (" + str(data["scalling"]) + ") is not valid for scalling.")
 
         if "draft" in data:
-            raise PermissionError("The field draft is not used on challenge's creation")
+            raise PermissionError("The field draft is not used on challenge's creation.")
 
         return data
 
@@ -123,9 +122,8 @@ class ChallengeSchema(Schema):
 
     def check_json(self, data, **kwargs):
 
-
         if len(data) == 0:
-            raise ValueError('Nothing to update.')
+            raise ValueError("Nothing to update.")
 
         if "name" in data:
             if data["name"] == None:

@@ -152,7 +152,7 @@ def check_event_type_rule(event_type,user_id, challenge_id,segment_id):
 def get_obstacle_for_validation(user_id):
 
     # Get all obstacle to validate for challenge
-  
+
     obstcles_to_validate = (
         DBSession.query(
             (Challenge.id).label("challenge_id"),
@@ -161,7 +161,7 @@ def get_obstacle_for_validation(user_id):
             (Obstacle.label).label("label"),
             (Obstacle.description).label("description"),
             (Event.response).label("response")
-        )   
+        )
         .join(Segment,Event.segment_id==Segment.id)
         .join(Challenge,Challenge.id==Segment.challenge_id)
         .join(Obstacle,Obstacle.id==Event.obstacle_id)
