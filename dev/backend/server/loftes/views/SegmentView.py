@@ -653,7 +653,7 @@ def update_segment(request):
 
                         try:
 
-                            query.update(SegmentSchema().check_json(request.json, segment, challenge_id=request.matchdict["challenge_id"]))
+                            query.update(SegmentSchema().check_json(request.json, segment, challenge_id=segment.challenge_id))
                             DBSession.flush()
 
                             response = service_informations.build_response(exception.HTTPNoContent)
@@ -832,7 +832,7 @@ def modify_segment(request):
 
                         try:
 
-                            query.update(SegmentSchema().check_json(request.json, segment, challenge_id=request.matchdict["challenge_id"]))
+                            query.update(SegmentSchema().check_json(request.json, segment, challenge_id=segment.challenge_id))
                             DBSession.flush()
 
                             response = service_informations.build_response(exception.HTTPNoContent)
