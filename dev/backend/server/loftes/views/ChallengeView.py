@@ -2315,7 +2315,6 @@ def duplicate(request):
                                                 new_obstacle.description = old_obstacle.description
                                                 new_obstacle.progress = old_obstacle.progress
                                                 new_obstacle.question_type = old_obstacle.question_type
-                                                new_obstacle.nb_points = old_obstacle.nb_points
                                                 new_obstacle.result = old_obstacle.result
                                                 new_obstacle.segment_id = new_segment.id
                                                 DBSession.add(new_obstacle)
