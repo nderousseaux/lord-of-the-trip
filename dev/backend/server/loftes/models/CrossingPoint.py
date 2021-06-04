@@ -35,4 +35,3 @@ class CrossingPoint(Base):
         backref="challenge_end_crossing-points",
         cascade="all,delete",
     )
-    

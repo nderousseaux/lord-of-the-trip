@@ -79,7 +79,7 @@ class UserSchema(Schema):
 
         #     if user != None:
         #         raise ValueError("This pseudo is already in use. Please use another one.")
-        
+
         data = UserResources().check_data(data)
 
         return data
@@ -99,7 +99,7 @@ class UserSchema(Schema):
         #         raise ValueError("This pseudo is already in use. Please use another one.")
 
         data = UserResources().check_data(data)
-        
+
         if "password" in data:
             data["password"] = PasswordUtils().hash_password(data["password"])
 

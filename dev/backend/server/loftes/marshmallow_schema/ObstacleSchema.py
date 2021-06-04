@@ -21,7 +21,7 @@ class ObstacleSchema(Schema):
     question_type = fields.Int()
     nb_points = fields.Int()
     result = fields.Str()
-    # segment = fields.Nested("SegmentSchema", exclude=("obstacles",))
+    segment = fields.Nested("SegmentSchema", exclude=("obstacles",))
 
     class Meta:
         ordered = True
@@ -47,7 +47,7 @@ class ObstacleSchema(Schema):
                 .first()
             )
 
-            if obstacle != None and obstacle.id != data['id']:
+            if obstacle != None and obstacle.id != data["id"]:
                 raise ValueError("There is already one obstacle at this position for this segment.")
 
         return data
@@ -55,12 +55,12 @@ class ObstacleSchema(Schema):
     def check_json(self, data, **kwargs):
 
         if "label" in data and (data["label"] == None or data["label"] == ""):
-                raise ValueError("Field label must not be null.")
+            raise ValueError("Field label must not be null.")
 
         if "progress" in data and (data["progress"] == None or data["progress"] == ""):
-                raise ValueError("Field progress must not be null.")
+            raise ValueError("Field progress must not be null.")
 
         if "question_type" in data and (data["question_type"] == None or data["question_type"] == ""):
-                raise ValueError("Field type question must not be null.")
+            raise ValueError("Field type question must not be null.")
 
         return self.pre_load(data, True)

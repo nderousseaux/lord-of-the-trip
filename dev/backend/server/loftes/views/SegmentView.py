@@ -677,6 +677,7 @@ HTTP/1.1 404 Not Found
 }
 """
 
+
 @segment_id.put()
 def update_segment(request):
 
