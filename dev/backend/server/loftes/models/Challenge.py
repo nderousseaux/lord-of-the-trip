@@ -15,7 +15,6 @@ class Challenge(Base):
     map_url = Column(String(255))
     start_date = Column(DateTime(timezone=False))
     end_date = Column(DateTime(timezone=False))
-    alone_only = Column(Integer)
     level = Column(String(255))
     scalling = Column(Integer)
     step_length = Column(Float(precision=2))
