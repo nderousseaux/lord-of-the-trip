@@ -37,7 +37,7 @@ class ObstacleSchema(Schema):
             if int(data["progress"]) < 0:
                 raise ValueError("This value (" + str(data["progress"]) + ") is not valid for progress.")
 
-            obstacle_on_position = (
+            obstacle = (
                 DBSession.query(Obstacle)
                 .filter(
                     Obstacle.segment_id == int(data["segment_id"]),
@@ -46,14 +46,9 @@ class ObstacleSchema(Schema):
                 .first()
             )
 
-            if obstacle_on_position != None:
+            if obstacle != None:
 
-                if "id" in data and data["id"] != None:
-
-                    obstacle_updated = DBSession.query(Obstacle).get(data["id"])
-
-                    if obstacle_on_position.id != obstacle_updated.id:
-                        raise ValueError("There is already one obstacle at this position for this segment.")
+                raise ValueError("There is already one obstacle at this position for this segment.")
 
         return data
 

@@ -1874,7 +1874,7 @@ def verify(request):
                         crossingPoints = (
                             DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
                         )
-
+                        print(len(crossingPoints))
                         # On vérifie qu'il y ai des crossings points
                         if len(crossingPoints) < 2:
                             orphans = crossingPoints
@@ -1900,7 +1900,6 @@ def verify(request):
                                 if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
                                     response = service_informations.build_response(
                                         exception.HTTPOk,
-                                        None,
                                         {
                                             "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
                                             "deadend": CrossingPointSchema(many=True).dump(deadend),
@@ -2129,7 +2128,6 @@ def duplicate(request):
                                 if new_challenge.start_date != None and new_challenge.end_date != None:
                                     # new challenge creation
                                     new_challenge.description = old_challenge.description
-                                    new_challenge.alone_only = old_challenge.alone_only
                                     new_challenge.level = old_challenge.level
                                     new_challenge.scalling = old_challenge.scalling
                                     new_challenge.step_length = old_challenge.step_length

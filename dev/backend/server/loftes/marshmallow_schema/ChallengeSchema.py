@@ -36,7 +36,6 @@ class ChallengeSchema(Schema):
     description = fields.Str()
     start_date = fields.DateTime()
     end_date = fields.DateTime()
-    alone_only = fields.Int()
     level = fields.Str()
     scalling = fields.Int()
     step_length = fields.Float()
