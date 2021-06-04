@@ -13,7 +13,7 @@ const ModalSegment = ({ segmentObject, challengeId, openState, setOpenState }) =
   const [name, setName] = useState(null);
   const queryClient = useQueryClient();
 
-  const updateSegmentMutation = useMutation( (segment) => apiSegments.updateSegment(challengeId, segment, segmentObject.id), {
+  const updateSegmentMutation = useMutation( (segment) => apiSegments.updateSegment(segment, segmentObject.id), {
     onSuccess: () => {
       queryClient.invalidateQueries(['segments', challengeId]);
       setOpenState(false);

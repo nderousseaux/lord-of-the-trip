@@ -1,7 +1,7 @@
 import { checkStatus, urlPrefix, getToken } from './fetchUtils';
 
 const apiSegments = {
-
+  
   getAllSegments: (challengeId) => {
     return fetch(`${urlPrefix}/challenges/${challengeId}/segments`, {
       headers: { 'Authorization': 'Bearer ' + getToken() }
@@ -10,8 +10,8 @@ const apiSegments = {
     .then(res => res.json());
   },
 
-  getSegmentById: (challengeId, segmentId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
+  getSegmentById: (segmentId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}`, {
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus)
@@ -31,8 +31,8 @@ const apiSegments = {
     .then(res => res.json());
   },
 
-  updateSegment: (challengeId, segment, segmentId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
+  updateSegment: (segment, segmentId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}`, {
       method: 'PUT',
       headers: {
         'Authorization': 'Bearer ' + getToken(),
@@ -43,8 +43,8 @@ const apiSegments = {
     .then(checkStatus);
   },
 
-  modifySegment: (challengeId, segment, segmentId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
+  modifySegment: (segment, segmentId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}`, {
       method: 'PATCH',
       headers: {
         'Authorization': 'Bearer ' + getToken(),
@@ -55,8 +55,8 @@ const apiSegments = {
     .then(checkStatus);
   },
 
-  deleteSegment: (challengeId, segmentId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/segments/${segmentId}`, {
+  deleteSegment: (segmentId) => {
+    return fetch(`${urlPrefix}/segments/${segmentId}`, {
       method: 'DELETE',
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })

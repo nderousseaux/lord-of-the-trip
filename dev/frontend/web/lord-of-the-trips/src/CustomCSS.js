@@ -18,17 +18,17 @@ export const flexRight = {
   marginLeft: '5px'
 };
 
-export const flex20left = {
-  width: '20%',
+export const flex25left = {
+  width: '25%',
   marginRight: '5px'
 };
 
-export const flex20mid = {
-  width: '20%',
+export const flex25mid = {
+  width: '25%',
   margin: '0px 5px'
 };
 
-export const flex20right = {
-  width: '20%',
+export const flex25right = {
+  width: '25%',
   marginLeft: '5px'
 };

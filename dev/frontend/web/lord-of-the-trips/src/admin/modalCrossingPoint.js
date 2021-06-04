@@ -13,7 +13,7 @@ const ModalCrossingPoint = ({ crossingPointObject, challengeId, openState, setOp
   const [name, setName] = useState(null);
   const queryClient = useQueryClient();
 
-  const updateCrossingPointMutation = useMutation( (crossingPoint) => apiCrossingPoints.updateCrossingPoint(challengeId, crossingPoint, crossingPointObject.id), {
+  const updateCrossingPointMutation = useMutation( (crossingPoint) => apiCrossingPoints.updateCrossingPoint(crossingPoint, crossingPointObject.id), {
     onSuccess: () => {
       queryClient.invalidateQueries(['crossingPoints', challengeId]);
       setOpenState(false);

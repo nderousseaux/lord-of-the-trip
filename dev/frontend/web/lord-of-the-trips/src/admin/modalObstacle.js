@@ -30,7 +30,7 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
     setRadioValue(obstacleObject.question_type.toString());
   }, []);
 
-  const updateObstacleMutation = useMutation( (obstacle) => apiObstacles.updateObstacle(obstacleObject.segmentId, obstacle, obstacleObject.id), {
+  const updateObstacleMutation = useMutation( (obstacle) => apiObstacles.updateObstacle(obstacle, obstacleObject.id), {
     onSuccess: () => {
       queryClient.invalidateQueries(['obstacles', challengeId]);
       setOpenState(false);
@@ -46,8 +46,8 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
     obstacle.question_type = parseInt(radioValue);
     if(label) obstacle.label = label;
     if(description) obstacle.description = description;
-    if(progress && progress >= 1 && progress <= 99) obstacle.progress = progress / 100; //Number.isInteger(parseFloat(progress))
-    if(result) obstacle.result = result;
+    if(progress && progress >= 1 && progress <= 99 && Number.isInteger(parseFloat(progress))) obstacle.progress = progress / 100;
+    if(parseInt(radioValue) === 0 && result) obstacle.result = result;
     updateObstacleMutation.mutate(obstacle);
   };
 
@@ -90,7 +90,6 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
 const ObstacleQuestion = ({ updateObstacleMutation, label, setLabel, description, setDescription, progress, setProgress, result, setResult, handleSubmit }) => {
 
   return <>
-
     <form onSubmit={handleSubmit}>
       <DialogContentText>
         <b>Update information : </b>
@@ -98,8 +97,8 @@ const ObstacleQuestion = ({ updateObstacleMutation, label, setLabel, description
       <TextField variant="outlined" margin="dense" type="text" label="New question" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
       <TextField variant="outlined" margin="dense" type="text" label="New description" value={description} onChange={e => setDescription(e.target.value)} fullWidth />
       <TextField variant="outlined" margin="dense" type="number" label="New progress" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
-                 error={progress !== null && (progress < 1 || progress > 99) ? true : false} />
-      <DialogContentText>Progress is the percentage of progress for the obstacle on the segment, accepted value is between 1 and 99</DialogContentText>
+                 error={progress !== null && (progress < 1 || progress > 99 || !Number.isInteger(parseFloat(progress))) ? true : false} />
+      <DialogContentText>Progress is the percentage of progress for the obstacle on the segment, accepted value is an integer between 1 and 99</DialogContentText>
       <TextField variant="outlined" margin="dense" type="text" label="New result" value={result} onChange={e => setResult(e.target.value)} fullWidth />
     </form>
   </>
@@ -115,8 +114,8 @@ const ObstaclePhoto = ({ updateObstacleMutation, label, setLabel, description, s
       <TextField variant="outlined" margin="dense" type="text" label="New question" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
       <TextField variant="outlined" margin="dense" type="text" label="New description" value={description} onChange={e => setDescription(e.target.value)} fullWidth />
       <TextField variant="outlined" margin="dense" type="number" label="New progress" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
-                 error={progress !== null && (progress < 1 || progress > 99) ? true : false} />
-      <DialogContentText>Progress is the percentage of progress for the obstacle on the segment, accepted value is between 1 and 99</DialogContentText>
+                 error={progress !== null && (progress < 1 || progress > 99 || !Number.isInteger(parseFloat(progress))) ? true : false} />
+      <DialogContentText>Progress is the percentage of progress for the obstacle on the segment, accepted value is an integer between 1 and 99</DialogContentText>
     </form>
   </>
 };

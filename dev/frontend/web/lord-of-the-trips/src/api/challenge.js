@@ -84,7 +84,15 @@ const apiChallenge = {
     return fetch(`${urlPrefix}/challenges/${challengeId}/image`, {
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
-    .then(checkStatus)
+    .then(res => {
+      if (res.ok && res.status !== 204) {
+        return res;
+      }
+      else {
+        return res.json()
+        .then(res => { throw new Error(res.error.message); });
+      }
+    })
     .then(res => res.blob());
   },
 

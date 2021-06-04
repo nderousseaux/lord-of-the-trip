@@ -140,7 +140,7 @@ const EditMap = () => {
     createCrossingPointMutation.mutate(cr);
   };
 
-  const deleteCrossingPointMutation = useMutation( (crossingPointId) => apiCrossingPoints.deleteCrossingPoint(id, crossingPointId), {
+  const deleteCrossingPointMutation = useMutation( (crossingPointId) => apiCrossingPoints.deleteCrossingPoint(crossingPointId), {
     onSuccess: () => {
       queryClient.invalidateQueries(['crossingPoints', id]);
       queryClient.invalidateQueries(['segments', id]);
@@ -152,7 +152,7 @@ const EditMap = () => {
     deleteCrossingPointMutation.mutate(idCrossingPoint);
   };
 
-  const updateCrossingPointMutation = useMutation( ({ crossingPoint, crossingPointId }) => apiCrossingPoints.updateCrossingPoint(id, crossingPoint, crossingPointId), {
+  const updateCrossingPointMutation = useMutation( ({ crossingPoint, crossingPointId }) => apiCrossingPoints.updateCrossingPoint(crossingPoint, crossingPointId), {
     onSuccess: () => { queryClient.invalidateQueries(['crossingPoints', id]) },
   });
 
@@ -214,7 +214,7 @@ const EditMap = () => {
     deleteSegmentMutation.mutate(idSegment);
   };
 
-  const updateSegmentMutation = useMutation( ({ segment, segmentId }) => apiSegments.updateSegment(id, segment, segmentId), {
+  const updateSegmentMutation = useMutation( ({ segment, segmentId }) => apiSegments.updateSegment(segment, segmentId), {
     onSuccess: () => { queryClient.invalidateQueries(['segments', id]) },
   });
 
@@ -269,16 +269,16 @@ const EditMap = () => {
   });
 
   const addObstacle = (segmentId) => {
-    let obstacle = { label: "Your question", description: "", progress: 0.5, question_type: 0, nb_points: 1, result: "The response of the question" };
+    let obstacle = { label: "Your question", description: "", progress: 0.5, question_type: 0, result: "The response of the question" };
     createObstacleMutation.mutate({ segmentId: segmentId, obstacle: obstacle });
   };
 
-  const deleteObstacleMutation = useMutation( ({ segmentId, obstacleId }) => apiObstacles.deleteObstacle(segmentId, obstacleId), {
+  const deleteObstacleMutation = useMutation( ({ obstacleId }) => apiObstacles.deleteObstacle(obstacleId), {
     onSuccess: () => { queryClient.invalidateQueries(['obstacles', id]) },
   });
 
   const deleteObstacle = (obstacle) => {
-    deleteObstacleMutation.mutate({ segmentId: obstacle.segmentId, obstacleId: obstacle.id });
+    deleteObstacleMutation.mutate({ obstacleId: obstacle.id });
   };
 
   const openObstacleModalFunction = (obstacle) => {

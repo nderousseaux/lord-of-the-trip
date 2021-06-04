@@ -10,8 +10,8 @@ const apiCrossingPoints = {
     .then(res => res.json());
   },
 
-  getCrossingPointById: (challengeId, crossingPointId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
+  getCrossingPointById: (crossingPointId) => {
+    return fetch(`${urlPrefix}/crossing-points/${crossingPointId}`, {
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus)
@@ -31,8 +31,8 @@ const apiCrossingPoints = {
     .then(res => res.json());
   },
 
-  updateCrossingPoint: (challengeId, crossingPoint, crossingPointId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
+  updateCrossingPoint: (crossingPoint, crossingPointId) => {
+    return fetch(`${urlPrefix}/crossing-points/${crossingPointId}`, {
       method: 'PUT',
       headers: {
         'Authorization': 'Bearer ' + getToken(),
@@ -43,8 +43,8 @@ const apiCrossingPoints = {
     .then(checkStatus);
   },
 
-  modifyCrossingPoint: (challengeId, crossingPoint, crossingPointId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
+  modifyCrossingPoint: (crossingPoint, crossingPointId) => {
+    return fetch(`${urlPrefix}/crossing-points/${crossingPointId}`, {
       method: 'PATCH',
       headers: {
         'Authorization': 'Bearer ' + getToken(),
@@ -55,8 +55,8 @@ const apiCrossingPoints = {
     .then(checkStatus);
   },
 
-  deleteCrossingPoint: (challengeId, crossingPointId) => {
-    return fetch(`${urlPrefix}/challenges/${challengeId}/crossing-points/${crossingPointId}`, {
+  deleteCrossingPoint: (crossingPointId) => {
+    return fetch(`${urlPrefix}/crossing-points/${crossingPointId}`, {
       method: 'DELETE',
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
