@@ -768,6 +768,7 @@ def get_obstacle_modify(request):
 
                             obstacle_data = request.json
                             obstacle_data["segment_id"] = obstacle.segment.id
+                            obstacle_data["id"] = obstacle.id
 
                             DBSession.query(Obstacle).filter(Obstacle.id == obstacle.id).update(
                                 ObstacleSchema().check_json(obstacle_data)

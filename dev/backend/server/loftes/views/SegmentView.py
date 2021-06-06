@@ -165,7 +165,6 @@ crossing_point_segments = Service(
     cors_policy=cors_policy,
 )
 
-
 @crossing_point_segments.get()
 def get_crossing_point_segments(request):
 
@@ -180,7 +179,7 @@ def get_crossing_point_segments(request):
         # check if crossing point is found
         if crossing_point != None:
 
-            challenge = crossing_point.challenge
+            challenge = DBSession.query(Challenge).get(crossing_point.challenge_id)
 
             if challenge != None:
 
@@ -386,9 +385,16 @@ def create_segment(request):
 
                     try:
 
+                        segment_request = request.json
+                        segment_request["challenge_id"] = challenge.id
+
                         segment_schema = SegmentSchema()
-                        segment = segment_schema.load(request.json, unknown=INCLUDE)
-                        segment.challenge_id = challenge.id
+                        segment = segment_schema.load(segment_request, unknown=INCLUDE)
+                        # segment.challenge_id = challenge.id
+
+                        # segment_schema = SegmentSchema()
+                        # segment = segment_schema.load(request.json, unknown=INCLUDE)
+                        # segment.challenge_id = challenge.id
 
                         DBSession.add(segment)
                         DBSession.flush()
