@@ -203,7 +203,7 @@ const EditMap = () => {
     createSegmentMutation.mutate(seg);
   };
 
-  const deleteSegmentMutation = useMutation( (segmentId) => apiSegments.deleteSegment(id, segmentId), {
+  const deleteSegmentMutation = useMutation( (segmentId) => apiSegments.deleteSegment(segmentId), {
     onSuccess: () => {
       queryClient.invalidateQueries(['segments', id]);
       queryClient.invalidateQueries(['obstacles', id]);
@@ -269,7 +269,7 @@ const EditMap = () => {
   });
 
   const addObstacle = (segmentId) => {
-    let obstacle = { label: "Your question", description: "", progress: 0.5, question_type: 0, result: "The response of the question" };
+    let obstacle = { progress: 0.5, question_type: 0 };
     createObstacleMutation.mutate({ segmentId: segmentId, obstacle: obstacle });
   };
 

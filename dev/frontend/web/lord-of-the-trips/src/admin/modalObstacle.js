@@ -25,7 +25,7 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
   useEffect(() => {
     setLabel(obstacleObject.label);
     setDescription(obstacleObject.description);
-    setProgress(obstacleObject.progress * 100);
+    setProgress(Math.trunc(obstacleObject.progress * 100));
     setResult(obstacleObject.result);
     setRadioValue(obstacleObject.question_type.toString());
   }, []);
@@ -92,14 +92,14 @@ const ObstacleQuestion = ({ updateObstacleMutation, label, setLabel, description
   return <>
     <form onSubmit={handleSubmit}>
       <DialogContentText>
-        <b>Update information : </b>
+        <b>Question obstacle</b>
       </DialogContentText>
-      <TextField variant="outlined" margin="dense" type="text" label="New question" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
-      <TextField variant="outlined" margin="dense" type="text" label="New description" value={description} onChange={e => setDescription(e.target.value)} fullWidth />
-      <TextField variant="outlined" margin="dense" type="number" label="New progress" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
+      <TextField variant="outlined" margin="dense" type="text" label="Question" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
+      <TextField variant="outlined" margin="dense" type="text" label="Description" value={description} onChange={e => setDescription(e.target.value)} fullWidth />
+      <TextField variant="outlined" margin="dense" type="text" label="Result" value={result} onChange={e => setResult(e.target.value)} fullWidth />
+      <TextField variant="outlined" margin="dense" type="number" label="Progress" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
                  error={progress !== null && (progress < 1 || progress > 99 || !Number.isInteger(parseFloat(progress))) ? true : false} />
       <DialogContentText>Progress is the percentage of progress for the obstacle on the segment, accepted value is an integer between 1 and 99</DialogContentText>
-      <TextField variant="outlined" margin="dense" type="text" label="New result" value={result} onChange={e => setResult(e.target.value)} fullWidth />
     </form>
   </>
 };
@@ -109,11 +109,11 @@ const ObstaclePhoto = ({ updateObstacleMutation, label, setLabel, description, s
   return <>
     <form onSubmit={handleSubmit}>
       <DialogContentText>
-        <b>Update information : </b>
+        <b>Photo obstacle</b>
       </DialogContentText>
-      <TextField variant="outlined" margin="dense" type="text" label="New question" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
-      <TextField variant="outlined" margin="dense" type="text" label="New description" value={description} onChange={e => setDescription(e.target.value)} fullWidth />
-      <TextField variant="outlined" margin="dense" type="number" label="New progress" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
+      <TextField variant="outlined" margin="dense" type="text" label="Label" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
+      <TextField variant="outlined" margin="dense" type="text" label="Description" value={description} onChange={e => setDescription(e.target.value)} fullWidth />
+      <TextField variant="outlined" margin="dense" type="number" label="Progress" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
                  error={progress !== null && (progress < 1 || progress > 99 || !Number.isInteger(parseFloat(progress))) ? true : false} />
       <DialogContentText>Progress is the percentage of progress for the obstacle on the segment, accepted value is an integer between 1 and 99</DialogContentText>
     </form>

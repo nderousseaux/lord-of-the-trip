@@ -33,7 +33,7 @@ const CreateChallengeForm = () => {
   const handleSubmit = e => {
     e.preventDefault();
     setError(null);
-    createChallenge.mutate({ name });
+    createChallenge.mutate({ name: name, scalling: 1000 });
   };
 
   return <div>
