@@ -1874,7 +1874,6 @@ def verify(request):
                         crossingPoints = (
                             DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
                         )
-                        print(len(crossingPoints))
                         # On vérifie qu'il y ai des crossings points
                         if len(crossingPoints) < 2:
                             orphans = crossingPoints
@@ -2536,7 +2535,7 @@ def download_image_mobile(request):
                     if os.path.exists(image):
                         file_image = open(image, "rb")
                         image_read = file_image.read()
-                        image_64_encode = base64.encodebytes(image_read)
+                        image_64_encode = bytes.decode(base64.encodebytes(image_read)).replace("\n", "")
 
                         response = service_informations.build_response(exception.HTTPOk, image_64_encode)
 
