@@ -11,7 +11,6 @@ class Obstacle(Base):
     description = Column(TEXT(length=65535))
     progress = Column(Float(), nullable=False)
     question_type = Column(Integer)
-    nb_points = Column(Integer)
     result = Column(String(255))
     segment_id = Column(Integer, ForeignKey("Segment.id"))
     segment = relationship("Segment", backref="segment_obstacles")

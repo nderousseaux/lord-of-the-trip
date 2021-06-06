@@ -399,7 +399,6 @@ def fill(argv=sys.argv):
         label="Quelle est le vrai nom de la sorcière blanche ?",
         progress=0.5,
         question_type=0,
-        nb_points=25,
         result="Jadis",
         segment_id=1,
     )
@@ -410,7 +409,6 @@ def fill(argv=sys.argv):
         label="Qui est le père d'Aslan ?",
         progress=0.5,
         question_type=0,
-        nb_points=25,
         result="L'empereur d'au-delà des Mers",
         segment_id=2,
     )
@@ -421,7 +419,6 @@ def fill(argv=sys.argv):
         label="Télécharger une photo",
         progress=0.5,
         question_type=1,
-        nb_points=30,
         segment_id=3,
     )
     session.add(q3)
