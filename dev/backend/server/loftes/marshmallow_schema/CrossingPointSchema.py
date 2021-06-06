@@ -1,6 +1,7 @@
 from loftes.models import CrossingPoint, Challenge, Segment, DBSession
 from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate
 
+import loftes.error_messages as error_messages
 
 class CrossingPointSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -8,15 +9,15 @@ class CrossingPointSchema(Schema):
     position_x = fields.Float(
         required=True,
         error_messages={
-            "required": "This field is mandatory.",
-            "null": "Field must not be null.",
+            "required": error_messages.FIELD_MANDATORY,
+            "null": error_messages.FIELD_NOT_NULL,
         },
     )
     position_y = fields.Float(
         required=True,
         error_messages={
-            "required": "This field is mandatory.",
-            "null": "Field must not be null.",
+            "required": error_messages.FIELD_MANDATORY,
+            "null": error_messages.FIELD_NOT_NULL,
         },
     )
     challenge_id = fields.Int(load_only=True)
@@ -30,6 +31,12 @@ class CrossingPointSchema(Schema):
 
     @pre_load
     def pre_load(self, data, many, **kwargs):
+
+        if "name" in data and "challenge_id" in data:
+
+            msg = self.check_unique_name(data,data["challenge_id"])
+            if msg != "":
+                raise ValueError(msg)
 
         # Check mandatory field
         if "position_x" in data:
@@ -45,27 +52,36 @@ class CrossingPointSchema(Schema):
 
         if "name" in data:
 
-            if data["name"] == None:
-                raise ValueError("Field must not be null.")
-
-            if data["name"] == "":
-                raise ValueError("Invalid value.")
-
             challenge_id = kwargs.get("challenge_id", None)
 
-            if challenge_id != None:
-                crossing_point = (
-                    DBSession()
-                    .query(CrossingPoint)
-                    .filter(CrossingPoint.name == data["name"], CrossingPoint.challenge_id == challenge_id)
-                    .first()
-                )
-
-                if crossing_point != None:
-                    raise ValueError(
-                        "The given value '"
-                        + data["name"]
-                        + "' is already used as a crossing point name for this challenge."
-                    )
+            msg = self.check_unique_name(data,challenge_id)
+            if msg != "":
+                raise ValueError(msg)
 
         return self.pre_load(data, True)
+
+    def check_unique_name(self,data,challenge_id):
+
+        msg = ""
+
+        if data["name"] == None:                
+            msg = error_messages.FIELD_NOT_NULL
+
+        if data["name"] == "":
+            msg = error_messages.FIELD_NOT_NULL
+
+        crossing_point = (
+            DBSession()
+            .query(CrossingPoint)
+            .filter(CrossingPoint.name == data["name"], CrossingPoint.challenge_id == challenge_id)
+            .first()
+        )
+
+        if crossing_point != None:
+            msg = (
+                "The given value '"
+                + data["name"]
+                + "' is already used as a crossing point name for this challenge."
+            )
+        
+        return msg

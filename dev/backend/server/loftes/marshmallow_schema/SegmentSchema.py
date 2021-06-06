@@ -4,6 +4,7 @@ from marshmallow import Schema, fields, pre_dump, post_dump, post_load, pre_load
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 
 from loftes.resources import SegmentRessources
+import loftes.error_messages as error_messages
 import json
 
 
@@ -15,8 +16,8 @@ class SegmentSchema(Schema):
         required=True,
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={
-            "required": "This field is mandatory.",
-            "null": "Field must not be null.",
+            "required": error_messages.FIELD_MANDATORY,
+            "null":  error_messages.FIELD_NOT_NULL,
         },
     )
     start_crossing_point = fields.Nested(CrossingPointSchema)
@@ -25,8 +26,8 @@ class SegmentSchema(Schema):
         required=True,
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={
-            "required": "This field is mandatory.",
-            "null": "Field must not be null.",
+            "required": error_messages.FIELD_MANDATORY,
+            "null":  error_messages.FIELD_NOT_NULL,
         },
     )
     end_crossing_point = fields.Nested(CrossingPointSchema)
@@ -58,6 +59,11 @@ class SegmentSchema(Schema):
 
     @pre_load
     def pre_load(self, data, many, **kwargs):
+
+        if "name" in data and "challenge_id" in data:
+            msg = self.check_name_unique(data,data["challenge_id"])
+            if msg != "":
+                raise ValueError(msg)
 
         if "start_crossing_point_id" in data:
             # Check if crossing point exist
@@ -103,28 +109,9 @@ class SegmentSchema(Schema):
 
         # Check mandatory fields
         if "name" in data:
-            if data["name"] == None:
-                raise ValueError("Field must not be null.")
-
-            if data["name"] == "":
-                raise ValueError("Invalid value.")
-
-            challenge_id = kwargs.get("challenge_id", None)
-
-            if challenge_id != None:
-                segment = (
-                    DBSession()
-                    .query(Segment)
-                    .filter(Segment.name == data["name"], Segment.challenge_id == challenge_id)
-                    .first()
-                )
-
-                if segment != None:
-                    raise ValueError(
-                        "The given value '"
-                        + data["name"]
-                        + "' is already used as a crossing point name for this challenge."
-                    )
+            msg = self.check_name_unique(data,segment.challenge_id)
+            if msg != "":
+                raise ValueError(msg)
 
         if "start_crossing_point_id" in data and "end_crossing_point_id" in data:
             if data["start_crossing_point_id"] == data["end_crossing_point_id"]:
@@ -148,3 +135,28 @@ class SegmentSchema(Schema):
             raise ValueError("The segment must have coordinates.")
 
         return self.pre_load(data, True)
+
+    def check_name_unique(self,data,challenge_id):
+
+        msg = ""
+        if data["name"] == None:
+            msg = "Field must not be null."
+
+        if data["name"] == "":
+            msg = "Invalid value."
+
+        segment = (
+            DBSession()
+            .query(Segment)
+            .filter(Segment.name == data["name"], Segment.challenge_id == challenge_id)
+            .first()
+        )
+
+        if segment != None:
+            msg = (
+                "The given value '"
+                + data["name"]
+                + "' is already used as a crossing point name for this challenge."
+            )
+
+        return msg

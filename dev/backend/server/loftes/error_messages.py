@@ -1,3 +1,8 @@
+# marshmallow_schema
+FIELD_MANDATORY = "This field is mandatory."
+FIELD_NOT_NULL  = "Field must not be null."
+FIELD_INVALID   = "Invalid value."
+
 # admin
 REQUEST_RESSOURCE_WITHOUT_PERMISSION = (
     "You do not have permission to view this resource using the credentials that you supplied."
