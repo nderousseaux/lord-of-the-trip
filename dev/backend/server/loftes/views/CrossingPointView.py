@@ -522,7 +522,11 @@ def update_crossing_point(request):
                         try:
 
                             DBSession.query(CrossingPoint).filter(CrossingPoint.id == crossing_point.id).update(
-                                CrossingPointSchema().check_json(request.json,challenge_id=crossing_point.challenge_id)
+                                CrossingPointSchema().check_json(
+                                  request.json,
+                                  challenge_id=crossing_point.challenge_id,
+                                  crossing_id=crossing_point.id
+                                )
                             )
                             DBSession.flush()
 
@@ -665,7 +669,11 @@ def modify_crossing_point(request):
                         try:
 
                             DBSession.query(CrossingPoint).filter(CrossingPoint.id == crossing_point.id).update(
-                                CrossingPointSchema().check_json(request.json,challenge_id=crossing_point.challenge_id)
+                                CrossingPointSchema().check_json(
+                                  request.json,
+                                  challenge_id=crossing_point.challenge_id,
+                                  crossing_id=crossing_point.id
+                                )
                             )
                             DBSession.flush()
 

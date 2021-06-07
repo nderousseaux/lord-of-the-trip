@@ -59,29 +59,33 @@ class ObstacleSchema(Schema):
                 )
 
                 if obstacle != None:
-                    raise ValueError(
-                            "The given value '"
-                            + data["label"]
-                            + "' is already used as a obstacle label for this challenge."
-                        )
+                    if ("id" in data and obstacle.id != data["id"]) or "id" not in data:
+                        raise ValueError(
+                                "The given value '"
+                                + data["label"]
+                                + "' is already used as a obstacle label for this challenge."
+                            )
     
         if "progress" in data:
 
             if float(data["progress"]) < 0:
                 raise ValueError("This value (" + str(data["progress"]) + ") is not valid for progress.")
 
-            obstacle = (
+            progress_data = float(data["progress"])
+
+            obstacles = (
                 DBSession.query(Obstacle)
                 .filter(
-                    Obstacle.segment_id == int(data["segment_id"]),
-                    Obstacle.progress == data["progress"],
+                    Obstacle.segment_id==int(data["segment_id"])
                 )
-                .first()
+                .all()
             )
-
-            if obstacle != None:
-                if ("id" in data and obstacle.id != data["id"]) or "id" not in data:
-                    raise ValueError("There is already one obstacle at this position for this segment.")
+            
+            if obstacles != None:
+                for obstacle in obstacles:
+                    if obstacle.progress == progress_data:
+                        if ("id" in data and obstacle.id != data["id"]) or "id" not in data:
+                            raise ValueError("There is already one obstacle at this position for this segment.")
 
         return data
 

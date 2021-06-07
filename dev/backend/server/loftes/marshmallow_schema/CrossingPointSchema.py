@@ -34,7 +34,7 @@ class CrossingPointSchema(Schema):
 
         if "name" in data and "challenge_id" in data:
 
-            msg = self.check_unique_name(data,data["challenge_id"])
+            msg = self.check_unique_name(data,data["challenge_id"],0)
             if msg != "":
                 raise ValueError(msg)
 
@@ -53,14 +53,14 @@ class CrossingPointSchema(Schema):
         if "name" in data:
 
             challenge_id = kwargs.get("challenge_id", None)
-
-            msg = self.check_unique_name(data,challenge_id)
+            crossing_id = kwargs.get("crossing_id", None)
+            msg = self.check_unique_name(data,challenge_id,crossing_id)
             if msg != "":
                 raise ValueError(msg)
 
         return self.pre_load(data, True)
 
-    def check_unique_name(self,data,challenge_id):
+    def check_unique_name(self,data,challenge_id,crossing_id):
 
         msg = ""
 
@@ -78,10 +78,11 @@ class CrossingPointSchema(Schema):
         )
 
         if crossing_point != None:
-            msg = (
-                "The given value '"
-                + data["name"]
-                + "' is already used as a crossing point name for this challenge."
-            )
+            if (crossing_id != 0 and crossing_point.id != crossing_id) or crossing_id==0:
+                msg = (
+                    "The given value '"
+                    + data["name"]
+                    + "' is already used as a crossing point name for this challenge."
+                )
         
         return msg
