@@ -14,7 +14,7 @@ const ViewNotSubscribedChallenge = () => {
   const { isLoading, isError, error, data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
 
   return <>
-    {isLoading ? 'Loading...' : isError ? error.message : <>
+    {isLoading ? 'Chargement...' : isError ? error.message : <>
       <div style={css.flexRow}>
         <ViewChallengeInfo challenge={challenge} />
         <ChallengeMap challenge={challenge} isAdmin={false} />
@@ -39,7 +39,7 @@ const ViewChallengeInfo = ({ challenge }) => {
     <div style={css.flexLeft}>
       <ChallengeInfo challenge={challenge} />
       <div style={css.flexCenter}>
-        <Button onClick={() => subscribeChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Subscibe</Button> {' '}
+        <Button onClick={() => subscribeChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>S'inscrire</Button> {' '}
       </div>
     </div>
   );

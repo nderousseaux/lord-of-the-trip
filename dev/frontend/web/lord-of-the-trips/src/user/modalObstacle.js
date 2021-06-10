@@ -17,17 +17,17 @@ const ModalObstacle = ({ obstacleObject, openState, setOpenState }) => {
         <DialogTitle id="form-dialog-title">Obstacle "{obstacleObject.label}"</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <b>Current information : </b> <br />
-            - Question : {obstacleObject.label} <br />
+            <b>Informations actuel : </b> <br />
+            {obstacleObject.question_type === 0 ? "- Obstacle de type Question" : obstacleObject.question_type === 1 ? "- Obstacle de type Photo" : null} <br />
+            {obstacleObject.question_type === 0 ? "- Question" : obstacleObject.question_type === 1 ? "- Label" : null} : {obstacleObject.label} <br />
             - Description : {obstacleObject.description} <br />
-            - Progress : {obstacleObject.progress * 100}% <br />
-            - Number points : {obstacleObject.nb_points} <br />
-            - Result : {obstacleObject.result}
+            - Position sur le segment : {obstacleObject.progress * 100}% <br />
+            {obstacleObject.question_type === 0 ? "- Réponse : " + obstacleObject.result : null}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeModal} color="primary">
-            Close
+            Fermer
           </Button>
         </DialogActions>
       </Dialog>

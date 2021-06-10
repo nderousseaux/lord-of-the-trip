@@ -520,7 +520,7 @@ const EditMap = () => {
   };
 
   return <>
-    <h3>Edit Map <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button> </h3>
+    <h3>Modifier la carte <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Modifier le challenge</Button> </h3>
     {errorDownload ? <h3>{errorDownload.message}</h3> :
       successDownload ?
         <div>
@@ -593,17 +593,17 @@ const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
     setRadioButtonValue(e.target.value);
   }
   return <div>
-    <label> <input type="radio" name="action" value="1" checked={radioButtonValue === "1"} onChange={handleOptionChange} /> Nothing </label>
-    <label> <input type="radio" name="action" value="2" checked={radioButtonValue === "2"} onChange={handleOptionChange} /> Add Crossing points </label>
-    <label> <input type="radio" name="action" value="3" checked={radioButtonValue === "3"} onChange={handleOptionChange} /> Delete Crossing points </label>
-    <label> <input type="radio" name="action" value="4" checked={radioButtonValue === "4"} onChange={handleOptionChange} /> Draw Segments </label>
-    <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Delete Segments </label>
-    <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Set Start challenge </label>
-    <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Set End challenge </label>
-    <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Change Segments Orientation </label>
-    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Add obstacles </label>
-    <label> <input type="radio" name="action" value="10" checked={radioButtonValue === "10"} onChange={handleOptionChange} /> Delete obstacles </label>
-    <label> <input type="radio" name="action" value="11" checked={radioButtonValue === "11"} onChange={handleOptionChange} /> Edit with Modal (click on Crossing points / Segments / Obstacles) </label>
+    <label> <input type="radio" name="action" value="1" checked={radioButtonValue === "1"} onChange={handleOptionChange} /> Rien </label>
+    <label> <input type="radio" name="action" value="2" checked={radioButtonValue === "2"} onChange={handleOptionChange} /> Ajouter des points de passage </label>
+    <label> <input type="radio" name="action" value="3" checked={radioButtonValue === "3"} onChange={handleOptionChange} /> Supprimer des points de passage </label>
+    <label> <input type="radio" name="action" value="4" checked={radioButtonValue === "4"} onChange={handleOptionChange} /> Tracer des segments </label>
+    <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Supprimer des segments </label>
+    <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Sélectionner le départ </label>
+    <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Sélectionner l'arrivé </label>
+    <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Changer le sens des segments </label>
+    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Ajouter des obstacles </label>
+    <label> <input type="radio" name="action" value="10" checked={radioButtonValue === "10"} onChange={handleOptionChange} /> Supprimer des obstacles </label>
+    <label> <input type="radio" name="action" value="11" checked={radioButtonValue === "11"} onChange={handleOptionChange} /> Modifier avec une modal (Cliquer sur les points / segments / obstacles) </label>
   </div>
 };
 
@@ -637,20 +637,19 @@ const VerifyChallenge = ({ challenge }) => {
   };
 
   return <div>
-    {isPublished ? <div>Challenge published !</div> :
-      <Button onClick={handleClick} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Verify challenge</Button>
+    {isPublished ? <div>Challenge publié !</div> :
+      <Button onClick={handleClick} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Vérifier le parcours</Button>
     }
     {response ?
       response.status === 204 ?
         <div>
-          Challenge valid <br />
-          <Button onClick={() => publishChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Publish challenge</Button>
+          Challenge valide <br />
+          <Button onClick={() => publishChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Publier le challenge</Button>
         </div>
       : <div><pre>{JSON.stringify(response.data, null, 2) }</pre></div>
     : null}
     {error ? <div>{error.message}</div> : null}
   </div>
 };
-
 
 export default EditMap;

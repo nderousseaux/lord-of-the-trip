@@ -37,11 +37,11 @@ const CreateChallengeForm = () => {
   };
 
   return <div>
-    <h3>Create a new challenge</h3>
+    <h3>Créer un nouveau challenge</h3>
     <form onSubmit={handleSubmit}>
-      <label>Name : </label>
+      <label>Nom : </label>
       <input type="text" value={name} onChange={e => setName(e.target.value)} /> {' '}
-      <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Create</Button>
+      <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Créer</Button>
     </form>
     {error ? <p>{error.message}</p> : null}
   </div>
@@ -60,14 +60,14 @@ const EditableChallenges = () => {
   });
 
   return <div>
-    <h3>Your challenges Editable</h3>
-    {isLoading ? 'Loading...' : isError ? "You have no editable challenge, create one" :
+    <h3>Vos challenges en cours de création</h3>
+    {isLoading ? 'Chargement...' : isError ? "Vous n'avez pas de challenge en cours de création, créé en un" :
       <ul>
       {editableChallenges.challenges.map(c => (
         <li key={c.id}>
           {c.id} : {c.name} {' '}
-          <Button onClick={() => history.push(`/editchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit</Button> {' '}
-          <Button onClick={() => deleteChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Delete</Button>
+          <Button onClick={() => history.push(`/editchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Modifier</Button> {' '}
+          <Button onClick={() => deleteChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Supprimer</Button>
         </li>
       ))}
       </ul>
@@ -88,14 +88,14 @@ const PublishedChallenges = () => {
   });
 
   return <div>
-    <h3>Your challenges Published</h3>
-    {isLoading ? 'Loading...' : isError ? "You have no published challenge" :
+    <h3>Vos challenges publiés</h3>
+    {isLoading ? 'Chargement...' : isError ? "Vous n'avez pas de challenge publié" :
       <ul>
       {publishedChallenges.challenges.map(c => (
         <li key={c.id}>
           {c.id} : {c.name} {' '}
-          <Button onClick={() => history.push(`/adminviewchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>View</Button> {' '}
-          <Button onClick={() => duplicateChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Duplicate</Button>
+          <Button onClick={() => history.push(`/adminviewchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Voir</Button> {' '}
+          <Button onClick={() => duplicateChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Duppliquer</Button>
         </li>
       ))}
       </ul>

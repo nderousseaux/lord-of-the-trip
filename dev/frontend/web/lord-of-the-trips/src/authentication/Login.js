@@ -16,13 +16,13 @@ let Login = () => {
   };
 
   return <div>
-    <h1>Login</h1>
+    <h1>Connexion</h1>
     <form onSubmit={handleSubmit}>
       <label>Email : </label>
       <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} size="50" autoFocus /> <br />
-      <label>Password : </label>
+      <label>Mot de passe : </label>
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /> <br />
-      <button>Submit</button>
+      <button>Se connecter</button>
     </form>
     { message ? <p>{message}</p> : null}
   </div>;

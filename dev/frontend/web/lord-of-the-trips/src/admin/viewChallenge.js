@@ -13,14 +13,14 @@ const AdminViewChallenge = () => {
   const { isLoading, isError, error, data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
 
   return <>
-    {isLoading ? 'Loading...' : isError ? error.message : <>
+    {isLoading ? 'Chargement...' : isError ? error.message : <>
       <div style={css.flexRow}>
         <div style={css.flexLeft}>
           <ChallengeInfo challenge={challenge} />
           {challenge.draft === true ?
           <div>
-            <Button onClick={() => history.push(`/editchallenge/${challenge.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Challenge</Button> {' '}
-            <Button onClick={() => history.push(`/editmap/${challenge.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Map</Button>
+            <Button onClick={() => history.push(`/editchallenge/${challenge.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Modifier le challenge</Button> {' '}
+            <Button onClick={() => history.push(`/editmap/${challenge.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Modifier la carte</Button>
           </div>
           : null }
         </div>
@@ -34,9 +34,9 @@ const ChallengeInfo = ({ challenge }) => {
 
   return (
     <>
-      <h3>Challenge informations</h3>
+      <h3>Informations du challenge</h3>
       <p>
-        <b>Name :</b>
+        <b>Nom :</b>
         <p>{challenge.name}</p>
       </p>
       <p>
@@ -45,19 +45,19 @@ const ChallengeInfo = ({ challenge }) => {
       </p>
       <div style={css.flexRow}>
         <div style={css.flex25left}>
-          <b>End At</b>
+          <b>Fini le</b>
           <p>{challenge.end_date}</p>
         </div>
         <div style={css.flex25mid}>
-          <b>Scaling</b>
-          <p>{challenge.scalling} meters</p>
+          <b>Échelle</b>
+          <p>{challenge.scalling} mètres</p>
         </div>
         <div style={css.flex25mid}>
-          <b>Level</b>
+          <b>Niveau</b>
           <p>{challenge.level}</p>
         </div>
         <div style={css.flex25right}>
-          <b>Step lenght</b>
+          <b>Longueur d'un pas</b>
           <p>{challenge.step_length * 100} cm</p>
         </div>
       </div>

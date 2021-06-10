@@ -256,7 +256,7 @@ const ChallengeMap = ({ challenge, isAdmin }) => {
 
   return (
     <div style={css.flexRight}>
-      <h3>Challenge Map</h3>
+      <h3>Carte du challenge</h3>
       {errorDownload ? <h3>{errorDownload.message}</h3> :
         successDownload ?
           <div>

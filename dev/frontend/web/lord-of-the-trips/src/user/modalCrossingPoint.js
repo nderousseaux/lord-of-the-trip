@@ -14,16 +14,16 @@ const ModalCrossingPoint = ({ crossingPointObject, openState, setOpenState }) =>
   return (
     <div>
       <Dialog open={openState} onClose={closeModal} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Crossing Point "{crossingPointObject.name}"</DialogTitle>
+        <DialogTitle id="form-dialog-title">Point de passage "{crossingPointObject.name}"</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <b>Current information : </b> <br />
-            - Name : {crossingPointObject.name}
+            <b>Information actuel : </b> <br />
+            - Nom : {crossingPointObject.name}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeModal} color="primary">
-            Close
+            Fermer
           </Button>
         </DialogActions>
       </Dialog>

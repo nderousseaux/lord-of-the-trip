@@ -30,15 +30,15 @@ const Header = () => {
   return (
     <>
       <Link to="/"> <h1>Lord of the trips</h1> </Link>
-      {!user ? <> <Link to="/login"><b>Login</b></Link> or <Link to="/signup"><b>Signup</b></Link> </> : null}
+      {!user ? <> <Link to="/login"><b>Connexion</b></Link> ou <Link to="/signup"><b>Inscription</b></Link> </> : null}
       {user ? <>
-        Hello {user.first_name} {user.last_name}, or {user.pseudo} to call you with your pseudo. {user.is_admin ? "You are a admin user !" : "You are a normal user."}
-        {' '}<Button onClick={logout} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Logout</Button>
+        Salut {user.first_name} {user.last_name}, ou {user.pseudo} pour t'appeler avec ton pseudo. {user.is_admin ? "Vous êtes un administrateur !" : null}
+        {' '}<Button onClick={logout} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Déconnexion</Button>
         <br />
-        {' '} <Button onClick={() => history.push(`/dashboard`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>User Dashboard</Button>
+        {' '} <Button onClick={() => history.push(`/dashboard`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Dashboard utilisateur</Button>
       </> : null}
       {user?.is_admin ? <>
-        {' '} <Button onClick={() => history.push(`/admindashboard`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Admin Dashboard</Button>
+        {' '} <Button onClick={() => history.push(`/admindashboard`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Dashboard administrateur</Button>
       </> : null}
     </>
   );

@@ -17,14 +17,14 @@ const ModalSegment = ({ segmentObject, openState, setOpenState }) => {
         <DialogTitle id="form-dialog-title">Segment "{segmentObject.name}"</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <b>Current information : </b> <br />
-            - Name : {segmentObject.name} <br />
-            - Length of the segment : {segmentObject.totalLength} meters
+            <b>Informations actuel : </b> <br />
+            - Nom : {segmentObject.name} <br />
+            - Longueur du segment : {segmentObject.totalLength} mètres
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeModal} color="primary">
-            Close
+            Fermer
           </Button>
         </DialogActions>
       </Dialog>

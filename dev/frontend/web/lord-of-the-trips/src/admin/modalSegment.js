@@ -34,24 +34,24 @@ const ModalSegment = ({ segmentObject, challengeId, openState, setOpenState }) =
         <DialogTitle id="form-dialog-title">Segment "{segmentObject.name}"</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <b>Current information : </b> <br />
-            - Name : {segmentObject.name} <br />
-            - Length of the segment : {segmentObject.totalLength} meters
+            <b>Informations actuel : </b> <br />
+            - Nom : {segmentObject.name} <br />
+            - Longueur du segment : {segmentObject.totalLength} mètres
           </DialogContentText>
           <hr />
           <form onSubmit={handleSubmit}>
             <DialogContentText>
-              <b>Update name : </b>
+              <b>Modifier le nom : </b>
             </DialogContentText>
-            <TextField autoFocus variant="outlined" margin="dense" type="text" label="New name" value={name} onChange={e => setName(e.target.value)} fullWidth />
+            <TextField autoFocus variant="outlined" margin="dense" type="text" label="Nouveau nom" value={name} onChange={e => setName(e.target.value)} fullWidth />
           </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeModal} color="primary">
-            Cancel
+            Annuler
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            Update
+            Modifier
           </Button>
         </DialogActions>
       </Dialog>

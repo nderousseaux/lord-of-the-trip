@@ -55,24 +55,24 @@ const EditChallenge = () => {
   };
 
   return <>
-    {isLoading ? 'Loading...' : isError ? error.message :
+    {isLoading ? 'Chargement...' : isError ? error.message :
       <div>
-        <h3>Edit challenge {challenge.id}</h3>
+        <h3>Modifier le challenge {challenge.id}</h3>
         <form onSubmit={handleSubmit}>
           <p>
-            <label>Name : {challenge.name}</label> <br />
-            <label>New Name : </label> <input type="text" value={name} onChange={e => setName(e.target.value)} size="100" />
+            <label>Nom : {challenge.name}</label> <br />
+            <label>Nouveau Nom : </label> <input type="text" value={name} onChange={e => setName(e.target.value)} size="100" />
           </p>
           <p>
             <label>Description : </label> {challenge.description} <br />
-            <label>New Description : </label> <textarea value={description} onChange={e => setDescription(e.target.value)} rows="2" cols="200" />
+            <label>Nouvelle Description : </label> <textarea value={description} onChange={e => setDescription(e.target.value)} rows="2" cols="200" />
           </p>
           <p>
-            <label>Scaling : {challenge.scalling ? challenge.scalling : "0"} meters</label> <br />
-            <label>New Scaling : </label> <input type="number" value={scalling} onChange={e => setScalling(e.target.value)} /> <br />
-            <label>NB : The scaling correspond to the width of the map in meters</label>
+            <label>Échelle : {challenge.scalling ? challenge.scalling : "0"} mètres</label> <br />
+            <label>Nouvelle Échelle : </label> <input type="number" value={scalling} onChange={e => setScalling(e.target.value)} /> <br />
+            <label>NB : L'échelle correspond à la longueur de la carte en mètres</label>
           </p>
-          <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Update challenge</Button>
+          <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Modifier le challenge</Button>
         </form>
         {errorUpdate ? <p>{errorUpdate.message}</p> : null}
       </div>
@@ -81,7 +81,7 @@ const EditChallenge = () => {
     <UploadMap setNewUpload={setNewUpload}/>
     <hr />
     {aMapUploaded ? <> <DownloadMap newUpload={newUpload} setNewUpload={setNewUpload}/> <hr /> </> : null}
-    {aMapUploaded ? <Button onClick={() => history.push(`/editmap/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Edit Map</Button> : null}
+    {aMapUploaded ? <Button onClick={() => history.push(`/editmap/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Modifier la carte</Button> : null}
   </>
 };
 
@@ -123,12 +123,12 @@ const UploadMap = ({ setNewUpload }) => {
 
   return (
     <div>
-    <h3>Upload the map of the challenge</h3>
-      <Button onClick={() => hiddenFileInput.current.click()} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Upload Map</Button>
+    <h3>Télécharger la carte du challenge</h3>
+      <Button onClick={() => hiddenFileInput.current.click()} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Télécharger la carte</Button>
       <input ref={hiddenFileInput} type="file" accept="image/*" onChange={handleImageUpload} style={{ display:"none" }} />
-      {errorUploadClient ? <h3>Client check : Invalid file uploaded</h3> : null}
-      {errorUploadServer ? <h3>Server check : {errorUploadServer.message}</h3> : null}
-      {successUpload ? <h3>Upload succeeded</h3> : null}
+      {errorUploadClient ? <h3>Fichier invalide</h3> : null}
+      {errorUploadServer ? <h3>{errorUploadServer.message}</h3> : null}
+      {successUpload ? <h3>Téléchargement réussi</h3> : null}
     </div>
   );
 };
@@ -170,9 +170,9 @@ const DownloadMap = ({ newUpload, setNewUpload }) => {
 
   return (
     <div>
-    <h3>Display the map of the challenge</h3>
-      <Button onClick={handleImageDownload} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Display Map</Button> {' '}
-      {successDownload ? <Button onClick={resetState} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Hide Map</Button> : null}
+    <h3>Afficher la carte du challenge</h3>
+      <Button onClick={handleImageDownload} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Afficher la carte</Button> {' '}
+      {successDownload ? <Button onClick={resetState} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Cacher la carte</Button> : null}
       {errorDownload ? <h3>{errorDownload.message}</h3> : null}
       {successDownload ? <p> <img src={window.URL.createObjectURL(file)} alt="map" /> </p> : null}
     </div>

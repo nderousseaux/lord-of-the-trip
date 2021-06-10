@@ -58,7 +58,7 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
         <DialogContent>
           <FormControl component="fieldset">
             <FormLabel component="legend">Type de l'obstacle</FormLabel>
-            <RadioGroup row aria-label="position" name="position" value={radioValue} onChange={e => setRadioValue(e.target.value)}>
+            <RadioGroup row value={radioValue} onChange={e => setRadioValue(e.target.value)}>
               <FormControlLabel value="0" control={<Radio />} label="Question" />
               <FormControlLabel value="1" control={<Radio />} label="Photo" />
             </RadioGroup>
@@ -76,10 +76,10 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
 
         <DialogActions>
           <Button onClick={closeModal} color="primary">
-            Cancel
+            Annuler
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            Update
+            Modifier
           </Button>
         </DialogActions>
       </Dialog>
@@ -92,14 +92,14 @@ const ObstacleQuestion = ({ updateObstacleMutation, label, setLabel, description
   return <>
     <form onSubmit={handleSubmit}>
       <DialogContentText>
-        <b>Question obstacle</b>
+        <b>Obstacle de type Question</b>
       </DialogContentText>
       <TextField variant="outlined" margin="dense" type="text" label="Question" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
       <TextField variant="outlined" margin="dense" type="text" label="Description" value={description} onChange={e => setDescription(e.target.value)} fullWidth />
-      <TextField variant="outlined" margin="dense" type="text" label="Result" value={result} onChange={e => setResult(e.target.value)} fullWidth />
-      <TextField variant="outlined" margin="dense" type="number" label="Progress" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
+      <TextField variant="outlined" margin="dense" type="text" label="Réponse" value={result} onChange={e => setResult(e.target.value)} fullWidth />
+      <TextField variant="outlined" margin="dense" type="number" label="Position sur le segment" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
                  error={progress !== null && (progress < 1 || progress > 99 || !Number.isInteger(parseFloat(progress))) ? true : false} />
-      <DialogContentText>Progress is the percentage of progress for the obstacle on the segment, accepted value is an integer between 1 and 99</DialogContentText>
+      <DialogContentText>Position sur le segment : valeur en pourcentage qui représente la distance de l'obstacle sur le segment, les valeurs peuvent être les nombres entiers de 1 à 99</DialogContentText>
     </form>
   </>
 };
@@ -109,13 +109,13 @@ const ObstaclePhoto = ({ updateObstacleMutation, label, setLabel, description, s
   return <>
     <form onSubmit={handleSubmit}>
       <DialogContentText>
-        <b>Photo obstacle</b>
+        <b>Obstacle de type Photo</b>
       </DialogContentText>
       <TextField variant="outlined" margin="dense" type="text" label="Label" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
       <TextField variant="outlined" margin="dense" type="text" label="Description" value={description} onChange={e => setDescription(e.target.value)} fullWidth />
-      <TextField variant="outlined" margin="dense" type="number" label="Progress" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
+      <TextField variant="outlined" margin="dense" type="number" label="Position sur le segment" value={progress} onChange={e => setProgress(e.target.value)} fullWidth
                  error={progress !== null && (progress < 1 || progress > 99 || !Number.isInteger(parseFloat(progress))) ? true : false} />
-      <DialogContentText>Progress is the percentage of progress for the obstacle on the segment, accepted value is an integer between 1 and 99</DialogContentText>
+      <DialogContentText>Position sur le segment : valeur en pourcentage qui représente la distance de l'obstacle sur le segment, les valeurs peuvent être les nombres entiers de 1 à 99</DialogContentText>
     </form>
   </>
 };

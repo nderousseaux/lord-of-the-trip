@@ -19,19 +19,19 @@ let Signup = () => {
   };
 
   return <div>
-    <h1>Signup</h1>
+    <h1>Inscription</h1>
     <form onSubmit={handleSubmit}>
-      <label>First name : </label>
+      <label>Prénom : </label>
       <input type="text" value={first_name} onChange={(e) => setFirst_name(e.target.value)} autoFocus /> <br />
-      <label>Last name : </label>
+      <label>Nom : </label>
       <input type="text" value={last_name} onChange={(e) => setLast_name(e.target.value)} /> <br />
       <label>Pseudo : </label>
       <input type="text" value={pseudo} onChange={(e) => setPseudo(e.target.value)} /> <br />
       <label>Email : </label>
       <input type="text" value={email} onChange={(e) => setEmail(e.target.value)} size="50" /> <br />
-      <label>Password : </label>
+      <label>Mot de passe : </label>
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /> <br />
-      <button>Submit</button>
+      <button>S'inscrire</button>
     </form>
     { message ? <p>{message}</p> : null}
   </div>;

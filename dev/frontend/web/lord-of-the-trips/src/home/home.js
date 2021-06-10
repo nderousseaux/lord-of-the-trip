@@ -5,12 +5,12 @@ const HomePage = () => {
   let { user } = useAuth();
 
   return <div>
-    <h2>Home page</h2>
-    <p>This is the beautiful advertising page !!!</p>
-    <p>Do run on challenges, for example a challenge in Narnia universe.</p>
+    <h2>Page d'accueil</h2>
+    <p>Bienvenue sur la superbe page de pub !!!</p>
+    <p>Faites des courses sur des challenges, par exemple un challenge dans l'univers de Narnia</p>
     <img src={challengePub} alt="challengePub" width='575px' height='409px'/>
     <br />
-    {!user ? "Log in to start the adventure" : null}
+    {!user ? "Connecter vous pour commencer l'aventure" : null}
   </div>
 };
 
