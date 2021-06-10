@@ -1,8 +1,8 @@
 import ChallengesService from "services/challenges/Challenges.service.js";
 import { AlertHelper } from "helpers/AlertHelper.js";
+import { getNextAction } from 'helpers/RunHelper';
 
-
-export function getChallenges(dispatchChallenges) {
+export function getChallenges(dispatchChallenges, idChallengeSelected) {
     dispatchChallenges({
         type: 'START_LOADING'
     }) 
@@ -21,6 +21,12 @@ export function getChallenges(dispatchChallenges) {
         dispatchChallenges({
             type: 'UPDATE_CHALLENGE_SELECTED',
         });
+
+        //Si un challenge est sélectionné, on update son prochain état
+        if (idChallengeSelected != undefined){
+            getNextAction(idChallengeSelected, dispatchChallenges)
+        }
+
     })
     .catch((err) => {
         console.log(err)

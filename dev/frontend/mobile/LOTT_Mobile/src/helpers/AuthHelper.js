@@ -41,7 +41,7 @@ export function signin(setLoading, onSuccess, login, password, dispatchChallenge
         onSuccess(data)
       })
       .then(() => {
-        getChallenges(dispatchChallenges)
+        getChallenges(dispatchChallenges, undefined)
       })
       .catch((err) => {
         console.log(err)

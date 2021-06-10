@@ -1,13 +1,12 @@
 import React, {createContext, useContext, useReducer} from 'react';
 import _ from 'lodash';
 
-
-
 const initialState = {
   challengesSubscribed: [],
   challengesNoSubscribed: [],
   loading: false,
-  challengeSelected: {}
+  challengeSelected: {},
+  nextAction: {}
 };
 
 const challengesReducer = (state, action) => {
@@ -30,12 +29,17 @@ const challengesReducer = (state, action) => {
     case 'SET_CHALLENGE_SELECTED':
       return {
         ...state,
-        challengeSelected: getChallengeSelected(state, action.idChallengeSelected)
+        challengeSelected: getChallengeSelected(state, action.idChallengeSelected),
       }
     case 'UPDATE_CHALLENGE_SELECTED':
       return {
         ...state,
-        challengeSelected: getChallengeSelected(state, state.challengeSelected.id)
+        challengeSelected: getChallengeSelected(state, state.challengeSelected.id),
+      }
+    case 'UPDATE_NEXT_ACTION':
+      return {
+        ...state,
+        nextAction: action.nextAction
       }
     default:
       return state;

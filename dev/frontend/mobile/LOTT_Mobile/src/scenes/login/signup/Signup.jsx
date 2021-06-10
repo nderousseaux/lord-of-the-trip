@@ -4,7 +4,7 @@ import { View, KeyboardAvoidingView } from "react-native";
 import Button from "components/basics/button/ButtonComponent.jsx";
 import Input from "components/basics/input/InputComponent.jsx";
 import styles from "./Signup.style.js";
-import SignupButton from "../../../components/login/signupButton/SignupButton.jsx";
+import SignupButton from "components/login/signupButton/SignupButton.jsx";
 
 export default function Signup(props){
 
