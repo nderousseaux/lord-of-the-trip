@@ -1,4 +1,4 @@
-# API Lord of the Trips
+# Application Mobile Lord of the Trips
 
 ## Normes de développement
 
