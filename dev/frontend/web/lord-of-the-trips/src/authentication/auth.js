@@ -59,7 +59,7 @@ export let AuthProvider = ({children}) => {
     });
   }, []);
 
-  return !userCheck ? "Checking authentication..." :
+  return !userCheck ? "Vérification de l'authentification..." :
     <AuthContext.Provider value={{ user, login, logout, signup }}>
       {children}
     </AuthContext.Provider>

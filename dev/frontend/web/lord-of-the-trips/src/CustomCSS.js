@@ -1,3 +1,36 @@
+import { makeStyles } from '@material-ui/core/styles';
+
+export const useStyles = makeStyles({
+  //Login and signup drawer
+  drawer: {
+    width: '23vw'
+  },
+  drawerGrid: {
+    height: '100vh'
+  },
+
+
+  width80:  {
+    width: '80%'
+  },
+
+  margin10vertical: {
+    margin: '10px 0'
+  },
+
+  colorPrimary: {
+    backgroundColor: '#1976D2'
+  },
+
+  textCenter: {
+    textAlign: 'center'
+  },
+});
+
+
+
+
+
 export const flexCenter = {
   display: 'flex',
   justifyContent: 'center'

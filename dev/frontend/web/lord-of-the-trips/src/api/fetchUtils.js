@@ -1,4 +1,5 @@
 export const urlPrefix = 'https://hephaistos.nathanaelderousseaux.fr/api';
+//export const urlPrefix = 'http://172.20.10.2:6543';
 
 export const getToken = () => window.localStorage.getItem('token');
 
