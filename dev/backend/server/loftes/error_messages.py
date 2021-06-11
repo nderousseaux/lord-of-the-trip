@@ -1,7 +1,7 @@
 # marshmallow_schema
 FIELD_MANDATORY = "This field is mandatory."
-FIELD_NOT_NULL  = "Field must not be null."
-FIELD_INVALID   = "Invalid value."
+FIELD_NOT_NULL = "Field must not be null."
+FIELD_INVALID = "Invalid value."
 
 # admin
 REQUEST_RESSOURCE_WITHOUT_PERMISSION = (
@@ -54,4 +54,9 @@ UPLOAD_IMAGE_NOT_FOUND = "File is not found."
 UPLOAD_IMAGE_TYPE_NOT_SUPPORTED = "The file's type is not supported on this server."
 UPLOAD_IMAGE_FILE_SIZE_IS_TOO_BIG = "The size of image is too big."
 # events
-EVENT_CHECK_REPONSE = "You must use the check response."
+EVENT_CHECK_RESPONSE = "You must use the check response."
+# obstacles
+OBSTACLE_RESPONSE_NOT_FOUND = "Field progress must not be null."
+OBSTACLE_PHOTO_ALREADY_SEND = (
+    "You do not have permission to respond on an obstacle where you have already send the answer."
+)

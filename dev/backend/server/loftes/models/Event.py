@@ -19,3 +19,4 @@ class Event(Base):
     obstacle_id = Column(Integer, ForeignKey("Obstacle.id"))
     response = Column(String(255))
     proceeded = Column(Boolean, server_default=text("0"))
+    photo_response_url = Column(String(255))

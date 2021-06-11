@@ -9,7 +9,6 @@ from loftes.cors import cors_policy
 from loftes.models import Segment, Challenge, User, CrossingPoint, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import SegmentSchema
-from loftes.resources import UserCheckRessources
 
 import loftes.error_messages as error_messages
 
@@ -164,6 +163,7 @@ crossing_point_segments = Service(
     path="/crossing-points/{id:\d+}/segments",
     cors_policy=cors_policy,
 )
+
 
 @crossing_point_segments.get()
 def get_crossing_point_segments(request):
