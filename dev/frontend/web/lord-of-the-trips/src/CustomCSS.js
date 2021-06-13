@@ -10,6 +10,20 @@ export const useStyles = makeStyles({
   },
 
 
+  header: {
+    height: '100px',
+    display: 'flex',
+    flexDirection: 'row'
+  },
+
+  clickable: {
+    cursor: 'pointer'
+  },
+
+  height50:  {
+    height: '50%'
+  },
+
   width80:  {
     width: '80%'
   },
@@ -22,8 +36,29 @@ export const useStyles = makeStyles({
     backgroundColor: '#1976D2'
   },
 
+  colorSecondary: {
+    backgroundColor: '#CB4335'
+  },
+
+  button: {
+    textTransform: 'none'
+  },
+
   textCenter: {
     textAlign: 'center'
+  },
+
+  contentCenterHorizontal: {
+    justifyContent: 'center'
+  },
+
+  contentCenterVertical: {
+    alignItems: 'center'
+  },
+
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row'
   },
 });
 

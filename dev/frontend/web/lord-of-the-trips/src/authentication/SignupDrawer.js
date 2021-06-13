@@ -52,11 +52,13 @@ const SignupDrawer = ({ openState, setOpenState, setOpenLogin }) => {
                 <TextField variant="outlined" margin="dense" type="text" label="Pseudo" value={pseudo} onChange={e => setPseudo(e.target.value)} fullWidth />
                 <TextField variant="outlined" margin="dense" type="text" label="Email" value={email} onChange={e => setEmail(e.target.value)} fullWidth />
                 <TextField variant="outlined" margin="dense" type="password" label="Mot de passe" value={password} onChange={e => setPassword(e.target.value)} fullWidth />
-                <Button type="submit" size="small" variant="contained" color="primary" className={ `${classes.margin10vertical} ${classes.colorPrimary}` } fullWidth>S'inscrire</Button>
+                <Button type="submit" size="small" variant="contained" color="primary" className={ `${classes.margin10vertical} ${classes.button} ${classes.colorPrimary}` } fullWidth>S'INSCRIRE</Button>
                 { message ? <p>{message}</p> : null }
               </form>
             </div>
-            <div className={ `${classes.textCenter} ${classes.margin10vertical}` }><p >Déjà un compte ? <Button onClick={() => {closeDrawer(); setOpenLogin(true)}} size="small" variant="contained" color="primary" className={classes.colorPrimary} style={{textTransform: 'none'}}>Connecter vous</Button></p></div>
+            <div className={ `${classes.textCenter} ${classes.margin10vertical}` }>
+              <p>Déjà un compte ? <Button onClick={() => {closeDrawer(); setOpenLogin(true)}} size="small" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary}` }>Connecter vous</Button></p>
+            </div>
           </Grid>
         </div>
       </Drawer>
