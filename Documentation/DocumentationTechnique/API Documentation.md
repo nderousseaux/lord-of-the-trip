@@ -1,4 +1,6 @@
-# Application Mobile Lord of the Trips
+# API Lord of the Trips
+
+## Choix techniques
 
 ## Normes de développement
 
@@ -7,9 +9,7 @@
 
 ### Titre 2
 
-
-
-## Mise en place du projet
+## Régles de gestion
 
 ### Titre 1
 

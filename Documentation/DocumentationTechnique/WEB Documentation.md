@@ -1,4 +1,4 @@
-# API Lord of the Trips
+# Web site Lord of the Trips
 
 ## Choix techniques
 
