@@ -185,27 +185,17 @@ def find_event_responded_with_photo(user_id, obstacle_id):
     return query.all()
 
 
-def get_obstacle_for_validation(user_id):
+def find_obstacles_responses_to_verify_by_admin(user_id):
 
-    # Get all obstacle to validate for challenge
-
-    obstcles_to_validate = (
-        DBSession.query(
-            (Challenge.id).label("challenge_id"),
-            (Challenge.name).label("challenge_name"),
-            (Event.id).label("event_id"),
-            (Obstacle.label).label("label"),
-            (Obstacle.description).label("description"),
-            (Event.response).label("response"),
-        )
+    query = (
+        DBSession.query(Event)
         .join(Segment, Event.segment_id == Segment.id)
         .join(Challenge, Challenge.id == Segment.challenge_id)
         .join(Obstacle, Obstacle.id == Event.obstacle_id)
-        .filter(Event.proceeded == False, Event.event_type_id == 5)
+        .filter(Event.proceeded == False, Event.event_type_id == 5, Event.photo_response_url != None)
         .filter(Challenge.admin_id == user_id)
-        .filter(Segment.challenge_id == Challenge.id)
-        .order_by(Event.id.desc())
-        .all()
+        .filter(Obstacle.question_type == 1)
+        .order_by(Event.event_date)
     )
 
-    return obstcles_to_validate
+    return query.all()

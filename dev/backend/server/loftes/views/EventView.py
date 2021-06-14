@@ -9,18 +9,23 @@ from loftes.cors import cors_policy
 from loftes.models import Event, Challenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
+from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
+from loftes.marshmallow_schema.ObstacleSchema import ObstacleSchema
 from loftes.marshmallow_schema.EventDistanceSchema import EventDistanceSchema
-from loftes.marshmallow_schema.EventToValidateSchema import EventToValidateSchema
 from loftes.resources import EventResources
 from loftes.resources import UserManager
 
 import loftes.error_messages as error_messages
+from loftes.utils import get_project_root
 
 import pyramid.httpexceptions as exception
 from pyramid.authentication import AuthTicket
 import datetime
 import logging
 import json
+import os
+import shutil
+import base64
 
 events = Service(name="events", path="/challenges/{challenge_id:\d+}/events", cors_policy=cors_policy)
 
@@ -93,41 +98,6 @@ def get_event_by_id(request):
                 )
         else:
             response = service_informations.build_response(exception.HTTPNotFound())
-    else:
-        response = service_informations.build_response(exception.HTTPUnauthorized)
-
-    return response
-
-
-event_to_validate = Service(
-    name="event_to_validate",
-    path="/challenges/events/validation",
-    cors_policy=cors_policy,
-)
-
-
-@event_to_validate.get()
-def get_event_to_validate(request):
-
-    service_informations = ServiceInformations()
-
-    user = UserManager.check_user_connection(request)
-    if user != None:
-        if user.is_admin == True:
-
-            obstcles_to_validate = EventResources.get_obstacle_for_validation(user.id)
-            if len(obstcles_to_validate) != 0:
-                response = service_informations.build_response(
-                    exception.HTTPOk, EventToValidateSchema(many=True).dump(obstcles_to_validate)
-                )
-            else:
-                response = service_informations.build_response(
-                    exception.HTTPNotFound(),
-                )
-
-        else:
-            response = service_informations.build_response(exception.HTTPForbidden)
-
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
 
@@ -549,6 +519,69 @@ def event_set_response_upload(request):
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
             )
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+responses_to_verify = Service(
+    name="responses_to_verify",
+    path="/admin/verified-responses",
+    cors_policy=cors_policy,
+)
+
+
+@responses_to_verify.get()
+def get_responses_to_verify(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        # check if user has rights admin
+        if user.is_admin == True:
+
+            events_to_verify = EventResources.find_obstacles_responses_to_verify_by_admin(user.id)
+
+            if len(events_to_verify) != 0:
+
+                events = []
+                for event in events_to_verify:
+
+                    obstacle = DBSession.query(Obstacle).get(event.obstacle_id)
+                    challenge = obstacle.segment.challenge
+
+                    image_64_encode = None
+                    if event.photo_response_url != None:
+                        image = str(get_project_root()) + event.photo_response_url
+
+                        if os.path.exists(image):
+                            file_image = open(image, "rb")
+                            image_read = file_image.read()
+                            image_64_encode = bytes.decode(base64.encodebytes(image_read)).replace("\n", "")
+
+                    events.append(
+                        {
+                            "id": event.id,
+                            "response": image_64_encode,
+                            "challenge": ChallengeSchema(only=("id", "name")).dump(challenge),
+                            "obstacle": ObstacleSchema(only=("label", "description")).dump(obstacle),
+                        }
+                    )
+
+                response = service_informations.build_response(exception.HTTPOk, {"events": events})
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPNoContent(),
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPForbidden)
+
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
 

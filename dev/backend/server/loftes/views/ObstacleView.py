@@ -8,6 +8,7 @@ from loftes.models import Obstacle, Segment, Challenge, User, Event, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import ObstacleSchema
 from loftes.marshmallow_schema.EventSchema import EventSchema
+from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.resources import ObstacleResources
 from loftes.resources import EventResources
 from loftes.resources import UserManager
@@ -21,6 +22,7 @@ import json
 import datetime
 import os
 import shutil
+import base64
 
 obstacle_all = Service(
     name="obstacle_all",
@@ -951,7 +953,7 @@ def respond_on_obstacle(request):
 
     service_informations = ServiceInformations()
 
-    user = UserManager.check_user_connection(request)
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
 
     # check if user is authenticated
     if user != None:
