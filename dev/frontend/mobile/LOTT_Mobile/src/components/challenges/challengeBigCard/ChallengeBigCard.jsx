@@ -74,7 +74,7 @@ export default function ChallengeBigCard(props){
               onPress={ () => {inscriptionPress()}}
               title="S'inscrire au challenge"
             />
-            : <ButtonGo/>
+            : <ButtonGo {...props}/>
 
           }
           

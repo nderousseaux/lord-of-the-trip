@@ -91,3 +91,46 @@ export function getNextAction(idChallenge, dispatchChallenges) {
 
     })
 }
+
+export function move(showActionSheetWithOptions, dispatchRun, navigation) {
+    const options = ['En courant', 'À vélo', 'À pied', 'Annuler'];
+    const cancelButtonIndex = 3;
+    const destructiveButtonIndex = 3;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex,
+        showSeparators: true,
+        textStyle: { color: 'rgb(51, 126,246)'},
+        useModal:true,
+        title: 'Choisir un moyen de transport'
+
+      },
+      buttonIndex => {
+        let transport;
+        switch (buttonIndex){
+            case 0:
+                transport = 'course'
+                break;
+            case 1:
+                transport = 'velo'
+                break;
+            case 2:
+                transport = 'marche'
+                break;
+            default:
+                transport = 'course'
+        }
+
+        
+        dispatchRun({
+            type: 'SET_TRANSPORT',
+            transport: transport
+          });
+
+        navigation.navigate('Recording');
+      }
+    );
+}

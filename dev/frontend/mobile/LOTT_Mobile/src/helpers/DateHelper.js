@@ -6,7 +6,7 @@ export function utcToString(dateString) {
 
   let date = new Date(dateString);
 
-  let day = date.getDay();
+  let day = date.getDate();
   
   let month = monthNames[date.getMonth()];
 
