@@ -11,8 +11,8 @@ from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
 from loftes.marshmallow_schema.EventDistanceSchema import EventDistanceSchema
 from loftes.marshmallow_schema.EventToValidateSchema import EventToValidateSchema
-from loftes.resources import EventRessources
-from loftes.resources import UserCheckRessources
+from loftes.resources import EventResources
+from loftes.resources import UserManager
 
 import loftes.error_messages as error_messages
 
@@ -30,7 +30,7 @@ def get_events(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -40,7 +40,7 @@ def get_events(request):
         # check if challenge is found
         if challenge != None:
 
-            events = EventRessources.find_all_events_for_user_by_challenge(user.id, challenge.id)
+            events = EventResources.find_all_events_for_user_by_challenge(user.id, challenge.id)
 
             if len(events) == 0:
                 return service_informations.build_response(exception.HTTPNoContent())
@@ -71,7 +71,7 @@ def get_event_by_id(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -111,11 +111,11 @@ def get_event_to_validate(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
         if user.is_admin == True:
 
-            obstcles_to_validate = EventRessources.get_obstacle_for_validation(user.id)
+            obstcles_to_validate = EventResources.get_obstacle_for_validation(user.id)
             if len(obstcles_to_validate) != 0:
                 response = service_informations.build_response(
                     exception.HTTPOk, EventToValidateSchema(many=True).dump(obstcles_to_validate)
@@ -146,14 +146,14 @@ def get_last_event(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
         if challenge != None:
 
-            event = EventRessources.find_last_event_for_user_by_challenge(user.id, request.matchdict["challenge_id"])
+            event = EventResources.find_last_event_for_user_by_challenge(user.id, request.matchdict["challenge_id"])
 
             if event == None:
                 return service_informations.build_response(exception.HTTPNotFound())
@@ -182,14 +182,14 @@ def get_event_distance_challenge(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
         if challenge != None:
 
-            distance = EventRessources.distance_event_for_user_by_challenge(user.id, challenge.id)
+            distance = EventResources.distance_event_for_user_by_challenge(user.id, challenge.id)
 
             return service_informations.build_response(exception.HTTPOk, EventDistanceSchema().dump(distance))
 
@@ -215,14 +215,14 @@ def get_event_distance_segment(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
 
         if segment != None:
 
-            distance = EventRessources.distance_event_for_user_by_segment(user.id, segment.id)
+            distance = EventResources.distance_event_for_user_by_segment(user.id, segment.id)
 
             return service_informations.build_response(exception.HTTPOk, EventDistanceSchema().dump(distance))
 
@@ -248,10 +248,10 @@ def event_add(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
-        checkchallenge = EventRessources.check_challenge_for_event(request.matchdict["challenge_id"], user.id)
+        checkchallenge = EventResources.check_challenge_for_event(request.matchdict["challenge_id"], user.id)
 
         if checkchallenge == "":
 
@@ -270,10 +270,10 @@ def event_add(request):
 
                     if eventdata.event_type_id == 5:
                         response = service_informations.build_response(
-                            exception.HTTPBadRequest, None, error_messages.EVENT_CHECK_REPONSE
+                            exception.HTTPBadRequest, None, error_messages.EVENT_CHECK_RESPONSE
                         )
                     else:
-                        eventrulescheck = EventRessources.check_event_type_rule(
+                        eventrulescheck = EventResources.check_event_type_rule(
                             eventdata.event_type_id,
                             user.id,
                             request.matchdict["challenge_id"],
@@ -337,10 +337,10 @@ def event_check_response(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
-        checkchallenge = EventRessources.check_challenge_for_event(request.matchdict["challenge_id"], user.id)
+        checkchallenge = EventResources.check_challenge_for_event(request.matchdict["challenge_id"], user.id)
 
         if checkchallenge == "":
             segment_id = request.matchdict["segment_id"]
@@ -358,7 +358,7 @@ def event_check_response(request):
 
                     if eventdata.event_type_id == 5:
 
-                        eventrulescheck = EventRessources.check_event_type_rule(
+                        eventrulescheck = EventResources.check_event_type_rule(
                             eventdata.event_type_id,
                             user.id,
                             request.matchdict["challenge_id"],
@@ -369,6 +369,7 @@ def event_check_response(request):
                             obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
 
                             if obstacle != None:
+                                print("heeej")
 
                                 if obstacle.question_type == 0:
                                     # set response proceeded by system for automatique
@@ -470,7 +471,7 @@ def event_set_response_upload(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
         event = DBSession.query(Event).get(request.matchdict["id"])
         if event != None:

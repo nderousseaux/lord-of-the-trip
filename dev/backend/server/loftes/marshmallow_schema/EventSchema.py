@@ -28,6 +28,7 @@ class EventSchema(Schema):
     obstacle_id = fields.Int()
     response = fields.Str()
     proceeded = fields.Bool(load_only=True)
+    photo_response_url = fields.Str(load_only=True)
 
     class Meta:
         ordered = True
@@ -40,7 +41,7 @@ class EventSchema(Schema):
     def pre_load(self, data, many, **kwargs):
 
         if data["event_type_id"] == 4 and "obstacle_id" not in data:
-            raise ValueError("the obstacle not be null.")
+            raise ValueError("Yhe obstacle cannot be null.")
 
         if "obstacle_id" in data:
             if data["obstacle_id"] == None:
@@ -49,9 +50,9 @@ class EventSchema(Schema):
             if data["event_type_id"] == 5:
 
                 if "response" not in data:
-                    raise ValueError("You must specified a response for the obstacle.")
+                    raise ValueError("You must specifiy a response for the obstacle.")
 
                 if data["response"] == None:
-                    raise ValueError("You must specified a response for the obstacle.")
+                    raise ValueError("You must specify a response for the obstacle.")
 
         return data

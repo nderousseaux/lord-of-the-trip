@@ -4,6 +4,7 @@ from loftes.models import Base, User, DBSession
 from loftes.security.PasswordUtils import PasswordUtils
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.resources.UserResources import UserResources
+from loftes.resources import UserManager
 import hashlib, binascii, os, re
 
 
@@ -98,7 +99,7 @@ class UserSchema(Schema):
         #     if user != None:
         #         raise ValueError("This pseudo is already in use. Please use another one.")
 
-        data = UserResources().check_data(data)
+        data = UserManager().check_data(data)
 
         if "password" in data:
             data["password"] = PasswordUtils().hash_password(data["password"])
