@@ -369,7 +369,6 @@ def event_check_response(request):
                             obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
 
                             if obstacle != None:
-                                print("heeej")
 
                                 if obstacle.question_type == 0:
                                     # set response proceeded by system for automatique
