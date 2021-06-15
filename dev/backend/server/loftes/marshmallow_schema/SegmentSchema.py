@@ -3,7 +3,7 @@ from marshmallow import Schema, fields, pre_dump, post_dump, post_load, pre_load
 
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 
-from loftes.resources import SegmentRessources
+from loftes.resources import SegmentManager
 import loftes.error_messages as error_messages
 import json
 
@@ -17,7 +17,7 @@ class SegmentSchema(Schema):
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={
             "required": error_messages.FIELD_MANDATORY,
-            "null":  error_messages.FIELD_NOT_NULL,
+            "null": error_messages.FIELD_NOT_NULL,
         },
     )
     start_crossing_point = fields.Nested(CrossingPointSchema)
@@ -27,7 +27,7 @@ class SegmentSchema(Schema):
         validate=validate.NoneOf("", error="Invalid value"),
         error_messages={
             "required": error_messages.FIELD_MANDATORY,
-            "null":  error_messages.FIELD_NOT_NULL,
+            "null": error_messages.FIELD_NOT_NULL,
         },
     )
     end_crossing_point = fields.Nested(CrossingPointSchema)
@@ -49,7 +49,7 @@ class SegmentSchema(Schema):
 
     @post_dump
     def get_length(self, data, **kwargs):
-        data["length"] = SegmentRessources.calculate_segment_length(data["id"])
+        data["length"] = SegmentManager.calculate_segment_length(data["id"])
 
         return data
 
@@ -61,7 +61,7 @@ class SegmentSchema(Schema):
     def pre_load(self, data, many, **kwargs):
 
         if "name" in data and "challenge_id" in data:
-            msg = self.check_name_unique(data,data["challenge_id"],0)
+            msg = self.check_name_unique(data, data["challenge_id"], 0)
             if msg != "":
                 raise ValueError(msg)
 
@@ -109,7 +109,7 @@ class SegmentSchema(Schema):
 
         # Check mandatory fields
         if "name" in data:
-            msg = self.check_name_unique(data,segment.challenge_id,segment.id)
+            msg = self.check_name_unique(data, segment.challenge_id, segment.id)
             if msg != "":
                 raise ValueError(msg)
 
@@ -136,7 +136,7 @@ class SegmentSchema(Schema):
 
         return self.pre_load(data, True)
 
-    def check_name_unique(self,data,challenge_id,segment_id):
+    def check_name_unique(self, data, challenge_id, segment_id):
 
         msg = ""
         if data["name"] == None:
@@ -153,11 +153,7 @@ class SegmentSchema(Schema):
         )
 
         if segment != None:
-            if (segment_id != 0 and segment.id != segment_id) or segment_id==0:
-                msg = (
-                    "The given value '"
-                    + data["name"]
-                    + "' is already used as a segment name for this challenge."
-                )
+            if (segment_id != 0 and segment.id != segment_id) or segment_id == 0:
+                msg = "The given value '" + data["name"] + "' is already used as a segment name for this challenge."
 
         return msg

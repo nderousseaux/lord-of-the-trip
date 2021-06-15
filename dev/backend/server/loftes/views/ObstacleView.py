@@ -4,17 +4,25 @@ from cornice.validators import marshmallow_body_validator
 from marshmallow import ValidationError
 
 from loftes.cors import cors_policy
-from loftes.models import Obstacle, Segment, Challenge, User, DBSession
+from loftes.models import Obstacle, Segment, Challenge, User, Event, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import ObstacleSchema
+from loftes.marshmallow_schema.EventSchema import EventSchema
+from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.resources import ObstacleResources
-from loftes.resources import UserCheckRessources
+from loftes.resources import EventResources
+from loftes.resources import UserManager
+from loftes.utils import get_project_root
 
 import pyramid.httpexceptions as exception
 import loftes.error_messages as error_messages
 from pyramid.authentication import AuthTicket
 import logging
 import json
+import datetime
+import os
+import shutil
+import base64
 
 obstacle_all = Service(
     name="obstacle_all",
@@ -99,7 +107,7 @@ def get_obstacles_by_challenge(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -201,7 +209,7 @@ def get_obstacles_by_segment(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -313,7 +321,7 @@ def create_obstacle(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -443,7 +451,7 @@ def get_obstacle_by_id(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -573,11 +581,11 @@ HTTP/1.1 404 Not Found
 
 
 @obstacle_id.put()
-def get_obstacle_update(request):
+def obstacle_update(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -739,11 +747,11 @@ HTTP/1.1 404 Not Found
 
 
 @obstacle_id.patch()
-def get_obstacle_modify(request):
+def obstacle_modify(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -821,39 +829,39 @@ def get_obstacle_modify(request):
 
 
 """
-@api {delete} /segments/:segment_id/obstacles/:id Delete an obstacle
-@apiParam segment_id Segment's unique ID.
-@apiParam id Obstacle's unique ID.
-@apiVersion 0.2.0
-@apiName DeleteObstacle
-@apiGroup Obstacle
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+  @api {delete} /segments/:segment_id/obstacles/:id Delete an obstacle
+  @apiParam segment_id Segment's unique ID.
+  @apiParam id Obstacle's unique ID.
+  @apiVersion 0.2.0
+  @apiName DeleteObstacle
+  @apiGroup Obstacle
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccessExample Success response:
-HTTP/1.1 204 No Content
+  @apiSuccessExample Success response:
+  HTTP/1.1 204 No Content
 
-@apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Segment' is not found."
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource 'Segment' is not found."
+    }
   }
-}
 
-@apiError (Error 404) {Object} RessourceNotFound No segments were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 404) {Object} RessourceNotFound No segments were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
   }
-}
 """
 
 
@@ -862,7 +870,7 @@ def delete_obstacle(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -920,6 +928,206 @@ def delete_obstacle(request):
             else:
                 response = service_informations.build_response(
                     exception.HTTPUnprocessableEntity, None, error_messages.CHALLENGE_IS_MISSING
+                )
+
+        else:
+            response = service_informations.build_response(
+                exception.HTTPNotFound(),
+            )
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+obstacle_answer = Service(
+    name="obstacle_answer",
+    path="/obstacles/{id}/answer",
+    cors_policy=cors_policy,
+)
+
+
+@obstacle_answer.post()
+def respond_on_obstacle(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        obstacle = DBSession.query(Obstacle).get(request.matchdict["id"])
+
+        # check if obstacle is found
+        if obstacle != None:
+
+            event_rules = EventResources.check_event_type_rule(
+                5, user.id, obstacle.segment.challenge.id, obstacle.segment.id
+            )
+
+            if event_rules == None:
+
+                event_type_id = 5
+
+                try:
+
+                    if obstacle.question_type == 0:
+
+                        if "response" not in request.json or request.json["response"] == None:
+                            return service_informations.build_response(
+                                exception.HTTPBadRequest(), None, error_messages.OBSTACLE_RESPONSE_NOT_FOUND
+                            )
+
+                        obstacle_response = request.json["response"]
+
+                        user_response = service_informations.replace_accents(
+                            service_informations.replace_specials(obstacle_response)
+                        ).upper()
+
+                        obstacle_result = service_informations.replace_accents(
+                            service_informations.replace_specials(obstacle.result)
+                        ).upper()
+
+                        event_type_id = 7
+                        proceeded = False
+
+                        if user_response == obstacle_result:
+                            event_type_id = 6
+                            proceeded = True
+
+                        data = Event(
+                            user_id=user.id,
+                            segment_id=obstacle.segment.id,
+                            event_date=datetime.datetime.now(),
+                            event_type_id=event_type_id,
+                            obstacle_id=obstacle.id,
+                            response=obstacle_response,
+                            proceeded=proceeded,
+                        )
+
+                        DBSession.add(data)
+                        DBSession.flush()
+
+                        response = service_informations.build_response(
+                            exception.HTTPCreated,
+                            EventSchema().dump(data),
+                        )
+
+                    # photo
+                    elif obstacle.question_type == 1:
+                        # check if user has already responded on obstacle
+                        photos_sent = EventResources.find_event_responded_with_photo(user.id, obstacle.id)
+
+                        if len(photos_sent) == 0:
+
+                            # check if file is uploaded to server
+                            if "file" in request.POST:
+
+                                file_type = request.POST["file"].type
+
+                                # check if uploaded file is correct type of image
+                                if file_type == "image/jpeg" or file_type == "image/png":
+
+                                    # check if uploaded file is not bigger than 8MB
+                                    if request.POST["file"].bytes_read < 8388608:  # 8MB
+
+                                        root = get_project_root()
+                                        obstacle_uploads_path = "/uploads/obstacles/user_" + str(user.id)
+                                        path = str(root) + obstacle_uploads_path
+
+                                        if not os.path.isdir(path):
+                                            os.makedirs(path, 0o755)
+
+                                        input_file = request.POST["file"].file
+                                        input_file_filename = "obstacle_" + str(obstacle.id)
+                                        input_file_type = "." + file_type.split("/")[1]
+                                        input_image = input_file_filename + input_file_type
+
+                                        # delete old obstacle photo
+                                        if os.path.exists(path) and os.path.isdir(path):
+                                            if os.listdir(path):
+                                                for filename in os.listdir(path):
+                                                    if filename.startswith(input_file_filename):
+                                                        os.remove(os.path.join(path, filename))
+                                                        break
+
+                                        file_path = os.path.join(
+                                            path,
+                                            input_image,
+                                        )
+                                        temp_file_path = file_path + "~"
+
+                                        input_file.seek(0)
+                                        with open(temp_file_path, "wb") as output_file:
+                                            shutil.copyfileobj(input_file, output_file)
+
+                                        os.rename(temp_file_path, file_path)
+
+                                        # create event
+
+                                        data = Event(
+                                            user_id=user.id,
+                                            segment_id=obstacle.segment.id,
+                                            event_date=datetime.datetime.now(),
+                                            event_type_id=event_type_id,
+                                            obstacle_id=obstacle.id,
+                                            photo_response_url=obstacle_uploads_path + "/" + input_image,
+                                        )
+
+                                        DBSession.add(data)
+                                        DBSession.flush()
+
+                                        response = service_informations.build_response(
+                                            exception.HTTPCreated,
+                                            EventSchema().dump(data),
+                                        )
+
+                                    else:
+                                        response = service_informations.build_response(
+                                            exception.HTTPBadRequest,
+                                            None,
+                                            error_messages.UPLOAD_IMAGE_FILE_SIZE_IS_TOO_BIG,
+                                        )
+
+                                else:
+                                    response = service_informations.build_response(
+                                        exception.HTTPUnsupportedMediaType,
+                                        None,
+                                        error_messages.UPLOAD_IMAGE_TYPE_NOT_SUPPORTED,
+                                    )
+
+                            else:
+                                response = service_informations.build_response(
+                                    exception.HTTPBadRequest, None, error_messages.UPLOAD_IMAGE_NOT_FOUND
+                                )
+
+                        else:
+                            response = service_informations.build_response(
+                                exception.HTTPForbidden, None, error_messages.OBSTACLE_PHOTO_ALREADY_SEND
+                            )
+
+                except ValidationError as validation_error:
+                    response = service_informations.build_response(
+                        exception.HTTPBadRequest, None, str(validation_error)
+                    )
+
+                except ValueError as value_error:
+                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
+
+                except PermissionError as pe:
+                    response = service_informations.build_response(exception.HTTPUnauthorized)
+
+                except Exception as e:
+                    response = service_informations.build_response(exception.HTTPInternalServerError)
+                    logging.getLogger(__name__).warn("Returning: %s", str(e))
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPNotFound(),
+                    None,
+                    event_rules,
                 )
 
         else:
