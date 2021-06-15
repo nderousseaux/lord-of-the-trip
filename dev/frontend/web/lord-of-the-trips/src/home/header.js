@@ -17,7 +17,7 @@ const Header = () => {
     <>
       <div className={ `${classes.header} ${classes.contentCenterVertical}` }>
         <img onClick={() => history.push(`/`)} className={classes.clickable} height={"100%"} src={logo} alt="Logo" /> &nbsp;
-        <Button onClick={() => history.push(`/`)} size="large" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary} ${classes.height50}` }>Lord of the trips</Button> &nbsp;
+        <b>Lord of the trips</b> &nbsp; &nbsp; &nbsp;
         {!user ? <> <Button onClick={() => setOpenLogin(true)} size="large" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary}` }>Connexion</Button> &nbsp;
                     <Button onClick={() => setOpenSignup(true)} size="large" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary}` }>Inscription</Button> </>
                : null}

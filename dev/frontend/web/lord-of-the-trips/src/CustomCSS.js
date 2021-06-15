@@ -32,6 +32,22 @@ export const useStyles = makeStyles({
     margin: '10px 0'
   },
 
+  margin15vertical: {
+    margin: '15px 0'
+  },
+
+  margin10horizontal: {
+    margin: '0 10px'
+  },
+
+  margin10left: {
+    marginLeft: '10px'
+  },
+
+  margin10right: {
+    marginRight: '10px'
+  },
+
   colorPrimary: {
     backgroundColor: '#1976D2'
   },
@@ -49,16 +65,23 @@ export const useStyles = makeStyles({
   },
 
   contentCenterHorizontal: {
+    display: 'flex',
     justifyContent: 'center'
   },
 
   contentCenterVertical: {
+    display: 'flex',
     alignItems: 'center'
   },
 
-  flexRow: {
-    display: 'flex',
-    flexDirection: 'row'
+  imageDiv: {
+    width: '900px',
+    height: '550px'
+  },
+
+  imageInDiv: {
+    maxWidth: '100%',
+    maxHeight: '100%'
   },
 });
 
