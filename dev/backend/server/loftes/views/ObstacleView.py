@@ -31,74 +31,74 @@ obstacle_all = Service(
 )
 
 """
-@api {get} /challenges/:challenge_id/obstacles Request all obstacles informations of challenge's id.
-@apiParam challenge_id Challenge's unique ID.
-@apiVersion 0.2.0
-@apiName GetObstaclesByChallenge
-@apiGroup Obstacle
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+    @api {get} /challenges/:challenge_id/obstacles Request all obstacles informations of challenge's id.
+    @apiParam challenge_id Challenge's unique ID.
+    @apiVersion 0.2.0
+    @apiName GetObstaclesByChallenge
+    @apiGroup Obstacle
+    @apiSampleRequest off
+    @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (OK 200) {Array} Obstacles All obstacles created of challenge's id.
-@apiSuccessExample {json} Success response:
-HTTP/1.1 200 OK
+    @apiSuccess (OK 200) {Array} Obstacles All obstacles created of challenge's id.
+    @apiSuccessExample {json} Success response:
+    HTTP/1.1 200 OK
 
-{
-  "obstacles": [
     {
-      "id": 1,
-      "label": "Quelle est le vrai nom de la sorcière blanche ?",
-      "progress": 50.0,
-      "description": null,
-      "question_type": 0,
-      "nb_points": 25,
-      "result": "Jadis",
-      "segment_id": 1
-    },
-    {
-      "id": 2,
-      "label": "Qui est le père d'Aslan ?",
-      "progress": 50.0,
-      "description": null,
-      "question_type": 0,
-      "nb_points": 25,
-      "result": "L'empereur d'au-delà des Mers",
-      "segment_id": 2
-    },
-    {
-      "id": 3,
-      "label": "Télécharger une photo",
-      "progress": 50.0,
-      "description": null,
-      "question_type": 1,
-      "nb_points": 30,
-      "result": null,
-      "segment_id": 3
+    "obstacles": [
+        {
+        "id": 1,
+        "label": "Quelle est le vrai nom de la sorcière blanche ?",
+        "progress": 50.0,
+        "description": null,
+        "question_type": 0,
+        "nb_points": 25,
+        "result": "Jadis",
+        "segment_id": 1
+        },
+        {
+        "id": 2,
+        "label": "Qui est le père d'Aslan ?",
+        "progress": 50.0,
+        "description": null,
+        "question_type": 0,
+        "nb_points": 25,
+        "result": "L'empereur d'au-delà des Mers",
+        "segment_id": 2
+        },
+        {
+        "id": 3,
+        "label": "Télécharger une photo",
+        "progress": 50.0,
+        "description": null,
+        "question_type": 1,
+        "nb_points": 30,
+        "result": null,
+        "segment_id": 3
+        }
+    ]
     }
-  ]
-}
 
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource 'Challenge' is not found."
+    }
+    }
 
-@apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource is not found."
+    }
+    }
 """
 
 
@@ -153,54 +153,54 @@ obstacle = Service(
 )
 
 """
-@api {get} /segments/:segment_id/obstacles Request all obstacles informations of segment's id.
-@apiParam segment_id Segment's unique ID.
-@apiVersion 0.2.0
-@apiName GetObstaclesBySegment
-@apiGroup Obstacle
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+    @api {get} /segments/:segment_id/obstacles Request all obstacles informations of segment's id.
+    @apiParam segment_id Segment's unique ID.
+    @apiVersion 0.2.0
+    @apiName GetObstaclesBySegment
+    @apiGroup Obstacle
+    @apiSampleRequest off
+    @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (OK 200) {Array} Obstacles All obstacles created of segment's id.
-@apiSuccessExample {json} Success response:
-HTTP/1.1 200 OK
+    @apiSuccess (OK 200) {Array} Obstacles All obstacles created of segment's id.
+    @apiSuccessExample {json} Success response:
+    HTTP/1.1 200 OK
 
-{
-  "obstacles": [
     {
-      "id": 1,
-      "label": "Quelle est le vrai nom de la sorcière blanche ?",
-      "progress": 50.0,
-      "description": null,
-      "question_type": 0,
-      "nb_points": 25,
-      "result": "Jadis",
-      "segment_id": 1
+    "obstacles": [
+        {
+        "id": 1,
+        "label": "Quelle est le vrai nom de la sorcière blanche ?",
+        "progress": 50.0,
+        "description": null,
+        "question_type": 0,
+        "nb_points": 25,
+        "result": "Jadis",
+        "segment_id": 1
+        }
+    ]
     }
-  ]
-}
 
-@apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Segment' is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource 'Segment' is not found."
+    }
+    }
 
-@apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource is not found."
+    }
+    }
 """
 
 
@@ -251,68 +251,68 @@ def get_obstacles_by_segment(request):
 
 
 """
-@api {post} /segments/:segment_id/obstacles Create a new obstacle of segment's id.
-@apiParam segment_id Segment's unique ID.
-@apiVersion 0.2.0
-@apiName PostObstacle
-@apiGroup Obstacle
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+    @api {post} /segments/:segment_id/obstacles Create a new obstacle of segment's id.
+    @apiParam segment_id Segment's unique ID.
+    @apiVersion 0.2.0
+    @apiName PostObstacle
+    @apiGroup Obstacle
+    @apiSampleRequest off
+    @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (Body parameters) {Float} progress Obstacle's progress on segment's line
+    @apiSuccess (Body parameters) {Float} progress Obstacle's progress on segment's line
 
-@apiSuccessExample {json} Body:
+    @apiSuccessExample {json} Body:
 
-{
-  "progress":14.6
-}
+    {
+    "progress":14.6
+    }
 
-@apiSuccessExample {json} Success response:
-HTTP/1.1 201 Created
+    @apiSuccessExample {json} Success response:
+    HTTP/1.1 201 Created
 
-{
-  "id": 4,
-  "label": null,
-  "progress": 14.6,
-  "description": null,
-  "question_type": null,
-  "nb_points": null,
-  "result": null,
-  "segment_id": 5
-}
+    {
+    "id": 4,
+    "label": null,
+    "progress": 14.6,
+    "description": null,
+    "question_type": null,
+    "nb_points": null,
+    "result": null,
+    "segment_id": 5
+    }
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+    @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+    @apiErrorExample {json} Error 400 response:
+    HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'progress': ['This field is mandatory.']}"
-  }
-}
+    {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'progress': ['This field is mandatory.']}"
+    }
+    }
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+    @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+    @apiErrorExample {json} Error 400 response:
+    HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'progress': ['Field must not be null.']}"
-  }
-}
+    {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'progress': ['Field must not be null.']}"
+    }
+    }
 
-@apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested ressource 'Segment' is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested ressource 'Segment' is not found."
+    }
+    }
 """
 
 
@@ -392,57 +392,57 @@ obstacle_id = Service(
 )
 
 """
-@api {get} /segments/:segment_id/obstacles/:id Request a obstacle informations of obstacle's id
-@apiParam segment_id Segment's unique ID.
-@apiParam id Obstacle's unique ID.
-@apiVersion 0.2.0
-@apiName GetObstacle
-@apiGroup Obstacle
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+    @api {get} /segments/:segment_id/obstacles/:id Request a obstacle informations of obstacle's id
+    @apiParam segment_id Segment's unique ID.
+    @apiParam id Obstacle's unique ID.
+    @apiVersion 0.2.0
+    @apiName GetObstacle
+    @apiGroup Obstacle
+    @apiSampleRequest off
+    @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (OK 200) {Number} id Obstacle's ID
-@apiSuccess (OK 200) {String} label Obstacle's label
-@apiSuccess (OK 200) {Float} progress Obstacle's progress on segment's line
-@apiSuccess (OK 200) {Number} question_type Obstacle's question type
-@apiSuccess (OK 200) {Number} nb_points Obstacle's number of points
-@apiSuccess (OK 200) {String} nb_points Obstacle's result
-@apiSuccess (OK 200) {Number} segment_id Obstacle's segment's id
-@apiSuccessExample {json} Success response:
-HTTP/1.1 200 OK
+    @apiSuccess (OK 200) {Number} id Obstacle's ID
+    @apiSuccess (OK 200) {String} label Obstacle's label
+    @apiSuccess (OK 200) {Float} progress Obstacle's progress on segment's line
+    @apiSuccess (OK 200) {Number} question_type Obstacle's question type
+    @apiSuccess (OK 200) {Number} nb_points Obstacle's number of points
+    @apiSuccess (OK 200) {String} nb_points Obstacle's result
+    @apiSuccess (OK 200) {Number} segment_id Obstacle's segment's id
+    @apiSuccessExample {json} Success response:
+    HTTP/1.1 200 OK
 
-{
-  "id": 1,
-  "label": "Quelle est le vrai nom de la sorcière blanche ?",
-  "progress": 50.0,
-  "description": null,
-  "question_type": 0,
-  "nb_points": 25,
-  "result": "Jadis",
-  "segment_id": 1
-}
+    {
+    "id": 1,
+    "label": "Quelle est le vrai nom de la sorcière blanche ?",
+    "progress": 50.0,
+    "description": null,
+    "question_type": 0,
+    "nb_points": 25,
+    "result": "Jadis",
+    "segment_id": 1
+    }
 
-@apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Segment' is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource 'Segment' is not found."
+    }
+    }
 
-@apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource is not found."
+    }
+    }
 """
 
 
@@ -492,91 +492,91 @@ def get_obstacle_by_id(request):
 
 
 """
-@api {put} /segments/:segment_id/obstacles/:id Update an obstacle
-@apiParam segment_id Segment's unique ID.
-@apiParam id Obstacle's unique ID.
-@apiVersion 0.2.0
-@apiName PutObstacle
-@apiGroup Obstacle
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+    @api {put} /segments/:segment_id/obstacles/:id Update an obstacle
+    @apiParam segment_id Segment's unique ID.
+    @apiParam id Obstacle's unique ID.
+    @apiVersion 0.2.0
+    @apiName PutObstacle
+    @apiGroup Obstacle
+    @apiSampleRequest off
+    @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (Body parameters) {Number} id Obstacle's ID
-@apiSuccess (Body parameters) {String} label Obstacle's label
-@apiSuccess (Body parameters) {Float} progress Obstacle's progress on segment's line
-@apiSuccess (Body parameters) {Number} question_type Obstacle's question type
-@apiSuccess (Body parameters) {Number} nb_points Obstacle's number of points
-@apiSuccess (Body parameters) {String} nb_points Obstacle's result
-@apiSuccess (Body parameters) {Number} segment_id Obstacle's segment's id
+    @apiSuccess (Body parameters) {Number} id Obstacle's ID
+    @apiSuccess (Body parameters) {String} label Obstacle's label
+    @apiSuccess (Body parameters) {Float} progress Obstacle's progress on segment's line
+    @apiSuccess (Body parameters) {Number} question_type Obstacle's question type
+    @apiSuccess (Body parameters) {Number} nb_points Obstacle's number of points
+    @apiSuccess (Body parameters) {String} nb_points Obstacle's result
+    @apiSuccess (Body parameters) {Number} segment_id Obstacle's segment's id
 
-@apiSuccessExample {json} Body:
+    @apiSuccessExample {json} Body:
 
-{
-    "label": "Qui offre des armes aux enfants Pevensie ?",
-    "progress": 70,
-    "description": "",
-    "question_type": 0,
-    "nb_points": 25,
-    "result": "Le père Noel"
-}
+    {
+        "label": "Qui offre des armes aux enfants Pevensie ?",
+        "progress": 70,
+        "description": "",
+        "question_type": 0,
+        "nb_points": 25,
+        "result": "Le père Noel"
+    }
 
-@apiSuccessExample Success response:
-HTTP/1.1 204 No Content
+    @apiSuccessExample Success response:
+    HTTP/1.1 204 No Content
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+    @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+    @apiErrorExample {json} Error 400 response:
+    HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'label': ['Field must not be null.']}"
-  }
-}
+    {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'label': ['Field must not be null.']}"
+    }
+    }
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+    @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+    @apiErrorExample {json} Error 400 response:
+    HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'progress': ['Field must not be null.']}"
-  }
-}
+    {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'progress': ['Field must not be null.']}"
+    }
+    }
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+    @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+    @apiErrorExample {json} Error 400 response:
+    HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'question_type': ['Field must not be null.']}"
-  }
-}
+    {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'question_type': ['Field must not be null.']}"
+    }
+    }
 
-@apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Segment' is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource 'Segment' is not found."
+    }
+    }
 
-@apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource is not found."
+    }
+    }
 """
 
 
@@ -663,86 +663,86 @@ def obstacle_update(request):
 
 
 """
-@api {patch} /segments/:segment_id/obstacles/:id Partially modify an obstacle
-@apiParam segment_id Segment's unique ID.
-@apiParam id Obstacle's unique ID.
-@apiVersion 0.2.0
-@apiName PatchObstacle
-@apiGroup Obstacle
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+    @api {patch} /segments/:segment_id/obstacles/:id Partially modify an obstacle
+    @apiParam segment_id Segment's unique ID.
+    @apiParam id Obstacle's unique ID.
+    @apiVersion 0.2.0
+    @apiName PatchObstacle
+    @apiGroup Obstacle
+    @apiSampleRequest off
+    @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (Body parameters) {Number} id Obstacle's ID
-@apiSuccess (Body parameters) {String} label Obstacle's label
-@apiSuccess (Body parameters) {Float} progress Obstacle's progress on segment's line
-@apiSuccess (Body parameters) {Number} question_type Obstacle's question type
-@apiSuccess (Body parameters) {Number} nb_points Obstacle's number of points
-@apiSuccess (Body parameters) {String} nb_points Obstacle's result
-@apiSuccess (Body parameters) {Number} segment_id Obstacle's segment's id
+    @apiSuccess (Body parameters) {Number} id Obstacle's ID
+    @apiSuccess (Body parameters) {String} label Obstacle's label
+    @apiSuccess (Body parameters) {Float} progress Obstacle's progress on segment's line
+    @apiSuccess (Body parameters) {Number} question_type Obstacle's question type
+    @apiSuccess (Body parameters) {Number} nb_points Obstacle's number of points
+    @apiSuccess (Body parameters) {String} nb_points Obstacle's result
+    @apiSuccess (Body parameters) {Number} segment_id Obstacle's segment's id
 
-@apiSuccessExample {json} Body:
+    @apiSuccessExample {json} Body:
 
-{
-    "nb_points": 25
-}
+    {
+        "nb_points": 25
+    }
 
-@apiSuccessExample Success response:
-HTTP/1.1 204 No Content
+    @apiSuccessExample Success response:
+    HTTP/1.1 204 No Content
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+    @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+    @apiErrorExample {json} Error 400 response:
+    HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'label': ['Field must not be null.']}"
-  }
-}
+    {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'label': ['Field must not be null.']}"
+    }
+    }
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+    @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+    @apiErrorExample {json} Error 400 response:
+    HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'progress': ['Field must not be null.']}"
-  }
-}
+    {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'progress': ['Field must not be null.']}"
+    }
+    }
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+    @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+    @apiErrorExample {json} Error 400 response:
+    HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'question_type': ['Field must not be null.']}"
-  }
-}
+    {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'question_type': ['Field must not be null.']}"
+    }
+    }
 
-@apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} SegmentNotFound The id of the Segment was not found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Segment' is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource 'Segment' is not found."
+    }
+    }
 
-@apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+    @apiError (Error 404) {Object} RessourceNotFound No obstacles were found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
-  }
-}
+    {
+    "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource is not found."
+    }
+    }
 """
 
 

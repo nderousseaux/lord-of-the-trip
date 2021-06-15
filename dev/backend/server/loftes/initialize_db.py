@@ -154,7 +154,7 @@ def fill(argv=sys.argv):
         start_date=datetime.datetime.now(),
         end_date="2022-03-18 12:00:00",
         map_url="/uploads/challenges/challenge_1.jpeg",
-        level="1",
+        level=1,
         scalling=1000,
         step_length=0.7,
         draft=False,
@@ -374,7 +374,7 @@ def fill(argv=sys.argv):
         start_date=datetime.datetime.now(),
         end_date="2022-03-18 18:30:00",
         map_url="/uploads/challenges/challenge_2.jpeg",
-        level="2",
+        level=2,
         scalling=4200,
         step_length=0.8,
         draft=False,
@@ -388,9 +388,9 @@ def fill(argv=sys.argv):
         name="A travers le bois d'entre les mondes",
         description="Vous venez d'arriver en plein milieu d'une foret, des bruits inquiténat se font entendre vous devez en sortir. Ou est la sortie ?",
         map_url="/uploads/challenges/challenge_3.jpeg",
-        level="2",
+        level=2,
         scalling="4200",
-        admin_id="1",
+        admin_id=1,
     )
     session.add(c3)
     session.commit()
