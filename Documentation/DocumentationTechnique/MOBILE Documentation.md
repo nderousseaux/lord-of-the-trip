@@ -2,24 +2,23 @@
 
 ## Choix techniques
 
+### Technologies
+
+### Architecture
+
 ## Normes de développement
 
-### Titre 1
+### Règles de nommage
 
+### Architecture des fichiers
 
-### Titre 2
+## Règles de gestion
 
-## Mise en place du projet
-
-### Titre 1
-
-
-### Titre 2
-
-
-## Architecture et structure de code
+## Le code plus en détail
 
 ### Titre 1
 
 ### Titre 2
+
+
 

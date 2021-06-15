@@ -19,10 +19,14 @@ Le but du présent document est de présenter  l'architecture et les choix techn
 ## Documentation de développements
 
 Vous trouverez ci-dessous le liens vers les différentes documentation de l'application
- - [API](https://git.unistra.fr/acrobatt-1/lord-of-the-trips/-/blob/master/Documentation/DocumentationTechnique/API%20Documentation.md)
- - [MOBILES](https://git.unistra.fr/acrobatt-1/lord-of-the-trips/-/blob/master/Documentation/DocumentationTechnique/API%20Documentation.md)
- - [WEB](https://git.unistra.fr/acrobatt-1/lord-of-the-trips/-/blob/master/Documentation/DocumentationTechnique/MOBILE%20Documentation.md)
+ - [API](DocumentationTechnique/API%20Documentation.md)
+ - [WEB](DocumentationTechnique/MOBILE%20Documentation.md)
+ - [MOBILES](DocumentationTechnique/API%20Documentation.md)
 
 ## Tutoriaux
 
 Vous trouverez ci-dessous le liens vers les différentes documentation nécessaire à la mise en place de l'application
+
+ - [Déploiement de l'environement de dévellopement](Tutoriaux/DeploiementDeveloppement.md)
+ - [Déploiement du server API et du site web](Tutoriaux/DeploiementServer&SiteWeb.md)
+ - [Déploiement de l'application mobile](Tutoriaux/DeploiementApplicationMobile.md)
