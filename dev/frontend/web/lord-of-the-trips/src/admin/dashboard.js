@@ -33,7 +33,7 @@ const CreateChallengeForm = () => {
   const handleSubmit = e => {
     e.preventDefault();
     setError(null);
-    createChallenge.mutate({ name: name, scalling: 1000, level: "2", step_length: 0.80 });
+    createChallenge.mutate({ name: name, scalling: 1000, level: 2, step_length: 0.80 });
   };
 
   return <div>
@@ -95,7 +95,7 @@ const PublishedChallenges = () => {
         <li key={c.id}>
           {c.id} : {c.name} {' '}
           <Button onClick={() => history.push(`/adminviewchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Voir</Button> {' '}
-          <Button onClick={() => duplicateChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Duppliquer</Button>
+          <Button onClick={() => duplicateChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Dupliquer</Button>
         </li>
       ))}
       </ul>

@@ -1,6 +1,9 @@
+import MDEditor from '@uiw/react-md-editor';
+import { useStyles } from '../CustomCSS';
 import * as css from '../CustomCSS';
 
 const ChallengeInfo = ({ challenge }) => {
+  const classes = useStyles();
 
   return (
     <>
@@ -11,7 +14,9 @@ const ChallengeInfo = ({ challenge }) => {
       </p>
       <p>
         <b>Description :</b> <br />
-        <p>{challenge.description}</p>
+        <div className={classes.border}>
+          <MDEditor.Markdown source={challenge.description} />
+        </div>
       </p>
       <div style={css.flexRow}>
         <div style={css.flex25left}>

@@ -7,6 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -20,6 +21,7 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MDEditor from '@uiw/react-md-editor';
 import { useStyles } from '../CustomCSS';
 
 const EditChallenge = () => {
@@ -112,7 +114,8 @@ const EditChallenge = () => {
               <h3>Modifier le challenge</h3>
               <form onSubmit={handleSubmit}>
                 <TextField variant="outlined" margin="dense" type="text" label="Nom" value={name} onChange={e => setName(e.target.value)} fullWidth className={classes.margin15vertical} />
-                <TextField variant="outlined" margin="dense" type="text" label="Description" value={description} onChange={e => setDescription(e.target.value)} fullWidth className={classes.margin15vertical} />
+                <DialogContentText>Description</DialogContentText>
+                <MDEditor height={350} value={description} onChange={setDescription} />
                 <Grid container direction="row" className={classes.margin15vertical}>
                   <Grid item direction="column" lg={4}>
                     <div className={classes.margin10right}>

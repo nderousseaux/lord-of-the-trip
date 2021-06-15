@@ -86,6 +86,11 @@ export const useStyles = makeStyles({
     maxWidth: '100%',
     maxHeight: '100%'
   },
+
+  border: {
+    border: '1px solid black',
+    padding: '2%'
+  },
 });
 
 

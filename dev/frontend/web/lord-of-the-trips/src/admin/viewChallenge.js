@@ -3,6 +3,8 @@ import { useParams, useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 import Button from '@material-ui/core/Button';
 import ChallengeMap from '../user/challengeMap';
+import MDEditor from '@uiw/react-md-editor';
+import { useStyles } from '../CustomCSS';
 import * as css from '../CustomCSS';
 
 const AdminViewChallenge = () => {
@@ -31,6 +33,7 @@ const AdminViewChallenge = () => {
 };
 
 const ChallengeInfo = ({ challenge }) => {
+  const classes = useStyles();
 
   return (
     <>
@@ -41,7 +44,9 @@ const ChallengeInfo = ({ challenge }) => {
       </p>
       <p>
         <b>Description :</b> <br />
-        <p>{challenge.description}</p>
+        <div className={classes.border}>
+          <MDEditor.Markdown source={challenge.description} />
+        </div>
       </p>
       <div style={css.flexRow}>
         <div style={css.flex25left}>
