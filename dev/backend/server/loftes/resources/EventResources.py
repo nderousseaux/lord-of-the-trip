@@ -179,7 +179,10 @@ def check_event_type_rule(event_type_id, user_id, challenge_id, segment_id):
 def find_event_responded_with_photo(user_id, obstacle_id):
 
     query = DBSession.query(Event).filter(
-        Event.obstacle_id == obstacle_id, Event.user_id == user_id, Event.photo_response_url != None
+        Event.obstacle_id == obstacle_id,
+        Event.user_id == user_id,
+        Event.photo_response_url != None,
+        Event.proceeded == False,
     )
 
     return query.all()

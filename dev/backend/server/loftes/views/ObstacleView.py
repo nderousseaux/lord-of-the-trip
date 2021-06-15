@@ -1018,9 +1018,9 @@ def respond_on_obstacle(request):
                     # photo
                     elif obstacle.question_type == 1:
                         # check if user has already responded on obstacle
-                        photo_sent = EventResources.find_event_responded_with_photo(user.id, obstacle.id)
+                        photos_sent = EventResources.find_event_responded_with_photo(user.id, obstacle.id)
 
-                        if photo_sent == None:
+                        if len(photos_sent) == 0:
 
                             # check if file is uploaded to server
                             if "file" in request.POST:
