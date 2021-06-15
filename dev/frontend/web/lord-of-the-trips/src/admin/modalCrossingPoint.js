@@ -13,7 +13,7 @@ const ModalCrossingPoint = ({ crossingPointObject, challengeId, openState, setOp
   const [name, setName] = useState(null);
   const queryClient = useQueryClient();
 
-  const updateCrossingPointMutation = useMutation( (crossingPoint) => apiCrossingPoints.updateCrossingPoint(challengeId, crossingPoint, crossingPointObject.id), {
+  const updateCrossingPointMutation = useMutation( (crossingPoint) => apiCrossingPoints.updateCrossingPoint(crossingPoint, crossingPointObject.id), {
     onSuccess: () => {
       queryClient.invalidateQueries(['crossingPoints', challengeId]);
       setOpenState(false);
@@ -31,26 +31,26 @@ const ModalCrossingPoint = ({ crossingPointObject, challengeId, openState, setOp
   return (
     <div>
       <Dialog open={openState} onClose={closeModal} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Crossing Point "{crossingPointObject.name}"</DialogTitle>
+        <DialogTitle id="form-dialog-title">Point de passage "{crossingPointObject.name}"</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <b>Current information : </b> <br />
-            - Name : {crossingPointObject.name}
+            <b>Information actuel : </b> <br />
+            - Nom : {crossingPointObject.name}
           </DialogContentText>
           <hr />
           <form onSubmit={handleSubmit}>
             <DialogContentText>
-              <b>Update name : </b>
+              <b>Modifier le nom : </b>
             </DialogContentText>
-            <TextField autoFocus variant="outlined" margin="dense" type="text" label="New name" value={name} onChange={e => setName(e.target.value)} fullWidth />
+            <TextField autoFocus variant="outlined" margin="dense" type="text" label="Nouveau nom" value={name} onChange={e => setName(e.target.value)} fullWidth />
           </form>
         </DialogContent>
         <DialogActions>
           <Button onClick={closeModal} color="primary">
-            Cancel
+            Annuler
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            Update
+            Modifier
           </Button>
         </DialogActions>
       </Dialog>

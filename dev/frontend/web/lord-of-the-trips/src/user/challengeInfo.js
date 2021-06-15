@@ -4,9 +4,9 @@ const ChallengeInfo = ({ challenge }) => {
 
   return (
     <>
-      <h3>Challenge informations</h3>
+      <h3>Informations du challenge</h3>
       <p>
-        <b>Name :</b>
+        <b>Nom :</b>
         <p>{challenge.name}</p>
       </p>
       <p>
@@ -14,25 +14,20 @@ const ChallengeInfo = ({ challenge }) => {
         <p>{challenge.description}</p>
       </p>
       <div style={css.flexRow}>
-        <div style={css.flex20left}>
-          <b>End At</b>
+        <div style={css.flex25left}>
+          <b>Fini le</b>
           <p>{challenge.end_date}</p>
         </div>
-        <div style={css.flex20mid}>
-          <b>Scaling</b>
-          <p>{challenge.scalling} meters</p>
-          {/* (the width of the map do 1000 meters) */}
+        <div style={css.flex25mid}>
+          <b>Échelle</b>
+          <p>{challenge.scalling} mètres</p>
         </div>
-        <div style={css.flex20mid}>
-          <b>Level</b>
+        <div style={css.flex25mid}>
+          <b>Niveau</b>
           <p>{challenge.level}</p>
         </div>
-        <div style={css.flex20mid}>
-          <b>In team</b>
-          <p>...</p>
-        </div>
-        <div style={css.flex20right}>
-          <b>Step lenght</b>
+        <div style={css.flex25right}>
+          <b>Longueur d'un pas</b>
           <p>{challenge.step_length * 100} cm</p>
         </div>
       </div>

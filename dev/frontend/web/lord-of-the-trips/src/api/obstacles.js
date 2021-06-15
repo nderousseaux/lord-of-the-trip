@@ -18,8 +18,8 @@ const apiObstacles = {
     .then(res => res.json());
   },
 
-  getObstacleById: (segmentId, obstacleId) => {
-    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles/${obstacleId}`, {
+  getObstacleById: (obstacleId) => {
+    return fetch(`${urlPrefix}/obstacles/${obstacleId}`, {
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
     .then(checkStatus)
@@ -39,8 +39,8 @@ const apiObstacles = {
     .then(res => res.json());
   },
 
-  updateObstacle: (segmentId, obstacle, obstacleId) => {
-    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles/${obstacleId}`, {
+  updateObstacle: (obstacle, obstacleId) => {
+    return fetch(`${urlPrefix}/obstacles/${obstacleId}`, {
       method: 'PUT',
       headers: {
         'Authorization': 'Bearer ' + getToken(),
@@ -51,8 +51,8 @@ const apiObstacles = {
     .then(checkStatus);
   },
 
-  modifyObstacle: (segmentId, obstacle, obstacleId) => {
-    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles/${obstacleId}`, {
+  modifyObstacle: (obstacle, obstacleId) => {
+    return fetch(`${urlPrefix}/obstacles/${obstacleId}`, {
       method: 'PATCH',
       headers: {
         'Authorization': 'Bearer ' + getToken(),
@@ -63,8 +63,8 @@ const apiObstacles = {
     .then(checkStatus);
   },
 
-  deleteObstacle: (segmentId, obstacleId) => {
-    return fetch(`${urlPrefix}/segments/${segmentId}/obstacles/${obstacleId}`, {
+  deleteObstacle: (obstacleId) => {
+    return fetch(`${urlPrefix}/obstacles/${obstacleId}`, {
       method: 'DELETE',
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
