@@ -428,88 +428,101 @@ def event_check_response(request):
     return response
 
 
-event_question_up = Service(
-    name="event_question_up",
-    path="/events/{id:\d+}",
+event_manage_response = Service(
+    name="event_manage_response",
+    path="/events/{id:\d+}/manage-response",
     cors_policy=cors_policy,
 )
 
 
-@event_question_up.put()
-def event_set_response_upload(request):
+@event_manage_response.post()
+def manage_response(request):
 
     service_informations = ServiceInformations()
 
     user = UserManager.check_user_connection(request)
+
     if user != None:
+
         event = DBSession.query(Event).get(request.matchdict["id"])
-        if event != None:
+
+        if event != None and event.event_type_id == 5:
+
             obstacle = DBSession.query(Obstacle).get(event.obstacle_id)
+
             if obstacle != None:
 
-                if event.event_type_id == 5:
+                if request.content_length > 0:
 
-                    if request.query_string != "":
+                    if "validate" in request.json and (
+                        request.json["validate"] == "true" or request.json["validate"] == "false"
+                    ):
 
-                        splitter = request.query_string.split("=")
-                        if len(splitter) == 2 and splitter[0] == "validation":
+                        # delete old answer
+                        if event.photo_response_url != None:
+                            image = str(get_project_root()) + event.photo_response_url
+                            if os.path.exists(image):
+                                os.remove(image)
 
-                            if splitter[1] == "true":
-                                event_type = 6
-                            else:
-                                event_type = 7
+                        event_type_id = 7
 
-                            try:
+                        if request.json["validate"] == "true":
+                            event_type_id = 6
 
-                                DBSession.query(Event).filter(Event.id == event.id).update({Event.proceeded: 1})
-                                DBSession.flush()
+                        try:
 
-                                now = datetime.datetime.now()
-                                eventresponse = Event(
-                                    user_id=event.user_id,
-                                    segment_id=event.segment_id,
-                                    event_date=now,
-                                    event_type_id=event_type,
-                                    obstacle_id=event.obstacle_id,
-                                )
-
-                                DBSession.add(eventresponse)
-                                DBSession.flush()
-
-                                response = service_informations.build_response(exception.HTTPNoContent)
-
-                            except ValidationError as validation_error:
-                                response = service_informations.build_response(
-                                    exception.HTTPBadRequest, None, str(validation_error)
-                                )
-
-                            except ValueError as value_error:
-                                response = service_informations.build_response(
-                                    exception.HTTPBadRequest, None, str(value_error)
-                                )
-
-                            except PermissionError as pe:
-                                response = service_informations.build_response(exception.HTTPUnauthorized)
-
-                            except Exception as e:
-                                response = (
-                                    service_informations.build_response(exception.HTTPInternalServerError)
-                                    .logging.getLogger(__name__)
-                                    .warn("Returning: %s", str(e))
-                                )
-
-                        else:
-                            response = service_informations.build_response(
-                                exception.HTTPNotFound(),
+                            DBSession.query(Event).filter(Event.id == event.id).update(
+                                {Event.proceeded: True, Event.photo_response_url: None}
                             )
+
+                            event_response = Event(
+                                user_id=event.user_id,
+                                segment_id=event.segment_id,
+                                event_date=datetime.datetime.now(),
+                                event_type_id=event_type_id,
+                                obstacle_id=event.obstacle_id,
+                            )
+
+                            DBSession.add(event_response)
+
+                            DBSession.query(Event).filter(Event.id == event.id).update(
+                                {Event.proceeded: True, Event.photo_response_url: None}
+                            )
+
+                            DBSession.flush()
+
+                            response = service_informations.build_response(exception.HTTPNoContent)
+
+                        except ValidationError as validation_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(validation_error)
+                            )
+
+                        except ValueError as value_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(value_error)
+                            )
+
+                        except PermissionError as pe:
+                            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+                        except Exception as e:
+                            response = (
+                                service_informations.build_response(exception.HTTPInternalServerError)
+                                .logging.getLogger(__name__)
+                                .warn("Returning: %s", str(e))
+                            )
+
                     else:
                         response = service_informations.build_response(
-                            exception.HTTPNotFound(),
+                            exception.HTTPBadRequest, None, error_messages.EVENT_MANAGE_ANSWER
                         )
 
                 else:
                     response = service_informations.build_response(
-                        exception.HTTPNotFound(),
+                        exception.HTTPBadRequest,
+                        None,
+                        error_messages.NOTHING_TO_UPDATE,
                     )
             else:
                 response = service_informations.build_response(
@@ -523,6 +536,7 @@ def event_set_response_upload(request):
         response = service_informations.build_response(exception.HTTPUnauthorized)
 
     return response
+
 
 responses_to_verify = Service(
     name="responses_to_verify",

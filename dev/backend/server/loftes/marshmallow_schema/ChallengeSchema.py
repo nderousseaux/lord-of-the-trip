@@ -45,7 +45,7 @@ class ChallengeSchema(Schema):
     start_crossing_point = fields.Nested(CrossingPointSchema)
     end_crossing_point = fields.Nested(CrossingPointSchema)
     segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
-    nb_subscribers = fields.Int()
+    nb_subscribers = fields.Int(dump_only=True)
     # admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
     event_sum = fields.Int(dump_only=True)
@@ -71,6 +71,9 @@ class ChallengeSchema(Schema):
     def make_challenge(self, data, **kwargs):
 
         now = datetime.datetime.now()
+
+        # todo challenge name
+        # les dates
 
         if "start_date" in data and data["start_date"] < now:
             raise ValueError(

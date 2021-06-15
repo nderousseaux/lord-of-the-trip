@@ -55,8 +55,12 @@ UPLOAD_IMAGE_TYPE_NOT_SUPPORTED = "The file's type is not supported on this serv
 UPLOAD_IMAGE_FILE_SIZE_IS_TOO_BIG = "The size of image is too big."
 # events
 EVENT_CHECK_RESPONSE = "You must use the check response."
+EVENT_MANAGE_ANSWER = "Field 'validate' is a mandatory field."
 # obstacles
 OBSTACLE_RESPONSE_NOT_FOUND = "Field progress must not be null."
 OBSTACLE_PHOTO_ALREADY_SEND = (
     "You do not have permission to respond on an obstacle where you have already send the answer."
 )
+
+# general
+NOTHING_TO_UPDATE = "Nothing to update."
