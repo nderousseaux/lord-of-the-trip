@@ -17,8 +17,6 @@ from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.marshmallow_schema.UserSchema import UserSchema
 from loftes.resources.UserResources import UserResources
 
-# from loftes.marshmallow_schema.EventSchema import EventSchema
-
 import datetime
 import json
 
@@ -36,7 +34,7 @@ class ChallengeSchema(Schema):
     description = fields.Str()
     start_date = fields.DateTime()
     end_date = fields.DateTime()
-    level = fields.Str()
+    level = fields.Int()
     scalling = fields.Int()
     step_length = fields.Float()
     draft = fields.Bool()
@@ -46,10 +44,8 @@ class ChallengeSchema(Schema):
     end_crossing_point = fields.Nested(CrossingPointSchema)
     segments = fields.List(fields.Nested("SegmentSchema", exclude=("challenge",)))
     nb_subscribers = fields.Int(dump_only=True)
-    # admin = fields.Nested(UserSchema)
     admin_id = fields.Int(load_only=True)
     event_sum = fields.Int(dump_only=True)
-    # event_sum2 = fields.Int(dump_only=True)
 
     class Meta:
         ordered = True
@@ -62,39 +58,8 @@ class ChallengeSchema(Schema):
 
         return data
 
-    # @pre_dump
-    # def get_eventsum(self,data, **kwargs):
-    #     data["event_sum"] = DBSession.query(func.sum(Events.duration)).filter(Events.challenge_id==data["id"]).filter(Events.user_id==1).first()
-    #     return data
-
     @post_load
     def make_challenge(self, data, **kwargs):
-
-        now = datetime.datetime.now()
-
-        # todo challenge name
-        # les dates
-
-        if "start_date" in data and data["start_date"] < now:
-            raise ValueError(
-                "Challenge's start date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
-            )
-
-        if "end_date" in data and data["end_date"] < now:
-            raise ValueError(
-                "Challenge's end date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
-            )
-
-        if "start_date" in data and "end_date" in data:
-            if data["start_date"] > now and data["end_date"] > now:
-                if data["start_date"] > data["end_date"]:
-                    raise ValueError("Challenge's end date must be greater of challenge's start date.")
-            else:
-                raise ValueError(
-                    "Challenge's start and end date must be greater of today's date ("
-                    + now.strftime("%d-%m-%Y, %H:%M")
-                    + ")"
-                )
 
         return Challenge(**data)
 
@@ -104,14 +69,33 @@ class ChallengeSchema(Schema):
         if "name" in data:
             challenge = DBSession().query(Challenge).filter_by(name=data["name"]).first()
 
+            if "id" in data:
+                if challenge != None:
+                    if challenge.id == data["id"]:
+                        challenge = None
+
             if challenge != None:
                 raise ValueError("The given value '" + data["name"] + "' is already used as a challenge name.")
 
-        if "start_date" in data:
-            data["start_date"] = datetime.datetime.fromisoformat(data["start_date"]).isoformat()
+        now = datetime.datetime.now()
 
-        if "end_date" in data:
-            data["end_date"] = datetime.datetime.fromisoformat(data["end_date"]).isoformat()
+        if "start_date" in data and "end_date" in data:
+            if data["start_date"] != None and data["end_date"] != None:
+
+                start_date = datetime.datetime.fromisoformat(data["start_date"])
+                if start_date < now:
+                    raise ValueError(
+                        "Challenge's start date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
+                    )
+
+                end_date = datetime.datetime.fromisoformat(data["end_date"])
+                if end_date < now:
+                    raise ValueError(
+                        "Challenge's end date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
+                    )
+
+                if end_Date < start_date:
+                    raise ValueError("Challenge's end date must be greater of challenge's start date.")
 
         if "scalling" in data and int(data["scalling"]) < 0:
             raise ValueError("This value (" + str(data["scalling"]) + ") is not valid for scalling.")

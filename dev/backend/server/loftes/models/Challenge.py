@@ -15,7 +15,7 @@ class Challenge(Base):
     map_url = Column(String(255))
     start_date = Column(DateTime(timezone=False))
     end_date = Column(DateTime(timezone=False))
-    level = Column(String(255))
+    level = Column(Integer)
     scalling = Column(Integer)
     step_length = Column(Float(precision=2))
     draft = Column(Boolean, server_default=text("1"))
@@ -34,13 +34,4 @@ class Challenge(Base):
     segments = relationship("Segment", backref="segment_challenges", cascade="all,delete")
     admin_id = Column(Integer, ForeignKey("User.id"))
     admin = relationship("User", backref="challenge_manager")
-    # event_sum_user = relationship("Events")
     user_subscribes = relationship("UserChallenge", backref="user_subscribed", cascade="all,delete")
-
-    # @hybrid_property
-    # def event_sum(self):
-    #     return sum(Events.distance for Events in self.event_sum_user)
-
-    # @hybrid_property
-    # def event_sum2(self):
-    #     return 0
