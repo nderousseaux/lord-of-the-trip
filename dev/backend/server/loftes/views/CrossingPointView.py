@@ -24,101 +24,101 @@ crossing_point = Service(
 )
 
 """
-@api {get} /challenges/:challenge_id/crossing-points Request all crossing points informations of challenge's id.
-@apiParam challenge_id Challenge's unique ID.
-@apiVersion 0.1.0
-@apiName GetCrossingPoints
-@apiGroup CrossingPoint
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+  @api {get} /challenges/:challenge_id/crossing-points Request all crossing points informations of challenge's id.
+  @apiParam challenge_id Challenge's unique ID.
+  @apiVersion 0.1.0
+  @apiName GetCrossingPoints
+  @apiGroup CrossingPoint
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (OK 200) {Array} CrossingPoints All crossing points created of challenge's id.
-@apiSuccessExample {json} Success response:
-HTTP/1.1 200 OK
+  @apiSuccess (OK 200) {Array} CrossingPoints All crossing points created of challenge's id.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
 
-{
-  "crossing_points": [
-    {
-      "id": 1,
-      "name": "L'armoire",
-      "position_x": 0.1,
-      "position_y": 0.1
-    },
-    {
-      "id": 2,
-      "name": "La passe du faune",
-      "position_x": 0.1,
-      "position_y": 0.1
-    },
-    {
-      "id": 3,id
-    },
-    {
-      "id": 4,
-      "name": "Le carrousel des ours",
-      "position_x": 0.3,
-      "position_y": 0.4
-    },
-    {
-      "id": 5,
-      "name": "Le pont des centaures",
-      "position_x": 0.3,
-      "position_y": 0.5
-    },
-    {
-      "id": 6,
-      "name": "Le pont de la sorcière",
-      "position_x": 0.2,
-      "position_y": 0.5
-    },
-    {
-      "id": 7,
-      "name": "Le nid des griffons",
-      "position_x": 0.2,
-      "position_y": 0.5
-    },
-    {
-      "id": 8,
-      "name": "La table de pierre",
-      "position_x": 0.2,
-      "position_y": 0.5
-    },
-    {
-      "id": 9,
-      "name": "Cair Paravel",
-      "position_x": 0.2,
-      "position_y": 0.5
-    },
-    {
-      "id": 10,
-      "name": "Test4",
-      "position_x": 13.0099,
-      "position_y": 87.1313
+  {
+    "crossing_points": [
+      {
+        "id": 1,
+        "name": "L'armoire",
+        "position_x": 0.1,
+        "position_y": 0.1
+      },
+      {
+        "id": 2,
+        "name": "La passe du faune",
+        "position_x": 0.1,
+        "position_y": 0.1
+      },
+      {
+        "id": 3,id
+      },
+      {
+        "id": 4,
+        "name": "Le carrousel des ours",
+        "position_x": 0.3,
+        "position_y": 0.4
+      },
+      {
+        "id": 5,
+        "name": "Le pont des centaures",
+        "position_x": 0.3,
+        "position_y": 0.5
+      },
+      {
+        "id": 6,
+        "name": "Le pont de la sorcière",
+        "position_x": 0.2,
+        "position_y": 0.5
+      },
+      {
+        "id": 7,
+        "name": "Le nid des griffons",
+        "position_x": 0.2,
+        "position_y": 0.5
+      },
+      {
+        "id": 8,
+        "name": "La table de pierre",
+        "position_x": 0.2,
+        "position_y": 0.5
+      },
+      {
+        "id": 9,
+        "name": "Cair Paravel",
+        "position_x": 0.2,
+        "position_y": 0.5
+      },
+      {
+        "id": 10,
+        "name": "Test4",
+        "position_x": 13.0099,
+        "position_y": 87.1313
+      }
+    ]
+  }
+
+  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource 'Challenge' is not found."
     }
-  ]
-}
-
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
   }
-}
 
-@apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
   }
-}
 """
 
 
@@ -170,80 +170,79 @@ def get_crossing_points(request):
 
 
 """
-@api {post} /challenges/:challenge_id/crossing-points Create a new Crossing point of challenge's id
-@apiParam challenge_id Challenge's unique ID.
-@apiVersion 0.1.0
-@apiName PostCrossingPoint
-@apiGroup CrossingPoint
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+  @api {post} /challenges/:challenge_id/crossing-points Create a new Crossing point of challenge's id
+  @apiParam challenge_id Challenge's unique ID.
+  @apiVersion 0.1.0
+  @apiName PostCrossingPoint
+  @apiGroup CrossingPoint
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (Body parameters) {String} name Crossing point's name
-@apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
-@apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
+  @apiSuccess (Body parameters) {String} name Crossing point's name
+  @apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
+  @apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
 
-@apiSuccessExample {json} Body:
+  @apiSuccessExample {json} Body:
 
-{
-  "name": "La passe du faune",
-  "position_x": 0.1,
-  "position_y": 0.1
-}
-
-@apiSuccessExample {json} Success response:
-HTTP/1.1 201 Created
-
-{
-  "id": 1,
-  "name": "La passe du faune",
-  "position_x": 0.1,
-  "position_y": 0.1
-}
-
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
-
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'name': ['Field must not be null.']}"
+  {
+    "name": "La passe du faune",
+    "position_x": 0.1,
+    "position_y": 0.1
   }
-}
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 201 Created
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'name': ['Invalid value']}"
+  {
+    "id": 1,
+    "name": "La passe du faune",
+    "position_x": 0.1,
+    "position_y": 0.1
   }
-}
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "The given value 'La passe du faune' is already used as a crossing point name for this challenge."
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "{'name': ['Field must not be null.']}"
+    }
   }
-}
 
-@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "{'name': ['Invalid value']}"
+    }
   }
-}
 
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "The given value 'La passe du faune' is already used as a crossing point name for this challenge."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource 'Challenge' is not found."
+    }
+  }
 """
 
 
@@ -328,51 +327,51 @@ crossing_point_id = Service(
 )
 
 """
-@api {get} /challenges/:challenge_id/crossing-points/:id Request a crossing-point informations of challenge's id
-@apiParam challenge_id Challenge's unique ID.
-@apiParam id Crossing point's unique ID.
-@apiVersion 0.1.0
-@apiName GetCrossingPoint
-@apiGroup CrossingPoint
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+  @api {get} /challenges/:challenge_id/crossing-points/:id Request a crossing-point informations of challenge's id
+  @apiParam challenge_id Challenge's unique ID.
+  @apiParam id Crossing point's unique ID.
+  @apiVersion 0.1.0
+  @apiName GetCrossingPoint
+  @apiGroup CrossingPoint
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (OK 200) {Number} id Crossing point's ID
-@apiSuccess (OK 200) {String} name Crossing point's name
-@apiSuccess (OK 200) {Float} position_x Crossing point's position x on map
-@apiSuccess (OK 200) {Float} position_y Crossing point's position y on map
+  @apiSuccess (OK 200) {Number} id Crossing point's ID
+  @apiSuccess (OK 200) {String} name Crossing point's name
+  @apiSuccess (OK 200) {Float} position_x Crossing point's position x on map
+  @apiSuccess (OK 200) {Float} position_y Crossing point's position y on map
 
-@apiSuccessExample {json} Success response:
-HTTP/1.1 200 OK
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
 
-{
-  "id": 1,
-  "name": "La passe du faune",
-  "position_x": 0.1,
-  "position_y": 0.1
-}
-
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
-
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
+  {
+    "id": 1,
+    "name": "La passe du faune",
+    "position_x": 0.1,
+    "position_y": 0.1
   }
-}
 
-@apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource 'Challenge' is not found."
+    }
   }
-}
+
+  @apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
 """
 
 
@@ -424,73 +423,73 @@ def get_crossing_point(request):
 
 
 """
-@api {put} /challenges/:challenge_id/crossing-points/:id Update a crossing point
-@apiParam challenge_id Challenge's unique ID.
-@apiParam id Crossing point's unique ID.
-@apiVersion 0.1.0
-@apiName PutCrossingPoint
-@apiGroup CrossingPoint
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+  @api {put} /challenges/:challenge_id/crossing-points/:id Update a crossing point
+  @apiParam challenge_id Challenge's unique ID.
+  @apiParam id Crossing point's unique ID.
+  @apiVersion 0.1.0
+  @apiName PutCrossingPoint
+  @apiGroup CrossingPoint
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (Body parameters) {String} name Crossing point's name
-@apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
-@apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
+  @apiSuccess (Body parameters) {String} name Crossing point's name
+  @apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
+  @apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
 
-@apiSuccessExample {json} Body:
+  @apiSuccessExample {json} Body:
 
-{
-  "name": "La passe du faune",
-  "position_x": 0.1,
-  "position_y": 0.1
-}
-
-@apiSuccessExample Success response:
-HTTP/1.1 204 No Content
-
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
-
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'name': ['Field must not be null.']}"
+  {
+    "name": "La passe du faune",
+    "position_x": 0.1,
+    "position_y": 0.1
   }
-}
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+  @apiSuccessExample Success response:
+  HTTP/1.1 204 No Content
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'name': ['Invalid value']}"
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "{'name': ['Field must not be null.']}"
+    }
   }
-}
 
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "{'name': ['Invalid value']}"
+    }
   }
-}
 
-@apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource 'Challenge' is not found."
+    }
   }
-}
+
+  @apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
 """
 
 
@@ -573,71 +572,71 @@ def update_crossing_point(request):
 
 
 """
-@api {patch} /challenges/:challenge_id/crossing-points/:id Partially modify a crossing point
-@apiParam challenge_id Challenge's unique ID.
-@apiParam id Crossing point's unique ID.
-@apiVersion 0.1.0
-@apiName PatchCrossingPoint
-@apiGroup CrossingPoint
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+  @api {patch} /challenges/:challenge_id/crossing-points/:id Partially modify a crossing point
+  @apiParam challenge_id Challenge's unique ID.
+  @apiParam id Crossing point's unique ID.
+  @apiVersion 0.1.0
+  @apiName PatchCrossingPoint
+  @apiGroup CrossingPoint
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccess (Body parameters) {String} name Crossing point's name
-@apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
-@apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
+  @apiSuccess (Body parameters) {String} name Crossing point's name
+  @apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
+  @apiSuccess (Body parameters) {Float} position_y Crossing point's position y on map
 
-@apiSuccessExample {json} Body:
+  @apiSuccessExample {json} Body:
 
-{
-  "name": "La passe du magicien"
-}
-
-@apiSuccessExample Success response:
-HTTP/1.1 204 No Content
-
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
-
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'name': ['Field must not be null.']}"
+  {
+    "name": "La passe du magicien"
   }
-}
 
-@apiError (Error 400) {Object} BadRequest Malformed request syntax.
-@apiErrorExample {json} Error 400 response:
-HTTP/1.1 400 Bad Request
+  @apiSuccessExample Success response:
+  HTTP/1.1 204 No Content
 
-{
-  "error": {
-    "status": "BAD REQUEST",
-    "message": "{'name': ['Invalid value']}"
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "{'name': ['Field must not be null.']}"
+    }
   }
-}
 
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "{'name': ['Invalid value']}"
+    }
   }
-}
 
-@apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource 'Challenge' is not found."
+    }
   }
-}
+
+  @apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
 """
 
 
@@ -720,39 +719,39 @@ def modify_crossing_point(request):
 
 
 """
-@api {delete} /challenges/:challenge_id/crossing-points/:id Delete a crossing point
-@apiParam challenge_id Challenge's unique ID.
-@apiParam id Crossing point's unique ID.
-@apiVersion 0.1.0
-@apiName DeleteCrossingPoint
-@apiGroup CrossingPoint
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
+  @api {delete} /challenges/:challenge_id/crossing-points/:id Delete a crossing point
+  @apiParam challenge_id Challenge's unique ID.
+  @apiParam id Crossing point's unique ID.
+  @apiVersion 0.1.0
+  @apiName DeleteCrossingPoint
+  @apiGroup CrossingPoint
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
 
-@apiSuccessExample Success response:
-HTTP/1.1 204 No Content
+  @apiSuccessExample Success response:
+  HTTP/1.1 204 No Content
 
-@apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource 'Challenge' is not found."
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource 'Challenge' is not found."
+    }
   }
-}
 
-@apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 404) {Object} RessourceNotFound No crossing points were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
   }
-}
 """
 
 
