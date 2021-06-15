@@ -1,5 +1,9 @@
 from pyramid.response import Response
 import unicodedata
+import datetime
+import argparse
+import pyramid.httpexceptions as exception
+import loftes.error_messages as error_messages
 
 
 class ServiceInformations:
@@ -47,3 +51,12 @@ class ServiceInformations:
     def replace_specials(self, text):
 
         return text.translate({ord(c): "" for c in "!'@#$%^&*()[]{};:,./<>?\|`~-=_+ "})
+
+    def format_date(self, date):
+
+        try:
+            response = datetime.datetime.fromisoformat(date)
+        except ValueError:
+            response = error_messages.error_format_date(date)
+
+        return response
