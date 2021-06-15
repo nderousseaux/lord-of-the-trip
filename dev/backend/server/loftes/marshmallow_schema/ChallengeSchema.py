@@ -20,6 +20,8 @@ from loftes.resources.UserResources import UserResources
 import datetime
 import json
 
+import loftes.error_messages as error_messages
+
 
 class ChallengeSchema(Schema):
     id = fields.Int(dump_only=True)
@@ -94,7 +96,7 @@ class ChallengeSchema(Schema):
                         "Challenge's end date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
                     )
 
-                if end_Date < start_date:
+                if end_date < start_date:
                     raise ValueError("Challenge's end date must be greater of challenge's start date.")
 
         if "scalling" in data and int(data["scalling"]) < 0:
@@ -110,7 +112,7 @@ class ChallengeSchema(Schema):
     def check_json(self, data, **kwargs):
 
         if len(data) == 0:
-            raise ValueError("Nothing to update.")
+            raise ValueError(error_messages.NOTHING_TO_UPDATE)
 
         if "name" in data:
             if data["name"] == None:
