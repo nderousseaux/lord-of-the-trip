@@ -35,37 +35,35 @@ class ObstacleSchema(Schema):
 
         if "label" in data:
 
-            if data["label"] == None:                
+            if data["label"] == None:
                 raise ValueError(error_messages.FIELD_NOT_NULL)
 
             if data["label"] == "":
                 raise ValueError(error_messages.FIELD_NOT_NULL)
 
-            segment = (
-                DBSession().query(Segment).get(data["segment_id"])
-            )
-            
+            segment = DBSession().query(Segment).get(data["segment_id"])
+
             if segment != None:
-                
+
                 challenge_id = segment.challenge_id
-                
+
                 obstacle = (
                     DBSession()
                     .query(Obstacle)
-                    .join(Segment, Segment.id==Obstacle.segment_id)
-                    .filter(Obstacle.label==data["label"])
-                    .filter(Segment.challenge_id==challenge_id)
+                    .join(Segment, Segment.id == Obstacle.segment_id)
+                    .filter(Obstacle.label == data["label"])
+                    .filter(Segment.challenge_id == challenge_id)
                     .first()
                 )
 
                 if obstacle != None:
                     if ("id" in data and obstacle.id != data["id"]) or "id" not in data:
                         raise ValueError(
-                                "The given value '"
-                                + data["label"]
-                                + "' is already used as a obstacle label for this challenge."
-                            )
-    
+                            "The given value '"
+                            + data["label"]
+                            + "' is already used as a obstacle label for this challenge."
+                        )
+
         if "progress" in data:
 
             if float(data["progress"]) < 0:
@@ -73,14 +71,8 @@ class ObstacleSchema(Schema):
 
             progress_data = float(data["progress"])
 
-            obstacles = (
-                DBSession.query(Obstacle)
-                .filter(
-                    Obstacle.segment_id==int(data["segment_id"])
-                )
-                .all()
-            )
-            
+            obstacles = DBSession.query(Obstacle).filter(Obstacle.segment_id == int(data["segment_id"])).all()
+
             if obstacles != None:
                 for obstacle in obstacles:
                     if obstacle.progress == progress_data:

@@ -17,7 +17,7 @@ from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.utils import get_project_root
-from loftes.resources.CheckChallengeRessources import checkChallenge
+from loftes.resources.CheckChallengeResources import checkChallenge
 from loftes.resources import ObstacleResources
 from loftes.resources.ChallengeResources import ChallengeResources
 from loftes.resources.UserChallengeResources import UserChallengeResources
@@ -1352,7 +1352,7 @@ def upload_image(request):
 
                         file_type = request.POST["file"].type
 
-                        # check if uploaded file is correcte type of image
+                        # check if uploaded file is correct type of image
                         if file_type == "image/jpeg" or file_type == "image/png":
 
                             # check if uploaded file is not bigger than 8MB

@@ -1,4 +1,4 @@
-from loftes.models import Obstacle, Segment, DBSession
+from loftes.models import Obstacle, Segment, Challenge, Event, DBSession
 
 
 def find_all_obstacles_by_challenge(challenge_id):

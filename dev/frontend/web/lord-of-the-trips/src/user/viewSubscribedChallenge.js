@@ -14,10 +14,10 @@ const ViewSubscribedChallenge = () => {
   const { isLoading, isError, error, data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
 
   return <>
-    {isLoading ? 'Loading...' : isError ? error.message : <>
+    {isLoading ? 'Chargement...' : isError ? error.message : <>
       <div style={css.flexRow}>
         <ViewChallengeInfo challenge={challenge} />
-        <ChallengeMap challenge={challenge} />
+        <ChallengeMap challenge={challenge} isAdmin={false} />
       </div>
     </> }
   </>
@@ -39,11 +39,11 @@ const ViewChallengeInfo = ({ challenge }) => {
     <div style={css.flexLeft}>
       <ChallengeInfo challenge={challenge} />
       <div style={css.flexCenter}>
-        <Button onClick={() => unsubscribeChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Unsubscribe</Button> {' '}
+        <Button onClick={() => unsubscribeChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Se désinscrire</Button> {' '}
       </div>
       <hr />
       <div>
-        <h3>Actions history</h3>
+        <h3>Historique de vos actions</h3>
         <p>
           _______________________________<br />
           _______________________________<br />

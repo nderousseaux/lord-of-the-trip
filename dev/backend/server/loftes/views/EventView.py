@@ -9,18 +9,23 @@ from loftes.cors import cors_policy
 from loftes.models import Event, Challenge, User, Segment, Obstacle, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema.EventSchema import EventSchema
+from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
+from loftes.marshmallow_schema.ObstacleSchema import ObstacleSchema
 from loftes.marshmallow_schema.EventDistanceSchema import EventDistanceSchema
-from loftes.marshmallow_schema.EventToValidateSchema import EventToValidateSchema
-from loftes.resources import EventRessources
-from loftes.resources import UserCheckRessources
+from loftes.resources import EventResources
+from loftes.resources import UserManager
 
 import loftes.error_messages as error_messages
+from loftes.utils import get_project_root
 
 import pyramid.httpexceptions as exception
 from pyramid.authentication import AuthTicket
 import datetime
 import logging
 import json
+import os
+import shutil
+import base64
 
 events = Service(name="events", path="/challenges/{challenge_id:\d+}/events", cors_policy=cors_policy)
 
@@ -30,7 +35,7 @@ def get_events(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -40,7 +45,7 @@ def get_events(request):
         # check if challenge is found
         if challenge != None:
 
-            events = EventRessources.find_all_events_for_user_by_challenge(user.id, challenge.id)
+            events = EventResources.find_all_events_for_user_by_challenge(user.id, challenge.id)
 
             if len(events) == 0:
                 return service_informations.build_response(exception.HTTPNoContent())
@@ -71,7 +76,7 @@ def get_event_by_id(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
 
     # check if user is authenticated
     if user != None:
@@ -99,41 +104,6 @@ def get_event_by_id(request):
     return response
 
 
-event_to_validate = Service(
-    name="event_to_validate",
-    path="/challenges/events/validation",
-    cors_policy=cors_policy,
-)
-
-
-@event_to_validate.get()
-def get_event_to_validate(request):
-
-    service_informations = ServiceInformations()
-
-    user = UserCheckRessources.CheckUserConnect(request)
-    if user != None:
-        if user.is_admin == True:
-
-            obstcles_to_validate = EventRessources.get_obstacle_for_validation(user.id)
-            if len(obstcles_to_validate) != 0:
-                response = service_informations.build_response(
-                    exception.HTTPOk, EventToValidateSchema(many=True).dump(obstcles_to_validate)
-                )
-            else:
-                response = service_informations.build_response(
-                    exception.HTTPNotFound(),
-                )
-
-        else:
-            response = service_informations.build_response(exception.HTTPForbidden)
-
-    else:
-        response = service_informations.build_response(exception.HTTPUnauthorized)
-
-    return response
-
-
 last_event = Service(
     name="last_event",
     path="/challenges/{challenge_id:\d+}/events/last",
@@ -146,14 +116,14 @@ def get_last_event(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
         if challenge != None:
 
-            event = EventRessources.find_last_event_for_user_by_challenge(user.id, request.matchdict["challenge_id"])
+            event = EventResources.find_last_event_for_user_by_challenge(user.id, request.matchdict["challenge_id"])
 
             if event == None:
                 return service_informations.build_response(exception.HTTPNotFound())
@@ -182,14 +152,14 @@ def get_event_distance_challenge(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         challenge = DBSession.query(Challenge).get(request.matchdict["challenge_id"])
 
         if challenge != None:
 
-            distance = EventRessources.distance_event_for_user_by_challenge(user.id, challenge.id)
+            distance = EventResources.distance_event_for_user_by_challenge(user.id, challenge.id)
 
             return service_informations.build_response(exception.HTTPOk, EventDistanceSchema().dump(distance))
 
@@ -215,14 +185,14 @@ def get_event_distance_segment(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         segment = DBSession.query(Segment).get(request.matchdict["segment_id"])
 
         if segment != None:
 
-            distance = EventRessources.distance_event_for_user_by_segment(user.id, segment.id)
+            distance = EventResources.distance_event_for_user_by_segment(user.id, segment.id)
 
             return service_informations.build_response(exception.HTTPOk, EventDistanceSchema().dump(distance))
 
@@ -248,10 +218,10 @@ def event_add(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
-        checkchallenge = EventRessources.check_challenge_for_event(request.matchdict["challenge_id"], user.id)
+        checkchallenge = EventResources.check_challenge_for_event(request.matchdict["challenge_id"], user.id)
 
         if checkchallenge == "":
 
@@ -270,10 +240,10 @@ def event_add(request):
 
                     if eventdata.event_type_id == 5:
                         response = service_informations.build_response(
-                            exception.HTTPBadRequest, None, error_messages.EVENT_CHECK_REPONSE
+                            exception.HTTPBadRequest, None, error_messages.EVENT_CHECK_RESPONSE
                         )
                     else:
-                        eventrulescheck = EventRessources.check_event_type_rule(
+                        eventrulescheck = EventResources.check_event_type_rule(
                             eventdata.event_type_id,
                             user.id,
                             request.matchdict["challenge_id"],
@@ -337,10 +307,10 @@ def event_check_response(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
-        checkchallenge = EventRessources.check_challenge_for_event(request.matchdict["challenge_id"], user.id)
+        checkchallenge = EventResources.check_challenge_for_event(request.matchdict["challenge_id"], user.id)
 
         if checkchallenge == "":
             segment_id = request.matchdict["segment_id"]
@@ -358,7 +328,7 @@ def event_check_response(request):
 
                     if eventdata.event_type_id == 5:
 
-                        eventrulescheck = EventRessources.check_event_type_rule(
+                        eventrulescheck = EventResources.check_event_type_rule(
                             eventdata.event_type_id,
                             user.id,
                             request.matchdict["challenge_id"],
@@ -458,88 +428,101 @@ def event_check_response(request):
     return response
 
 
-event_question_up = Service(
-    name="event_question_up",
-    path="/events/{id:\d+}",
+event_manage_response = Service(
+    name="event_manage_response",
+    path="/events/{id:\d+}/manage-response",
     cors_policy=cors_policy,
 )
 
 
-@event_question_up.put()
-def event_set_response_upload(request):
+@event_manage_response.post()
+def manage_response(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
+
     if user != None:
+
         event = DBSession.query(Event).get(request.matchdict["id"])
-        if event != None:
+
+        if event != None and event.event_type_id == 5:
+
             obstacle = DBSession.query(Obstacle).get(event.obstacle_id)
+
             if obstacle != None:
 
-                if event.event_type_id == 5:
+                if request.content_length > 0:
 
-                    if request.query_string != "":
+                    if "validate" in request.json and (
+                        request.json["validate"] == "true" or request.json["validate"] == "false"
+                    ):
 
-                        splitter = request.query_string.split("=")
-                        if len(splitter) == 2 and splitter[0] == "validation":
+                        # delete old answer
+                        if event.photo_response_url != None:
+                            image = str(get_project_root()) + event.photo_response_url
+                            if os.path.exists(image):
+                                os.remove(image)
 
-                            if splitter[1] == "true":
-                                event_type = 6
-                            else:
-                                event_type = 7
+                        event_type_id = 7
 
-                            try:
+                        if request.json["validate"] == "true":
+                            event_type_id = 6
 
-                                DBSession.query(Event).filter(Event.id == event.id).update({Event.proceeded: 1})
-                                DBSession.flush()
+                        try:
 
-                                now = datetime.datetime.now()
-                                eventresponse = Event(
-                                    user_id=event.user_id,
-                                    segment_id=event.segment_id,
-                                    event_date=now,
-                                    event_type_id=event_type,
-                                    obstacle_id=event.obstacle_id,
-                                )
-
-                                DBSession.add(eventresponse)
-                                DBSession.flush()
-
-                                response = service_informations.build_response(exception.HTTPNoContent)
-
-                            except ValidationError as validation_error:
-                                response = service_informations.build_response(
-                                    exception.HTTPBadRequest, None, str(validation_error)
-                                )
-
-                            except ValueError as value_error:
-                                response = service_informations.build_response(
-                                    exception.HTTPBadRequest, None, str(value_error)
-                                )
-
-                            except PermissionError as pe:
-                                response = service_informations.build_response(exception.HTTPUnauthorized)
-
-                            except Exception as e:
-                                response = (
-                                    service_informations.build_response(exception.HTTPInternalServerError)
-                                    .logging.getLogger(__name__)
-                                    .warn("Returning: %s", str(e))
-                                )
-
-                        else:
-                            response = service_informations.build_response(
-                                exception.HTTPNotFound(),
+                            DBSession.query(Event).filter(Event.id == event.id).update(
+                                {Event.proceeded: True, Event.photo_response_url: None}
                             )
+
+                            event_response = Event(
+                                user_id=event.user_id,
+                                segment_id=event.segment_id,
+                                event_date=datetime.datetime.now(),
+                                event_type_id=event_type_id,
+                                obstacle_id=event.obstacle_id,
+                            )
+
+                            DBSession.add(event_response)
+
+                            DBSession.query(Event).filter(Event.id == event.id).update(
+                                {Event.proceeded: True, Event.photo_response_url: None}
+                            )
+
+                            DBSession.flush()
+
+                            response = service_informations.build_response(exception.HTTPNoContent)
+
+                        except ValidationError as validation_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(validation_error)
+                            )
+
+                        except ValueError as value_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(value_error)
+                            )
+
+                        except PermissionError as pe:
+                            response = service_informations.build_response(exception.HTTPUnauthorized)
+
+                        except Exception as e:
+                            response = (
+                                service_informations.build_response(exception.HTTPInternalServerError)
+                                .logging.getLogger(__name__)
+                                .warn("Returning: %s", str(e))
+                            )
+
                     else:
                         response = service_informations.build_response(
-                            exception.HTTPNotFound(),
+                            exception.HTTPBadRequest, None, error_messages.EVENT_MANAGE_ANSWER
                         )
 
                 else:
                     response = service_informations.build_response(
-                        exception.HTTPNotFound(),
+                        exception.HTTPBadRequest,
+                        None,
+                        error_messages.NOTHING_TO_UPDATE,
                     )
             else:
                 response = service_informations.build_response(
@@ -549,6 +532,70 @@ def event_set_response_upload(request):
             response = service_informations.build_response(
                 exception.HTTPNotFound(),
             )
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+responses_to_verify = Service(
+    name="responses_to_verify",
+    path="/admin/verified-responses",
+    cors_policy=cors_policy,
+)
+
+
+@responses_to_verify.get()
+def get_responses_to_verify(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        # check if user has rights admin
+        if user.is_admin == True:
+
+            events_to_verify = EventResources.find_obstacles_responses_to_verify_by_admin(user.id)
+
+            if len(events_to_verify) != 0:
+
+                events = []
+                for event in events_to_verify:
+
+                    obstacle = DBSession.query(Obstacle).get(event.obstacle_id)
+                    challenge = obstacle.segment.challenge
+
+                    image_64_encode = None
+                    if event.photo_response_url != None:
+                        image = str(get_project_root()) + event.photo_response_url
+
+                        if os.path.exists(image):
+                            file_image = open(image, "rb")
+                            image_read = file_image.read()
+                            image_64_encode = bytes.decode(base64.encodebytes(image_read)).replace("\n", "")
+
+                    events.append(
+                        {
+                            "id": event.id,
+                            "response": image_64_encode,
+                            "challenge": ChallengeSchema(only=("id", "name")).dump(challenge),
+                            "obstacle": ObstacleSchema(only=("label", "description")).dump(obstacle),
+                        }
+                    )
+
+                response = service_informations.build_response(exception.HTTPOk, {"events": events})
+
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPNoContent(),
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPForbidden)
+
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
 

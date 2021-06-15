@@ -3,6 +3,7 @@ from marshmallow import Schema, fields, pre_dump, post_load, pre_load, validate
 
 import loftes.error_messages as error_messages
 
+
 class CrossingPointSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str()
@@ -34,7 +35,7 @@ class CrossingPointSchema(Schema):
 
         if "name" in data and "challenge_id" in data:
 
-            msg = self.check_unique_name(data,data["challenge_id"],0)
+            msg = self.check_unique_name(data, data["challenge_id"], 0)
             if msg != "":
                 raise ValueError(msg)
 
@@ -54,17 +55,17 @@ class CrossingPointSchema(Schema):
 
             challenge_id = kwargs.get("challenge_id", None)
             crossing_id = kwargs.get("crossing_id", None)
-            msg = self.check_unique_name(data,challenge_id,crossing_id)
+            msg = self.check_unique_name(data, challenge_id, crossing_id)
             if msg != "":
                 raise ValueError(msg)
 
         return self.pre_load(data, True)
 
-    def check_unique_name(self,data,challenge_id,crossing_id):
+    def check_unique_name(self, data, challenge_id, crossing_id):
 
         msg = ""
 
-        if data["name"] == None:                
+        if data["name"] == None:
             msg = error_messages.FIELD_NOT_NULL
 
         if data["name"] == "":
@@ -78,11 +79,11 @@ class CrossingPointSchema(Schema):
         )
 
         if crossing_point != None:
-            if (crossing_id != 0 and crossing_point.id != crossing_id) or crossing_id==0:
+            if (crossing_id != 0 and crossing_point.id != crossing_id) or crossing_id == 0:
                 msg = (
                     "The given value '"
                     + data["name"]
                     + "' is already used as a crossing point name for this challenge."
                 )
-        
+
         return msg

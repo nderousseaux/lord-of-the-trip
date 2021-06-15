@@ -6,7 +6,7 @@ from loftes.models import EventType, Event, User, DBSession
 from loftes.marshmallow_schema.EventTypeSchema import EventTypeSchema
 
 from loftes.services.ServiceInformations import ServiceInformations
-from loftes.resources import UserCheckRessources
+from loftes.resources import UserManager
 
 import pyramid.httpexceptions as exception
 from pyramid.authentication import AuthTicket
@@ -21,7 +21,7 @@ def get_event_type(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         event_types = DBSession.query(EventType).all()
@@ -44,7 +44,7 @@ def event_type_add(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         try:
@@ -83,7 +83,7 @@ def get_event_type_by_id(request):
 
     service_informations = ServiceInformations()
 
-    user = UserCheckRessources.CheckUserConnect(request)
+    user = UserManager.check_user_connection(request)
     if user != None:
 
         event_type = DBSession.query(EventType).filter(EventType.id == request.matchdict["id"]).first()
