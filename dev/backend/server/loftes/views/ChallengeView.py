@@ -735,8 +735,11 @@ def update_challenge(request):
                 if challenge.draft:
 
                     try:
+                        challenge_data = request.json
+                        challenge_data["id"] = challenge.id
+
                         DBSession.query(Challenge).filter(Challenge.id == challenge.id).update(
-                            ChallengeSchema().check_json(request.json)
+                            ChallengeSchema().check_json(challenge_data)
                         )
                         DBSession.flush()
 
@@ -996,8 +999,11 @@ def modify_challenge(request):
                 if challenge.draft:
 
                     try:
+                        challenge_data = request.json
+                        challenge_data["id"] = challenge.id
+
                         DBSession.query(Challenge).filter(Challenge.id == challenge.id).update(
-                            ChallengeSchema().check_json(request.json)
+                            ChallengeSchema().check_json(challenge_data)
                         )
                         DBSession.flush()
 
