@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 
 const AdminDashboard = () => {
   return <div>
-    <h2>Admin Dashboard</h2>
+    <h2>Dashboard administrateur</h2>
     <CreateChallengeForm />
     <EditableChallenges />
     <PublishedChallenges />
@@ -33,7 +33,7 @@ const CreateChallengeForm = () => {
   const handleSubmit = e => {
     e.preventDefault();
     setError(null);
-    createChallenge.mutate({ name: name, scalling: 1000 });
+    createChallenge.mutate({ name: name, scalling: 1000, level: "2", step_length: 0.80 });
   };
 
   return <div>

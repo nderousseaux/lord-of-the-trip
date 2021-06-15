@@ -13,6 +13,10 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
@@ -52,8 +56,8 @@ const EditChallenge = () => {
       setDescription(challenge.description);
       if(challenge.start_date && challenge.end_date) setLimitTime(true);
       else setLimitTime(false);
-      setStart_date(challenge.start_date);
-      setEnd_date(challenge.end_date);
+      if(challenge.start_date) setStart_date(new Date(challenge.start_date));
+      if(challenge.end_date) setEnd_date(new Date(challenge.end_date));
       setScalling(challenge.scalling);
       setLevel(challenge.level);
       setStep_length(challenge.step_length);
@@ -65,7 +69,7 @@ const EditChallenge = () => {
       return (s < 10) ? '0' + s : s;
     };
     var d = new Date(date);
-    return [pad(d.getFullYear()), pad(d.getMonth()+1), d.getDate()].join('-');
+    return [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-');
   };
 
   const handleSubmit = () => {
@@ -83,7 +87,8 @@ const EditChallenge = () => {
     }
     if(scalling) challenge.scalling = parseInt(scalling);
     if(level) challenge.level = parseInt(level);
-    if(step_length) challenge.step_length = parseFloat(step_length);
+    if(step_length && (step_length < 0 || step_length > 100)) return;
+    else if(step_length) challenge.step_length = parseFloat(step_length);
     updateChallenge.mutate(challenge);
   };
 
@@ -91,7 +96,15 @@ const EditChallenge = () => {
     {isLoading ? 'Chargement...' : isError ? error.message :
       <Grid container direction="column">
         <Grid container direction="row">
-          <p>fil ariane</p>
+          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+            <Link color="inherit" onClick={() => history.push(`/`)} className={classes.clickable}>
+              Accueil
+            </Link>
+            <Link color="inherit" onClick={() => history.push(`/admindashboard`)} className={classes.clickable}>
+              Dashboard Administrateur
+            </Link>
+            <Typography color="textPrimary">Modification d'un challenge</Typography>
+          </Breadcrumbs>
         </Grid>
         <Grid container direction="row">
           <Grid item direction="column" lg={6}>
@@ -116,12 +129,14 @@ const EditChallenge = () => {
                           <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <Grid item direction="column" lg={6}>
                               <div className={classes.margin10right}>
-                                <KeyboardDatePicker disableToolbar variant="inline" format="dd/MM/yyyy" margin="normal" label="Commence le" value={start_date} onChange={setStart_date} />
+                                <KeyboardDatePicker disableToolbar variant="inline" format="dd/MM/yyyy" margin="normal" label="Commence le" value={start_date} onChange={setStart_date}
+                                                    minDate={new Date()} />
                               </div>
                             </Grid>
                             <Grid item direction="column" lg={6}>
                               <div className={classes.margin10left}>
-                                <KeyboardDatePicker disableToolbar variant="inline" format="dd/MM/yyyy" margin="normal" label="Fini le" value={end_date} onChange={setEnd_date} />
+                                <KeyboardDatePicker disableToolbar variant="inline" format="dd/MM/yyyy" margin="normal" label="Fini le" value={end_date} onChange={setEnd_date}
+                                                    minDate={start_date ? new Date(start_date).setDate(start_date.getDate() + 1) : new Date()} />
                               </div>
                             </Grid>
                           </MuiPickersUtilsProvider>
@@ -153,7 +168,8 @@ const EditChallenge = () => {
                   <Grid item direction="column" lg={4}>
                     <div className={classes.margin10left}>
                       <TextField variant="outlined" margin="dense" type="number" label="Longueur de pas" value={step_length} onChange={e => setStep_length(e.target.value)} fullWidth
-                                 helperText="Longueur d'un pas en mètres pour le podomètre" />
+                                 helperText="Longueur d'un pas en mètres pour le podomètre. 100 mètres maximum"
+                                 error={step_length && (step_length < 0 || step_length > 100) ? true : false}  />
                     </div>
                   </Grid>
                 </Grid>
