@@ -71,6 +71,39 @@ const apiObstacles = {
     .then(checkStatus);
   },
 
+
+  getAllObstaclesToValidate: () => {
+    return fetch(`${urlPrefix}/admin/verified-responses`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus)
+    .then(res => res.json());
+  },
+
+  validateObstacle: (eventId) => {
+    return fetch(`${urlPrefix}/events/${eventId}/manage-response`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ validate: "true" })
+    })
+    .then(checkStatus);
+  },
+
+  invalidateObstacle: (eventId) => {
+    return fetch(`${urlPrefix}/events/${eventId}/manage-response`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + getToken(),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ validate: "false" })
+    })
+    .then(checkStatus);
+  },
+
 };
 
 export default apiObstacles;

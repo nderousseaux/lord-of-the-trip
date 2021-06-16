@@ -3,10 +3,16 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 import Button from '@material-ui/core/Button';
+import { useStyles } from '../CustomCSS';
 
 const AdminDashboard = () => {
+  const classes = useStyles();
+  const history = useHistory();
+
   return <div>
     <h2>Dashboard administrateur</h2>
+    <Button onClick={() => history.push(`/validateobstacles/`)} size="large" variant="contained" color="primary"
+            className={ `${classes.button} ${classes.colorPrimary}` }>Valider les obstacles</Button>
     <CreateChallengeForm />
     <EditableChallenges />
     <PublishedChallenges />

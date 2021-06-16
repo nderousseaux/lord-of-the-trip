@@ -125,7 +125,7 @@ const ObstaclePhoto = ({ updateObstacleMutation, label, setLabel, description, s
       <DialogContentText>
         <b>Obstacle de type Photo</b>
       </DialogContentText>
-      <TextField variant="outlined" margin="dense" type="text" label="Label" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
+      <TextField variant="outlined" margin="dense" type="text" label="Tâche" value={label} onChange={e => setLabel(e.target.value)} fullWidth />
       <TextField variant="outlined" margin="dense" type="text" label="Description" value={description} onChange={e => setDescription(e.target.value)} fullWidth className={classes.margin20bottom}/>
       <Typography>
         Position sur le segment
