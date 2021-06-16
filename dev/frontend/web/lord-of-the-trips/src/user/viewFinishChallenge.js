@@ -7,7 +7,7 @@ import ChallengeInfo from './challengeInfo';
 import ChallengeMap from './challengeMap';
 import * as css from '../CustomCSS';
 
-const ViewNotSubscribedChallenge = () => {
+const ViewFinishChallenge = () => {
   let { id } = useParams();
   id = parseInt(id);
 
@@ -27,7 +27,7 @@ const ViewChallengeInfo = ({ challenge }) => {
   const queryClient = useQueryClient();
   const history = useHistory();
 
-  const subscribeChallenge = useMutation( (id) => apiUserChallenge.subscribeChallenge(id), {
+  const unsubscribeChallenge = useMutation( (id) => apiUserChallenge.unsubscribeChallenge(id), {
     onSuccess: () => {
       queryClient.invalidateQueries('subscribedChallenges');
       queryClient.invalidateQueries('notSubscribedChallenges');
@@ -38,11 +38,25 @@ const ViewChallengeInfo = ({ challenge }) => {
   return (
     <div style={css.flexLeft}>
       <ChallengeInfo challenge={challenge} />
-      <div style={css.flexCenter}>
-        <Button onClick={() => subscribeChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Vous inscrire</Button> {' '}
+      <hr />
+      <div>
+        <h3>Vos statistiques</h3>
+        <p>
+          _______________________________<br />
+          _______________________________<br />
+          _______________________________
+        </p>
+      </div>
+      <div>
+        <h3>Historique de vos actions</h3>
+        <p>
+          _______________________________<br />
+          _______________________________<br />
+          _______________________________
+        </p>
       </div>
     </div>
   );
 };
 
-export default ViewNotSubscribedChallenge;
+export default ViewFinishChallenge;
