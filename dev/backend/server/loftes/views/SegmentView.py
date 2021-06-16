@@ -183,8 +183,19 @@ def get_crossing_point_segments(request):
 
             if challenge != None:
 
-                # check if user is challenge's admin
-                if user.id == challenge.admin_id or challenge.draft:
+                subscribers = UserResources().find_all_subscribers_by_challenge(challenge)
+
+                user_is_subscribed = False
+                for subscriber in subscribers:
+                    # user is subscribed
+                    if subscriber.id == user.id:
+                        user_is_subscribed = True
+
+                if user.id == challenge.admin_id:
+                    user_is_subscribed = True
+
+                # check if user is subscribed
+                if user_is_subscribed:
 
                     segments = (
                         DBSession.query(Segment)
