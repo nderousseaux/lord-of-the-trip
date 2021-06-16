@@ -41,3 +41,12 @@ export const realLengthBetweenTwoPoints = (startPoint, endPoint, scaling, width)
   let pixelsLength = Math.sqrt(dx2 + dy2);
   return pixelsLength * scaling / width;
 }
+
+
+export const dateString = (date) => {
+  const pad = (s) => {
+    return (s < 10) ? '0' + s : s;
+  };
+  var d = new Date(date);
+  return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+};

@@ -3,10 +3,12 @@ import HomePage from './home';
 import UserDashboard from '../user/dashboard';
 import ViewSubscribedChallenge from '../user/viewSubscribedChallenge';
 import ViewNotSubscribedChallenge from '../user/viewNotSubscribedChallenge';
+import ViewFinishChallenge from '../user/viewFinishChallenge';
 import AdminDashboard from '../admin/dashboard';
 import EditChallenge from '../admin/editChallenge';
 import EditMap from '../admin/editMap';
 import AdminViewChallenge from '../admin/viewChallenge';
+import ChallengesAvailable from '../user/challengesAvailable'
 
 const Routes = () => {
   return (
@@ -20,12 +22,19 @@ const Routes = () => {
         <Route path="/dashboard">
           <UserDashboard />
         </Route>
+        <Route path="/ChallengesAvailable">
+          <ChallengesAvailable />
+        </Route>
         <Route path="/viewsubscibedchallenge/:id">
           <ViewSubscribedChallenge />
         </Route>
         <Route path="/viewnotsubscibedchallenge/:id">
           <ViewNotSubscribedChallenge />
         </Route>
+        <Route path="/viewFinishChallenge/:id">
+          <ViewFinishChallenge />
+        </Route>
+
 
         {/* Admin routes */}
         <Route path="/admindashboard">
