@@ -42,9 +42,13 @@ PUBLISH_CHALLENGE_END_DATE_HAS_PASSED = (
     "You do not have permission to publish a challenge whose end date has already passed."
 )
 PUBLISH_CHALLENGE_ALREADY_PUBLISHED = (
-    "You do not have permission to publish the challenge that has already been published."
+    "You do not have permission to publish a challenge that has already been published."
 )
-# challenge revoke
+PUBLISH_CHALLENGE_WITH_NO_LEVEL = "You do not have permission to publish a challenge that has no difficulty level."
+PUBLISH_CHALLENGE_WITH_NO_DESCRIPTION = "You do not have permission to publish a challenge that has no description."
+PUBLISH_CHALLENGE_WITH_NO_MAP = "You do not have permission to publish a challenge that has no map uploaded."
+PUBLISH_CHALLENGE_WITH_NO_SCALLING = "You do not have permission to publish a challenge that has no scalling."
+PUBLISH_CHALLENGE_WITH_NO_STEP_LENGTH = "You do not have permission to publish a challenge that has no step length."
 REVOKE_CHALLENGE_WITH_SUBSCRIBED_USERS = (
     "You do not have permission to revoke a challenge that has already subscribed users."
 )
@@ -61,6 +65,9 @@ OBSTACLE_RESPONSE_NOT_FOUND = "Field progress must not be null."
 OBSTACLE_PHOTO_ALREADY_SEND = (
     "You do not have permission to respond on an obstacle where you have already send the answer."
 )
+OBSTACLE_LABEL_MISSING = "You do not have permission to publish a challenge because there is no label for an obstacle."
+OBSTACLE_RESULT_MISSING = "You do not have permission to publish a challenge because there is no result for an obstacle of type question."
+OBSTACLE_DESCRIPTION_MISSING = "You do not have permission to publish a challenge because there is no description for an obstacle of type photo."
 
 # general
 NOTHING_TO_UPDATE = "Nothing to update."

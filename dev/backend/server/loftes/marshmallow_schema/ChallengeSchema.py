@@ -103,8 +103,15 @@ class ChallengeSchema(Schema):
                 if end_date < start_date:
                     raise ValueError("Challenge's end date must be greater of challenge's start date.")
 
-        if "scalling" in data and int(data["scalling"]) < 0:
-            raise ValueError("This value (" + str(data["scalling"]) + ") is not valid for scalling.")
+        if "scalling" in data and (int(data["scalling"]) < 100 or int(data["scalling"]) > 1000000):
+            raise ValueError("The value (" + str(data["scalling"]) + ") is not valid for scalling.")
+
+        acceptable_levels = [1, 2, 3]
+        if "level" in data and data["level"] not in acceptable_levels:
+            raise ValueError("The field level must contain value 1, 2 or 3")
+
+        if "step_length" in data and data["step_length"] < 0.30:
+            raise ValueError("The value (" + str(data["step_length"]) + ") is not valid for step length.")
 
         if "draft" in data:
             raise PermissionError("The field draft is not used on challenge's creation.")
