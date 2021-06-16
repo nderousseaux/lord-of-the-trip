@@ -16,13 +16,13 @@ export default function ChallengeCard({item, type, navigation}) {
   let difficulty;
 
   switch(item.level){
-    case "1":
+    case 1:
       difficulty = "Facile";
       break;
-    case "2":
+    case 2:
       difficulty = "Moyenne";
       break;
-    case "3":
+    case 3:
       difficulty = "Difficile";
       break;
     default:

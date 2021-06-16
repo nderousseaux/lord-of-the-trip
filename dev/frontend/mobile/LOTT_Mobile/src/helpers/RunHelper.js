@@ -137,28 +137,50 @@ export function move(showActionSheetWithOptions, dispatchRun, navigation, challe
                 transport = 'course'
         }
 
-        dispatchRun({
-            type: 'SET_TRANSPORT',
-            transport: transport
-        });
-
-        //On met à jour le chrono toutes les secondes
-        let updateTime = () => {
+        RunService.distanceSegment(segment.id)
+        .then((res) => {
             dispatchRun({
-                type: 'SET_DURATION',
-                action: ""
+                type: 'SET_DISTANCE_SEGMENT',
+                distanceSegment: res.data.distance
+            })
+            dispatchRun({
+                type: 'SET_TRANSPORT',
+                transport: transport
             });
-        }
-        dispatchRun({
-            type: 'SUBSCRIBE_TIME',
-            functionTime: updateTime
-        }),
-
-        dispatchRun({
-            type: 'SUBSCRIBE_CALCUL_DISTANCE',
-            functionCalcul: calculDistance,
-            segment: segment
+            //On met à jour le chrono toutes les secondes
+            let updateTime = () => {
+                dispatchRun({
+                    type: 'SET_DURATION',
+                    action: ""
+                });
+            }
+            dispatchRun({
+                type: 'SUBSCRIBE_TIME',
+                functionTime: updateTime
+            })
         })
+        .catch((err) => {
+            console.log(err)
+            let msg;
+
+            if (err.response != undefined){
+                switch(err.response.status){
+                    case 401:
+                        msg = "Vous n'avez pas l'autorisation d'afficher les challenges"
+                        break;
+                    default:
+                        msg = "Une erreur inconne c'est produite.";
+                }
+            }
+            else{
+                msg = "Le réseau est indisponible.";
+            }
+
+            if (msg != undefined) {
+                AlertHelper.show("error", "Erreur !", msg)
+            }
+        })
+        
       }
     );
 }
@@ -208,8 +230,4 @@ export function locationChanged(dispatchRun, location){
         type: 'ADD_LOG',
         log: location
     })
-}
-
-export function calculDistance(segment){
-    console.log(segment.length);
 }

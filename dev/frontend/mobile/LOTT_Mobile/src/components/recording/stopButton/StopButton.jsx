@@ -30,6 +30,9 @@ export default function stopButton(props){
     dispatchRun({
       type: 'STOP_SUBSCRIBTIONS',
     });
+    dispatchRun({
+      type: 'RESET_DISTANCE',
+    });
   }
 
   let functionFinally = () => {

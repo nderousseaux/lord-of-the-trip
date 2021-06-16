@@ -17,6 +17,7 @@ const initialState = {
   subscriptionGPS: null,
   logs: [],
   vitesse: null,
+  distanceSegment: 0 //Distance déjà parcourue sur le segment
 };
 
 const runReducer = (state, action) => {
@@ -41,12 +42,8 @@ const runReducer = (state, action) => {
     case 'SUBSCRIBE_TIME':
       let subscriptionTime = setInterval(() => {action.functionTime()}, 1000)
       return {...state, subscriptionTime};
-    case 'SUBSCRIBE_CALCUL_DISTANCE':
-      let subscriptionCalcul = setInterval(() => {action.functionCalcul(action.segment)}, 1000)
-      return {...state, subscriptionCalcul};
     case 'SET_DURATION':
       return {...state, duration: chrono(state.dateDebut, new Date()) };
-
     case 'SUBSCRIBE_GPS':
       let subscriptionGPS = setInterval(() => {action.functionGPS()}, 1000)
       return {...state, subscriptionGPS};
@@ -54,17 +51,17 @@ const runReducer = (state, action) => {
       let logs  = state.logs
       logs.push(action.log)    
       let distance = distanceTotale(logs)
-      let distanceChallenge = (state.transport == 'velo' ? distance/2 : distance)
-      return {...state, logs, vitesse: action.log.coords.speed, distance, distanceChallenge }
+      let distanceC = (state.transport == 'velo' ? distance/2 : distance)
+      return {...state, logs, vitesse: action.log.coords.speed, distance, distanceChallenge: distanceC  }
     case 'STOP_SUBSCRIBTIONS':
       state.subscriptionPedometer && state.subscriptionPedometer.remove();
-      state.subscriptionGPS && clearInterval(state.subscriptionGPS);
-      state.subscriptionTime && clearInterval(state.subscriptionTime);
-      state.subscriptionCalcul && clearInterval(state.subscriptionCalcul);
-      return {...state, subscriptionPedometer: null, subscriptionGPS: null, subscriptionTime: null, subscriptionCalcul: null}
+      clearInterval(state.subscriptionGPS);
+      clearInterval(state.subscriptionTime);
+      return {...state, subscriptionPedometer: null, subscriptionGPS: null, subscriptionTime: null}
     case 'RESET_DISTANCE':
-      return {...state, distance: 0}
-
+      return {...state, distance: 0, distanceChallenge: 0, logs: []}
+    case 'SET_DISTANCE_SEGMENT':
+      return {...state, distanceSegment: action.distanceSegment}
     default:
       return state;
   }
