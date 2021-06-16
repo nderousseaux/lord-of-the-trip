@@ -109,8 +109,7 @@ const ObstacleQuestion = ({ updateObstacleMutation, label, setLabel, description
       <Typography>
         Position sur le segment
       </Typography>
-      <Slider value={progress} step={10} min={10} max={90} marks
-              valueLabelDisplay="auto" onChange={(e, val) => setProgress(val)} />
+      <Slider value={progress} onChange={(e, val) => setProgress(val)} step={10} min={10} max={90} marks valueLabelDisplay="auto" />
       <DialogContentText>Position sur le segment : valeur en pourcentage qui représente la distance de l'obstacle sur le segment, les valeurs peuvent être les nombres entiers de 10 à 90</DialogContentText>
       {errorUpdate ? <p style={{color: 'red'}}>{errorUpdate.message}</p> : null}
     </form>

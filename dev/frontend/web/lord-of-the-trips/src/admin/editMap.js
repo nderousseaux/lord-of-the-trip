@@ -11,14 +11,24 @@ import ModalCrossingPoint from './modalCrossingPoint';
 import ModalSegment from './modalSegment';
 import ModalObstacle from './modalObstacle';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
+import Slider from '@material-ui/core/Slider';
+import RemoveIcon from '@material-ui/icons/Remove';
+import AddIcon from '@material-ui/icons/Add';
+import { useStyles } from '../CustomCSS';
 
 const EditMap = () => {
+  const classes = useStyles();
   const [errorDownload, setErrorDownload] = useState(null);
   const [successDownload, setSuccessDownload] = useState(false);
   const [image, setImage] = useState(null);
+  const [baseWidth, setBaseWidth] = useState(0);
+  const [baseHeight, setBaseHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [radioButtonValue, setRadioButtonValue] = useState("1");
+  const [zoom, setZoom] = useState(1);
 
   const [crossingPoints, setCrossingPoints] = useState([]);
   // +1 when there is a change in the crossing points, to set again the start and the end of the challenge
@@ -44,6 +54,12 @@ const EditMap = () => {
   const { isError: isErrorCrossingPoints, data: crossingPointsRequest } = useQuery(['crossingPoints', id], () => apiCrossingPoints.getAllCrossingPoints(id));
   const { isError: isErrorSegments, data: segmentsRequest } = useQuery(['segments', id], () => apiSegments.getAllSegments(id));
   const { isError: isErrorObstacles, data: obstaclesRequest } = useQuery(['obstacles', id], () => apiObstacles.getAllObstacles(id));
+
+  // Change the zoom of the map
+  useEffect(() => {
+    setWidth(baseWidth * zoom);
+    setHeight(baseHeight * zoom);
+  }, [zoom]);
 
   // Load the start point and the end point of the challenge
   useEffect(() => {
@@ -71,7 +87,7 @@ const EditMap = () => {
       setCrossingPoints(cr);
       setCrossingPointsLoaded(current => current + 1);
     }
-  }, [isErrorCrossingPoints, crossingPointsRequest, successDownload]);
+  }, [isErrorCrossingPoints, crossingPointsRequest, successDownload, width, height]);
 
   // Load segments
   useEffect(() => {
@@ -90,7 +106,7 @@ const EditMap = () => {
       setSegments(seg);
       setSegmentsLoaded(current => current + 1);
     }
-  }, [isErrorSegments, segmentsRequest, crossingPointsLoaded, successDownload]);
+  }, [isErrorSegments, segmentsRequest, crossingPointsLoaded, successDownload, width, height]);
 
   // Load obstacles
   useEffect(() => {
@@ -120,6 +136,8 @@ const EditMap = () => {
       img.src = window.URL.createObjectURL(data);
       img.onload = function() {
         setImage(img);
+        setBaseWidth(img.width);
+        setBaseHeight(img.height);
         setWidth(img.width);
         setHeight(img.height);
         setSuccessDownload(true);
@@ -525,9 +543,23 @@ const EditMap = () => {
       successDownload ?
         <div>
           <Menu radioButtonValue={radioButtonValue} setRadioButtonValue={setRadioButtonValue} />
+          <Typography>
+            Zoom
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item>
+              <RemoveIcon />
+            </Grid>
+            <Grid item lg>
+              <Slider value={zoom} onChange={(e, val) => setZoom(val)} step={0.1} min={0.2} max={2} valueLabelDisplay="auto" />
+            </Grid>
+            <Grid item>
+              <AddIcon />
+            </Grid>
+          </Grid>
           <Stage width={width} height={height} onClick={(e) => clickOnStage(e)}>
             <Layer>
-              <Image image={image} />
+              <Image image={image} width={width} height={height} />
               { /* Render segments */ }
               {segments.map(segment => <Arrow key={segment.id} id={segment.id} points={formatSegmentPoints(segment)}
                                         stroke={radioButtonValue === "5" && segment.onMouseOver ? "red" : (radioButtonValue === "8" || radioButtonValue === "9" || radioButtonValue === "11") && segment.onMouseOver ? "green" : "black"}
