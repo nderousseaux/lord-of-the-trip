@@ -64,3 +64,13 @@ OBSTACLE_PHOTO_ALREADY_SEND = (
 
 # general
 NOTHING_TO_UPDATE = "Nothing to update."
+
+
+def unknown_field(field):
+
+    return "Unknown field: '" + field + "'."
+
+
+def error_format_date(date):
+
+    return "Not a valid date: '{0}'.".format(date)

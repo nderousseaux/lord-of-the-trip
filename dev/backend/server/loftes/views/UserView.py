@@ -7,6 +7,8 @@ from loftes.models import User, Challenge, DBSession
 from loftes.marshmallow_schema import UserSchema
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.resources.UserResources import UserResources
+from loftes.resources.EventResources import EventResources
+from loftes.resources.ChallengeResources import ChallengeResources
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 
 import loftes.error_messages as error_messages
@@ -14,6 +16,7 @@ import loftes.error_messages as error_messages
 from marshmallow import ValidationError
 
 import logging
+import datetime
 
 import pyramid.httpexceptions as exception
 
@@ -116,7 +119,7 @@ def get_all_subscribers(request):
 
                     response = service_informations.build_response(exception.HTTPOk, data)
                 else:
-                    response = service_informations.build_response(exception.HTTPNotFound())
+                    response = service_informations.build_response(exception.HTTPNoContent())
 
             else:
                 response = service_informations.build_response(
@@ -229,10 +232,136 @@ def get_challenge_admin(request):
             if admin != None:
                 response = service_informations.build_response(exception.HTTPOk, UserSchema().dump(admin))
             else:
-                response = service_informations.build_response(exception.HTTPNotFound())
+                response = service_informations.build_response(exception.HTTPNoContent())
 
         else:
             response = service_informations.build_response(exception.HTTPNotFound())
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+challenge_statistics = Service(
+    name="challenge_statistics",
+    path="/user/challenges/{id:\d+}/statistics",
+    cors_policy=cors_policy,
+)
+
+
+@challenge_statistics.get()
+def get_statistics_for_challenge_by_id(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        challenge = DBSession.query(Challenge).get(request.matchdict["id"])
+
+        # check if challenge is found
+        if challenge != None:
+
+            subscribers = UserResources().find_all_subscribers_by_challenge(challenge)
+
+            user_is_subscribed = False
+            for subscriber in subscribers:
+                # user is subscribed
+                if subscriber.id == user.id:
+                    user_is_subscribed = True
+
+            if user_is_subscribed:
+
+                param_date = None
+
+                if request.query_string != "":
+                    splitter = request.query_string.split("=")
+                    if len(splitter) == 2 and splitter[0] == "date":
+                        response = service_informations.format_date(splitter[1])
+                        if isinstance(response, datetime.datetime):
+                            param_date = response
+                        else:
+                            return service_informations.build_response(exception.HTTPBadRequest, None, response)
+                    else:
+                        return service_informations.build_response(
+                            exception.HTTPBadRequest, None, error_messages.unknown_field(splitter[0])
+                        )
+
+                distance = EventResources().sum_events_distance_by_challenge(user.id, challenge.id, param_date)
+                time = EventResources().sum_events_time_by_challenge(user.id, challenge.id, param_date)
+                average_move_type = EventResources().avg_events_move_type_by_challenge(
+                    user.id, challenge.id, param_date
+                )
+
+                data = {"distance": distance, "time": time, "average_move_type": average_move_type}
+
+                response = service_informations.build_response(exception.HTTPOk(), {"statistics": data})
+            else:
+                response = service_informations.build_response(
+                    exception.HTTPForbidden, None, error_messages.REQUEST_RESSOURCE_WITHOUT_PERMISSION
+                )
+
+        else:
+            response = service_informations.build_response(exception.HTTPNotFound())
+
+    else:
+        response = service_informations.build_response(exception.HTTPUnauthorized)
+
+    return response
+
+
+challenges_statistics = Service(
+    name="challenges_statistics",
+    path="/user/challenges/statistics",
+    cors_policy=cors_policy,
+)
+
+
+@challenges_statistics.get()
+def get_statistics_for_challenge_by_id(request):
+
+    service_informations = ServiceInformations()
+
+    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+
+    # check if user is authenticated
+    if user != None:
+
+        challenges = ChallengeResources().find_all_subscribed_challenges_by_user(user.id)
+
+        param_date = None
+
+        if request.query_string != "":
+            splitter = request.query_string.split("=")
+            if len(splitter) == 2 and splitter[0] == "date":
+                response = service_informations.format_date(splitter[1])
+                if isinstance(response, datetime.datetime):
+                    param_date = response
+                else:
+                    return service_informations.build_response(exception.HTTPBadRequest, None, response)
+            else:
+                return service_informations.build_response(
+                    exception.HTTPBadRequest, None, error_messages.unknown_field(splitter[0])
+                )
+
+        distance = 0
+        time = 0
+        move_types = []
+
+        challenges_ids = []
+        for challenge in challenges:
+            distance = distance + EventResources().sum_events_distance_by_challenge(user.id, challenge.id, param_date)
+            time = time + EventResources().sum_events_time_by_challenge(user.id, challenge.id, param_date)
+            challenges_ids.append(challenge.id)
+
+        average_move_type = EventResources().avg_events_move_type_by_challenges_subscribed(user.id, challenges_ids, param_date)
+
+        data = {"distance": distance, "time": time, "average_move_type": average_move_type}
+
+        response = service_informations.build_response(exception.HTTPOk(), {"statistics": data})
 
     else:
         response = service_informations.build_response(exception.HTTPUnauthorized)
