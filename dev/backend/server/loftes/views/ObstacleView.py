@@ -10,7 +10,7 @@ from loftes.marshmallow_schema import ObstacleSchema
 from loftes.marshmallow_schema.EventSchema import EventSchema
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.resources import ObstacleResources
-from loftes.resources import EventResources
+from loftes.resources.EventResources import EventResources
 from loftes.resources import UserManager
 from loftes.utils import get_project_root
 
@@ -963,7 +963,7 @@ def respond_on_obstacle(request):
         # check if obstacle is found
         if obstacle != None:
 
-            event_rules = EventResources.check_event_type_rule(
+            event_rules = EventResources().check_event_type_rule(
                 5, user.id, obstacle.segment.challenge.id, obstacle.segment.id
             )
 
@@ -1018,7 +1018,7 @@ def respond_on_obstacle(request):
                     # photo
                     elif obstacle.question_type == 1:
                         # check if user has already responded on obstacle
-                        photos_sent = EventResources.find_event_responded_with_photo(user.id, obstacle.id)
+                        photos_sent = EventResources().find_event_responded_with_photo(user.id, obstacle.id)
 
                         if len(photos_sent) == 0:
 

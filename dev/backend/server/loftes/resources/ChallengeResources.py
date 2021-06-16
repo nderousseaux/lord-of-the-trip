@@ -1,6 +1,6 @@
-from loftes.models import Challenge, UserChallenge, DBSession
+from loftes.models import Challenge, Segment, Event, UserChallenge, DBSession
 import datetime
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 
 class ChallengeResources:

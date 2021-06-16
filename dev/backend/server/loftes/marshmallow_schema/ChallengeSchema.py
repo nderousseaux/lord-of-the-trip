@@ -87,13 +87,17 @@ class ChallengeSchema(Schema):
                 start_date = datetime.datetime.fromisoformat(data["start_date"])
                 if start_date < now:
                     raise ValueError(
-                        "Challenge's start date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
+                        "Challenge's start date must be greater of today's date ("
+                        + now.strftime("%d-%m-%Y, %H:%M")
+                        + ")"
                     )
 
                 end_date = datetime.datetime.fromisoformat(data["end_date"])
                 if end_date < now:
                     raise ValueError(
-                        "Challenge's end date must be greater of today's date (" + now.strftime("%d-%m-%Y, %H:%M") + ")"
+                        "Challenge's end date must be greater of today's date ("
+                        + now.strftime("%d-%m-%Y, %H:%M")
+                        + ")"
                     )
 
                 if end_date < start_date:
