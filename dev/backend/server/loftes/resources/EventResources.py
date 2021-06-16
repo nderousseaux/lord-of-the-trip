@@ -397,5 +397,4 @@ class EventResources:
                     for result in q2.all():
                         avg_move_type.append(result.move_type)
 
-
         return avg_move_type

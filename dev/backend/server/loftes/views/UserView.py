@@ -357,7 +357,9 @@ def get_statistics_for_challenge_by_id(request):
             time = time + EventResources().sum_events_time_by_challenge(user.id, challenge.id, param_date)
             challenges_ids.append(challenge.id)
 
-        average_move_type = EventResources().avg_events_move_type_by_challenges_subscribed(user.id, challenges_ids, param_date)
+        average_move_type = EventResources().avg_events_move_type_by_challenges_subscribed(
+            user.id, challenges_ids, param_date
+        )
 
         data = {"distance": distance, "time": time, "average_move_type": average_move_type}
 
