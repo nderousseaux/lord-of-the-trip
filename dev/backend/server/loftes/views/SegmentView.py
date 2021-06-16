@@ -9,6 +9,7 @@ from loftes.cors import cors_policy
 from loftes.models import Segment, Challenge, User, CrossingPoint, DBSession
 from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import SegmentSchema
+from loftes.resources.UserResources import UserResources
 
 import loftes.error_messages as error_messages
 
