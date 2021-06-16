@@ -7,6 +7,7 @@ import AdminDashboard from '../admin/dashboard';
 import EditChallenge from '../admin/editChallenge';
 import EditMap from '../admin/editMap';
 import AdminViewChallenge from '../admin/viewChallenge';
+import ValidateObstacles from '../admin/validateObstacles';
 
 const Routes = () => {
   return (
@@ -39,6 +40,9 @@ const Routes = () => {
         </Route>
         <Route path="/adminviewchallenge/:id">
           <AdminViewChallenge />
+        </Route>
+        <Route path="/validateobstacles">
+          <ValidateObstacles />
         </Route>
 
         <Redirect to="/" />

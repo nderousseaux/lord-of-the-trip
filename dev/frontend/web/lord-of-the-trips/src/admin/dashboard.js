@@ -3,10 +3,16 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import apiChallenge from '../api/challenge';
 import Button from '@material-ui/core/Button';
+import { useStyles } from '../CustomCSS';
 
 const AdminDashboard = () => {
+  const classes = useStyles();
+  const history = useHistory();
+
   return <div>
-    <h2>Admin Dashboard</h2>
+    <h2>Dashboard administrateur</h2>
+    <Button onClick={() => history.push(`/validateobstacles/`)} size="large" variant="contained" color="primary"
+            className={ `${classes.button} ${classes.colorPrimary}` }>Valider les obstacles</Button>
     <CreateChallengeForm />
     <EditableChallenges />
     <PublishedChallenges />
@@ -33,7 +39,7 @@ const CreateChallengeForm = () => {
   const handleSubmit = e => {
     e.preventDefault();
     setError(null);
-    createChallenge.mutate({ name: name, scalling: 1000 });
+    createChallenge.mutate({ name: name, scalling: 1000, level: 2, step_length: 0.80 });
   };
 
   return <div>
@@ -95,7 +101,7 @@ const PublishedChallenges = () => {
         <li key={c.id}>
           {c.id} : {c.name} {' '}
           <Button onClick={() => history.push(`/adminviewchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Voir</Button> {' '}
-          <Button onClick={() => duplicateChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Duppliquer</Button>
+          <Button onClick={() => duplicateChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Dupliquer</Button>
         </li>
       ))}
       </ul>

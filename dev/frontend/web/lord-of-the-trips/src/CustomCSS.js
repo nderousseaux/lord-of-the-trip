@@ -36,6 +36,10 @@ export const useStyles = makeStyles({
     margin: '15px 0'
   },
 
+  margin20bottom: {
+    marginBottom: '20px'
+  },
+
   margin10horizontal: {
     margin: '0 10px'
   },
@@ -75,13 +79,17 @@ export const useStyles = makeStyles({
   },
 
   imageDiv: {
-    width: '900px',
-    height: '550px'
+    width: '100%'
   },
 
   imageInDiv: {
     maxWidth: '100%',
     maxHeight: '100%'
+  },
+
+  border: {
+    border: '1px solid black',
+    padding: '2%'
   },
 });
 
