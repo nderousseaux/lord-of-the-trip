@@ -28,10 +28,10 @@ export default function stopButton(props){
       );
 
     dispatchRun({
-      type: 'STOP_SUBSCRIBTIONS',
+      type: 'RESET_DISTANCE',
     });
     dispatchRun({
-      type: 'RESET_DISTANCE',
+      type: 'STOP_SUBSCRIBTIONS',
     });
   }
 

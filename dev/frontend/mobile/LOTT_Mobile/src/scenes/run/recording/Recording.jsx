@@ -15,7 +15,7 @@ export default function Recording(props){
           <View style={styles.cardContainer}>
             <Carte/>
           </View>
-          <Distance/>
+          <Distance {...props}/>
           <View style={styles.bottomContainer}>
             <View style={styles.buttonContainer}>
               <StopButton {...props}/>

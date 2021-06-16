@@ -44,7 +44,7 @@ const challengesReducer = (state, action) => {
       }
     case 'SET_SEGMENT':
       let res = _.find(state.challengeSelected.segments, function(o) {return o.id == action.segment} )
-
+      console.log("Nouveau segment : "+ res.id)
       return {...state, segment: res}
     default:
       return state;

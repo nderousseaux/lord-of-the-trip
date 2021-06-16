@@ -26,6 +26,40 @@ let EventsService = {
                 "event_type_id" : 3
             }
         )
+    },
+
+    startChallenge(idChallenge, idSegment){
+        return api.post(
+            '/challenges/'+ idChallenge + '/segments/' + idSegment + '/events',
+            {
+                "event_type_id" : 1
+            }
+        )
+    },
+
+    choix(idChallenge, idSegment){
+        return api.post(
+            '/challenges/'+ idChallenge + '/segments/' + idSegment + '/events',
+            {
+                "event_type_id" : 9
+            }
+        )
+    },
+    arrivalCrossingPoint(idChallenge, idSegment){
+        return api.post(
+            '/challenges/'+ idChallenge + '/segments/' + idSegment + '/events',
+            {
+                "event_type_id" : 8
+            }
+        )
+    },
+    endChallenge(idChallenge, idSegment){
+        return api.post(
+            '/challenges/'+ idChallenge + '/segments/' + idSegment + '/events',
+            {
+                "event_type_id" : 2
+            }
+        )
     }
 }
 

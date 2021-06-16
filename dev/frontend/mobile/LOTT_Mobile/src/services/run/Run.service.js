@@ -7,7 +7,12 @@ let runService = {
 
     distanceSegment(id){ //Distance déjà parcourue sur le segment
         return api.get('/segments/' + id+ "/events/distance")
+    },
+
+    allSegments(idCrossingPoint){ //Tout les segments devant un crossing point
+        return api.get('/crossing-points/'+ idCrossingPoint + '/segments')
     }
+    
 }
 
 export default runService;

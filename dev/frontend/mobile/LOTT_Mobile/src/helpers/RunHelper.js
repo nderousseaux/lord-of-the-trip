@@ -31,7 +31,6 @@ export function getNextAction(idChallenge, dispatchChallenges) {
             idChallenge: idChallenge
         });
         let lastEvent = res.data.event_type_info.code
-
         switch (lastEvent) {
             case null: //Si il n'y en a pas -> on démarre le challenge
                 nextEvent = typeEtat.START;
@@ -57,8 +56,9 @@ export function getNextAction(idChallenge, dispatchChallenges) {
             case "OBSTACLE_REP_KO": //Si on a mal répondu à un obstacle -> On doit répondre
                 nextEvent = typeEtat.OBSTACLE_REP_KO;
                 break;
-            case "CROSSING_POINT_ARRIVAL": //Si on vient d'arriver à un obstacle -> On doit choisir sa route
+            case "CROSS_PT_ARRIVAL": //Si on vient d'arriver à un obstacle -> On doit choisir sa route
                 nextEvent = typeEtat.CHOOSE_SEGMENT;
+                console.log(nextEvent)
                 break;
             case "CHOOSE_SEGEMENT": //Si on vient de choisir son segment -> On doit bouger
                 nextEvent = typeEtat.MOVE
@@ -100,7 +100,7 @@ export function getNextAction(idChallenge, dispatchChallenges) {
     })
 }
 
-export function move(showActionSheetWithOptions, dispatchRun, navigation, challenge, segment) {
+export function move(showActionSheetWithOptions, dispatchRun, navigation, challenge, segment) { 
     const options = ['En courant', 'À vélo', 'À pied', 'Annuler'];
     const cancelButtonIndex = 3;
     const destructiveButtonIndex = 3;
@@ -136,17 +136,20 @@ export function move(showActionSheetWithOptions, dispatchRun, navigation, challe
             default:
                 transport = 'course'
         }
-
         RunService.distanceSegment(segment.id)
         .then((res) => {
             dispatchRun({
-                type: 'SET_DISTANCE_SEGMENT',
-                distanceSegment: res.data.distance
-            })
+                type: 'SET_SEGMENT',
+                segment: segment.id,
+            });
             dispatchRun({
                 type: 'SET_TRANSPORT',
                 transport: transport
             });
+            dispatchRun({
+                type: 'SET_DISTANCE_SEGMENT',
+                distanceSegment: res.data.distance
+            })
             //On met à jour le chrono toutes les secondes
             let updateTime = () => {
                 dispatchRun({
@@ -213,7 +216,6 @@ export async function startGPS(dispatchRun, navigation){
     const {status} = await Permissions.askAsync(Permissions.LOCATION);
     
     if (status !== 'granted'){
-        console.log(AlertHelper)
         AlertHelper.show("error", "Erreur !", "Vous devez activer le gps dans les paramètres du téléphone !")
         navigation.goBack()
     }

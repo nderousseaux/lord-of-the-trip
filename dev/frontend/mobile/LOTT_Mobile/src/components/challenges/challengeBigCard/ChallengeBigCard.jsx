@@ -23,13 +23,13 @@ export default function ChallengeBigCard(props){
   let getDifficulty = () => {
     let res;
     switch(challengeSelected.level){
-      case "1":
+      case 1:
         res = "Facile";
         break;
-      case "2":
+      case 2:
         res = "Moyenne";
         break;
-      case "3":
+      case 3:
         res = "Difficile";
         break;
       default:
