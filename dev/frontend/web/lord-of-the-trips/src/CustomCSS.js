@@ -61,6 +61,14 @@ export const useStyles = makeStyles({
     backgroundColor: '#CB4335'
   },
 
+  colorErrorMessage: {
+    color: 'red'
+  },
+
+  tooltip: {
+    color: "white"
+  },
+
   button: {
     textTransform: 'none'
   },
@@ -91,20 +99,20 @@ export const useStyles = makeStyles({
   boutonOne:{
     textAlign: "center"
   },
-    //tableau  
+    //tableau
   table: {
     minWidth: 650,
   },
   tableLeft: {
     textAlign: "left"
-  },  
+  },
   tableRight: {
     textAlign: "right",
   },
   tableDescr: {
     textAlign: "left",
     maxWidth: "350px"
-  }, 
+  },
 
   // Challenge card
   cardParent:{
@@ -113,7 +121,7 @@ export const useStyles = makeStyles({
     margin: '5px',
     height: "500px"
   },
- 
+
     border: {
     border: '1px solid black',
     padding: '2%'

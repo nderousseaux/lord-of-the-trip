@@ -52,6 +52,16 @@ const EditChallenge = () => {
     },
   });
 
+  const updateChallengeAndEditMap = useMutation( (challenge) => apiChallenge.updateChallenge(id, challenge), {
+    onError: (error) => {
+      setErrorUpdate(error);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['challenge', id])
+      history.push(`/editmap/${id}`);
+    },
+  });
+
   useEffect(() => {
     if(challenge) {
       setName(challenge.name);
@@ -74,7 +84,8 @@ const EditChallenge = () => {
     return [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-');
   };
 
-  const handleSubmit = () => {
+  // redirect = true -> Submit challenge form and then go to edit map
+  const handleSubmit = (redirect) => {
     setErrorUpdate(null);
     const challenge = {};
     if(name) challenge.name = name;
@@ -91,7 +102,9 @@ const EditChallenge = () => {
     if(level) challenge.level = parseInt(level);
     if(step_length && (step_length < 0 || step_length > 100)) return;
     else if(step_length) challenge.step_length = parseFloat(step_length);
-    updateChallenge.mutate(challenge);
+
+    if(redirect) updateChallengeAndEditMap.mutate(challenge);
+    else updateChallenge.mutate(challenge);
   };
 
   return <>
@@ -177,7 +190,7 @@ const EditChallenge = () => {
                   </Grid>
                 </Grid>
               </form>
-              {errorUpdate ? <p>{errorUpdate.message}</p> : null}
+              {errorUpdate ? <p className={classes.colorErrorMessage}>{errorUpdate.message}</p> : null}
             </div>
           </Grid>
           <Grid item direction="column" lg={6}>
@@ -192,7 +205,7 @@ const EditChallenge = () => {
         </Grid>
         <Grid container direction="row">
           <Grid item lg={4} className={classes.contentCenterHorizontal}>
-            <Button onClick={handleSubmit} size="large" variant="contained" color="primary" alignItems="center" justify="center"
+            <Button onClick={() => handleSubmit()} size="large" variant="contained" color="primary" alignItems="center" justify="center"
                     className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Modifier le challenge</Button>
           </Grid>
           <Grid item lg={4} className={classes.contentCenterHorizontal}>
@@ -200,7 +213,7 @@ const EditChallenge = () => {
                              className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Publier le challenge</Button> : null}
           </Grid>
           <Grid item lg={4} className={classes.contentCenterHorizontal}>
-            {image ? <Button onClick={() => history.push(`/editmap/${id}`)} size="large" variant="contained" color="primary"
+            {image ? <Button onClick={() => handleSubmit(true)} size="large" variant="contained" color="primary"
                              className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Éditer le parcours</Button> : null}
           </Grid>
         </Grid>

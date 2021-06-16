@@ -17,6 +17,7 @@ import Slider from '@material-ui/core/Slider';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import { useStyles } from '../CustomCSS';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const EditMap = () => {
   const classes = useStyles();
@@ -28,7 +29,9 @@ const EditMap = () => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [radioButtonValue, setRadioButtonValue] = useState("1");
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(null);
+  const [minZoom, setMinZoom] = useState(null);
+  const [maxZoom, setMaxZoom] = useState(null);
 
   const [crossingPoints, setCrossingPoints] = useState([]);
   // +1 when there is a change in the crossing points, to set again the start and the end of the challenge
@@ -50,6 +53,11 @@ const EditMap = () => {
   let { id } = useParams();
   id = parseInt(id);
 
+  // Default Min and Max pixels for the map
+  const defaultMapWidth = 1200;
+  const minMapLength = 300;
+  const maxMapLength = 3000;
+
   const { data: challenge } = useQuery(['challenge', id], () => apiChallenge.getChallengeById(id));
   const { isError: isErrorCrossingPoints, data: crossingPointsRequest } = useQuery(['crossingPoints', id], () => apiCrossingPoints.getAllCrossingPoints(id));
   const { isError: isErrorSegments, data: segmentsRequest } = useQuery(['segments', id], () => apiSegments.getAllSegments(id));
@@ -59,7 +67,7 @@ const EditMap = () => {
   useEffect(() => {
     setWidth(baseWidth * zoom);
     setHeight(baseHeight * zoom);
-  }, [zoom]);
+  }, [zoom, baseWidth, baseHeight]);
 
   // Load the start point and the end point of the challenge
   useEffect(() => {
@@ -140,6 +148,20 @@ const EditMap = () => {
         setBaseHeight(img.height);
         setWidth(img.width);
         setHeight(img.height);
+
+        // Zoom
+        let shortestDistance = Math.min(img.width, img.height);
+        let minZoom = minMapLength / shortestDistance;
+        minZoom = Math.round(minZoom * 10) / 10;
+        setMinZoom(minZoom);
+        let longestDistance = Math.max(img.width, img.height);
+        let maxZoom = maxMapLength / longestDistance;
+        maxZoom = Math.round(maxZoom * 10) / 10;
+        setMaxZoom(maxZoom);
+        let defaultZoom = defaultMapWidth / img.width;
+        defaultZoom = Math.round(defaultZoom * 10) / 10;
+        setZoom(defaultZoom);
+
         setSuccessDownload(true);
       };
     },
@@ -537,6 +559,15 @@ const EditMap = () => {
     return returnObject;
   };
 
+  const ValueLabelComponent = (props) => {
+    const { children, open, value } = props;
+    return (
+      <Tooltip open={open} enterTouchDelay={0} placement="top" title={<h1 className={classes.tooltip}>{value}</h1>}>
+        {children}
+      </Tooltip>
+    );
+  }
+
   return <>
     <h3>Modifier la carte <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Modifier le challenge</Button> </h3>
     {errorDownload ? <h3>{errorDownload.message}</h3> :
@@ -551,7 +582,8 @@ const EditMap = () => {
               <RemoveIcon />
             </Grid>
             <Grid item lg>
-              <Slider value={zoom} onChange={(e, val) => setZoom(val)} step={0.1} min={0.2} max={2} valueLabelDisplay="auto" />
+              <Slider value={zoom} onChange={(e, val) => setZoom(val)} step={0.1} min={minZoom} max={maxZoom}
+                      valueLabelDisplay="auto" valueLabelFormat={Math.round(zoom*100) + ' %'} ValueLabelComponent={ValueLabelComponent} />
             </Grid>
             <Grid item>
               <AddIcon />
