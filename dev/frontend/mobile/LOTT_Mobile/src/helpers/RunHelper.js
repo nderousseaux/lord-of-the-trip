@@ -1,6 +1,8 @@
 import RunService from 'services/run/Run.service.js'
-import AlertHelper from 'helpers/AlertHelper.js'
+import { AlertHelper } from 'helpers/AlertHelper.js'
 
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
 
 const typeEtat = {
 	START: "start",
@@ -22,6 +24,12 @@ export function getNextAction(idChallenge, dispatchChallenges) {
     let nextEvent;
     RunService.getLastEvent(idChallenge)
     .then((res) => {
+
+        dispatchChallenges({
+            type: 'SET_SEGMENT',
+            segment: res.data.segment_id,
+            idChallenge: idChallenge
+        });
         let lastEvent = res.data.event_type_info.code
 
         switch (lastEvent) {
@@ -92,7 +100,7 @@ export function getNextAction(idChallenge, dispatchChallenges) {
     })
 }
 
-export function move(showActionSheetWithOptions, dispatchRun, navigation) {
+export function move(showActionSheetWithOptions, dispatchRun, navigation, challenge, segment) {
     const options = ['En courant', 'À vélo', 'À pied', 'Annuler'];
     const cancelButtonIndex = 3;
     const destructiveButtonIndex = 3;
@@ -108,29 +116,100 @@ export function move(showActionSheetWithOptions, dispatchRun, navigation) {
         title: 'Choisir un moyen de transport'
 
       },
-      buttonIndex => {
+      async buttonIndex => {
+        navigation.navigate('Recording');
+
         let transport;
         switch (buttonIndex){
             case 0:
                 transport = 'course'
+                await startGPS(dispatchRun, navigation)
                 break;
             case 1:
                 transport = 'velo'
+                await startGPS(dispatchRun, navigation)
                 break;
             case 2:
                 transport = 'marche'
+                startPedometer(dispatchRun, challenge)
                 break;
             default:
                 transport = 'course'
         }
 
-        
         dispatchRun({
             type: 'SET_TRANSPORT',
             transport: transport
-          });
+        });
 
-        navigation.navigate('Recording');
+        //On met à jour le chrono toutes les secondes
+        let updateTime = () => {
+            dispatchRun({
+                type: 'SET_DURATION',
+                action: ""
+            });
+        }
+        dispatchRun({
+            type: 'SUBSCRIBE_TIME',
+            functionTime: updateTime
+        }),
+
+        dispatchRun({
+            type: 'SUBSCRIBE_CALCUL_DISTANCE',
+            functionCalcul: calculDistance,
+            segment: segment
+        })
       }
     );
+}
+
+export function startPedometer(dispatchRun, challenge){
+    //Fonction à chaque update du podomètre
+    let updateStep = (result) => {
+        dispatchRun({
+            type: 'SET_NBPAS',
+            nbPas: result.steps,
+            distancePas: challenge.step_length
+          });
+    }
+
+
+    //On démarre le podomètre
+    dispatchRun({
+        type: 'SUBSCRIBE_PEDOMETER',
+        functionStep: updateStep
+    })
+}
+
+export async function startGPS(dispatchRun, navigation){
+    
+    let updateGPS = async () => {
+        const location = await Location.getCurrentPositionAsync();
+        locationChanged(dispatchRun, location);
+    }  
+    //Fonction à chaque update du gps
+    const {status} = await Permissions.askAsync(Permissions.LOCATION);
+    
+    if (status !== 'granted'){
+        console.log(AlertHelper)
+        AlertHelper.show("error", "Erreur !", "Vous devez activer le gps dans les paramètres du téléphone !")
+        navigation.goBack()
+    }
+    else {
+        dispatchRun({
+            type: 'SUBSCRIBE_GPS',
+            functionGPS: updateGPS,
+        })
+    }
+}
+
+export function locationChanged(dispatchRun, location){
+    dispatchRun({
+        type: 'ADD_LOG',
+        log: location
+    })
+}
+
+export function calculDistance(segment){
+    console.log(segment.length);
 }

@@ -8,7 +8,7 @@ import { move } from 'helpers/RunHelper.js'
 
 export default function ButtonGo(props){
 
-  const [{ nextAction }] = ChallengesConsumerHook();
+  const [{ nextAction, challengeSelected, segment }] = ChallengesConsumerHook();
   const [{}, dispatchRun] = RunConsumerHook();
   const { showActionSheetWithOptions } = useActionSheet();
 
@@ -17,8 +17,7 @@ export default function ButtonGo(props){
   }
 
   let pressMove = () => {
-    console.log(props)
-    move(showActionSheetWithOptions, dispatchRun, props.navigation)
+    move(showActionSheetWithOptions, dispatchRun, props.navigation, challengeSelected, segment)
   }
 
   return(<>

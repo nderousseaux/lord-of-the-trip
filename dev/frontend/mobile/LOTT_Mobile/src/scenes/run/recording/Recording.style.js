@@ -9,19 +9,19 @@ export default StyleSheet.create({
     },
 
     cardContainer:{
-        flex:7,
+        flex:9,
     },
     bottomContainer: {
       flex:1,
       flexDirection:'row',
-      
+      backgroundColor: colors.surface,
+      padding: "2%",
+      paddingBottom: "4%"
     },
     buttonContainer:{
-        flex:2,
-        padding: "2%",
+        flex:2
     },
     detailsContainer:{
         flex:6,
-        backgroundColor: 'blue'
     }
 });

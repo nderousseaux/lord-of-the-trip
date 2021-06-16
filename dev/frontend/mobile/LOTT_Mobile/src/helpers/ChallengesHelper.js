@@ -55,3 +55,19 @@ export function getChallenges(dispatchChallenges, idChallengeSelected) {
         })
     })    
 }
+
+export function distanceFormat(distance){
+
+    let distanceFormat, unitee;
+
+    if (Math.round(distance).toString().length > 2 ){
+        distanceFormat = Math.round(Math.round(distance)/100)/10
+        unitee = 'km'
+      }
+      else {
+        distanceFormat = Math.round(distance)
+        unitee = 'm'
+      }
+
+    return {distance: distanceFormat, unitee}
+}

@@ -6,7 +6,8 @@ const initialState = {
   challengesNoSubscribed: [],
   loading: false,
   challengeSelected: {},
-  nextAction: {}
+  nextAction: {},
+  segment: {}
 };
 
 const challengesReducer = (state, action) => {
@@ -41,6 +42,10 @@ const challengesReducer = (state, action) => {
         ...state,
         nextAction: action.nextAction
       }
+    case 'SET_SEGMENT':
+      let res = _.find(state.challengeSelected.segments, function(o) {return o.id == action.segment} )
+
+      return {...state, segment: res}
     default:
       return state;
   }

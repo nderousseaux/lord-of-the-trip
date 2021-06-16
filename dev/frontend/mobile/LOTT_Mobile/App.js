@@ -8,6 +8,8 @@ import { RunProvider } from 'store/run/Run.store.js';
 import { ChallengesProvider } from 'store/challenges/Challenges.store.js';
 import MainStack from 'navigation/MainStack.jsx';
 import { AlertHelper } from 'helpers/AlertHelper';
+import { LogBox } from 'react-native';
+LogBox.ignoreAllLogs()
 
 function App() {
   return (
