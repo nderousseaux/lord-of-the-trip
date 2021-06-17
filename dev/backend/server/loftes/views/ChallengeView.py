@@ -65,13 +65,13 @@ challenge = Service(name="challenge", path="/challenges", cors_policy=cors_polic
         "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
         "start_date": "2021-05-27T10:12:52",
         "end_date": "2021-03-18T12:00:00",
-        "alone_only": null,
         "level": "1",
         "scalling": 2,
         "step_length": 0.7,
         "draft": true,
         "start_crossing_point_id": 1,
-        "end_crossing_point_id": 1
+        "end_crossing_point_id": 1,
+        "nb_subscribers": 12
       },
       {
         "id": 2,
@@ -79,16 +79,19 @@ challenge = Service(name="challenge", path="/challenges", cors_policy=cors_polic
         "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
         "start_date": "2021-05-27T10:12:52",
         "end_date": "2022-03-18T18:30:00",
-        "alone_only": null,
         "level": "2",
         "scalling": 4200,
         "step_length": 0.8,
         "draft": true,
         "start_crossing_point_id": 4,
-        "end_crossing_point_id": 5
+        "end_crossing_point_id": 5,
+        "nb_subscribers": 12
       }
     ]
   }
+
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
 
   @apiError (Error 401) {Object} Unauthorized Bad credentials.
   @apiErrorExample {json} Error 401 response:
@@ -112,16 +115,6 @@ challenge = Service(name="challenge", path="/challenges", cors_policy=cors_polic
     }
   }
 
-  @apiError (Error 404) {Object} RessourceNotFound No challenges were found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
-
-  {
-    "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource is not found."
-    }
-  }
 """
 
 
@@ -179,7 +172,6 @@ def get_challenges(request):
   @apiSuccess (Body parameters) {String} [description] Challenge's description
   @apiSuccess (Body parameters) {Date} [start_date] Challenge's start date in format "YYYY-MM-DD"
   @apiSuccess (Body parameters) {Date} [end_date] Challenge's end date in format "YYYY-MM-DD"
-  @apiSuccess (Body parameters) {Bool} [alone_only] If true user is the only person to participate in challenge, if false it is a team
   @apiSuccess (Body parameters) {Number} [level] Challenge's difficulty
   @apiSuccess (Body parameters) {Number} [scalling] Challenge's scale in meters
   @apISuccess (Body parameters) {Float} [step_length] Challenge's step length in meters
@@ -191,7 +183,6 @@ def get_challenges(request):
     "description":"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
     "start_date":"2021-12-18",
     "end_date":"2022-10-18",
-    "alone_only":"0",
     "level":3,
     "scalling":10000,
     "step_length": 0.7
@@ -206,7 +197,6 @@ def get_challenges(request):
     "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
     "start_date": "2021-12-18T03:16:00",
     "end_date": "2022-10-18T03:16:00",
-    "alone_only": 0,
     "level":3,
     "scalling": 1000,
     "step_length": 0.7,
@@ -303,6 +293,28 @@ def get_challenges(request):
     }
   }
 
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "The field level must contain value 1, 2 or 3"
+    }
+  }
+
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "The value (0.2) is not valid for step length."
+    }
+  }
+
   @apiError (Error 401) {Object} Unauthorized Bad credentials.
   @apiErrorExample {json} Error 401 response:
   HTTP/1.1 401 Unauthorized
@@ -389,7 +401,7 @@ challenge_by_id = Service(name="challenge_by_id", path="challenges/{id:\d+}", co
 
 """
   @api {get} /challenges/:id Request a challenge informations
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.1.0
   @apiName GetChallenge
   @apiGroup Challenge
@@ -402,13 +414,13 @@ challenge_by_id = Service(name="challenge_by_id", path="challenges/{id:\d+}", co
   @apiSuccess (OK 200) {String} description Challenge's description
   @apiSuccess (OK 200) {Date} start_date Challenge's start date
   @apiSuccess (OK 200) {Date} end_date Challenge's end date
-  @apiSuccess (OK 200) {Bool} alone_only If true user is the only person to participate in challenge, if false it is a team
   @apiSuccess (OK 200) {Number} level Challenge's difficulty
   @apiSuccess (OK 200) {Number} scalling Challenge's scale in meters
   @apISuccess (OK 200) {Float} step_length Challenge's step length in meters
   @apiSuccess (OK 200) {Bool} draft If true the challenge is in edition mode, if false challenge is published
   @apiSuccess (OK 200) {Number} start_crossing_point_id ID of crossing point choosed as start of a challenge
   @apiSuccess (OK 200) {Number} end_crossing_point_id ID of crossing point choosed as start of a challenge
+  @apiSuccess (OK 200) {Number} nb_subscribers Number of users subscribed to a challenge
 
   @apiSuccessExample {json} Success response:
   HTTP/1.1 200 OK
@@ -419,14 +431,17 @@ challenge_by_id = Service(name="challenge_by_id", path="challenges/{id:\d+}", co
     "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
     "start_date": "2021-12-18T03:16:00",
     "end_date": "2022-10-18T03:16:00",
-    "alone_only": 0,
     "level":3,
     "scalling": 1000,
     "step_length": 0.7,
     "draft": false,
     "start_crossing_point_id": null,
-    "end_crossing_point_id": null
+    "end_crossing_point_id": null,
+    "nb_subscribers": 12
   }
+
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
 
   @apiError (Error 401) {Object} Unauthorized Bad credentials.
   @apiErrorExample {json} Error 401 response:
@@ -450,16 +465,6 @@ challenge_by_id = Service(name="challenge_by_id", path="challenges/{id:\d+}", co
     }
   }
 
-  @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
-
-  {
-    "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource is not found."
-    }
-  }
 """
 
 
@@ -500,7 +505,7 @@ def get_challenge(request):
 
 """
   @api {put} /challenges/:id Update a challenge
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.1.0
   @apiName PutChallenge
   @apiGroup Challenge
@@ -512,7 +517,6 @@ def get_challenge(request):
   @apiSuccess (Body parameters) {String} [description] Challenge's description
   @apiSuccess (Body parameters) {Date} [start_date] Challenge's start date in format "YYYY-MM-DD"
   @apiSuccess (Body parameters) {Date} [end_date] Challenge's end date in format "YYYY-MM-DD"
-  @apiSuccess (Body parameters) {Bool} [alone_only] If true user is the only person to participate in challenge, if false it is a team
   @apiSuccess (Body parameters) {Number} [level] Challenge's difficulty
   @apiSuccess (Body parameters) {Number} [scalling] Challenge's scale in meters
   @apISuccess (Body parameters) {Float} [step_length] Challenge's step length in meters
@@ -526,7 +530,6 @@ def get_challenge(request):
     "description":"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
     "start_date":"2021-12-18",
     "end_date":"2022-10-18",
-    "alone_only":"0",
     "level":3,
     "scalling":10000,
     "step_length": 0.7
@@ -656,6 +659,28 @@ def get_challenge(request):
     }
   }
 
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "The field level must contain value 1, 2 or 3"
+    }
+  }
+
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "The value (0.2) is not valid for step length."
+    }
+  }
+
   @apiError (Error 401) {Object} Unauthorized Bad credentials.
   @apiErrorExample {json} Error 401 response:
   HTTP/1.1 401 Unauthorized
@@ -782,7 +807,7 @@ def update_challenge(request):
 
 """
   @api {patch} /challenges/:id Partially modify a challenge
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.1.0
   @apiName PatchChallenge
   @apiGroup Challenge
@@ -794,7 +819,6 @@ def update_challenge(request):
   @apiSuccess (Body parameters) {String} [description] Challenge's description
   @apiSuccess (Body parameters) {Date} [start_date] Challenge's start date in format "YYYY-MM-DD"
   @apiSuccess (Body parameters) {Date} [end_date] Challenge's end date in format "YYYY-MM-DD"
-  @apiSuccess (Body parameters) {Bool} [alone_only] If true user is the only person to participate in challenge, if false it is a team
   @apiSuccess (Body parameters) {Number} [level] Challenge's difficulty
   @apiSuccess (Body parameters) {Number} [scalling] Challenge's scale in meters
   @apISuccess (Body parameters) {Float} [step_length] Challenge's step length in meters
@@ -931,6 +955,28 @@ def update_challenge(request):
     }
   }
 
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "The field level must contain value 1, 2 or 3"
+    }
+  }
+
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "The value (0.2) is not valid for step length."
+    }
+  }
+
   @apiError (Error 401) {Object} Unauthorized Bad credentials.
   @apiErrorExample {json} Error 401 response:
   HTTP/1.1 401 Unauthorized
@@ -1046,7 +1092,7 @@ def modify_challenge(request):
 
 """
   @api {delete} /challenges/:id Delete a challenge
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.1.0
   @apiName DeleteChallenge
   @apiGroup Challenge
@@ -1155,7 +1201,7 @@ challenge_image = Service(
 
 """
   @api {get} /challenges/:id/image Request a challenge's map
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.1.0
   @apiName GetChallengeImage
   @apiGroup Challenge
@@ -1165,7 +1211,32 @@ challenge_image = Service(
 
   @apiSuccess (OK 200) {File} Image Challenge's map in jpeg/png format.
 
-  @apiError (Error 404) {Object} RessourceNotFound Challenge or challenge's map are not found.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} UserNotAdmin User is not super admin
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to view this resource using the credentials that you supplied."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
   @apiErrorExample {json} Error 404 response:
   HTTP/1.1 404 Not Found
 
@@ -1175,6 +1246,7 @@ challenge_image = Service(
       "message": "Requested resource is not found."
     }
   }
+
 """
 
 
@@ -1227,7 +1299,7 @@ def download_image(request):
 
 """
   @api {post} /challenges/:id/image Upload a challenge's map
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.1.0
   @apiName PostChallengeImage
   @apiGroup Challenge
@@ -1452,7 +1524,7 @@ challenge_subscribe = Service(
 
 """
   @api {post} /challenges/:id/subscribe User's subscription to a challenge
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.2.0
   @apiName SubscribeChallenge
   @apiGroup Challenge
@@ -1639,7 +1711,7 @@ unsubscribe_challenge = Service(
 
 """
   @api {post} /challenges/:id/unsubscribe User's unsubscription from a challenge
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.2.0
   @apiName UnSubscribeChallenge
   @apiGroup Challenge
@@ -1749,93 +1821,140 @@ verifyChallenge = Service(
 )
 
 """
-@api {post} /challenges/:id/verify Verification of graph integrity
-@apiParam id Challenge's unique ID.
-@apiVersion 0.2.0
-@apiName VerifyChallenge
-@apiGroup Challenge
-@apiSampleRequest off
-@apiHeader {String} Bearer-Token User's login token.
-@apiPermission admin
+  @api {post} /challenges/:id/verify Verification of graph integrity
+  @apiParam {Number} id Challenge's unique ID.
+  @apiVersion 0.2.0
+  @apiName VerifyChallenge
+  @apiGroup Challenge
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
-@apiSuccessExample {json} Success response:
-HTTP/1.1 200 OK
-{
-  "loop": [
-      [
-          {
-              "id": 1,
-              "name": "L'armoire",
-              "position_x": 0.142,
-              "position_y": 0.324511
-          },
-          {
-              "id": 2,
-              "name": "La passe du faune",
-              "position_x": 0.524667,
-              "position_y": 0.335221
-          },
-          {
-              "id": 14,
-              "name": "Crossing point",
-              "position_x": 0.586207,
-              "position_y": 0.0824353
-          }
-      ]
-  ],
-  "deadend": [
-      {
-          "id": 14,
-          "name": "Crossing point",
-          "position_x": 0.586207,
-          "position_y": 0.0824353
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 No Content
+
+  @apiError (Error 400) {Object} BadRequest Start crossing point is missing.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "Start crossing point is missing.",
+      "details": {
+        "start_crossing_point_id": null
       }
-  ],
-  "orphans": [
-      {
-          "id": 14,
-          "name": "Crossing point",
-          "position_x": 0.586207,
-          "position_y": 0.0824353
+    }
+  }
+
+  @apiError (Error 400) {Object} BadRequest End crossing point is missing.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "End crossing point is missing.",
+      "details": {
+        "end_crossing_point_id": null
       }
-  ]
-}
-
-@apiSuccessExample Success response:
-HTTP/1.1 200 No Content
-
-@apiError (Error 401) {Object} Unauthorized Bad credentials.
-@apiErrorExample {json} Error 401 response:
-HTTP/1.1 401 Unauthorized
-
-{
-  "error": {
-    "status": "UNAUTHORIZED",
-    "message": "Bad credentials."
+    }
   }
-}
 
-@apiError (Error 403) {Object} NotSubscribedChallenge User's unsubscription from a challenge that he is not subscribed to.
-@apiErrorExample {json} Error 403 response:
-HTTP/1.1 403 Forbidden
+  @apiError (Error 400) {Object} BadRequest End crossing point is missing.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
 
-{
-  "error": {
-    "status": "FORBIDDEN",
-    "message": "You cannot unsubscribe from a challenge that you are not subscribed to."
+  {
+    "error": {
+      "status": "BAD REQUEST",
+      "message": "Errors in challenge routing.",
+      "details": {
+        "loop": [
+            [
+                {
+                    "id": 1,
+                    "name": "L'armoire",
+                    "position_x": 0.142,
+                    "position_y": 0.324511
+                },
+                {
+                    "id": 2,
+                    "name": "La passe du faune",
+                    "position_x": 0.524667,
+                    "position_y": 0.335221
+                },
+                {
+                    "id": 14,
+                    "name": "Crossing point",
+                    "position_x": 0.586207,
+                    "position_y": 0.0824353
+                }
+            ]
+        ],
+        "deadend": [
+            {
+                "id": 14,
+                "name": "Crossing point",
+                "position_x": 0.586207,
+                "position_y": 0.0824353
+            }
+        ],
+        "orphans": [
+            {
+                "id": 14,
+                "name": "Crossing point",
+                "position_x": 0.586207,
+                "position_y": 0.0824353
+            }
+        ]
+      }
+    }
   }
-}
 
-@apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
-@apiErrorExample {json} Error 404 response:
-HTTP/1.1 404 Not Found
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
 
-{
-  "error": {
-    "status": "NOT FOUND",
-    "message": "Requested resource is not found."
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
   }
-}
+
+  @apiError (Error 403) {Object} ModifyPublishedChallenge Verification of graph if challenge is already published
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to unsubscribe from a challenge that you are not subscribed to."
+    }
+  }
+
+  @apiError (Error 403) {Object} PublishedChallenge Modification of a published challenge
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to modify a published challenge."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
 """
 
 
@@ -1954,60 +2073,27 @@ challenge_duplicate = Service(
 
 """
   @api {post} /challenges/:id/duplicate Duplication of challenge
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.2.0
   @apiName DuplicateChallenge
   @apiGroup Challenge
   @apiSampleRequest off
   @apiHeader {String} Bearer-Token User's login token.
 
-  @apiSuccess (Body parameters) {Date} start_date Challenge's start date in format "YYYY-MM-DD"
-  @apiSuccess (Body parameters) {Date} end_date Challenge's end date in format "YYYY-MM-DD"
-
-  @apiSuccessExample {json} Body:
-
-  {
-    "start_date":"2021-08-22",
-    "end_date":"2021-09-01"
-  }
-
   @apiSuccessExample {json} Success response:
   HTTP/1.1 201 Created
   {
     "id": 47,
-    "name": "A la recherche d'Aslan",
+    "name": "A la recherche d'Aslan *2",
     "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
     "start_date": "2021-05-27T10:12:52",
     "end_date": "2021-03-18T12:00:00",
-    "alone_only": null,
     "level": "1",
     "scalling": 2,
     "step_length": 0.7,
     "draft": true,
     "start_crossing_point_id": 364,
     "end_crossing_point_id": 365
-  }
-
-  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
-  @apiErrorExample {json} Error 400 response:
-  HTTP/1.1 400 Bad Request
-
-  {
-    "error": {
-      "status": "BAD REQUEST",
-      "message": "Challenge's start date must be greater of today's date (16-05-2021, 14:49)"
-    }
-  }
-
-  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
-  @apiErrorExample {json} Error 400 response:
-  HTTP/1.1 400 Bad Request
-
-  {
-    "error": {
-      "status": "BAD REQUEST",
-      "message": "Challenge's end date must be greater of today's date (16-05-2021, 14:49)"
-    }
   }
 
   @apiError (Error 401) {Object} Unauthorized Bad credentials.
@@ -2028,7 +2114,7 @@ challenge_duplicate = Service(
   {
     "error": {
       "status": "FORBIDDEN",
-      "message": "You cannot duplicate a challenge that you did not create."
+      "message": "You do not have permission to duplicate a challenge that you did not create."
     }
   }
 
@@ -2039,7 +2125,7 @@ challenge_duplicate = Service(
   {
     "error": {
       "status": "FORBIDDEN",
-      "message": "You cannot duplicate a permanent challenge."
+      "message": "You do not have permission to duplicate a permanent challenge."
     }
   }
 
@@ -2050,7 +2136,7 @@ challenge_duplicate = Service(
   {
     "error": {
       "status": "FORBIDDEN",
-      "message": "You cannot duplicate a challenge that hasn't been terminated yet."
+      "message": "You do not have permission to duplicate a challenge that hasn't been terminated yet."
     }
   }
 
@@ -2387,6 +2473,70 @@ user_challenges = Service(
     cors_policy=cors_policy,
 )
 
+"""
+  @api {get} /user/challenges Request all challenges where user is subscribed or not subscribed to
+  @apiParam {Number} id Challenge's unique ID.
+  @apiVersion 0.3.0
+  @apiName UserChallenges
+  @apiGroup Challenge
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+
+  @apiParam {Bool} [subscribed=true] Status of the challenge
+
+  @apiSuccess (OK 200) {Array} Challenges All challenges where user is subscribed to
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+
+  {
+    "challenges": [
+      {
+        "id": 1,
+        "name": "A la recherche d'Aslan",
+        "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+        "start_date": "2021-05-27T10:12:52",
+        "end_date": "2021-03-18T12:00:00",
+        "level": "1",
+        "scalling": 2,
+        "step_length": 0.7,
+        "draft": true,
+        "start_crossing_point_id": 1,
+        "end_crossing_point_id": 1,
+        "nb_subscribers": 12
+      },
+      {
+        "id": 2,
+        "name": "Oops, on a perdu Han Solo",
+        "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
+        "start_date": "2021-05-27T10:12:52",
+        "end_date": "2022-03-18T18:30:00",
+        "level": "2",
+        "scalling": 4200,
+        "step_length": 0.8,
+        "draft": true,
+        "start_crossing_point_id": 4,
+        "end_crossing_point_id": 5,
+        "nb_subscribers": 12
+      }
+    ]
+  }
+
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+"""
+
 
 @user_challenges.get()
 def get_challenges_for_user(request):
@@ -2425,6 +2575,70 @@ admin_challenges = Service(
     path="admin/challenges",
     cors_policy=cors_policy,
 )
+
+"""
+  @api {get} /admin/challenges Request all challenges that were created by user
+  @apiParam {Number} id Challenge's unique ID.
+  @apiVersion 0.3.0
+  @apiName AdminChallenges
+  @apiGroup Challenge
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+
+  @apiParam {Bool} [draft=true] Status of the challenge
+
+  @apiSuccess (OK 200) {Array} Challenges All challenges created by user
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+
+  {
+    "challenges": [
+      {
+        "id": 1,
+        "name": "A la recherche d'Aslan",
+        "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+        "start_date": "2021-05-27T10:12:52",
+        "end_date": "2021-03-18T12:00:00",
+        "level": "1",
+        "scalling": 2,
+        "step_length": 0.7,
+        "draft": true,
+        "start_crossing_point_id": 1,
+        "end_crossing_point_id": 1,
+        "nb_subscribers": 12
+      },
+      {
+        "id": 2,
+        "name": "Oops, on a perdu Han Solo",
+        "description": "Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas",
+        "start_date": "2021-05-27T10:12:52",
+        "end_date": "2022-03-18T18:30:00",
+        "level": "2",
+        "scalling": 4200,
+        "step_length": 0.8,
+        "draft": true,
+        "start_crossing_point_id": 4,
+        "end_crossing_point_id": 5,
+        "nb_subscribers": 12
+      }
+    ]
+  }
+
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+"""
 
 
 @admin_challenges.get()
@@ -2483,6 +2697,57 @@ challenge_image_mobile = Service(
     path="challenges/{id:\d+}/image-mobile",
     cors_policy=cors_policy,
 )
+
+"""
+  @api {get} /challenges/:id/image-mobile Request a challenge's map for mobile client
+  @apiParam {Number} id Challenge's unique ID.
+  @apiVersion 0.2.0
+  @apiName ImageMobile
+  @apiGroup Challenge
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+
+  @apiSuccess (OK 200) {Base64} Image Challenge's jpeg/png map in base64 format.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} UserNotAdmin User is not super admin
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to view this resource using the credentials that you supplied."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound The id of the Challenge was not found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+
+"""
 
 
 @challenge_image_mobile.get()
@@ -2545,7 +2810,7 @@ challenge_publish = Service(
 
 """
   @api {patch} /challenges/:id/publish Publication of challenge
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.3.0
   @apiName PublishChallenge
   @apiGroup Challenge
@@ -2587,6 +2852,17 @@ challenge_publish = Service(
     "error": {
       "status": "FORBIDDEN",
       "message": "You do not have permission to publish a challenge whose end date has already passed (10-05-2021, 19:04)."
+    }
+  }
+
+  @apiError (Error 403) {Object} ChallengeHasNoDescription Publication of a challenge with no description.
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to publish a challenge that has no description."
     }
   }
 
@@ -2792,7 +3068,7 @@ challenge_revoke = Service(
 
 """
   @api {patch} /challenges/:id/revoke Revoke one challenge
-  @apiParam id Challenge's unique ID.
+  @apiParam {Number} id Challenge's unique ID.
   @apiVersion 0.3.0
   @apiName UnpublishChallenge
   @apiGroup Challenge
