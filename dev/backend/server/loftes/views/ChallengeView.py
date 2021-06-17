@@ -18,7 +18,7 @@ from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
 from loftes.marshmallow_schema.CrossingPointSchema import CrossingPointSchema
 from loftes.utils import get_project_root
 from loftes.resources.CheckChallengeResources import checkChallenge
-from loftes.resources import ObstacleResources
+from loftes.resources.ObstacleResources import ObstacleResources
 from loftes.resources.ChallengeResources import ChallengeResources
 from loftes.resources.UserChallengeResources import UserChallengeResources
 
@@ -2674,6 +2674,49 @@ def publish_challenge(request):
                     if challenge.end_date != None and challenge.end_date < now:
                         can_be_published = False
                         reason = error_messages.PUBLISH_CHALLENGE_END_DATE_HAS_PASSED
+
+                    if challenge.description == None:
+                          can_be_published = False
+                          reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_DESCRIPTION
+
+                    if challenge.map_url == None:
+                          can_be_published = False
+                          reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_MAP
+
+                    acceptable_levels = [1, 2, 3]
+                    if challenge.level not in acceptable_levels:
+                        can_be_published = False
+                        reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_LEVEL
+
+                    if challenge.scalling == None:
+                        can_be_published = False
+                        reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_SCALLING
+
+                    if challenge.step_length == None:
+                        can_be_published = False
+                        reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_STEP_LENGTH
+
+                    if challenge.start_crossing_point_id is None:
+                        can_be_published = False
+                        reason = error_messages.VERIFICATION_CHALLENGE_START_MISSING
+
+                    if challenge.end_crossing_point_id is None:
+                        can_be_published = False
+                        reason = error_messages.VERIFICATION_CHALLENGE_END_MISSING
+
+                    obstacles = ObstacleResources().find_all_obstacles_by_challenge(challenge.id)
+                    for obstacle in obstacles:
+                          if obstacle.label == None:
+                                can_be_published = False
+                                reason = error_messages.OBSTACLE_LABEL_MISSING
+
+                          if obstacle.question_type == 0 and obstacle.result == None:
+                                can_be_published = False
+                                reason = error_messages.OBSTACLE_RESULT_MISSING
+
+                          if obstacle.question_type == 1 and obstacle.description == None:
+                                can_be_published = False
+                                reason = error_messages.OBSTACLE_DESCRIPTION_MISSING
 
                     if can_be_published:
 
