@@ -136,16 +136,15 @@ const apiChallenge = {
       method: 'POST',
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
-    .then(checkStatus)
     .then(response => {
-      if(response.status === 204) {
+      if(response.ok) {
         return {
-          status: response.status
+          status: 'ok'
         }
       }
       else {
         return response.json().then(data => ({
-          status: response.status,
+          status: 'ko',
           data
         }))
       }
@@ -165,7 +164,29 @@ const apiChallenge = {
       method: 'PATCH',
       headers: { 'Authorization': 'Bearer ' + getToken() }
     })
-    .then(checkStatus);
+    .then(response => {
+      if(response.ok) {
+        return {
+          status: 'ok'
+        }
+      }
+      else {
+        return response.json().then(data => {
+          if(data?.error?.details) {
+            return {
+              status: 'ko graph',
+              data
+            }
+          }
+          else {
+            return {
+              status: 'ko challenge',
+              data
+            }
+          }
+        })
+      }
+    })
   },
 
   getAlllUsersChallenge: (id) => {
