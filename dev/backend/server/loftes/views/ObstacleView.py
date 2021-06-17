@@ -9,7 +9,7 @@ from loftes.services.ServiceInformations import ServiceInformations
 from loftes.marshmallow_schema import ObstacleSchema
 from loftes.marshmallow_schema.EventSchema import EventSchema
 from loftes.marshmallow_schema.ChallengeSchema import ChallengeSchema
-from loftes.resources import ObstacleResources
+from loftes.resources.ObstacleResources import ObstacleResources
 from loftes.resources.EventResources import EventResources
 from loftes.resources import UserManager
 from loftes.utils import get_project_root
@@ -120,7 +120,7 @@ def get_obstacles_by_challenge(request):
             # check if user is challenge's admin or challenge is published
             if user.id == challenge.admin_id or challenge.draft == False:
 
-                obstacles = ObstacleResources.find_all_obstacles_by_challenge(challenge.id)
+                obstacles = ObstacleResources().find_all_obstacles_by_challenge(challenge.id)
 
                 if len(obstacles) == 0:
                     return service_informations.build_response(exception.HTTPNoContent())
@@ -224,7 +224,7 @@ def get_obstacles_by_segment(request):
             # check if user is challenge's admin or challenge is published
             if user.id == challenge.admin_id or challenge.draft == False:
 
-                obstacles = ObstacleResources.find_all_obstacles_by_segment(segment)
+                obstacles = ObstacleResources().find_all_obstacles_by_segment(segment)
 
                 if len(obstacles) == 0:
                     return service_informations.build_response(exception.HTTPNoContent())
