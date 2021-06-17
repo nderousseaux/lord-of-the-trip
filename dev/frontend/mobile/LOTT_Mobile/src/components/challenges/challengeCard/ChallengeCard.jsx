@@ -62,7 +62,6 @@ export default function ChallengeCard({item, type, navigation}) {
 
       <View style={styles.main}>
         <Description
-          numberOfLines={10}
           text={item.description}
         />
         <View style={styles.buttonView}>

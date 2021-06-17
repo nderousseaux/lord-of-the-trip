@@ -30,7 +30,7 @@ export default function CrossingPoint(props){
   React.useLayoutEffect(() => {
     props.navigation.setOptions({
       title: (crossingPoint.name == null 
-        ? "Point de passage" + crossingPoint.id 
+        ? "Point de passage"
         : crossingPoint.name),
       
       headerLeft:(props) => (   

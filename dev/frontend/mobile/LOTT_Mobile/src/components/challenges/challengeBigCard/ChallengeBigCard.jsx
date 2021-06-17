@@ -90,6 +90,7 @@ export default function ChallengeBigCard(props){
           <Details/>
 
           <Description
+            type="big"
             text={challengeSelected.description}
           />
           
