@@ -6,9 +6,11 @@ import Button from '@material-ui/core/Button';
 import ChallengeInfo from './challengeInfo';
 import ChallengeMap from './challengeMap';
 import UserchallengeStatistical from './userchallengeStatistical'
-import * as css from '../CustomCSS';
+import Grid from '@material-ui/core/Grid';
+import { useStyles } from '../CustomCSS';
 
 const ViewFinishChallenge = () => {
+  const classes = useStyles();
   let { id } = useParams();
   id = parseInt(id);
 
@@ -16,10 +18,18 @@ const ViewFinishChallenge = () => {
 
   return <>
     {isLoading ? 'Chargement...' : isError ? error.message : <>
-      <div style={css.flexRow}>
-        <ViewChallengeInfo challenge={challenge} />
-        <ChallengeMap challenge={challenge} isAdmin={false} />
-      </div>
+      <Grid container direction="row">
+        <Grid item lg={4}>
+          <div className={classes.margin5right}>
+            <ViewChallengeInfo challenge={challenge} />
+          </div>
+        </Grid>
+        <Grid item lg={8}>
+          <div className={classes.margin5left}>
+            <ChallengeMap challenge={challenge} isAdmin={true} />
+          </div>
+        </Grid>
+      </Grid>
     </> }
   </>
 };
@@ -37,7 +47,7 @@ const ViewChallengeInfo = ({ challenge }) => {
   // });
 
   return (
-    <div style={css.flexLeft}>
+    <div>
       <ChallengeInfo challenge={challenge} />
       <hr />
       <div>

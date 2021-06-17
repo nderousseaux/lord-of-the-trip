@@ -1,6 +1,7 @@
 import MDEditor from '@uiw/react-md-editor';
 import { useStyles } from '../CustomCSS';
-import * as css from '../CustomCSS';
+import { dateString } from "../utils/utils";
+import Grid from '@material-ui/core/Grid';
 
 const ChallengeInfo = ({ challenge }) => {
   const classes = useStyles();
@@ -18,24 +19,32 @@ const ChallengeInfo = ({ challenge }) => {
           <MDEditor.Markdown source={challenge.description} />
         </div>
       </p>
-      <div style={css.flexRow}>
-        <div style={css.flex25left}>
-          <b>Fini le</b>
-          <p>{challenge.end_date}</p>
-        </div>
-        <div style={css.flex25mid}>
-          <b>Échelle</b>
-          <p>{challenge.scalling} mètres</p>
-        </div>
-        <div style={css.flex25mid}>
-          <b>Niveau</b>
-          <p>{challenge.level}</p>
-        </div>
-        <div style={css.flex25right}>
-          <b>Longueur d'un pas</b>
-          <p>{challenge.step_length * 100} cm</p>
-        </div>
-      </div>
+      <Grid container direction="row">
+        <Grid item lg={3}>
+          <div className={classes.margin5right}>
+            <b>Fini le</b>
+            <p>{dateString(challenge.end_date)}</p>
+          </div>
+        </Grid>
+        <Grid item lg={3}>
+          <div className={classes.margin5horizontal}>
+            <b>Échelle</b>
+            <p>{challenge.scalling} mètres</p>
+          </div>
+        </Grid>
+        <Grid item lg={3}>
+          <div className={classes.margin5horizontal}>
+            <b>Niveau</b>
+            <p>{challenge.level}</p>
+          </div>
+        </Grid>
+        <Grid item lg={3}>
+          <div className={classes.margin5left}>
+            <b>Longueur d'un pas</b>
+            <p>{challenge.step_length * 100} cm</p>
+          </div>
+        </Grid>
+      </Grid>
     </>
   );
 };

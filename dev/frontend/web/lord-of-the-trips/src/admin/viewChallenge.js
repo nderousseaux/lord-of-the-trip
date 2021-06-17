@@ -6,7 +6,6 @@ import ChallengeMap from '../user/challengeMap';
 import MDEditor from '@uiw/react-md-editor';
 import { useStyles } from '../CustomCSS';
 import { dateString } from "../utils/utils";
-import * as css from '../CustomCSS';
 import Grid from '@material-ui/core/Grid';
 // Fil d'ariane
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
@@ -32,7 +31,7 @@ const AdminViewChallenge = () => {
   const { isLoading:isLoadingUser, isError:isErrorUser, error:errorUser, data: user } = useQuery(['user', id], () => apiChallenge.getAlllUsersChallenge(id));
 
 
-  return <>   
+  return <>
     {isLoading ? 'Chargement...' : isError ? error.message : <>
       <Grid container direction="column">
         <Grid container direction="row">
@@ -47,8 +46,9 @@ const AdminViewChallenge = () => {
           </Breadcrumbs>
         </Grid>
       <div>
-          <div style={css.flexRow}>
-            <div style={css.flexLeft}>
+        <Grid container direction="row">
+          <Grid item lg={4}>
+            <div className={classes.margin5right}>
               <ChallengeInfo challenge={challenge} />
               {challenge.draft === true ?
               <div>
@@ -57,11 +57,15 @@ const AdminViewChallenge = () => {
               </div>
               : null }
             </div>
-            <ChallengeMap challenge={challenge} isAdmin={true} />
-          </div>
-              
-        
-          {isLoadingUser ? 'Chargement...' : isErrorUser ? errorUser.message : <> 
+          </Grid>
+          <Grid item lg={8}>
+            <div className={classes.margin5left}>
+              <ChallengeMap challenge={challenge} isAdmin={true} />
+            </div>
+          </Grid>
+        </Grid>
+
+          {isLoadingUser ? 'Chargement...' : isErrorUser ? errorUser.message : <>
             <div >
               <h2>Les joueurs inscrits</h2>
 
@@ -84,7 +88,7 @@ const AdminViewChallenge = () => {
                     ))}
                   </TableBody>
                 </Table>
-              </TableContainer> 
+              </TableContainer>
             </div>
           </> }
         </div>
@@ -109,24 +113,32 @@ const ChallengeInfo = ({ challenge }) => {
           <MDEditor.Markdown source={challenge.description} />
         </div>
       </p>
-      <div style={css.flexRow}>
-        <div style={css.flex25left}>
-          <b>Fini le</b>
-          <p>{dateString(challenge.end_date)}</p>
-        </div>
-        <div style={css.flex25mid}>
-          <b>Échelle</b>
-          <p>{challenge.scalling} mètres</p>
-        </div>
-        <div style={css.flex25mid}>
-          <b>Niveau</b>
-          <p>{challenge.level}</p>
-        </div>
-        <div style={css.flex25right}>
-          <b>Longueur d'un pas</b>
-          <p>{challenge.step_length * 100} cm</p>
-        </div>
-      </div>
+      <Grid container direction="row">
+        <Grid item lg={3}>
+          <div className={classes.margin5right}>
+            <b>Fini le</b>
+            <p>{dateString(challenge.end_date)}</p>
+          </div>
+        </Grid>
+        <Grid item lg={3}>
+          <div className={classes.margin5horizontal}>
+            <b>Échelle</b>
+            <p>{challenge.scalling} mètres</p>
+          </div>
+        </Grid>
+        <Grid item lg={3}>
+          <div className={classes.margin5horizontal}>
+            <b>Niveau</b>
+            <p>{challenge.level}</p>
+          </div>
+        </Grid>
+        <Grid item lg={3}>
+          <div className={classes.margin5left}>
+            <b>Longueur d'un pas</b>
+            <p>{challenge.step_length * 100} cm</p>
+          </div>
+        </Grid>
+      </Grid>
     </>
   );
 };
