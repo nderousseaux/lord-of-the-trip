@@ -3,14 +3,8 @@ import { useStyles } from '../CustomCSS';
 // import { useQuery } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-
-const dateString = (date) => {
-  const pad = (s) => {
-    return (s < 10) ? '0' + s : s;
-  };
-  var d = new Date(date);
-  return [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-');
-};
+import MDEditor from '@uiw/react-md-editor';
+import { dateString } from "../utils/utils";
 
 const ChallengeCardAvailable = ({ challenge }) => {
 
@@ -40,16 +34,18 @@ const ChallengeCardAvailable = ({ challenge }) => {
       </div>
       <div className={classes.cardDate}> 
         {challenge.start_date ?
-          <p className={classes.cardDateText}> {dateString(challenge.start_date)} - {dateString(challenge.end_date)} </p> : <p className={classes.cardDateText}>Illimité</p>}   
+          <p className={classes.cardDateText}> {dateString(challenge.start_date)} - {dateString(challenge.end_date)} </p> : <p className={classes.cardDateText}>Durée illimitée</p>}   
       </div>
       <div >
-        <p className={classes.descriptionCard}>{challenge.description}</p>
+        <p className={classes.descriptionCard}>
+        <MDEditor.Markdown source={challenge.description} height={100}/>
+          </p>
       </div>
       <div className={classes.cardBouton} container direction="row">
         <Button onClick={() => history.push(`/viewnotsubscibedchallenge/${challenge.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Voir les détails de ce challenge</Button>
       </div>
       <div >
-        <p className={classes.peopleCard}> participants</p>
+        <p className={classes.peopleCard}>{challenge.nb_subscribers} participants</p>
       </div>
     </>
   );

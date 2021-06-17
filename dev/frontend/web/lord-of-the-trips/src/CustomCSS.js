@@ -136,7 +136,8 @@ export const useStyles = makeStyles({
     color: "grey"
   },
   cardDate:{
-    width: "190px",
+    width:"90%",
+    maxWidth: "190px",
     textAlign:"center",
     margin:"0 auto",
     background: "black",
@@ -148,7 +149,8 @@ export const useStyles = makeStyles({
     zIndex: "3"
   },
   cardDateText:{
-    width: "200px",
+    width:"100%",
+    maxWidth: "200px",
     margin:"0 auto",
     color: "white",
     lineHeight:"35px"
@@ -178,12 +180,95 @@ export const useStyles = makeStyles({
   descriptionCard:{
     textAlign:"center",
     color:"grey",
-    height:"200px"
+    height:"200px",
+    overflow:"auto"
   },
   peopleCard:{
     textAlign:"center",
     lineHeight:"50px"
+  },
+  //Css pour les obstacles
+  obstacleParent:{
+    border: '2px solid',
+    borderRadius: '10px',
+    margin: '5px'
+  },
+  obstacleImage:{
+    width: "98%",
+    maxWidth: "350px",
+    margin: "15px Auto",
+    height: "300px",
+    display: "flex",
+    alignItems:"center",
+    justifyContent:"center"
+// height: 300px;
+// display: flex;
+// align-items: center;
+// justify-content: center;
+  },
+  obstacleImageRadius:{
+    width: "100%",
+    borderRadius: "15px",
+    //border: "solid 5px black"
+  },
+  obstacleDivText:{
+    margin: "10px 15px 0px 15px"
+  },
+  obstacleChildText01:{
+    margin: "0",
+    fontSize: "20px",
+    color: "white",
+    fontWeight: "bolder"
+ },
+  obstacleChildText02:{
+    //marginTop: "5px",
+    
+    marginTop: "5px",
+    marginBottom: "5px",
+    marginLeft: "10px",
+    height: "60px",
+    overflow: "auto"
+  },
+  obstacleChildText03:{
+    //marginTop: "5px",
+    
+    marginTop: "5px",
+    marginBottom: "5px",
+    marginLeft: "10px",
+    height: "80px",
+    overflow: "auto"
+  },
+  obstacleDiv:{
+    backgroundColor: "#07A930",
+    paddingBottom: "15px",
+    paddingTop: "5px",
+    borderRadius: "0 0 10px 10px"
+  },
+  //Tab
+  roottab: {
+    flexGrow: 1
+  },
+  //Dashboard admin
+  inputChallenge:{
+    width: "300px",
+    height: "40px"
+  },
+  //Dashboard admin
+  buttonChallenge:{
+    width: "40px",
+    height: "90px"
+  },
+  tableAdminHead:{
+    backgroundColor: "#3dd930"
+  },
+  tableAdminheadStyle:{
+    align: "left"
   }
+
+
+ 
+
+
 
 });
 

@@ -37,7 +37,7 @@ const ChallengeCard = ({ challenge }) => {
       </div>
       <div className={classes.cardDate}>
         {challenge.start_date ?
-          <p className={classes.cardDateText}> {dateString(challenge.start_date)} - {dateString(challenge.end_date)} </p> : <p className={classes.cardDateText}>Illimité</p>}   
+          <p className={classes.cardDateText}> {dateString(challenge.start_date)} - {dateString(challenge.end_date)} </p> : <p className={classes.cardDateText}>Durée illimitée</p>}   
       </div>
       <div className={classes.imageCard}>
         {image ? <img src={window.URL.createObjectURL(image)} alt="map" className={classes.imageInDiv} /> : <img src={logo} alt="map" className={classes.imageInDiv} />}
