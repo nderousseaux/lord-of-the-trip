@@ -398,3 +398,59 @@ class EventResources:
                         avg_move_type.append(result.move_type)
 
         return avg_move_type
+
+    def sum_events_distance_and_time_by_move_type(self, user_id, challenge_id, param_date):
+
+        if param_date == None:
+            query = (
+                DBSession.query(
+                    Event.move_type.label("move_type"),
+                    func.sum(Event.distance).label("distance"),
+                    func.sum(Event.duration).label("time"),
+                )
+                .join(Segment, Segment.id == Event.segment_id)
+                .filter(Event.event_type_id == 3, Event.user_id == user_id)
+                .filter(Segment.challenge_id == challenge_id)
+                .group_by(Event.move_type)
+            )
+
+        else:
+            query = (
+                DBSession.query(
+                    Event.move_type.label("move_type"),
+                    func.sum(Event.distance).label("distance"),
+                    func.sum(Event.duration).label("time"),
+                )
+                .join(Segment, Segment.id == Event.segment_id)
+                .filter(Event.event_type_id == 3, Event.user_id == user_id, Event.event_date >= param_date)
+                .filter(Segment.challenge_id == challenge_id)
+                .group_by(Event.move_type)
+            )
+
+        acceptable_move_types = [1, 2, 3]
+        results = {}
+        for query in query.all():
+            if query.move_type in acceptable_move_types:
+                distance = 0 if query.distance == None else query.distance
+                time = 0 if query.time == None else query.time
+                results.update({query.move_type: {"distance": distance, "time": time}})
+
+        return results
+
+    def find_arrival_date_for_user_by_challenge(self, user_id, challenge_id):
+        query = (
+                DBSession.query(
+                    Event,
+                )
+                .join(Segment, Segment.id == Event.segment_id)
+                .filter(Event.event_type_id == 2, Event.user_id == user_id)
+                .filter(Segment.challenge_id == challenge_id)
+            )
+
+        event_date = None
+        if query.first() != None:
+            print(query.first().id)
+            if query.first().event_date != None:
+                event_date = query.first().event_date.strftime("%d/%m/%Y")
+
+        return event_date
