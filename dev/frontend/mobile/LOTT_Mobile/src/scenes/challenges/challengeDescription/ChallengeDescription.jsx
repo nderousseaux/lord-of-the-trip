@@ -6,9 +6,9 @@ import { ScrollView } from 'react-native';
 export default function ChallengeDescription(props){
 
   return(
-    <ScrollView>
+    <>
       <ChallengeBigCard {...props}/>
-    </ScrollView>
+    </>
   );
 
 }

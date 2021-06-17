@@ -10,6 +10,7 @@ export default StyleSheet.create({
 
     cardContainer:{
         flex:9,
+        marginTop:100
     },
     bottomContainer: {
       flex:1,
