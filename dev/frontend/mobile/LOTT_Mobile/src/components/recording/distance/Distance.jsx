@@ -6,17 +6,18 @@ import { RunConsumerHook } from 'store/run/Run.store.js';
 import { ChallengesConsumerHook } from 'store/challenges/Challenges.store.js';
 import {sendMove} from 'helpers/EventsHelper.js'
 import { distanceFormat } from 'helpers/ChallengesHelper.js';
-import { getNextAction } from 'helpers/RunHelper';
+import _ from 'lodash';
+
 
 import EventsService from 'services/events/Events.service.js'
 
 export default function Distance(props){
 
-  const [{distanceSegment, distance, transport, dateDebut, distanceChallenge}, dispatchRun] = RunConsumerHook();
-  const [{challengeSelected, segment}] = ChallengesConsumerHook();
+  const [{distanceSegment, distance, transport, dateDebut, distanceChallenge, obstacles_rep}, dispatchRun] = RunConsumerHook();
+  const [{challengeSelected, segment}, dispatchChallenges] = ChallengesConsumerHook();
   
 
-  let functionThen = () => {
+  let functionCrossingPoint = () => {
     if (segment.end_crossing_point.id == challengeSelected.end_crossing_point.id){
       Alert.alert(
         "Bravo !!!!!!",
@@ -62,7 +63,32 @@ export default function Distance(props){
     }
   }
 
-  let stop = () => {
+  let functionObstacle = (idObstacle) => {
+    EventsService.arrivalObstacle(challengeSelected.id, segment.id, idObstacle)
+      .then(() => {
+        let res = distanceFormat(distance)
+        Alert.alert(
+          "Bravo !",
+          "Vous avez courru " + res.distance + " " + res.unitee + ". Mais un obstacle se dresse devant vous !",
+          [
+              { text: "OK" }
+          ]
+          );
+
+        dispatchRun({
+          type: 'RESET_DISTANCE',
+        });
+        dispatchRun({
+          type: 'STOP_SUBSCRIBTIONS',
+        });
+      
+
+        props.navigation.navigate("Obstacle")
+      })
+      .catch(err => {console.log(err.response)})
+  }
+
+  let stop = (functionThen) => {
     sendMove(
       challengeSelected.id,
       segment,
@@ -70,7 +96,7 @@ export default function Distance(props){
       dateDebut,
       new Date(),
       distanceChallenge,
-      () => functionThen(),
+      functionThen,
       () => {}
     )
   }
@@ -81,8 +107,41 @@ export default function Distance(props){
     let distanceEtape = segment.length - (distanceSegment + distance)
     console.log("Prochaine étape : " + distanceEtape + " métres")
     if (distanceEtape <= 0){
-      stop()
+      stop(functionCrossingPoint)
     }
+  
+
+    let distanceDesObstacles = _.map(
+      _.filter(
+        segment.obstacles, 
+        function(o){return (!(obstacles_rep.includes(o.id)))}
+      ),
+      function(o){return (
+          {
+            id: o.id,
+            distance: o.progress*segment.length - (distanceSegment + distance)
+          }
+        )}
+    )
+    distanceDesObstacles.forEach(obstacle => {
+      console.log("Distance avant l'obstacle d'id n°" + obstacle.id + " : " + obstacle.distance + " m") 
+      if (obstacle.distance < 0){
+        //On l'id de l'obstacle dans la distance est la plus faible
+
+        //On récupère la distance la plus faible :
+        let distanceMin = Math.min(..._.map(distanceDesObstacles, function(o){return o.distance}))
+        let obstacleId = _.find(distanceDesObstacles, function(o){return o.distance == distanceMin}).id
+        
+        console.log("arrivée sur l'obstacle d'id " + obstacleId)
+        dispatchChallenges({
+          type: 'SET_OBSTACLE',
+          obstacle: obstacleId,
+        });
+        stop(() => {functionObstacle(obstacleId)})
+        
+      }
+    })
+          
   }, [segment, distanceSegment, distance])
 
   return (<></>)

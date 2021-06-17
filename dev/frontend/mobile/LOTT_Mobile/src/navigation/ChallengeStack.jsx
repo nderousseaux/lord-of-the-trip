@@ -7,7 +7,7 @@ import SubscribeChallenges from 'scenes/challenges/subscribeChallenges/Subscribe
 import ChallengeDescription from 'scenes/challenges/challengeDescription/ChallengeDescription.jsx';
 import Recording from 'scenes/run/recording/Recording';
 import CrossingPoint from 'scenes/run/crossingPoint/CrossingPoint.jsx';
-
+import Obstacle from 'scenes/run/obstacle/Obstacle.jsx';
 
 const Stack = createStackNavigator()
 
@@ -20,6 +20,7 @@ export default function ChallengeStack() {
         <Stack.Screen name='Challenge' component={ChallengeDescription} options={{headerBackTitle : "Retour"}}/>
         <Stack.Screen name='Recording' component={Recording} options={{ headerShown: false}}/>
         <Stack.Screen name='Point de passage' component={CrossingPoint}/>
+        <Stack.Screen name='Obstacle' component={Obstacle}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

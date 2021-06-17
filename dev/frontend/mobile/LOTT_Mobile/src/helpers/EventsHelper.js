@@ -35,12 +35,10 @@ export function sendMove(idChallenge, segment, typeTransport, dateDebut, dateFin
 export function sendStart(challenge, segment, dispatchChallenge, functionThen ) {
     EventsService.startChallenge(challenge.id, segment.id)
     .then(() => {
-        console.log("après send start")
         dispatchChallenge({
             type: 'SET_SEGMENT',
             segment: segment.id,
         });
-        console.log("avant move")
         functionThen()
     })
     .catch((err) => {

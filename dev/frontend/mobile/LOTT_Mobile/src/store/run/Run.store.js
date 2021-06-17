@@ -17,7 +17,8 @@ const initialState = {
   subscriptionGPS: null,
   logs: [],
   vitesse: null,
-  distanceSegment: 0 //Distance déjà parcourue sur le segment
+  distanceSegment: 0, //Distance déjà parcourue sur le segment
+  obstacles_rep: [],
 };
 
 const runReducer = (state, action) => {
@@ -61,7 +62,9 @@ const runReducer = (state, action) => {
     case 'RESET_DISTANCE':
       return {...state, distance: 0, distanceChallenge: 0, logs: []}
     case 'SET_DISTANCE_SEGMENT':
-      return {...state, distanceSegment: action.distanceSegment}
+      return {...state, distanceSegment: action.distanceSegment};
+    case 'SET_OBSTACLES_REP':
+      return {...state, obstacles_rep: action.obstacles};
     default:
       return state;
   }

@@ -27,6 +27,10 @@ export default function ButtonGo(props){
     move(showActionSheetWithOptions, dispatchRun, props.navigation, challengeSelected, segment)
   }
 
+ let pressObstacle = () => {
+    props.navigation.navigate("Obstacle")
+  }
+
   return(<>
     { nextAction == "start"
       ? <Button 
@@ -44,7 +48,28 @@ export default function ButtonGo(props){
               type='outline'
               title='challenge terminé'
             />
-          : <Button 
+          : nextAction == "obstacle_rep"
+            ? <Button 
+                onPress={ () => pressObstacle()}
+                title="Répondre à l'obstacle"
+              />
+            : nextAction == "obstacle_waiting"
+            ? <Button 
+              disabled
+              type='clear'
+              title="Obstacle proposé... en attente de l'administeur"
+            />
+            : nextAction == "obstacle_rep_ko"
+            ? <Button 
+              onPress={ () => pressObstacle()}
+              title="Obstacle refusé : Retenter ?"
+            />
+            : nextAction == "obstacle_rep_ok"
+            ? <Button 
+                onPress={ () => pressMove()}
+                title="Obstacle validé : continuer la course"
+              />
+            :<Button 
               onPress={ () => pressMove()}
               title="Démarrer la scéance!"
             />

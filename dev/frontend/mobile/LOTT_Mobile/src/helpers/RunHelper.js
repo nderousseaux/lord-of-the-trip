@@ -3,6 +3,8 @@ import { AlertHelper } from 'helpers/AlertHelper.js'
 
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
+import EventsService from 'services/events/Events.service';
+import _ from 'lodash';
 
 const typeEtat = {
 	START: "start",
@@ -29,6 +31,10 @@ export function getNextAction(idChallenge, dispatchChallenges) {
             type: 'SET_SEGMENT',
             segment: res.data.segment_id,
             idChallenge: idChallenge
+        });
+        dispatchChallenges({
+            type: 'SET_OBSTACLE',
+            obstacle: res.data.obstacle_id,
         });
         let lastEvent = res.data.event_type_info.code
         switch (lastEvent) {
@@ -58,7 +64,6 @@ export function getNextAction(idChallenge, dispatchChallenges) {
                 break;
             case "CROSS_PT_ARRIVAL": //Si on vient d'arriver à un obstacle -> On doit choisir sa route
                 nextEvent = typeEtat.CHOOSE_SEGMENT;
-                console.log(nextEvent)
                 break;
             case "CHOOSE_SEGEMENT": //Si on vient de choisir son segment -> On doit bouger
                 nextEvent = typeEtat.MOVE
@@ -117,72 +122,92 @@ export function move(showActionSheetWithOptions, dispatchRun, navigation, challe
 
       },
       async buttonIndex => {
-        navigation.navigate('Recording');
-
-        let transport;
-        switch (buttonIndex){
-            case 0:
-                transport = 'course'
-                await startGPS(dispatchRun, navigation)
-                break;
-            case 1:
-                transport = 'velo'
-                await startGPS(dispatchRun, navigation)
-                break;
-            case 2:
-                transport = 'marche'
-                startPedometer(dispatchRun, challenge)
-                break;
-            default:
-                transport = 'course'
-        }
-        RunService.distanceSegment(segment.id)
-        .then((res) => {
-            dispatchRun({
-                type: 'SET_SEGMENT',
-                segment: segment.id,
-            });
-            dispatchRun({
-                type: 'SET_TRANSPORT',
-                transport: transport
-            });
-            dispatchRun({
-                type: 'SET_DISTANCE_SEGMENT',
-                distanceSegment: res.data.distance
-            })
-            //On met à jour le chrono toutes les secondes
-            let updateTime = () => {
+        if(buttonIndex != 3){
+            navigation.navigate('Recording');
+    
+            let transport;
+            switch (buttonIndex){
+                case 0:
+                    transport = 'course'
+                    await startGPS(dispatchRun, navigation)
+                    break;
+                case 1:
+                    transport = 'velo'
+                    await startGPS(dispatchRun, navigation)
+                    break;
+                case 2:
+                    transport = 'marche'
+                    startPedometer(dispatchRun, challenge)
+                    break;
+                default:
+                    transport = 'course'
+            }
+            Promise.all([
+                RunService.distanceSegment(segment.id),
+                EventsService.getAllEvents(challenge.id)
+            ])
+            .then(([resDistance, resEvent]) => {
+               
                 dispatchRun({
-                    type: 'SET_DURATION',
-                    action: ""
+                    type: 'SET_OBSTACLES_REP',
+                    obstacles: _.map(
+                                    _.filter(
+                                        resEvent.data.events, 
+                                        function(o){return o.event_type_info.id==4}
+                                    ),
+                                    function(o){return o.obstacle_id}
+                                )
+                })
+    
+                dispatchRun({
+                    type: 'SET_SEGMENT',
+                    segment: segment.id,
                 });
-            }
-            dispatchRun({
-                type: 'SUBSCRIBE_TIME',
-                functionTime: updateTime
-            })
-        })
-        .catch((err) => {
-            console.log(err)
-            let msg;
-
-            if (err.response != undefined){
-                switch(err.response.status){
-                    case 401:
-                        msg = "Vous n'avez pas l'autorisation d'afficher les challenges"
-                        break;
-                    default:
-                        msg = "Une erreur inconne c'est produite.";
+                dispatchRun({
+                    type: 'SET_TRANSPORT',
+                    transport: transport
+                });
+                dispatchRun({
+                    type: 'SET_DISTANCE_SEGMENT',
+                    distanceSegment: resDistance.data.distance
+                })
+                //On met à jour le chrono toutes les secondes
+                let updateTime = () => {
+                    dispatchRun({
+                        type: 'SET_DURATION',
+                        action: ""
+                    });
                 }
-            }
-            else{
-                msg = "Le réseau est indisponible.";
-            }
-
-            if (msg != undefined) {
-                AlertHelper.show("error", "Erreur !", msg)
-            }
-        })
+                dispatchRun({
+                    type: 'SUBSCRIBE_TIME',
+                    functionTime: updateTime
+                })
+            })
+            .catch(([res, res2]) => {
+                console.log(err)
+                let msg;
+    
+                if (err.response != undefined){
+                    switch(err.response.status){
+                        case 401:
+                            msg = "Vous n'avez pas l'autorisation d'afficher les challenges"
+                            break;
+                        default:
+                            msg = "Une erreur inconne c'est produite.";
+                    }
+                }
+                else{
+                    msg = "Le réseau est indisponible.";
+                }
+    
+                if (msg != undefined) {
+                    AlertHelper.show("error", "Erreur !", msg)
+                }
+            })
+        }
+        else{
+            navigation.navigate('Challenge')
+        }
         
       }
     );

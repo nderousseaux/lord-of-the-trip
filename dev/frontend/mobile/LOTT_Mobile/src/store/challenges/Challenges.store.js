@@ -7,7 +7,8 @@ const initialState = {
   loading: false,
   challengeSelected: {},
   nextAction: {},
-  segment: {}
+  segment: {},
+  obstacleId: null
 };
 
 const challengesReducer = (state, action) => {
@@ -46,6 +47,9 @@ const challengesReducer = (state, action) => {
       let res = _.find(state.challengeSelected.segments, function(o) {return o.id == action.segment} )
       console.log("Nouveau segment : "+ res.id)
       return {...state, segment: res}
+    case 'SET_OBSTACLE':
+      console.log("Nouvel obstacle : "+ action.obstacle)
+      return {...state, obstacleId: action.obstacle}
     default:
       return state;
   }

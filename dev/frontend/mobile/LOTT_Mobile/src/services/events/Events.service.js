@@ -1,6 +1,11 @@
 import api from 'services/General.service.js';
 
 let EventsService = {
+    getAllEvents(idChallenge){
+        return api.get('/challenges/' + idChallenge+ '/events')
+
+    },
+
     move(idChallenge, idSegment, typeTransport, dateDebut, dateFin, distance){
 
         let codeMove;
@@ -45,6 +50,7 @@ let EventsService = {
             }
         )
     },
+
     arrivalCrossingPoint(idChallenge, idSegment){
         return api.post(
             '/challenges/'+ idChallenge + '/segments/' + idSegment + '/events',
@@ -53,12 +59,45 @@ let EventsService = {
             }
         )
     },
+
     endChallenge(idChallenge, idSegment){
         return api.post(
             '/challenges/'+ idChallenge + '/segments/' + idSegment + '/events',
             {
                 "event_type_id" : 2
             }
+        )
+    },
+
+    arrivalObstacle(idChallenge, idSegment, idObstacle){
+        return api.post(
+            '/challenges/'+ idChallenge + '/segments/' + idSegment + '/events',
+            {
+                "event_type_id" : 4,
+                "obstacle_id":idObstacle
+            }
+        )
+    },
+
+    eventReponse(idObstacle, reponse){
+        return api.post(
+            '/obstacles/'+ idObstacle + '/answer',
+            {
+                "response": reponse
+            }
+        )
+    },
+    eventReponsePhoto(idObstacle, reponse){
+        var data = new FormData();
+        data.append('file',
+        {
+            uri:reponse,
+            name:'a.jpg',
+            type:'image/jpg'
+        });
+
+        return api.post(
+            '/obstacles/'+ idObstacle + '/answer',data
         )
     }
 }

@@ -50,19 +50,21 @@ export default function CrossingPoint(props){
 
 
   useEffect(() => {
-    setCrossingPoint(props.route.params.crossingPoint)
+    if (segment.id != null ){
+      setCrossingPoint(segment.end_crossing_point)
+    }
     
     setLoading(true)
-    console.log(crossingPoint.id)
     RunService.allSegments(crossingPoint.id)
     .then((response) => response.data)
     .then((json) => {
-      console.log(segments)
-      setSegments(json.segments)})
+      if (json.segments != undefined){
+        setSegments(json.segments)
+      }
+    })
     .catch(() => AlertHelper.show("error", "Erreur !", "Une erreur inconue c'est produite")    )
     .finally(() => setLoading(false));
-  }, []);
-
+  }, [isFocused, segment]);
 
   let goBack = () => {
     getNextAction(challengeSelected.id, dispatchChallenges)
