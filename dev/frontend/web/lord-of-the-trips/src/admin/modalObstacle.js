@@ -68,8 +68,8 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
           <FormControl component="fieldset">
             <FormLabel component="legend">Type de l'obstacle</FormLabel>
             <RadioGroup row value={radioValue} onChange={e => setRadioValue(e.target.value)}>
-              <FormControlLabel value="0" control={<Radio />} label="Question" />
-              <FormControlLabel value="1" control={<Radio />} label="Photo" />
+              <FormControlLabel value="0" control={<Radio color="primary" />} label="Question" />
+              <FormControlLabel value="1" control={<Radio color="primary" />} label="Photo" />
             </RadioGroup>
           </FormControl>
           <hr />
@@ -132,7 +132,7 @@ const ObstaclePhoto = ({ updateObstacleMutation, label, setLabel, description, s
       <Slider value={progress} step={10} min={10} max={90} marks
               valueLabelDisplay="auto" onChange={(e, val) => setProgress(val)} />
       <DialogContentText>Position sur le segment : valeur en pourcentage qui représente la distance de l'obstacle sur le segment, les valeurs peuvent être les nombres entiers de 10 à 90</DialogContentText>
-      {errorUpdate ? <p style={{color: 'red'}}>{errorUpdate.message}</p> : null}
+      {errorUpdate ? <p className={classes.colorErrorMessage}>{errorUpdate.message}</p> : null}
     </form>
   </>
 };

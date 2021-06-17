@@ -20,6 +20,7 @@ const AdminDashboard = () => {
 };
 
 const CreateChallengeForm = () => {
+  const classes = useStyles();
   const [name, setName] = useState('');
   const [error, setError] = useState(null);
   const queryClient = useQueryClient();
@@ -49,7 +50,7 @@ const CreateChallengeForm = () => {
       <input type="text" value={name} onChange={e => setName(e.target.value)} /> {' '}
       <Button onClick={handleSubmit} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Créer</Button>
     </form>
-    {error ? <p>{error.message}</p> : null}
+    {error ? <p className={classes.colorErrorMessage}>{error.message}</p> : null}
   </div>
 };
 
