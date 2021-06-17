@@ -36,6 +36,7 @@ const EditMap = () => {
   const [zoom, setZoom] = useState(null);
   const [minZoom, setMinZoom] = useState(null);
   const [maxZoom, setMaxZoom] = useState(null);
+  const [responseVerify, setResponseVerify] = useState(null);
 
   const [crossingPoints, setCrossingPoints] = useState([]);
   // +1 when there is a change in the crossing points, to set again the start and the end of the challenge
@@ -98,6 +99,7 @@ const EditMap = () => {
       });
       setCrossingPoints(cr);
       setCrossingPointsLoaded(current => current + 1);
+      setResponseVerify(null);
     }
   }, [isErrorCrossingPoints, crossingPointsRequest, successDownload, width, height]);
 
@@ -117,6 +119,7 @@ const EditMap = () => {
       });
       setSegments(seg);
       setSegmentsLoaded(current => current + 1);
+      setResponseVerify(null);
     }
   }, [isErrorSegments, segmentsRequest, crossingPointsLoaded, successDownload, width, height]);
 
@@ -587,6 +590,9 @@ const EditMap = () => {
         <Typography color="textPrimary">Édition de la carte</Typography>
       </Breadcrumbs>
     </Grid>
+    <div className={classes.margin20bottom}>
+      <VerifyChallenge challenge={challenge} response={responseVerify} setResponse={setResponseVerify} />
+    </div>
     {errorDownload ? <h3>{errorDownload.message}</h3> :
       successDownload ?
         <div>
@@ -645,10 +651,10 @@ const EditMap = () => {
               })}
               { /* Render crossing points */ }
               {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.position_x} y={crossingPoint.position_y} radius={12} draggable={challenge?.draft} dragBoundFunc={dragBoundFunction} stroke={"black"} strokeWidth={2}
-                                                   fill={crossingPoint.isDragging ? "sienna" : radioButtonValue === "3" && crossingPoint.onMouseOver ? "red" : crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "green" : !crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? "orange" : !crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "blue" : null}
+                                                   fill={crossingPoint.isDragging ? "sienna" : radioButtonValue === "3" && crossingPoint.onMouseOver ? "red" : crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "#2a7e50" : !crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? "#ea1943" : !crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "#2a6592" : null}
                                                    fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : { x: null, y: null }}
                                                    fillLinearGradientEndPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: 5, y: 0 } : { x: null, y: null }}
-                                                   fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, 'green', 0.40, 'green', 0.41, 'black', 0.59, 'black', 0.60, 'orange', 1, 'orange'] : null}
+                                                   fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, '#2a7e50', 0.40, '#2a7e50', 0.41, 'black', 0.59, 'black', 0.60, '#ea1943', 1, '#ea1943'] : null}
                                                    onDragStart={(e) => onDragStartCrossingPoint(e, crossingPoint)}
                                                    onDragEnd={(e) => onDragEndCrossingPoint(e, crossingPoint)}
                                                    onClick={(e) => onClickCrossingPoint(e, crossingPoint)}
@@ -656,63 +662,57 @@ const EditMap = () => {
                                                    onMouseLeave={(e) => onMouseLeaveCrossingPoint(e, crossingPoint)} />)}
               { /* Render obstacles */ }
               {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y}
-                                         numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"}
+                                         numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"#db9833"}
                                          onClick={(e) => onClickObstacle(e, obstacle)} />)}
             </Layer>
           </Stage>
         </div>
       : null}
+
     { /* Render Modals */ }
     {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} challengeId={id} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
     {dataForModal && openSegmentModal ? <ModalSegment segmentObject={dataForModal} challengeId={id} openState={openSegmentModal} setOpenState={setOpenSegmentModal} /> : null}
     {dataForModal && openObstacleModal ? <ModalObstacle obstacleObject={dataForModal} challengeId={id} openState={openObstacleModal} setOpenState={setOpenObstacleModal} /> : null}
-    <hr />
-    <VerifyChallenge challenge={challenge} />
   </>
 };
 
-const VerifyChallenge = ({ challenge }) => {
-  const [isPublished, setIsPublished] = useState(false);
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState(null);
+const VerifyChallenge = ({ challenge, response, setResponse }) => {
+  const classes = useStyles();
+  const history = useHistory();
 
   const verifyChallenge = useMutation( (id) => apiChallenge.verifyChallenge(id), {
-    onError: (error) => {
-      setError(error);
+    onError: (data) => {
+      setResponse(data);
     },
     onSuccess: (data) => {
       setResponse(data);
     },
   });
 
-  const publishChallenge = useMutation( (id) => apiChallenge.publishChallenge(id), {
-    onSuccess: () => {
-      setIsPublished(true);
-      setResponse(null);
-      setError(null);
-    },
-  });
-
   const handleClick = e => {
     e.preventDefault();
     setResponse(null);
-    setError(null);
     verifyChallenge.mutate(challenge.id);
   };
 
   return <div>
-    {isPublished ? <div>Challenge publié !</div> :
-      <Button onClick={handleClick} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Vérifier le parcours</Button>
-    }
+    <Button onClick={handleClick} size="small" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary}` }>Vérifier le parcours</Button> {' '}
     {response ?
-      response.status === 204 ?
-        <div>
-          Challenge valide <br />
-          <Button onClick={() => publishChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Publier le challenge</Button>
+      response.status === 'ok' ?
+        <>
+          Parcours valide, pour publier le challenge, aller sur cette page {' '}
+          <Button onClick={() => history.push(`/editchallenge/${challenge.id}`)} size="small" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary}` }>Modifier le challenge</Button>
+        </>
+      : <div>
+          <ul>
+            {response.data?.error?.details?.start_crossing_point_id === null ? <li>Il n'y a pas de départ</li> : null}
+            {response.data?.error?.details?.end_crossing_point_id === null ? <li>Il n'y a pas d'arrivé</li> : null}
+            {response.data?.error?.details?.orphans && response.data?.error?.details?.orphans?.length !== 0 ? <li>Il y a des points de passages reliés à aucun segment, supprimés les ou reliés les.</li> : null}
+            {response.data?.error?.details?.deadend && response.data?.error?.details?.deadend?.length !== 0 ? <li>Il y a des culs de sac, supprimés les ou reliés les.</li> : null}
+            {response.data?.error?.details?.loop && response.data?.error?.details?.loop?.length !== 0 ? <li>Vos segments font des boucles, les boucles ne sont pas acceptées.</li> : null}
+          </ul>
         </div>
-      : <div><pre>{JSON.stringify(response.data, null, 2) }</pre></div>
     : null}
-    {error ? <div>{error.message}</div> : null}
   </div>
 };
 

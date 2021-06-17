@@ -35,6 +35,7 @@ const EditChallenge = () => {
   const [level, setLevel] = useState(null);
   const [step_length, setStep_length] = useState(null);
   const [errorUpdate, setErrorUpdate] = useState(null);
+  const [publishResponse, setPublishResponse] = useState(null);
   const queryClient = useQueryClient();
   const history = useHistory();
   let { id } = useParams();
@@ -62,6 +63,25 @@ const EditChallenge = () => {
     },
   });
 
+  const publishChallenge = useMutation( (id) => apiChallenge.publishChallenge(id), {
+    onError: (data) => {
+      setPublishResponse(data);
+    },
+    onSuccess: (data) => {
+      setPublishResponse(data);
+    },
+  });
+
+  const updateChallengeAndPublish = useMutation( (challenge) => apiChallenge.updateChallenge(id, challenge), {
+    onError: (error) => {
+      setErrorUpdate(error);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['challenge', id]);
+      publishChallenge.mutate(challenge.id);
+    },
+  });
+
   useEffect(() => {
     if(challenge) {
       setName(challenge.name);
@@ -85,26 +105,30 @@ const EditChallenge = () => {
   };
 
   // redirect = true -> Submit challenge form and then go to edit map
-  const handleSubmit = (redirect) => {
+  // publish = true -> Submit challenge form and then publish challenge
+  const handleSubmit = (redirect, publish) => {
     setErrorUpdate(null);
-    const challenge = {};
-    if(name) challenge.name = name;
-    if(description) challenge.description = description;
+    setPublishResponse(null);
+    const challengeObj = {};
+    if(name) challengeObj.name = name;
+    if(description) challengeObj.description = description;
     if(limitTime && start_date && end_date) {
-      challenge.start_date = dateString(start_date);
-      challenge.end_date = dateString(end_date);
+      challengeObj.start_date = dateString(start_date);
+      challengeObj.end_date = dateString(end_date);
     }
     else {
-      challenge.start_date = null;
-      challenge.end_date = null;
+      challengeObj.start_date = null;
+      challengeObj.end_date = null;
     }
-    if(scalling) challenge.scalling = parseInt(scalling);
-    if(level) challenge.level = parseInt(level);
-    if(step_length && (step_length < 0 || step_length > 100)) return;
-    else if(step_length) challenge.step_length = parseFloat(step_length);
+    if(scalling && (scalling < 100 || scalling > 1000000)) return;
+    else if(scalling) challengeObj.scalling = parseInt(scalling);
+    if(level) challengeObj.level = parseInt(level);
+    if(step_length && step_length < 0.30) return;
+    else if(step_length) challengeObj.step_length = parseFloat(step_length);
 
-    if(redirect) updateChallengeAndEditMap.mutate(challenge);
-    else updateChallenge.mutate(challenge);
+    if(redirect) updateChallengeAndEditMap.mutate(challengeObj);
+    else if(publish) updateChallengeAndPublish.mutate(challengeObj);
+    else updateChallenge.mutate(challengeObj);
   };
 
   return <>
@@ -165,7 +189,8 @@ const EditChallenge = () => {
                   <Grid item direction="column" lg={4}>
                     <div className={classes.margin10right}>
                       <TextField variant="outlined" margin="dense" type="number" label="Échelle" value={scalling} onChange={e => setScalling(e.target.value)} fullWidth
-                                 helperText="L'échelle correspond à la longueur de la carte en mètres" />
+                                 helperText="L'échelle correspond à la longueur de la carte en mètres. Minimum 100 mètres, Maximum 1000000 mètres"
+                                 error={scalling && (scalling < 100 || scalling > 1000000) ? true : false} />
                     </div>
                   </Grid>
                   <Grid item direction="column" lg={4}>
@@ -184,8 +209,8 @@ const EditChallenge = () => {
                   <Grid item direction="column" lg={4}>
                     <div className={classes.margin10left}>
                       <TextField variant="outlined" margin="dense" type="number" label="Longueur de pas" value={step_length} onChange={e => setStep_length(e.target.value)} fullWidth
-                                 helperText="Longueur d'un pas en mètres pour le podomètre. 100 mètres maximum"
-                                 error={step_length && (step_length < 0 || step_length > 100) ? true : false}  />
+                                 helperText="Longueur d'un pas en mètres pour le podomètre. 0.30 mètres minimum"
+                                 error={step_length && step_length < 0.30 ? true : false} />
                     </div>
                   </Grid>
                 </Grid>
@@ -204,17 +229,40 @@ const EditChallenge = () => {
           </Grid>
         </Grid>
         <Grid container direction="row">
-          <Grid item lg={4} className={classes.contentCenterHorizontal}>
-            <Button onClick={() => handleSubmit()} size="large" variant="contained" color="primary" alignItems="center" justify="center"
-                    className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Modifier le challenge</Button>
+          <Grid item lg={4}>
+            <div className={classes.contentCenterHorizontal}>
+              <Button onClick={() => handleSubmit()} size="large" variant="contained" color="primary"
+                      className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Modifier le challenge</Button>
+            </div>
           </Grid>
-          <Grid item lg={4} className={classes.contentCenterHorizontal}>
-            {image ? <Button onClick={() => console.log("todo")} size="large" variant="contained" color="primary"
-                             className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Publier le challenge</Button> : null}
+          <Grid item container lg={4}>
+            <Grid item lg={12} className={classes.contentCenterHorizontal}>
+              {publishResponse ?
+                publishResponse.status === 'ok' ?
+                  <p className={ `${classes.colorErrorMessage} ${classes.textCenter}` }>Challenge publié !</p>
+                : publishResponse.status === 'ko graph' ?
+                  <>
+                    <p className={ `${classes.colorErrorMessage} ${classes.textCenter}` }>
+                      Le parcours du challenge n'est pas valide {' '}
+                      <Button onClick={() => handleSubmit(true)} size="large" variant="contained" color="primary"
+                                       className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Éditer le parcours</Button>
+                    </p>
+                  </>
+                : publishResponse.status === 'ko challenge' ?
+                  <p className={ `${classes.colorErrorMessage} ${classes.textCenter}` }>{publishResponse.data?.error?.message}</p>
+                : null
+              : null}
+            </Grid>
+            <Grid item lg={12} className={classes.contentCenterHorizontal}>
+              {image ? <Button onClick={() => handleSubmit(false, true)} size="large" variant="contained" color="primary"
+                               className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Publier le challenge</Button> : null}
+            </Grid>
           </Grid>
-          <Grid item lg={4} className={classes.contentCenterHorizontal}>
-            {image ? <Button onClick={() => handleSubmit(true)} size="large" variant="contained" color="primary"
-                             className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Éditer le parcours</Button> : null}
+          <Grid item lg={4}>
+            <div className={classes.contentCenterHorizontal}>
+              {image ? <Button onClick={() => handleSubmit(true)} size="large" variant="contained" color="primary"
+                               className={ `${classes.button} ${classes.colorPrimary} ${classes.margin15vertical}` }>Éditer le parcours</Button> : null}
+            </div>
           </Grid>
         </Grid>
       </Grid>

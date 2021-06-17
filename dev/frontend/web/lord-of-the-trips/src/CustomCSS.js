@@ -37,6 +37,10 @@ export const useStyles = makeStyles({
     margin: '15px 0'
   },
 
+  margin20top: {
+    marginTop: '20px'
+  },
+
   margin20bottom: {
     marginBottom: '20px'
   },
