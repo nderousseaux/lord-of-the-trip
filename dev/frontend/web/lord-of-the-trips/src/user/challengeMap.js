@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Stage, Layer, Image, Circle, Arrow, Star } from 'react-konva';
 import { useQuery, useMutation } from 'react-query';
 import apiChallenge from '../api/challenge';
@@ -9,12 +9,13 @@ import { percentToPixels, coordinatesEndSegment, pixelsLengthBetweenTwoPoints, r
 import ModalCrossingPoint from './modalCrossingPoint';
 import ModalSegment from './modalSegment';
 import ModalObstacle from './modalObstacle';
-import * as css from '../CustomCSS';
 
 const ChallengeMap = ({ challenge, isAdmin }) => {
   const [errorDownload, setErrorDownload] = useState(null);
   const [successDownload, setSuccessDownload] = useState(false);
   const [image, setImage] = useState(null);
+  const [baseWidth, setBaseWidth] = useState(0);
+  const [baseHeight, setBaseHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [crossingPoints, setCrossingPoints] = useState([]);
@@ -62,7 +63,7 @@ const ChallengeMap = ({ challenge, isAdmin }) => {
       setCrossingPoints(cr);
       setCrossingPointsLoaded(current => current + 1);
     }
-  }, [isErrorCrossingPoints, crossingPointsRequest, successDownload]);
+  }, [isErrorCrossingPoints, crossingPointsRequest, successDownload, width, height]);
 
   // Load segments
   useEffect(() => {
@@ -81,7 +82,7 @@ const ChallengeMap = ({ challenge, isAdmin }) => {
       setSegments(seg);
       setSegmentsLoaded(current => current + 1);
     }
-  }, [isErrorSegments, segmentsRequest, crossingPointsLoaded, successDownload]);
+  }, [isErrorSegments, segmentsRequest, crossingPointsLoaded, successDownload, width, height]);
 
   // Load obstacles
   useEffect(() => {
@@ -111,8 +112,8 @@ const ChallengeMap = ({ challenge, isAdmin }) => {
       img.src = window.URL.createObjectURL(data);
       img.onload = function() {
         setImage(img);
-        setWidth(img.width);
-        setHeight(img.height);
+        setBaseWidth(img.width);
+        setBaseHeight(img.height);
         setSuccessDownload(true);
       };
     },
@@ -254,39 +255,51 @@ const ChallengeMap = ({ challenge, isAdmin }) => {
     return returnObject;
   };
 
+  const divRef = useRef()
+
+  useEffect(() => {
+    if (divRef.current) {
+      const { current } = divRef
+      const boundingRect = current.getBoundingClientRect()
+      const { width: divWidth, height: divHeight } = boundingRect
+      setWidth(Math.round(divWidth));
+      setHeight(Math.round(divWidth * baseHeight / baseWidth));
+    }
+  }, [divRef, successDownload])
+
   return (
-    <div style={css.flexRight}>
+    <>
       <h3>Carte du challenge</h3>
+      <div ref={divRef}>
       {errorDownload ? <h3>{errorDownload.message}</h3> :
         successDownload ?
-          <div>
-            <Stage width={width} height={height}>
-              <Layer>
-                <Image image={image} />
-                { /* Render segments */ }
-                {segments.map(segment => <Arrow key={segment.id} id={segment.id} points={formatSegmentPoints(segment)}
-                                          stroke={"black"} strokeWidth={6} fill={"black"} pointerLength={16} pointerWidth={16}
-                                          onClick={() => openSegmentModalFunction(segment)} />)}
-                { /* Render crossing points */ }
-                {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.position_x} y={crossingPoint.position_y} radius={12} stroke={"black"} strokeWidth={2}
-                                                     fill={crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "green" : !crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? "orange" : !crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "blue" : null}
-                                                     fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : { x: null, y: null }}
-                                                     fillLinearGradientEndPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: 5, y: 0 } : { x: null, y: null }}
-                                                     fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, 'green', 0.40, 'green', 0.41, 'black', 0.59, 'black', 0.60, 'orange', 1, 'orange'] : null}
-                                                     onClick={() => openCrossingPointModalFunction(crossingPoint)} />)}
-                { /* Render obstacles */ }
-                {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y}
-                                           numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"}
-                                           onClick={() => openObstacleModalFunction(obstacle)} />)}
-              </Layer>
-            </Stage>
-          </div>
+          <Stage width={width} height={height}>
+            <Layer>
+              <Image image={image} width={width} height={height} />
+              { /* Render segments */ }
+              {segments.map(segment => <Arrow key={segment.id} id={segment.id} points={formatSegmentPoints(segment)}
+                                        stroke={"black"} strokeWidth={6} fill={"black"} pointerLength={16} pointerWidth={16}
+                                        onClick={() => openSegmentModalFunction(segment)} />)}
+              { /* Render crossing points */ }
+              {crossingPoints.map(crossingPoint => <Circle key={crossingPoint.id} id={crossingPoint.id} x={crossingPoint.position_x} y={crossingPoint.position_y} radius={12} stroke={"black"} strokeWidth={2}
+                                                   fill={crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "green" : !crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? "orange" : !crossingPoint.isStartChallenge && !crossingPoint.isEndChallenge ? "blue" : null}
+                                                   fillLinearGradientStartPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: -5, y: 0 } : { x: null, y: null }}
+                                                   fillLinearGradientEndPoint={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? { x: 5, y: 0 } : { x: null, y: null }}
+                                                   fillLinearGradientColorStops={crossingPoint.isStartChallenge && crossingPoint.isEndChallenge ? [0, 'green', 0.40, 'green', 0.41, 'black', 0.59, 'black', 0.60, 'orange', 1, 'orange'] : null}
+                                                   onClick={() => openCrossingPointModalFunction(crossingPoint)} />)}
+              { /* Render obstacles */ }
+              {obstacles.map(obstacle => <Star key={obstacle.id} id={obstacle.id} x={obstacle.position_x} y={obstacle.position_y}
+                                         numPoints={5} innerRadius={8} outerRadius={16} stroke={"black"} strokeWidth={2} fill={"red"}
+                                         onClick={() => openObstacleModalFunction(obstacle)} />)}
+            </Layer>
+          </Stage>
         : null}
-        { /* Render Modals */ }
-        {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
-        {dataForModal && openSegmentModal ? <ModalSegment segmentObject={dataForModal} openState={openSegmentModal} setOpenState={setOpenSegmentModal} /> : null}
-        {dataForModal && openObstacleModal ? <ModalObstacle obstacleObject={dataForModal} openState={openObstacleModal} setOpenState={setOpenObstacleModal} /> : null}
-    </div>
+      </div>
+      { /* Render Modals */ }
+      {dataForModal && openCrossingPointModal ? <ModalCrossingPoint crossingPointObject={dataForModal} openState={openCrossingPointModal} setOpenState={setOpenCrossingPointModal} /> : null}
+      {dataForModal && openSegmentModal ? <ModalSegment segmentObject={dataForModal} openState={openSegmentModal} setOpenState={setOpenSegmentModal} /> : null}
+      {dataForModal && openObstacleModal ? <ModalObstacle obstacleObject={dataForModal} openState={openObstacleModal} setOpenState={setOpenObstacleModal} /> : null}
+    </>
   );
 };
 
