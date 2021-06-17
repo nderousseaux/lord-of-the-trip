@@ -1912,7 +1912,7 @@ def verify(request):
 
                                 if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
                                     response = service_informations.build_response(
-                                        exception.HTTPForbidden,
+                                        exception.HTTPBadRequest,
                                         None,
                                         error_messages.VERIFICATION_CHALLENGE_GRAPH_ERROR,
                                         {
@@ -2712,7 +2712,7 @@ def publish_challenge(request):
 
                     if challenge.start_crossing_point_id is None:
                         return service_informations.build_response(
-                            exception.HTTPBadRequest,
+                            exception.HTTPForbidden,
                             None,
                             error_messages.PUBLISH_CHALLENGE_START_CROSSING_POINT_MISSING,
                             {
@@ -2722,7 +2722,7 @@ def publish_challenge(request):
 
                     if challenge.end_crossing_point_id is None:
                         return service_informations.build_response(
-                            exception.HTTPBadRequest,
+                            exception.HTTPForbidden,
                             None,
                             error_messages.PUBLISH_CHALLENGE_END_CROSSING_POINT_MISSING,
                             {
