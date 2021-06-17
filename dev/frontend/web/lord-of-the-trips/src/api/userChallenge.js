@@ -58,6 +58,14 @@ const apiUserChallenge = {
     .then(res => res.json());
   },
 
+  getUserAllChallengeStatistical: () => {
+    return fetch(`${urlPrefix}/user/challenges/statistics`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus)
+    .then(res => res.json());
+  },
+
 };
 
 export default apiUserChallenge;

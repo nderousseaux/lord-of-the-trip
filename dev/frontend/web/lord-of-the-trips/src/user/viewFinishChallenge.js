@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import ChallengeInfo from './challengeInfo';
 import ChallengeMap from './challengeMap';
 import UserchallengeStatistical from './userchallengeStatistical'
+import UserchallengeEvents from './userchallengeEvents'
 import * as css from '../CustomCSS';
 
 const ViewFinishChallenge = () => {
@@ -28,34 +29,15 @@ const ViewChallengeInfo = ({ challenge }) => {
   const queryClient = useQueryClient();
   const history = useHistory();
 
-  // const unsubscribeChallenge = useMutation( (id) => apiUserChallenge.unsubscribeChallenge(id), {
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries('subscribedChallenges');
-  //     queryClient.invalidateQueries('notSubscribedChallenges');
-  //     history.push(`/dashboard`);
-  //   },
-  // });
-
   return (
     <div style={css.flexLeft}>
       <ChallengeInfo challenge={challenge} />
       <hr />
       <div>
-        <h3>Vos statistiques</h3>
-        {/* <UserchallengeStatistical /> */}
-        <p>
-          _______________________________<br />
-          _______________________________<br />
-          _______________________________
-        </p>
+        <UserchallengeStatistical challenge={challenge} />
       </div>
       <div>
-        <h3>Historique de vos actions</h3>
-        <p>
-          _______________________________<br />
-          _______________________________<br />
-          _______________________________
-        </p>
+        <UserchallengeEvents challenge={challenge} />
       </div>
     </div>
   );

@@ -51,10 +51,41 @@ export const dateString = (date) => {
   return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
 };
 
-export const getEventLable = (date) => {
-  const pad = (s) => {
-    return (s < 10) ? '0' + s : s;
-  };
-  var d = new Date(date);
-  return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+export const getEventLable = (event_type) => {
+
+  let label;
+
+  switch(event_type){
+    case "1":
+      label = "Départ du parcours";
+      break;
+    case "2":
+      label = "Arrivée à la fin du parcours";
+      break;
+    case "3":
+      label = "Déplacement";
+      break;
+    case "4":
+      label = "Arrivée sur un obstacle";
+      break;
+    case "5":
+      label = "Réponse à un obstacle";
+      break;
+    case "6":
+      label = "Obstacle validée";
+      break;
+    case "7":
+      label = "Refus de la réponse par un administrateur ou par le système";
+      break;
+    case "8":
+      label = "Arrivée à un point de passage";
+      break;
+    case "9":
+      label = "Choix d'un segment";
+      break;
+    default:
+        return '';
+  }   
+  return label;
+
 };

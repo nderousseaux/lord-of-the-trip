@@ -2,7 +2,6 @@ import { useQuery, useQueryClient, useMutation } from 'react-query';
 import { useHistory } from 'react-router-dom';
 import apiUserChallenge from '../api/userChallenge';
 import ChallengeCardAvailable from './challengeCardAvailable';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { useStyles } from '../CustomCSS';
 // Fil d'ariane

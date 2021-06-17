@@ -12,57 +12,69 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 
-import logo from '../logo.png';
-import { dateString } from "../utils/utils";
-import { colors } from '@material-ui/core';
-
 const getIconMove =(move_type) => {
 
   switch(move_type){
     case 0:
       return < MdDirectionsWalk />;
-      // difficulty = "Facile";
-      // break;
     case 1:
       return < MdDirectionsRun />;
-      // difficulty = "Facile";
-      // break;
-    case 0:
+    case 2:
       return < MdDirectionsBike />;
     default:
       return '';
   }
 }
 
+const getMove =(move_type) => {
+  if (move_type = "0"){
+    return "Marche";
+  }
+
+  if (move_type = "1"){
+    return "Vélo";
+  }
+
+  if (move_type = "3"){
+    return "Course";
+  }
+}
+
 const getTimeDayHour = (duration) => {
   
-  let seconds = Math.round(duration) / 1000 ; // don't forget the second param
+  let seconds = Math.round(duration / 1000)  ; // don't forget the second param
 
-  let day     = Math.floor(seconds / 86400);
-  let hours   = Math.floor((seconds - (day * 86400)) / 3600);
-  let minutes = Math.floor((seconds - (hours * 3600)) / 60);
-
-  let dayLetter = "";
-  if (day > 0) {
-    dayLetter = (day < 10 ? "0" + day : day) + "j "
+  if (seconds > 60){
+    let day     = Math.floor(seconds / 86400);
+    let hours   = Math.floor((seconds - (day * 86400)) / 3600);
+    let minutes = Math.floor((seconds - ((hours * 3600) + (day * 86400))) / 60);
+  
+    let dayLetter = "";
+      if (day > 0) {
+        dayLetter = (day < 10 ? "0" + day : day) + "j ";
+      }
+    
+      let hoursLetter = "";
+      if (hours > 0) {
+        hoursLetter = (hours < 10 ? "0" + hours : hours) + "h ";
+      }
+    
+      let minutesLetter = "";
+      if (minutes > 0) {
+        minutesLetter = (minutes < 10 ? "0" + minutes : minutes) + "mn ";
+      }
+    
+      if (hours   < 0) {hours   = "0"+hours;}
+      if (minutes < 0) {minutes = "0"+minutes;}
+      if (seconds < 0) {seconds = "0"+seconds;}
+    
+      let time = dayLetter + hoursLetter + minutesLetter;
+    
+      return time;
+  } else {
+    return seconds + " s";
   }
 
-  let hoursLetter = "";
-  if (hours > 0) {
-    hoursLetter = (hours < 10 ? "0" + hours : hours) + "h "
-  }
-
-  let minutesLetter = "";
-  if (minutes > 0) {
-    minutesLetter = (minutes < 10 ? "0" + minutes : minutes) + "mn "
-  }
-  if (hours   < 0) {hours   = "0"+hours;}
-  if (minutes < 0) {minutes = "0"+minutes;}
-  if (seconds < 0) {seconds = "0"+seconds;}
-
-  let time = dayLetter + hoursLetter + minutesLetter;
-
-  return time;
 }
 
 const getdistance = (distance) => {
@@ -89,7 +101,7 @@ const roundToTwo = (num) => {
 const getSpeed = (distance,duration) => {
 
   let speedFormat, distanceFormat, unitee;
-  let seconds = Math.round(duration) / 1000 ;
+  let seconds = Math.round(duration / 1000) ;
 
   if (Math.round(distance) >= 1000 ){
     distanceFormat = (Math.round(Math.round(distance)/100)/10) / (Math.round(seconds / 3600));
@@ -108,30 +120,46 @@ const getSpeed = (distance,duration) => {
 
 }
 
+const getJsonresult = (results) => {
+
+  let table = []
+
+  for (const [key, value] of Object.entries(results)) {
+
+    table.push(<TableRow key={key}>
+    <TableCell >{getMove(key)}</TableCell>
+    <TableCell > {getdistance(value.distance)}</TableCell>
+    <TableCell >{getTimeDayHour(value.time)}</TableCell>
+    <TableCell >{getSpeed(value.distance, value.time)}</TableCell>
+  </TableRow>)
+
+
+  }
+  return table;
+}
 
 const UserchallengeStatisticals = ({ challenge }) => {
 
   let classes = useStyles();
+  let key, value;
 
   const { isLoading, isError, error, data: statisticals } = useQuery(['statisticals', challenge.id], () => apiUserChallenge.getUserChallengeStatistical(challenge.id));
 
   return (
     <>
 
-      <div >
-        
+      <div >       
 
-        {isLoading ? 'Chargement...' : isError ? error.message : <> 
+        {isLoading ? 'Chargement...' : isError ? "Vous n'avez pas de statistiques sur ce challenge" : <> 
             <div >
             <h2>Vos statistiques</h2>
-            <p>{getIconMove(statisticals.statistics.average_move_type)}</p>
             
+            <p>{getIconMove(statisticals.statistics.average_move_type)}</p>            
             <p>{getdistance(statisticals.statistics.distance)}</p>
-
             <p>{getTimeDayHour(statisticals.statistics.time)}</p>
             <p>{getSpeed( statisticals.statistics.distance,statisticals.statistics.time) }</p>
 
-              {/* <TableContainer component={Paper}>
+            <TableContainer component={Paper}>
                 <Table>
                   <TableHead className={classes.tableAdminHead}>
                     <TableRow>
@@ -142,34 +170,13 @@ const UserchallengeStatisticals = ({ challenge }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    
-                  {statisticals.statistics
-                      <TableRow key={st.average_move_type}>
-                        <TableCell className={classes.tableLeft}>{getIconMove(st.average_move_type)}</TableCell>
-                        <TableCell className={classes.tableDescr}> {getdistance(st.distance)}</TableCell>
-                        <TableCell className={classes.tableRight}>{getTimeDayHour(st.time)}</TableCell>
-                        <TableCell className={classes.tableRight}>{getSpeed(st.time, st.duration)}</TableCell>
-                      </TableRow>
-                    ))} 
+                    {getJsonresult(statisticals.statistics.results)}
                   </TableBody>
-                </Table>
-              </TableContainer>   */}
+              </Table>
+              </TableContainer> 
             </div>
           </> }
-        {/* <p className={classes.cardChildOneText01}>{challenge.name}</p>
-        <p className={classes.cardChildOneText02}> Difficulté : {difficulty}</p>
-      </div>
-      <div className={classes.cardDate}>
-        {challenge.start_date ?
-          <p className={classes.cardDateText}> {dateString(challenge.start_date)} - {dateString(challenge.end_date)} </p> : <p className={classes.cardDateText}>Durée illimitée</p>}   
-      </div>
-      <div className={classes.imageCard}>
-        {image ? <img src={window.URL.createObjectURL(image)} alt="map" className={classes.imageInDiv} /> : <img src={logo} alt="map" className={classes.imageInDiv} />}
-      </div>
-      <div className={classes.infoCard}>
-        <p className={classes.infoCardText}> Inscrit le </p>
-        <p className={classes.infoCardText}> Distance parcourue </p>
-        <p className={classes.infoCardText}> Temp passé </p> */}
+
       </div>
     </>
   );
