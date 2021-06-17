@@ -50,3 +50,11 @@ export const dateString = (date) => {
   var d = new Date(date);
   return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
 };
+
+export const getEventLable = (date) => {
+  const pad = (s) => {
+    return (s < 10) ? '0' + s : s;
+  };
+  var d = new Date(date);
+  return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+};

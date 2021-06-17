@@ -5,6 +5,12 @@ import ChallengeCardAvailable from './challengeCardAvailable';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { useStyles } from '../CustomCSS';
+// Fil d'ariane
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import Typography from '@material-ui/core/Typography';
+
 
 const ChallengesAvailable = () => {
   return <div>
@@ -28,10 +34,18 @@ const ChallengesAvailableList = () => {
 
   return <Grid container direction="column">    
     <Grid container direction="row">
-      <p>fil ariane</p>
-    </Grid>
+      <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+              <Link color="inherit" onClick={() => history.push(`/`)} className={classes.clickable}>
+                Accueil
+              </Link>
+              <Link color="inherit" onClick={() => history.push(`/dashboard`)} className={classes.clickable}>
+                Dashboard
+              </Link>
+              <Typography color="textPrimary">Challenges disponibles</Typography>
+            </Breadcrumbs>
+      </Grid>
     <div>
-      <h3>Les challenges disponibles</h3>
+      <h1>A vous de jouer</h1>
       {isLoading ? 'Chargement...' : isError ? "Il n'y a aucun challenge auquel vous pouvez vous inscrire :(" :
         <Grid container direction="row">
 

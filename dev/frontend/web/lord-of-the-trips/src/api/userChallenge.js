@@ -42,6 +42,22 @@ const apiUserChallenge = {
     .then(checkStatus);
   },
 
+  getUserChallengeStatistical: (challengeId) => {
+    return fetch(`${urlPrefix}/user/challenges/${challengeId}/statistics`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus)
+    .then(res => res.json());
+  },
+
+  getAllEventsForUserbyChallenge: (challengeId) => {
+    return fetch(`${urlPrefix}/challenges/${challengeId}/events`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus)
+    .then(res => res.json());
+  },
+
 };
 
 export default apiUserChallenge;

@@ -197,7 +197,8 @@ export const useStyles = makeStyles({
   },
   peopleCard:{
     textAlign:"center",
-    lineHeight:"50px"
+    lineHeight:"50px",
+    fontSize: "25px"
   },
   //Css pour les obstacles
   obstacleParent:{

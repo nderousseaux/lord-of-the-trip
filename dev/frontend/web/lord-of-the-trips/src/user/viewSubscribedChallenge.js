@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button';
 import ChallengeInfo from './challengeInfo';
 import ChallengeMap from './challengeMap';
 import * as css from '../CustomCSS';
+import UserchallengeStatisticals from './userchallengeStatistical'
+import UserchallengeEvents from './userchallengeEvents'
 
 const ViewSubscribedChallenge = () => {
   let { id } = useParams();
@@ -43,7 +45,18 @@ const ViewChallengeInfo = ({ challenge }) => {
       </div>
       <hr />
       <div>
+        { <UserchallengeStatisticals challenge={challenge} /> }
+        <p>
+          _______________________________<br />
+          _______________________________<br />
+          _______________________________
+        </p>
+      </div>
+      <hr />
+      <div>
         <h3>Historique de vos actions</h3>
+        { <UserchallengeEvents challenge={challenge} /> }
+        
         <p>
           _______________________________<br />
           _______________________________<br />
