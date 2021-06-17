@@ -21,6 +21,7 @@ from loftes.resources.CheckChallengeResources import checkChallenge
 from loftes.resources.ObstacleResources import ObstacleResources
 from loftes.resources.ChallengeResources import ChallengeResources
 from loftes.resources.UserChallengeResources import UserChallengeResources
+from loftes.resources.EventResources import EventResources
 
 import loftes.error_messages as error_messages
 
@@ -1713,6 +1714,10 @@ def unsubscribe(request):
             if subscribed_challenge != None:
 
                 try:
+
+                    events_to_delete = EventResources().find_all_events_for_user_by_challenge(user.id, challenge.id)
+                    for event_to_delete in events_to_delete:
+                        DBSession.delete(event_to_delete)
 
                     DBSession.query(UserChallenge).filter(UserChallenge.id == subscribed_challenge.id).update(
                         {UserChallenge.unsubscribe_date: datetime.datetime.now()}
