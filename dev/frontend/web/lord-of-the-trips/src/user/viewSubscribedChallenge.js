@@ -56,22 +56,11 @@ const ViewChallengeInfo = ({ challenge }) => {
       <hr />
       <div>
         { <UserchallengeStatisticals challenge={challenge} /> }
-        <p>
-          _______________________________<br />
-          _______________________________<br />
-          _______________________________
-        </p>
       </div>
       <hr />
       <div>
         <h3>Historique de vos actions</h3>
         { <UserchallengeEvents challenge={challenge} /> }
-
-        <p>
-          _______________________________<br />
-          _______________________________<br />
-          _______________________________
-        </p>
       </div>
     </div>
   );

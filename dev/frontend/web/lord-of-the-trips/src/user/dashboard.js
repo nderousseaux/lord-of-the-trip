@@ -88,7 +88,8 @@ const FinishChallenges = () => {
   const classes = useStyles();
   const queryClient = useQueryClient();
   const history = useHistory();
-  const { isLoading, isError, data: notSubscribedChallenges } = useQuery('notSubscribedChallenges', () => apiUserChallenge.getNotSubscribedChallenges());
+  //const { isLoading, isError, data: notSubscribedChallenges } = useQuery('notSubscribedChallenges', () => apiUserChallenge.getNotSubscribedChallenges());
+  const { isLoading, isError, data: subscribedChallenges } = useQuery('subscribedChallenges', () => apiUserChallenge.getSubscribedChallenges());
 
   return <div>
     <h3>Vos challenges accomplis</h3>
@@ -110,7 +111,8 @@ const FinishChallenges = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-        {notSubscribedChallenges.challenges.map(c => (
+        {subscribedChallenges.challenges.map(c => (
+          
           // que ceux fini manque des champs
             <TableRow key={c.id}>
               <TableCell className={classes.tableLeft}>

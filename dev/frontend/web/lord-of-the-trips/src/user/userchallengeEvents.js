@@ -92,7 +92,7 @@ const getSpeed = (distance,duration) => {
   let seconds = Math.round(duration) / 1000 ;
 
   if (Math.round(distance) >= 1000 ){
-    //distanceFormat = (Math.round(Math.round(distance)/100)/10) / (Math.round(seconds / 3600));
+    distanceFormat = (Math.round(Math.round(distance)/100)/10) / (Math.round(seconds / 3600));
     unitee = 'km/h';
   }
   else {
@@ -114,65 +114,40 @@ const UserchallengeEvents = ({ challenge }) => {
   let classes = useStyles();
 
   const { isLoading, isError, error, data: events } = useQuery(['events', challenge.id], () => apiUserChallenge.getAllEventsForUserbyChallenge(challenge.id));
+  return <div>
+    <h3>Vos actions</h3>
+    {isLoading ? 'Chargement...' : isError ? "Vous n'avez pas d'évenements sur ce challenge" :
 
-  return (
-    <>
 
-      <div >
-        
-
-        {isLoading ? 'Chargement...' : isError ? error.message : <> 
-            <div >
-            <h2>Vos Actions</h2>
-            {/* <p>{getIconMove(statisticals.statistics.average_move_type)}</p>
-            
-            <p>{getdistance(statisticals.statistics.distance)}</p>
-
-            <p>{getTimeDayHour(statisticals.statistics.time)}</p>
-            <p>{getSpeed( statisticals.statistics.distance,statisticals.statistics.time) }</p> */}
-
-              {/* <TableContainer component={Paper}>
-                <Table>
-                  <TableHead className={classes.tableAdminHead}>
-                    <TableRow>
-                      <TableCell className={classes.tableAdminheadStyle}>Mode</TableCell>
-                      <TableCell className={classes.tableAdminheadStyle}>Distance parcourue</TableCell>
-                      <TableCell className={classes.tableAdminheadStyle}>Temp passé</TableCell>
-                      <TableCell className={classes.tableAdminheadStyle}>Vitesse</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    
-                  {statisticals.statistics
-                      <TableRow key={st.average_move_type}>
-                        <TableCell className={classes.tableLeft}>{getIconMove(st.average_move_type)}</TableCell>
-                        <TableCell className={classes.tableDescr}> {getdistance(st.distance)}</TableCell>
-                        <TableCell className={classes.tableRight}>{getTimeDayHour(st.time)}</TableCell>
-                        <TableCell className={classes.tableRight}>{getSpeed(st.time, st.duration)}</TableCell>
-                      </TableRow>
-                    ))} 
-                  </TableBody>
-                </Table>
-              </TableContainer>   */}
-            </div>
-          </> }
-        {/* <p className={classes.cardChildOneText01}>{challenge.name}</p>
-        <p className={classes.cardChildOneText02}> Difficulté : {difficulty}</p>
-      </div>
-      <div className={classes.cardDate}>
-        {challenge.start_date ?
-          <p className={classes.cardDateText}> {dateString(challenge.start_date)} - {dateString(challenge.end_date)} </p> : <p className={classes.cardDateText}>Durée illimitée</p>}   
-      </div>
-      <div className={classes.imageCard}>
-        {image ? <img src={window.URL.createObjectURL(image)} alt="map" className={classes.imageInDiv} /> : <img src={logo} alt="map" className={classes.imageInDiv} />}
-      </div>
-      <div className={classes.infoCard}>
-        <p className={classes.infoCardText}> Inscrit le </p>
-        <p className={classes.infoCardText}> Distance parcourue </p>
-        <p className={classes.infoCardText}> Temp passé </p> */}
-      </div>
-    </>
-  );
+      <TableContainer component={Paper}>
+      <Table  aria-label="actions utilisateur">
+        <TableHead className={classes.tableAdminHead}>       
+          <TableRow>
+            <TableCell className={classes.tableAdminheadStyle}>Date</TableCell>
+            <TableCell className={classes.tableAdminheadStyle}>Type d'évènement</TableCell>
+            <TableCell className={classes.tableAdminheadStyle}>Moyen</TableCell>
+            <TableCell className={classes.tableAdminheadStyle}>Distance</TableCell>
+            <TableCell className={classes.tableAdminheadStyst}>Durée</TableCell>
+            <TableCell className={classes.tableAdminheadStyst}>Vitesse</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        {events.events.map(e => (
+          // que ceux fini manque des champs
+            <TableRow key={e.id}>
+              <TableCell className={classes.tableLeft}>{dateString(e.event_date)}</TableCell>
+              <TableCell className={classes.tableLeft}>{e.event_type_info.label}</TableCell>
+              <TableCell className={classes.tableLeft}>{getIconMove(e.move_type)}</TableCell>
+              <TableCell className={classes.tableDescr}>{e.distance != null ? getdistance(e.distance) : ""}</TableCell>
+              <TableCell className={classes.tableRight}>{e.duration != null ? getTimeDayHour(e.duration) : ""}</TableCell>
+              <TableCell className={classes.tableRight}>{e.distance != null ? getSpeed(e.distance, e.duration) : ""}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      </TableContainer>
+    }
+  </div>      
 };
 
 export default UserchallengeEvents;
