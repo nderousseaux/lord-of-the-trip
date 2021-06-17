@@ -1030,8 +1030,8 @@ def respond_on_obstacle(request):
                                 # check if uploaded file is correct type of image
                                 if file_type == "image/jpeg" or file_type == "image/png":
 
-                                    # check if uploaded file is not bigger than 8MB
-                                    if request.POST["file"].bytes_read < 8388608:  # 8MB
+                                    # check if uploaded file is not bigger than 16MB
+                                    if request.POST["file"].bytes_read < 16777216:  # 16MB
 
                                         root = get_project_root()
                                         obstacle_uploads_path = "/uploads/obstacles/user_" + str(user.id)
