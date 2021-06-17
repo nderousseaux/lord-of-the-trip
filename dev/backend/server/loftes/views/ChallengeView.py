@@ -2115,264 +2115,252 @@ def duplicate(request):
                     # check if challenge is not permanent
                     if challenge.end_date != None:
 
-                        # check if challenge is already finished
-                        if challenge.end_date < now:
+                        try:
 
-                            try:
+                            old_challenge = challenge
 
-                                old_challenge = challenge
+                            name_splitter = old_challenge.name.split(" *")
+                            old_challenge_name = name_splitter[0]
 
-                                name_splitter = old_challenge.name.split(" *")
-                                old_challenge_name = name_splitter[0]
+                            last_challenge_with_same_name = ChallengeResources().find_last_challenge_by_name(
+                                old_challenge_name
+                            )
 
-                                last_challenge_with_same_name = ChallengeResources().find_last_challenge_by_name(
-                                    old_challenge_name
+                            counter_splitter = last_challenge_with_same_name.name.split(" *")
+                            name_counter = int(counter_splitter[1]) if len(counter_splitter) > 1 else 1
+
+                            challenge_schema = ChallengeSchema()
+
+                            new_challenge_data = request.json
+                            new_challenge_data["name"] = old_challenge_name + " *" + str(name_counter + 1)
+
+                            new_challenge = challenge_schema.load(new_challenge_data)
+
+                            # check if new start and end date are not null
+                            if new_challenge.start_date != None and new_challenge.end_date != None:
+                                # new challenge creation
+                                new_challenge.description = old_challenge.description
+                                new_challenge.level = old_challenge.level
+                                new_challenge.scalling = old_challenge.scalling
+                                new_challenge.step_length = old_challenge.step_length
+                                # duplicated challenge could be modifiable
+                                new_challenge.draft = True
+                                new_challenge.admin_id = user.id
+
+                                DBSession.add(new_challenge)
+                                DBSession.flush()
+
+                                # new crossing points creation
+                                old_crossing_points = (
+                                    DBSession.query(CrossingPoint)
+                                    .filter(CrossingPoint.challenge_id == old_challenge.id)
+                                    .all()
                                 )
 
-                                counter_splitter = last_challenge_with_same_name.name.split(" *")
-                                name_counter = int(counter_splitter[1]) if len(counter_splitter) > 1 else 1
+                                for old_crossing_point in old_crossing_points:
+                                    new_crossing_point = CrossingPoint()
+                                    new_crossing_point.name = old_crossing_point.name
+                                    new_crossing_point.position_x = old_crossing_point.position_x
+                                    new_crossing_point.position_y = old_crossing_point.position_y
+                                    new_crossing_point.challenge_id = new_challenge.id
+                                    DBSession.add(new_crossing_point)
 
-                                challenge_schema = ChallengeSchema()
+                                DBSession.flush()
 
-                                new_challenge_data = request.json
-                                new_challenge_data["name"] = old_challenge_name + " *" + str(name_counter + 1)
-
-                                new_challenge = challenge_schema.load(new_challenge_data)
-
-                                # check if new start and end date are not null
-                                if new_challenge.start_date != None and new_challenge.end_date != None:
-                                    # new challenge creation
-                                    new_challenge.description = old_challenge.description
-                                    new_challenge.level = old_challenge.level
-                                    new_challenge.scalling = old_challenge.scalling
-                                    new_challenge.step_length = old_challenge.step_length
-                                    # duplicated challenge could be modifiable
-                                    new_challenge.draft = True
-                                    new_challenge.admin_id = user.id
-
-                                    DBSession.add(new_challenge)
-                                    DBSession.flush()
-
-                                    # new crossing points creation
-                                    old_crossing_points = (
-                                        DBSession.query(CrossingPoint)
-                                        .filter(CrossingPoint.challenge_id == old_challenge.id)
-                                        .all()
+                                # start crossing point for new challenge
+                                old_start_crossing_point = None
+                                if old_challenge.start_crossing_point_id != None:
+                                    old_start_crossing_point = (
+                                        DBSession().query(CrossingPoint).get(old_challenge.start_crossing_point_id)
                                     )
 
-                                    for old_crossing_point in old_crossing_points:
-                                        new_crossing_point = CrossingPoint()
-                                        new_crossing_point.name = old_crossing_point.name
-                                        new_crossing_point.position_x = old_crossing_point.position_x
-                                        new_crossing_point.position_y = old_crossing_point.position_y
-                                        new_crossing_point.challenge_id = new_challenge.id
-                                        DBSession.add(new_crossing_point)
+                                new_start_crossing_point = None
+                                if old_start_crossing_point != None:
+                                    new_start_crossing_point = (
+                                        DBSession.query(CrossingPoint)
+                                        .filter(
+                                            CrossingPoint.name == old_start_crossing_point.name,
+                                            CrossingPoint.challenge_id == new_challenge.id,
+                                        )
+                                        .first()
+                                    )
+                                # end crossing point for new challenge
+                                old_end_crossing_point = None
+                                if old_challenge.end_crossing_point_id != None:
+                                    old_end_crossing_point = (
+                                        DBSession().query(CrossingPoint).get(old_challenge.end_crossing_point_id)
+                                    )
+
+                                new_end_crossing_point = None
+                                if old_end_crossing_point != None:
+                                    new_end_crossing_point = (
+                                        DBSession.query(CrossingPoint)
+                                        .filter(
+                                            CrossingPoint.name == old_end_crossing_point.name,
+                                            CrossingPoint.challenge_id == new_challenge.id,
+                                        )
+                                        .first()
+                                    )
+
+                                # check if new start and end date are not null
+                                if new_start_crossing_point != None and new_end_crossing_point != None:
+                                    # update of challenge
+                                    DBSession.query(Challenge).filter(Challenge.id == new_challenge.id).update(
+                                        {
+                                            Challenge.start_crossing_point_id: new_start_crossing_point.id,
+                                            Challenge.end_crossing_point_id: new_end_crossing_point.id,
+                                        }
+                                    )
 
                                     DBSession.flush()
+                                else:
+                                    raise EnvironmentError(error_messages.DUPLICATION_CHALLENGE_START_AND_END_MISSING)
 
-                                    # start crossing point for new challenge
-                                    old_start_crossing_point = None
-                                    if old_challenge.start_crossing_point_id != None:
-                                        old_start_crossing_point = (
-                                            DBSession().query(CrossingPoint).get(old_challenge.start_crossing_point_id)
+                                # challenge's map's url
+                                if old_challenge.map_url != None:
+                                    old_challenge_image = str(get_project_root()) + old_challenge.map_url
+
+                                    if os.path.exists(old_challenge_image):
+                                        map_url_splitter = old_challenge.map_url.split("_")
+                                        image_format = old_challenge.map_url.split(".")[1]
+                                        new_challenge_map_url = (
+                                            map_url_splitter[0] + "_" + str(new_challenge.id) + "." + image_format
                                         )
-
-                                    new_start_crossing_point = None
-                                    if old_start_crossing_point != None:
-                                        new_start_crossing_point = (
-                                            DBSession.query(CrossingPoint)
-                                            .filter(
-                                                CrossingPoint.name == old_start_crossing_point.name,
-                                                CrossingPoint.challenge_id == new_challenge.id,
+                                        # copy of new file
+                                        shutil.copyfile(
+                                            old_challenge_image,
+                                            str(get_project_root()) + new_challenge_map_url,
+                                        )
+                                        if os.path.exists(str(get_project_root()) + new_challenge_map_url):
+                                            # update of challenge
+                                            DBSession.query(Challenge).filter(Challenge.id == new_challenge.id).update(
+                                                {Challenge.map_url: new_challenge_map_url}
                                             )
-                                            .first()
-                                        )
-                                    # end crossing point for new challenge
-                                    old_end_crossing_point = None
-                                    if old_challenge.end_crossing_point_id != None:
-                                        old_end_crossing_point = (
-                                            DBSession().query(CrossingPoint).get(old_challenge.end_crossing_point_id)
-                                        )
 
-                                    new_end_crossing_point = None
-                                    if old_end_crossing_point != None:
-                                        new_end_crossing_point = (
-                                            DBSession.query(CrossingPoint)
-                                            .filter(
-                                                CrossingPoint.name == old_end_crossing_point.name,
-                                                CrossingPoint.challenge_id == new_challenge.id,
-                                            )
-                                            .first()
+                                            DBSession.flush()
+
+                                # new segments creation
+                                old_segments = (
+                                    DBSession.query(Segment).filter(Segment.challenge_id == old_challenge.id).all()
+                                )
+
+                                for old_segment in old_segments:
+                                    new_segment = Segment()
+                                    new_segment.name = old_segment.name
+                                    new_segment.coordinates = old_segment.coordinates
+                                    new_segment.challenge_id = new_challenge.id
+
+                                    DBSession.add(new_segment)
+
+                                DBSession.flush()
+
+                                # update start and end crossing points for segment
+                                new_segments = (
+                                    DBSession.query(Segment).filter(Segment.challenge_id == new_challenge.id).all()
+                                )
+
+                                for new_segment in new_segments:
+                                    # find old segment by name
+                                    old_segment = (
+                                        DBSession.query(Segment)
+                                        .filter(
+                                            Segment.name == new_segment.name,
+                                            Segment.challenge_id == old_challenge.id,
                                         )
+                                        .first()
+                                    )
+                                    # find old segment's start crossing point
+                                    old_segment_start_crossing_point = (
+                                        DBSession().query(CrossingPoint).get(old_segment.start_crossing_point_id)
+                                    )
+                                    # find new segment's start crossing point
+                                    new_segment_start_crossing_point = (
+                                        DBSession.query(CrossingPoint)
+                                        .filter(
+                                            CrossingPoint.name == old_segment_start_crossing_point.name,
+                                            CrossingPoint.challenge_id == new_challenge.id,
+                                        )
+                                        .first()
+                                    )
+                                    # find old segment's end crossing point
+                                    old_segment_end_crossing_point = (
+                                        DBSession().query(CrossingPoint).get(old_segment.end_crossing_point_id)
+                                    )
+                                    # find new segment's start crossing point
+                                    new_segment_end_crossing_point = (
+                                        DBSession.query(CrossingPoint)
+                                        .filter(
+                                            CrossingPoint.name == old_segment_end_crossing_point.name,
+                                            CrossingPoint.challenge_id == new_challenge.id,
+                                        )
+                                        .first()
+                                    )
 
                                     # check if new start and end date are not null
-                                    if new_start_crossing_point != None and new_end_crossing_point != None:
-                                        # update of challenge
-                                        DBSession.query(Challenge).filter(Challenge.id == new_challenge.id).update(
+                                    if (
+                                        new_segment_start_crossing_point != None
+                                        and new_segment_end_crossing_point != None
+                                    ):
+                                        # segment update
+                                        DBSession.query(Segment).filter(Segment.id == new_segment.id).update(
                                             {
-                                                Challenge.start_crossing_point_id: new_start_crossing_point.id,
-                                                Challenge.end_crossing_point_id: new_end_crossing_point.id,
+                                                Segment.start_crossing_point_id: new_segment_start_crossing_point.id,
+                                                Segment.end_crossing_point_id: new_segment_end_crossing_point.id,
                                             }
                                         )
 
                                         DBSession.flush()
                                     else:
                                         raise EnvironmentError(
-                                            error_messages.DUPLICATION_CHALLENGE_START_AND_END_MISSING
+                                            error_messages.DUPLICATION_SEGMENT_START_AND_END_MISSING
                                         )
 
-                                    # challenge's map's url
-                                    if old_challenge.map_url != None:
-                                        old_challenge_image = str(get_project_root()) + old_challenge.map_url
+                                    # check if old segment had obstacles
+                                    if len(old_segment.obstacles) > 0:
+                                        for old_obstacle in old_segment.obstacles:
+                                            new_obstacle = Obstacle()
+                                            new_obstacle.label = old_obstacle.label
+                                            new_obstacle.description = old_obstacle.description
+                                            new_obstacle.progress = old_obstacle.progress
+                                            new_obstacle.question_type = old_obstacle.question_type
+                                            new_obstacle.result = old_obstacle.result
+                                            new_obstacle.segment_id = new_segment.id
+                                            DBSession.add(new_obstacle)
 
-                                        if os.path.exists(old_challenge_image):
-                                            map_url_splitter = old_challenge.map_url.split("_")
-                                            image_format = old_challenge.map_url.split(".")[1]
-                                            new_challenge_map_url = (
-                                                map_url_splitter[0] + "_" + str(new_challenge.id) + "." + image_format
-                                            )
-                                            # copy of new file
-                                            shutil.copyfile(
-                                                old_challenge_image,
-                                                str(get_project_root()) + new_challenge_map_url,
-                                            )
-                                            if os.path.exists(str(get_project_root()) + new_challenge_map_url):
-                                                # update of challenge
-                                                DBSession.query(Challenge).filter(
-                                                    Challenge.id == new_challenge.id
-                                                ).update({Challenge.map_url: new_challenge_map_url})
+                                        DBSession.flush()
 
-                                                DBSession.flush()
-
-                                    # new segments creation
-                                    old_segments = (
-                                        DBSession.query(Segment).filter(Segment.challenge_id == old_challenge.id).all()
-                                    )
-
-                                    for old_segment in old_segments:
-                                        new_segment = Segment()
-                                        new_segment.name = old_segment.name
-                                        new_segment.coordinates = old_segment.coordinates
-                                        new_segment.challenge_id = new_challenge.id
-
-                                        DBSession.add(new_segment)
-
-                                    DBSession.flush()
-
-                                    # update start and end crossing points for segment
-                                    new_segments = (
-                                        DBSession.query(Segment).filter(Segment.challenge_id == new_challenge.id).all()
-                                    )
-
-                                    for new_segment in new_segments:
-                                        # find old segment by name
-                                        old_segment = (
-                                            DBSession.query(Segment)
-                                            .filter(
-                                                Segment.name == new_segment.name,
-                                                Segment.challenge_id == old_challenge.id,
-                                            )
-                                            .first()
-                                        )
-                                        # find old segment's start crossing point
-                                        old_segment_start_crossing_point = (
-                                            DBSession().query(CrossingPoint).get(old_segment.start_crossing_point_id)
-                                        )
-                                        # find new segment's start crossing point
-                                        new_segment_start_crossing_point = (
-                                            DBSession.query(CrossingPoint)
-                                            .filter(
-                                                CrossingPoint.name == old_segment_start_crossing_point.name,
-                                                CrossingPoint.challenge_id == new_challenge.id,
-                                            )
-                                            .first()
-                                        )
-                                        # find old segment's end crossing point
-                                        old_segment_end_crossing_point = (
-                                            DBSession().query(CrossingPoint).get(old_segment.end_crossing_point_id)
-                                        )
-                                        # find new segment's start crossing point
-                                        new_segment_end_crossing_point = (
-                                            DBSession.query(CrossingPoint)
-                                            .filter(
-                                                CrossingPoint.name == old_segment_end_crossing_point.name,
-                                                CrossingPoint.challenge_id == new_challenge.id,
-                                            )
-                                            .first()
-                                        )
-
-                                        # check if new start and end date are not null
-                                        if (
-                                            new_segment_start_crossing_point != None
-                                            and new_segment_end_crossing_point != None
-                                        ):
-                                            # segment update
-                                            DBSession.query(Segment).filter(Segment.id == new_segment.id).update(
-                                                {
-                                                    Segment.start_crossing_point_id: new_segment_start_crossing_point.id,
-                                                    Segment.end_crossing_point_id: new_segment_end_crossing_point.id,
-                                                }
-                                            )
-
-                                            DBSession.flush()
-                                        else:
-                                            raise EnvironmentError(
-                                                error_messages.DUPLICATION_SEGMENT_START_AND_END_MISSING
-                                            )
-
-                                        # check if old segment had obstacles
-                                        if len(old_segment.obstacles) > 0:
-                                            for old_obstacle in old_segment.obstacles:
-                                                new_obstacle = Obstacle()
-                                                new_obstacle.label = old_obstacle.label
-                                                new_obstacle.description = old_obstacle.description
-                                                new_obstacle.progress = old_obstacle.progress
-                                                new_obstacle.question_type = old_obstacle.question_type
-                                                new_obstacle.result = old_obstacle.result
-                                                new_obstacle.segment_id = new_segment.id
-                                                DBSession.add(new_obstacle)
-
-                                            DBSession.flush()
-
-                                    response = service_informations.build_response(
-                                        exception.HTTPCreated,
-                                        challenge_schema.dump(new_challenge),
-                                    )
-
-                                else:
-                                    return service_informations.build_response(
-                                        exception.HTTPBadRequest,
-                                        None,
-                                        error_messages.DUPLICATE_CHALLENGE_MANDATORY_FIELD,
-                                    )
-
-                            except ValidationError as validation_error:
                                 response = service_informations.build_response(
+                                    exception.HTTPCreated,
+                                    challenge_schema.dump(new_challenge),
+                                )
+
+                            else:
+                                return service_informations.build_response(
                                     exception.HTTPBadRequest,
                                     None,
-                                    str(validation_error),
+                                    error_messages.DUPLICATE_CHALLENGE_MANDATORY_FIELD,
                                 )
 
-                            except ValueError as value_error:
-                                response = service_informations.build_response(
-                                    exception.HTTPBadRequest, None, str(value_error)
-                                )
-
-                            except EnvironmentError as ee:
-                                response = service_informations.build_response(
-                                    exception.HTTPUnprocessableEntity, None, str(ee)
-                                )
-
-                            except Exception as e:
-                                response = service_informations.build_response(exception.HTTPInternalServerError)
-                                logging.getLogger(__name__).warn("Returning: %s", str(e))
-
-                        else:
+                        except ValidationError as validation_error:
                             response = service_informations.build_response(
-                                exception.HTTPForbidden,
+                                exception.HTTPBadRequest,
                                 None,
-                                error_messages.DUPLICATION_CHALLENGE_NOT_TERMINATED,
+                                str(validation_error),
                             )
+
+                        except ValueError as value_error:
+                            response = service_informations.build_response(
+                                exception.HTTPBadRequest, None, str(value_error)
+                            )
+
+                        except EnvironmentError as ee:
+                            response = service_informations.build_response(
+                                exception.HTTPUnprocessableEntity, None, str(ee)
+                            )
+
+                        except Exception as e:
+                            response = service_informations.build_response(exception.HTTPInternalServerError)
+                            logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                     else:
                         response = service_informations.build_response(
