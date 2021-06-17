@@ -5,6 +5,12 @@ import ChallengeCard from './challengeCard';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import { useStyles } from '../CustomCSS';
+import { dateString } from "../utils/utils";
+// Fil d'ariane
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import Typography from '@material-ui/core/Typography';
 //Tab
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -13,6 +19,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import MDEditor from '@uiw/react-md-editor';
 
 const UserDashboard = () => {
   return <div>
@@ -38,7 +45,12 @@ const SubscribedChallenges = () => {
 
   return <Grid container direction="column">
     <Grid container direction="row">
-      <p>fil ariane</p>
+      <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+          <Link color="inherit" onClick={() => history.push(`/`)} className={classes.clickable}>
+            Accueil
+          </Link>
+          <Typography color="textPrimary">DashBoard</Typography>
+        </Breadcrumbs>
     </Grid>
     <div className={classes.boutonOne}>
       <Button onClick={() => history.push(`/ChallengesAvailable`)}size="large" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary}` }>Voir les challenges disponibles</Button> 
@@ -51,7 +63,7 @@ const SubscribedChallenges = () => {
           {subscribedChallenges.challenges.map(c => (
             // Todo : sélectionnez qur ceux ayant une inscription en cours
               //{c.id} : {c.name} {' '}
-              <Grid key={c.id} item lg={3}>  
+              <Grid key={c.id} item sm={3}>  
                   <div className={classes.cardParent}>            
                     <ChallengeCard challenge={c} />      
 
@@ -99,13 +111,15 @@ const FinishChallenges = () => {
         </TableHead>
         <TableBody>
         {notSubscribedChallenges.challenges.map(c => (
-          // que ceux fini
+          // que ceux fini manque des champs
             <TableRow key={c.id}>
               <TableCell className={classes.tableLeft}>
                 {c.name}
               </TableCell>
-              <TableCell className={classes.tableDescr}>{c.description}</TableCell>
-              <TableCell className={classes.tableRight}>{c.start_date}</TableCell>
+              <TableCell className={classes.tableDescr}>
+                <MDEditor.Markdown source={c.description} />
+              </TableCell>
+              <TableCell className={classes.tableRight}>{dateString(c.start_date)}</TableCell>
               <TableCell className={classes.tableRight}> h </TableCell>
               <TableCell className={classes.tableRight}> km</TableCell>
               <TableCell className={classes.tableRight}>

@@ -168,6 +168,15 @@ const apiChallenge = {
     .then(checkStatus);
   },
 
+  getAlllUsersChallenge: (id) => {
+    return fetch(`${urlPrefix}/challenges/${id}/subscribers`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    })
+    .then(checkStatus)
+    .then(res => res.json());
+  },
+
+
 };
 
 export default apiChallenge;

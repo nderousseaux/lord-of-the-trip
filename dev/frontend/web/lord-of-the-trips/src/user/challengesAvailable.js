@@ -36,7 +36,7 @@ const ChallengesAvailableList = () => {
         <Grid container direction="row">
 
             {notSubscribedChallenges.challenges.map(c => ( 
-              <Grid key={c.id} item lg={3}>        
+              <Grid key={c.id} item sm={3}>        
                 <div className={classes.cardParent}>
                   <ChallengeCardAvailable challenge={c} />
                 </div>
