@@ -1,5 +1,6 @@
 from loftes.models import Obstacle, Segment, Challenge, Event, DBSession
 
+
 class ObstacleResources:
     def find_all_obstacles_by_challenge(self, challenge_id):
 
@@ -10,7 +11,6 @@ class ObstacleResources:
         )
 
         return query.all()
-
 
     def find_all_obstacles_by_segment(self, segment):
 

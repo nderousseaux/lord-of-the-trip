@@ -25,6 +25,7 @@ UNSUBSCRIPTION_CHALLENGE_NOT_SUBSCRIBED = (
 # challenge verification
 VERIFICATION_CHALLENGE_START_MISSING = "Start crossing point is missing."
 VERIFICATION_CHALLENGE_END_MISSING = "End crossing point is missing."
+VERIFICATION_CHALLENGE_GRAPH_ERROR = "Errors in challenge routing."
 # challenge duplication
 DUPLICATION_CHALLENGE_START_AND_END_MISSING = "Challenge's start and end crossing points were missing."
 DUPLICATION_SEGMENT_START_AND_END_MISSING = "Segment's start and end crossing points were missing."
@@ -49,6 +50,15 @@ PUBLISH_CHALLENGE_WITH_NO_DESCRIPTION = "You do not have permission to publish a
 PUBLISH_CHALLENGE_WITH_NO_MAP = "You do not have permission to publish a challenge that has no map uploaded."
 PUBLISH_CHALLENGE_WITH_NO_SCALLING = "You do not have permission to publish a challenge that has no scalling."
 PUBLISH_CHALLENGE_WITH_NO_STEP_LENGTH = "You do not have permission to publish a challenge that has no step length."
+PUBLISH_CHALLENGE_ERRORS_IN_ROUTING = (
+    "You do not have permission to publish a challenge that has errors in the routing."
+)
+PUBLISH_CHALLENGE_START_CROSSING_POINT_MISSING = (
+    "You do not have permission to publish a challenge that has no start crossing point."
+)
+PUBLISH_CHALLENGE_END_CROSSING_POINT_MISSING = (
+    "You do not have permission to publish a challenge that has no end crossing point."
+)
 REVOKE_CHALLENGE_WITH_SUBSCRIBED_USERS = (
     "You do not have permission to revoke a challenge that has already subscribed users."
 )
@@ -66,8 +76,12 @@ OBSTACLE_PHOTO_ALREADY_SEND = (
     "You do not have permission to respond on an obstacle where you have already send the answer."
 )
 OBSTACLE_LABEL_MISSING = "You do not have permission to publish a challenge because there is no label for an obstacle."
-OBSTACLE_RESULT_MISSING = "You do not have permission to publish a challenge because there is no result for an obstacle of type question."
-OBSTACLE_DESCRIPTION_MISSING = "You do not have permission to publish a challenge because there is no description for an obstacle of type photo."
+OBSTACLE_RESULT_MISSING = (
+    "You do not have permission to publish a challenge because there is no result for an obstacle of type question."
+)
+OBSTACLE_DESCRIPTION_MISSING = (
+    "You do not have permission to publish a challenge because there is no description for an obstacle of type photo."
+)
 
 # general
 NOTHING_TO_UPDATE = "Nothing to update."
