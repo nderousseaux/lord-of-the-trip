@@ -7,7 +7,7 @@ import loftes.error_messages as error_messages
 
 
 class ServiceInformations:
-    def build_response(self, http_exception, data=None, message=None):
+    def build_response(self, http_exception, data=None, message=None, details=None):
 
         code = http_exception.code
         content = data
@@ -20,6 +20,9 @@ class ServiceInformations:
                     "message": self.get_error_message_by_code(code) if message == None else message,
                 }
             }
+
+            if details != None:
+                content["error"].update({"details": details})
 
         response = Response(content_type="application/json")
         response.status_code = code

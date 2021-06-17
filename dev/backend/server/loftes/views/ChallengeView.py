@@ -1860,12 +1860,22 @@ def verify(request):
 
                     if challenge.start_crossing_point_id is None:
                         return service_informations.build_response(
-                            exception.HTTPBadRequest, None, error_messages.VERIFICATION_CHALLENGE_START_MISSING
+                            exception.HTTPBadRequest,
+                            None,
+                            error_messages.VERIFICATION_CHALLENGE_START_MISSING,
+                            {
+                                "start_crossing_point_id": None,
+                            },
                         )
 
                     if challenge.end_crossing_point_id is None:
                         return service_informations.build_response(
-                            exception.HTTPBadRequest, None, error_messages.VERIFICATION_CHALLENGE_END_MISSING
+                            exception.HTTPBadRequest,
+                            None,
+                            error_messages.VERIFICATION_CHALLENGE_END_MISSING,
+                            {
+                                "end_crossing_point_id": None,
+                            },
                         )
 
                     try:
@@ -1881,7 +1891,9 @@ def verify(request):
                             orphans = crossingPoints
 
                             response = service_informations.build_response(
-                                exception.HTTPOk,
+                                exception.HTTPBadRequest,
+                                None,
+                                error_messages.VERIFICATION_CHALLENGE_GRAPH_ERROR,
                                 {
                                     "orphans": CrossingPointSchema(many=True).dump(orphans),
                                 },
@@ -1900,7 +1912,9 @@ def verify(request):
 
                                 if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
                                     response = service_informations.build_response(
-                                        exception.HTTPOk,
+                                        exception.HTTPForbidden,
+                                        None,
+                                        error_messages.VERIFICATION_CHALLENGE_GRAPH_ERROR,
                                         {
                                             "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
                                             "deadend": CrossingPointSchema(many=True).dump(deadend),
@@ -2676,12 +2690,12 @@ def publish_challenge(request):
                         reason = error_messages.PUBLISH_CHALLENGE_END_DATE_HAS_PASSED
 
                     if challenge.description == None:
-                          can_be_published = False
-                          reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_DESCRIPTION
+                        can_be_published = False
+                        reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_DESCRIPTION
 
                     if challenge.map_url == None:
-                          can_be_published = False
-                          reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_MAP
+                        can_be_published = False
+                        reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_MAP
 
                     acceptable_levels = [1, 2, 3]
                     if challenge.level not in acceptable_levels:
@@ -2697,26 +2711,81 @@ def publish_challenge(request):
                         reason = error_messages.PUBLISH_CHALLENGE_WITH_NO_STEP_LENGTH
 
                     if challenge.start_crossing_point_id is None:
-                        can_be_published = False
-                        reason = error_messages.VERIFICATION_CHALLENGE_START_MISSING
+                        return service_informations.build_response(
+                            exception.HTTPBadRequest,
+                            None,
+                            error_messages.PUBLISH_CHALLENGE_START_CROSSING_POINT_MISSING,
+                            {
+                                "start_crossing_point_id": None,
+                            },
+                        )
 
                     if challenge.end_crossing_point_id is None:
-                        can_be_published = False
-                        reason = error_messages.VERIFICATION_CHALLENGE_END_MISSING
+                        return service_informations.build_response(
+                            exception.HTTPBadRequest,
+                            None,
+                            error_messages.PUBLISH_CHALLENGE_END_CROSSING_POINT_MISSING,
+                            {
+                                "end_crossing_point_id": None,
+                            },
+                        )
+
+                    # graph verification
+
+                    # On vérifie qu'aucun crossing point n'est orphelin
+                    orphans = []
+
+                    crossingPoints = (
+                        DBSession.query(CrossingPoint).filter(CrossingPoint.challenge_id == challenge.id).all()
+                    )
+
+                    # On vérifie qu'il y ai des crossings points
+                    if len(crossingPoints) < 2:
+                        orphans = crossingPoints
+
+                        return service_informations.build_response(
+                            exception.HTTPForbidden,
+                            None,
+                            error_messages.PUBLISH_CHALLENGE_ERRORS_IN_ROUTING,
+                            {
+                                "orphans": CrossingPointSchema(many=True).dump(orphans),
+                            },
+                        )
+
+                    else:
+                        for crossing in crossingPoints:
+                            if (len(crossing.segments_end) == 0 and len(crossing.segments_start) == 0) or (
+                                crossing.id != challenge.start_crossing_point_id and len(crossing.segments_end) == 0
+                            ):
+
+                                orphans.append(crossing)
+
+                            loops, deadend = checkChallenge(challenge)
+                            if len(loops) != 0 or len(deadend) != 0 or len(orphans) != 0:
+                                return service_informations.build_response(
+                                    exception.HTTPForbidden,
+                                    None,
+                                    error_messages.PUBLISH_CHALLENGE_ERRORS_IN_ROUTING,
+                                    {
+                                        "loop": [CrossingPointSchema(many=True).dump(loop) for loop in loops],
+                                        "deadend": CrossingPointSchema(many=True).dump(deadend),
+                                        "orphans": CrossingPointSchema(many=True).dump(orphans),
+                                    },
+                                )
 
                     obstacles = ObstacleResources().find_all_obstacles_by_challenge(challenge.id)
                     for obstacle in obstacles:
-                          if obstacle.label == None:
-                                can_be_published = False
-                                reason = error_messages.OBSTACLE_LABEL_MISSING
+                        if obstacle.label == None:
+                            can_be_published = False
+                            reason = error_messages.OBSTACLE_LABEL_MISSING
 
-                          if obstacle.question_type == 0 and obstacle.result == None:
-                                can_be_published = False
-                                reason = error_messages.OBSTACLE_RESULT_MISSING
+                        if obstacle.question_type == 0 and obstacle.result == None:
+                            can_be_published = False
+                            reason = error_messages.OBSTACLE_RESULT_MISSING
 
-                          if obstacle.question_type == 1 and obstacle.description == None:
-                                can_be_published = False
-                                reason = error_messages.OBSTACLE_DESCRIPTION_MISSING
+                        if obstacle.question_type == 1 and obstacle.description == None:
+                            can_be_published = False
+                            reason = error_messages.OBSTACLE_DESCRIPTION_MISSING
 
                     if can_be_published:
 
@@ -2735,11 +2804,7 @@ def publish_challenge(request):
                             logging.getLogger(__name__).warn("Returning: %s", str(e))
 
                     else:
-                        response = service_informations.build_response(
-                            exception.HTTPForbidden,
-                            None,
-                            reason,
-                        )
+                        response = service_informations.build_response(exception.HTTPForbidden, None, reason)
 
                 else:
                     response = service_informations.build_response(
