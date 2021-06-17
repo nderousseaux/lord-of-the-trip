@@ -87,7 +87,7 @@ export default function ChallengeBigCard(props){
         </View>
 
         <View style={styles.main}>
-          <Details/>
+          <Details {...props}/>
 
           <Description
             type="big"
