@@ -68,8 +68,8 @@ const ModalObstacle = ({ obstacleObject, challengeId, openState, setOpenState })
           <FormControl component="fieldset">
             <FormLabel component="legend">Type de l'obstacle</FormLabel>
             <RadioGroup row value={radioValue} onChange={e => setRadioValue(e.target.value)}>
-              <FormControlLabel value="0" control={<Radio />} label="Question" />
-              <FormControlLabel value="1" control={<Radio />} label="Photo" />
+              <FormControlLabel value="0" control={<Radio color="primary" />} label="Question" />
+              <FormControlLabel value="1" control={<Radio color="primary" />} label="Photo" />
             </RadioGroup>
           </FormControl>
           <hr />

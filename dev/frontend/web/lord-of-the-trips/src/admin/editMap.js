@@ -10,8 +10,12 @@ import { percentToPixels, pixelsToPercent, coordinatesEndSegment, pixelsLengthBe
 import ModalCrossingPoint from './modalCrossingPoint';
 import ModalSegment from './modalSegment';
 import ModalObstacle from './modalObstacle';
+import MenuDrawer from './menuDrawer';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import RemoveIcon from '@material-ui/icons/Remove';
@@ -28,7 +32,7 @@ const EditMap = () => {
   const [baseHeight, setBaseHeight] = useState(0);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  const [radioButtonValue, setRadioButtonValue] = useState("1");
+  const [radioButtonValue, setRadioButtonValue] = useState("11");
   const [zoom, setZoom] = useState(null);
   const [minZoom, setMinZoom] = useState(null);
   const [maxZoom, setMaxZoom] = useState(null);
@@ -569,15 +573,30 @@ const EditMap = () => {
   }
 
   return <>
-    <h3>Modifier la carte <Button onClick={() => history.push(`/editchallenge/${id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Modifier le challenge</Button> </h3>
+    <Grid container direction="row">
+      <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+        <Link color="inherit" onClick={() => history.push(`/`)} className={classes.clickable}>
+          Accueil
+        </Link>
+        <Link color="inherit" onClick={() => history.push(`/admindashboard`)} className={classes.clickable}>
+          Dashboard Administrateur
+        </Link>
+        <Link color="inherit" onClick={() => history.push(`/editchallenge/${id}`)} className={classes.clickable}>
+          Modification d'un challenge
+        </Link>
+        <Typography color="textPrimary">Édition de la carte</Typography>
+      </Breadcrumbs>
+    </Grid>
     {errorDownload ? <h3>{errorDownload.message}</h3> :
       successDownload ?
         <div>
-          <Menu radioButtonValue={radioButtonValue} setRadioButtonValue={setRadioButtonValue} />
-          <Typography>
-            Zoom
-          </Typography>
+          <MenuDrawer radioButtonValue={radioButtonValue} setRadioButtonValue={setRadioButtonValue} />
           <Grid container spacing={2}>
+            <Grid item>
+              <Typography>
+                Zoom
+              </Typography>
+            </Grid>
             <Grid item>
               <RemoveIcon />
             </Grid>
@@ -650,25 +669,6 @@ const EditMap = () => {
     <hr />
     <VerifyChallenge challenge={challenge} />
   </>
-};
-
-const Menu = ({ radioButtonValue, setRadioButtonValue }) => {
-  const handleOptionChange = (e) => {
-    setRadioButtonValue(e.target.value);
-  }
-  return <div>
-    <label> <input type="radio" name="action" value="1" checked={radioButtonValue === "1"} onChange={handleOptionChange} /> Rien </label>
-    <label> <input type="radio" name="action" value="2" checked={radioButtonValue === "2"} onChange={handleOptionChange} /> Ajouter des points de passage </label>
-    <label> <input type="radio" name="action" value="3" checked={radioButtonValue === "3"} onChange={handleOptionChange} /> Supprimer des points de passage </label>
-    <label> <input type="radio" name="action" value="4" checked={radioButtonValue === "4"} onChange={handleOptionChange} /> Tracer des segments </label>
-    <label> <input type="radio" name="action" value="5" checked={radioButtonValue === "5"} onChange={handleOptionChange} /> Supprimer des segments </label>
-    <label> <input type="radio" name="action" value="6" checked={radioButtonValue === "6"} onChange={handleOptionChange} /> Sélectionner le départ </label>
-    <label> <input type="radio" name="action" value="7" checked={radioButtonValue === "7"} onChange={handleOptionChange} /> Sélectionner l'arrivé </label>
-    <label> <input type="radio" name="action" value="8" checked={radioButtonValue === "8"} onChange={handleOptionChange} /> Changer le sens des segments </label>
-    <label> <input type="radio" name="action" value="9" checked={radioButtonValue === "9"} onChange={handleOptionChange} /> Ajouter des obstacles </label>
-    <label> <input type="radio" name="action" value="10" checked={radioButtonValue === "10"} onChange={handleOptionChange} /> Supprimer des obstacles </label>
-    <label> <input type="radio" name="action" value="11" checked={radioButtonValue === "11"} onChange={handleOptionChange} /> Modifier avec une modal (Cliquer sur les points / segments / obstacles) </label>
-  </div>
 };
 
 const VerifyChallenge = ({ challenge }) => {
