@@ -439,17 +439,16 @@ class EventResources:
 
     def find_arrival_date_for_user_by_challenge(self, user_id, challenge_id):
         query = (
-                DBSession.query(
-                    Event,
-                )
-                .join(Segment, Segment.id == Event.segment_id)
-                .filter(Event.event_type_id == 2, Event.user_id == user_id)
-                .filter(Segment.challenge_id == challenge_id)
+            DBSession.query(
+                Event,
             )
+            .join(Segment, Segment.id == Event.segment_id)
+            .filter(Event.event_type_id == 2, Event.user_id == user_id)
+            .filter(Segment.challenge_id == challenge_id)
+        )
 
         event_date = None
         if query.first() != None:
-            print(query.first().id)
             if query.first().event_date != None:
                 event_date = query.first().event_date.strftime("%d/%m/%Y")
 

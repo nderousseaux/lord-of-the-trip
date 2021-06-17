@@ -299,13 +299,20 @@ def get_statistics_for_challenge_by_id(request):
                 distance_and_time_by_challenge = EventResources().sum_events_distance_and_time_by_move_type(
                     user.id, challenge.id, param_date
                 )
-                subscribe_date = DBSession.query(UserChallenge).filter(
-                    UserChallenge.unsubscribe_date == None,
-                    UserChallenge.challenge_id == challenge.id,
-                    UserChallenge.user_id == user.id,
-                ).first().subscribe_date
+                subscribe_date = (
+                    DBSession.query(UserChallenge)
+                    .filter(
+                        UserChallenge.unsubscribe_date == None,
+                        UserChallenge.challenge_id == challenge.id,
+                        UserChallenge.user_id == user.id,
+                    )
+                    .first()
+                    .subscribe_date
+                )
 
-                date_finished_challenge = EventResources().find_arrival_date_for_user_by_challenge(user.id, challenge.id)
+                date_finished_challenge = EventResources().find_arrival_date_for_user_by_challenge(
+                    user.id, challenge.id
+                )
 
                 data = {
                     "distance": distance,
@@ -313,7 +320,7 @@ def get_statistics_for_challenge_by_id(request):
                     "average_move_type": average_move_type,
                     "results": distance_and_time_by_challenge,
                     "subscribe_date": subscribe_date.strftime("%d/%m/%Y"),
-                    "date_finished_challenge": date_finished_challenge
+                    "date_finished_challenge": date_finished_challenge,
                 }
 
                 response = service_informations.build_response(exception.HTTPOk(), {"statistics": data})
