@@ -1,12 +1,10 @@
 import { useStyles } from '../CustomCSS';
 import apiObstacles from '../api/obstacles';
-import apiChallenge from '../api/challenge';
-import { useQuery } from 'react-query';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useQueryClient, useMutation } from 'react-query';
 
-const EventCard = ({ event }) => {
+const ObstacleValidCard = ({ event }) => {
 
   let classes = useStyles();
 
@@ -51,4 +49,4 @@ const EventCard = ({ event }) => {
   );
 };
 
-export default EventCard;
+export default ObstacleValidCard;

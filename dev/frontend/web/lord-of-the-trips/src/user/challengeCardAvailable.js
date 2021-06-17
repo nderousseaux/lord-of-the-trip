@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import MDEditor from '@uiw/react-md-editor';
 import { dateString } from "../utils/utils";
+import { HiUserGroup }  from 'react-icons/hi';
 
 const ChallengeCardAvailable = ({ challenge }) => {
 
@@ -45,7 +46,7 @@ const ChallengeCardAvailable = ({ challenge }) => {
         <Button onClick={() => history.push(`/viewnotsubscibedchallenge/${challenge.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Voir les détails de ce challenge</Button>
       </div>
       <div >
-        <p className={classes.peopleCard}>{challenge.nb_subscribers} participants</p>
+        <p className={classes.peopleCard}>  <HiUserGroup /> {challenge.nb_subscribers} participants</p>
       </div>
     </>
   );
