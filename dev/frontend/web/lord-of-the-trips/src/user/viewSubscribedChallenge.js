@@ -31,6 +31,13 @@ const ViewSubscribedChallenge = () => {
           </div>
         </Grid>
       </Grid>
+      <div>
+        { <UserchallengeStatisticals challenge={challenge} /> }
+      </div>
+      <div>
+        <h3>Historique de vos actions</h3>
+        { <UserchallengeEvents challenge={challenge} /> }
+      </div>
     </> }
   </>
 };
@@ -54,14 +61,6 @@ const ViewChallengeInfo = ({ challenge }) => {
         <Button onClick={() => unsubscribeChallenge.mutate(challenge.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Se désinscrire</Button> {' '}
       </Grid>
       <hr />
-      <div>
-        { <UserchallengeStatisticals challenge={challenge} /> }
-      </div>
-      <hr />
-      <div>
-        <h3>Historique de vos actions</h3>
-        { <UserchallengeEvents challenge={challenge} /> }
-      </div>
     </div>
   );
 };

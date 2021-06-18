@@ -31,6 +31,12 @@ const ViewFinishChallenge = () => {
           </div>
         </Grid>
       </Grid>
+      <div>
+        <UserchallengeStatistical challenge={challenge} />
+      </div>
+      <div>
+        <UserchallengeEvents challenge={challenge} />
+      </div>
     </> }
   </>
 };
@@ -43,12 +49,6 @@ const ViewChallengeInfo = ({ challenge }) => {
     <div>
       <ChallengeInfo challenge={challenge} />
       <hr />
-      <div>
-        <UserchallengeStatistical challenge={challenge} />
-      </div>
-      <div>
-        <UserchallengeEvents challenge={challenge} />
-      </div>
     </div>
   );
 };

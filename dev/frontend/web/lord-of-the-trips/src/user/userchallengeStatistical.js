@@ -154,11 +154,6 @@ const UserchallengeStatisticals = ({ challenge }) => {
             <div >
             <h2>Vos statistiques</h2>
             
-            <p>{getIconMove(statisticals.statistics.average_move_type)}</p>            
-            <p>{getdistance(statisticals.statistics.distance)}</p>
-            <p>{getTimeDayHour(statisticals.statistics.time)}</p>
-            <p>{getSpeed( statisticals.statistics.distance,statisticals.statistics.time) }</p>
-
             <TableContainer component={Paper}>
                 <Table>
                   <TableHead className={classes.tableAdminHead}>
