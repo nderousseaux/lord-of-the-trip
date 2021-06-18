@@ -288,6 +288,21 @@ export const useStyles = makeStyles({
   },
   tableAdminheadStyle:{
     align: "left"
+  },
+  homeAlign:{
+    textAlign:"center"
+  },
+  homeh1:{
+    fontSize:"50px"
+  },
+  homeh2:{
+    fontSize:"40px"
+  },
+  homep:{
+    fontSize:"30px"
+  },
+  homepbold:{
+    fontSize:"35px"
   }
 
 
