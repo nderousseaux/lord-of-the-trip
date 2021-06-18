@@ -41,7 +41,6 @@ export default StyleSheet.create({
     },
 
     carteContainer:{
-        height:550,
         marginBottom: 10
     }
 });

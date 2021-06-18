@@ -505,7 +505,7 @@ function CarteContent(props) {
                                 userMarker.position.lineWithObstacle.endPoint.position_y)
                             : 0}
                     />
-            </Svg>
+            </Svg> 
         </ImageBackground>
     );
 }
@@ -524,8 +524,7 @@ export function Carte(props) {
     return (
         <View
             style={{
-                height: props.CanvasSize.y / props.CanvasSize.x * 350,
-            }}
+                height: props.CanvasSize.y / props.CanvasSize.x * 350,            }}
         >
             {props.Zoomed
                 ? <View 

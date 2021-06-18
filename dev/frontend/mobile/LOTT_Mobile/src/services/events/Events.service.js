@@ -24,7 +24,7 @@ let EventsService = {
             duree = dateFin.getTime() - dateDebut?.getTime()
         } catch(e){
             console.log(e)
-            duree = 0
+            duree = 1
         }
 
 

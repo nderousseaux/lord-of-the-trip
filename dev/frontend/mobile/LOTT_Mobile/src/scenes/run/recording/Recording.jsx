@@ -19,10 +19,10 @@ export default function Recording(props){
   return(
       <View style={styles.mainContainer}>
           <View style={styles.cardContainer}>
-            {distanceSegment+distance < segment.length
+            {(distanceSegment+distance < segment.length) && segment
             ?<Carte
               UserProgress={{
-                segment: 99,
+                segment: segment.id,
                 progress: ((distanceSegment  + distance)/ segment.length)
             }}
           

@@ -3,7 +3,7 @@ import colors  from 'colors/Colors.style.js'
 
 export default StyleSheet.create({
     mainContainer: {
-        height:100,
+        height:110,
         marginBottom: 10,
         flexDirection: 'row',
 
