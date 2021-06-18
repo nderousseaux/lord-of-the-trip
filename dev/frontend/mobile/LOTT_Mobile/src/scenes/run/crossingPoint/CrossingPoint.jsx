@@ -62,7 +62,7 @@ export default function CrossingPoint(props){
         setSegments(json.segments)
       }
     })
-    .catch(() => AlertHelper.show("error", "Erreur !", "Une erreur inconue c'est produite")    )
+    .catch(() => AlertHelper.show("error", "Erreur !", "Une erreur inconue s'est produite")    )
     .finally(() => setLoading(false));
   }, [isFocused, segment]);
 

@@ -3,6 +3,8 @@ import EventsService from 'services/events/Events.service.js'
 
 export function sendMove(idChallenge, segment, typeTransport, dateDebut, dateFin, distance, functionThen, functionFinally) {
 
+    console.log(dateDebut)
+
     EventsService.move(
         idChallenge,
         segment.id,
@@ -20,7 +22,7 @@ export function sendMove(idChallenge, segment, typeTransport, dateDebut, dateFin
             console.log(err.response)
             switch(err.response.status){
             default:
-                msg = "Une erreur inconnue c'est produite."
+                msg = "Une erreur inconnue s'est produite."
             }
         }
         else{
@@ -50,7 +52,7 @@ export function sendStart(challenge, segment, dispatchChallenge, functionThen ) 
             console.log(err.response)
             switch(err.response.status){
             default:
-                msg = "Une erreur inconnue c'est produite."
+                msg = "Une erreur inconnue s'est produite."
             }
         }
         else{
@@ -78,7 +80,7 @@ export function sendChoix(challenge, segment, dispatchChallenge, functionThen) {
             console.log(err.response)
             switch(err.response.status){
             default:
-                msg = "Une erreur inconnue c'est produite."
+                msg = "Une erreur inconnue s'est produite."
             }
         }
         else{

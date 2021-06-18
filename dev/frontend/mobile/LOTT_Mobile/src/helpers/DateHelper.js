@@ -18,7 +18,7 @@ export function utcToString(dateString) {
 //Renvoie le temp entre deux dates, en minutes, puis en heures
 export function chrono(dateDebut, dateFin){
 
-  let duree = Math.round((dateFin.getTime() - dateDebut.getTime())/1000)
+  let duree = Math.round((dateFin.getTime() - dateDebut?.getTime())/1000)
         
   let uniteDuree = "minute"
 

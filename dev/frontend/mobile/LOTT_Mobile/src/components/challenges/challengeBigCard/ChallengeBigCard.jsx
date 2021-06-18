@@ -25,7 +25,7 @@ export default function ChallengeBigCard(props){
   const [{ loading, challengeSelected, segment }, dispatchChallenges] = ChallengesConsumerHook();
   const [{distanceSegment}, dispatchRun] = RunConsumerHook();
 
-  const [ type, setType ] = useState(props.route.params.type)
+  const [ type, setType ] = useState(props.route?.params?.type ? props.route?.params?.type : 'subscribe' )
 
   let getDifficulty = () => {
     let res;

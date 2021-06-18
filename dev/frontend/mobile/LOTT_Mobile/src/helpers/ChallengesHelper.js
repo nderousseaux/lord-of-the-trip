@@ -38,7 +38,7 @@ export function getChallenges(dispatchChallenges, idChallengeSelected) {
                     msg = "Vous n'avez pas l'autorisation d'afficher les challenges"
                     break;
                 default:
-                    msg = "Une erreur inconne c'est produite.";
+                    msg = "Une erreur inconne s'est produite.";
             }
         }
         else{

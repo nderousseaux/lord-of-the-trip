@@ -18,9 +18,15 @@ let EventsService = {
                 break;
             default: //Course
                 codeMove = 1;
+        } 
+        let duree;
+        try{
+            duree = dateFin.getTime() - dateDebut?.getTime()
+        } catch(e){
+            console.log(e)
+            duree = 0
         }
 
-        let duree = dateFin.getTime() - dateDebut.getTime()
 
         return api.post(
             '/challenges/'+ idChallenge + '/segments/' + idSegment + '/events',
@@ -93,7 +99,7 @@ let EventsService = {
         {
             uri:reponse,
             name:'a.jpg',
-            type:'image/jpg'
+            type:'image/jpeg'
         });
 
         return api.post(

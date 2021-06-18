@@ -61,7 +61,7 @@ export default function Description(props){
               style={styles.icon}
               name='shield-alt' 
               type='font-awesome-5'
-              size='40'
+              size={40}
               color={colors.primary}
             />
             <Text style={styles.textMain}>
@@ -81,7 +81,7 @@ export default function Description(props){
               style={styles.icon}
               name='road' 
               type='font-awesome-5'
-              size='42'
+              size={42}
               color={colors.primary}
             />
             <Text style={styles.textMain}>
@@ -101,7 +101,7 @@ export default function Description(props){
               style={styles.icon}
               name='users' 
               type='font-awesome'
-              size='42'
+              size={42}
               color={colors.primary}
             />
             <Text style={styles.textMain}>
@@ -121,7 +121,7 @@ export default function Description(props){
               style={styles.icon}
               name='shoe-prints' 
               type='font-awesome-5'
-              size='42'
+              size={42}
               color={colors.primary}
             />
             <Text style={styles.textMain}>
@@ -140,7 +140,7 @@ export default function Description(props){
               style={styles.icon}
               name='stopwatch' 
               type='font-awesome-5'
-              size='42'
+              size={42}
               color={colors.primary}
             />
             <Text style={styles.textMain}>
@@ -165,7 +165,7 @@ export default function Description(props){
               style={styles.icon}
               name='fighter-jet' 
               type='font-awesome-5'
-              size='42'
+              size={42}
               color={colors.primary}
             />
             <Text style={styles.textMain}>

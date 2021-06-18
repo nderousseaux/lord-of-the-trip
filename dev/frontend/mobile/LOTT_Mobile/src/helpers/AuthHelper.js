@@ -18,7 +18,7 @@ export function signup(setLoading, onSuccess, firstName, lastName, pseudo, login
                 msg = err.response.data.message
                 break;
             default:
-                msg = "Une erreur inconne c'est produite."
+                msg = "Une erreur inconne s'est produite."
             }
         }
         else{
@@ -53,7 +53,7 @@ export function signin(setLoading, onSuccess, login, password, dispatchChallenge
               msg = "Le nom d'utilisateur ou le mot de passe saisi est incorrect."
               break;
             default:
-              msg = "Une erreur inconne c'est produite."
+              msg = "Une erreur inconne s'est produite."
           }
         }
         else{

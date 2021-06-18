@@ -83,7 +83,7 @@ export function getNextAction(idChallenge, dispatchChallenges) {
                 nextEvent = typeEtat.START
               break;
             default:
-              msg = "Une erreur inconne c'est produite."
+              msg = "Une erreur inconne s'est produite."
           }
         }
         else{
@@ -193,7 +193,7 @@ export function move(showActionSheetWithOptions, dispatchRun, navigation, challe
                             msg = "Vous n'avez pas l'autorisation d'afficher les challenges"
                             break;
                         default:
-                            msg = "Une erreur inconne c'est produite.";
+                            msg = "Une erreur inconne s'est produite.";
                     }
                 }
                 else{
@@ -234,7 +234,7 @@ export function startPedometer(dispatchRun, challenge){
 export async function startGPS(dispatchRun, navigation){
     
     let updateGPS = async () => {
-        const location = await Location.getCurrentPositionAsync();
+        const location = await Location.getCurrentPositionAsync({accuracy:Location.Accuracy.High});
         locationChanged(dispatchRun, location);
     }  
     //Fonction à chaque update du gps

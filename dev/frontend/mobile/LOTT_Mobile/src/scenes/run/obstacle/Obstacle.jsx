@@ -107,7 +107,7 @@ export default function Obstacle(props){
     .then((res) => setObstacle(res.data))
     .catch((err) => {
       console.log(err.response)
-      AlertHelper.show("error", "Erreur !", "Une erreur inconue c'est produite")
+      AlertHelper.show("error", "Erreur !", "Une erreur inconue s'est produite")
       goBack()
     })
     .finally(() => setLoading(false))
@@ -137,7 +137,7 @@ export default function Obstacle(props){
       setEtatReponse(res.data.event_type_info.code)
     })
     .catch((err) => {
-      AlertHelper.show("error", "Erreur !", "Une erreur inconnue c'est produite")
+      AlertHelper.show("error", "Erreur !", "Une erreur inconnue s'est produite")
     })
 
   }
@@ -149,12 +149,12 @@ export default function Obstacle(props){
       goBack()
     })
     .catch((err) => {
-      console.log(err.response.status)
-      if(err.response.status){
+      console.log(err.response.data)
+      if(err.response.status == 400){
         AlertHelper.show("error", "Erreur !", "L'image est trop grosse !")  
       }
       else{
-        AlertHelper.show("error", "Erreur !", "Une erreur inconnue c'est produite")  
+        AlertHelper.show("error", "Erreur !", "Une erreur inconnue s'est produite")  
       }
       
     })

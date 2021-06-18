@@ -178,11 +178,11 @@ function CarteContent(props) {
                 ? colors.pathDoneSegment
                 : "black"
         }
-        if (props.UserProgress && color === "black") {
-            color = segmentId === props.UserProgress.segment
-                ? colors.pathDoneSegment
-                : "black"
-        }
+        // if (props.UserProgress && color === "black") {
+        //     color = segmentId === props.UserProgress.segment
+        //         ? colors.pathDoneSegment
+        //         : "black"
+        // }
 
         return color;
     }
@@ -313,10 +313,12 @@ function CarteContent(props) {
                                         markerMid={element.marker ? "url(#m1)" : ""}
                                         markerEnd="url(#m2)"
                                         onPress={() => {
+                                            
                                             showAlert({
-                                                alertType: 'custom',
+                                                alertType: 'warning',
                                                 title: 'test',
-                                                customAlert: (
+                                                message:'aaaaa'
+                                                customAlert: 
                                                     <ElementModal 
                                                         Title={element.segmentName 
                                                             ? element.segmentName 
@@ -324,7 +326,7 @@ function CarteContent(props) {
                                                         ObstaclesNumber={element.obstaclesNbr}
                                                         Length={`${element.segmentLength.distance} ${element.segmentLength.unitee}`}
                                                     />
-                                                )
+                                                
                                             });
                                         }}
                                     />
@@ -342,8 +344,8 @@ function CarteContent(props) {
 
                                 return <Path
                                     key={"obstacle" + j}
-                                    // x={obstacle.position_x * props.CanvasSize.x} //TODO: remettre
-                                    // y={obstacle.position_y * props.CanvasSize.y}
+                                    x={obstacle.position_x * props.CanvasSize.x} //TODO: remettre
+                                    y={obstacle.position_y * props.CanvasSize.y}
                                     fill={colors.mapObstacle}
                                     stroke="black"
                                     strokeWidth={1.9 * (1000 / props.MapElementsSize)}

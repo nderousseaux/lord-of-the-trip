@@ -46,13 +46,14 @@ const runReducer = (state, action) => {
     case 'SET_DURATION':
       return {...state, duration: chrono(state.dateDebut, new Date()) };
     case 'SUBSCRIBE_GPS':
-      let subscriptionGPS = setInterval(() => {action.functionGPS()}, 1000)
+      let subscriptionGPS = setInterval(() => {action.functionGPS()}, 2000)
       return {...state, subscriptionGPS};
     case 'ADD_LOG':
+      console.log(state.logs)
       let logs  = state.logs
       logs.push(action.log)    
       let distance = distanceTotale(logs)
-      let distanceC = (state.transport == 'velo' ? distance/2 : distance)
+      let distanceC = (state.transport == 'velo' ? distance : distance)
       return {...state, logs, vitesse: action.log.coords.speed, distance, distanceChallenge: distanceC  }
     case 'STOP_SUBSCRIBTIONS':
       state.subscriptionPedometer && state.subscriptionPedometer.remove();
