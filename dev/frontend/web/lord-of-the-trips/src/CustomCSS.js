@@ -288,6 +288,9 @@ export const useStyles = makeStyles({
   },
   tableAdminheadStyle:{
     align: "left"
+  },
+  homeAlign:{
+    textAlign:"center"
   }
 
 
