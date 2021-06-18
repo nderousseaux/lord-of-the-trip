@@ -27,16 +27,18 @@ const getIconMove =(move_type) => {
 }
 
 const getMove =(move_type) => {
-  if (move_type = "0"){
+  console.log(move_type);
+  if (move_type == "0"){
     return "Marche";
   }
-
-  if (move_type = "1"){
+  else if (move_type == "1"){
     return "Vélo";
-  }
-
-  if (move_type = "3"){
+  } 
+  else if (move_type == "2"){
     return "Course";
+  }
+  else{
+    return "";
   }
 }
 
