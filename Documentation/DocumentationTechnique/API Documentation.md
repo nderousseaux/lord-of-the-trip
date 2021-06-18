@@ -2,13 +2,12 @@
 
 ## Choix techniques
 
+### Technologies
+
 - Langage [Python](https://www.python.org/)
 - framework [Pyramid](https://trypyramid.com/) 
 - [SQL Alchemy](https://www.sqlalchemy.org/) pour l'ORM
 - [Marshmallow](https://marshmallow.readthedocs.io/en/stable/) pour la génération des fichiers JSON
-
-
-### Technologies
 
 ### Architecture et communication
 
