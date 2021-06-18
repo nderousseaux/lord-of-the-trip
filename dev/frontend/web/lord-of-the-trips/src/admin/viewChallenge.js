@@ -42,7 +42,7 @@ const AdminViewChallenge = () => {
             <Link color="inherit" onClick={() => history.push(`/admindashboard`)} className={classes.clickable}>
               Dashboard Administrateur
             </Link>
-            <Typography color="textPrimary">Modification d'un challenge</Typography>
+            <Typography color="textPrimary">Visionner un challenge</Typography>
           </Breadcrumbs>
         </Grid>
       <div>
@@ -65,7 +65,7 @@ const AdminViewChallenge = () => {
           </Grid>
         </Grid>
 
-          {isLoadingUser ? 'Chargement...' : isErrorUser ? errorUser.message : <>
+          {isLoadingUser ? 'Chargement...' : isErrorUser ? "Aucun joueur n'est inscrit au challenge" : <>
             <div >
               <h2>Les joueurs inscrits</h2>
 
@@ -100,6 +100,22 @@ const AdminViewChallenge = () => {
 const ChallengeInfo = ({ challenge }) => {
   const classes = useStyles();
 
+  let difficulty;
+
+  switch(challenge.level){
+    case 1:
+      difficulty = "Facile";
+      break;
+    case 2:
+      difficulty = "Moyenne";
+      break;
+    case 3:
+      difficulty = "Difficile";
+      break;
+    default:
+      difficulty = "Inconnue";
+  }
+
   return (
     <>
       <h3>Informations du challenge</h3>
@@ -117,7 +133,7 @@ const ChallengeInfo = ({ challenge }) => {
         <Grid item lg={3}>
           <div className={classes.margin5right}>
             <b>Fini le</b>
-            <p>{dateString(challenge.end_date)}</p>
+            <p>{challenge.end_date ? dateString(challenge.end_date) : "Durée illimitée"}</p>
           </div>
         </Grid>
         <Grid item lg={3}>
@@ -129,7 +145,7 @@ const ChallengeInfo = ({ challenge }) => {
         <Grid item lg={3}>
           <div className={classes.margin5horizontal}>
             <b>Niveau</b>
-            <p>{challenge.level}</p>
+            <p>{difficulty}</p>
           </div>
         </Grid>
         <Grid item lg={3}>

@@ -76,9 +76,9 @@ const AdminDashboard = () => {
         <Link color="inherit" onClick={() => history.push(`/`)} className={classes.clickable}>
           Accueil
         </Link>
-        <Typography color="textPrimary">DashBoard Administrateur</Typography>
+        <Typography color="textPrimary">Dashboard Administrateur</Typography>
       </Breadcrumbs>
-    
+
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
           <Tab label="Challenges" {...a11yProps(0)} />
@@ -174,7 +174,7 @@ const EditableChallenges = () => {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>      
+      </TableContainer>
     }
   </div>
 };
@@ -219,7 +219,7 @@ const PublishedChallenges = () => {
           ))}
         </TableBody>
       </Table>
-    </TableContainer>   
+    </TableContainer>
   }
   </div>
 };

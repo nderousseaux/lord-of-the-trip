@@ -22,8 +22,18 @@ import Paper from '@material-ui/core/Paper';
 import MDEditor from '@uiw/react-md-editor';
 
 const UserDashboard = () => {
+  const classes = useStyles();
+  const history = useHistory();
+
   return <div>
-    <h2>Dashboard utilisateur</h2>
+    <Grid container direction="row">
+      <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+          <Link color="inherit" onClick={() => history.push(`/`)} className={classes.clickable}>
+            Accueil
+          </Link>
+          <Typography color="textPrimary">Dashboard</Typography>
+        </Breadcrumbs>
+    </Grid>
     <SubscribedChallenges />
     <br></br>
     <FinishChallenges />
@@ -44,16 +54,8 @@ const SubscribedChallenges = () => {
   });
 
   return <Grid container direction="column">
-    <Grid container direction="row">
-      <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-          <Link color="inherit" onClick={() => history.push(`/`)} className={classes.clickable}>
-            Accueil
-          </Link>
-          <Typography color="textPrimary">DashBoard</Typography>
-        </Breadcrumbs>
-    </Grid>
     <div className={classes.boutonOne}>
-      <Button onClick={() => history.push(`/ChallengesAvailable`)}size="large" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary}` }>Voir les challenges disponibles</Button> 
+      <Button onClick={() => history.push(`/ChallengesAvailable`)}size="large" variant="contained" color="primary" className={ `${classes.button} ${classes.colorPrimary}` }>Voir les challenges disponibles</Button>
     </div>
     <div>
       <h3>Vos challenges en cours</h3>
@@ -63,13 +65,13 @@ const SubscribedChallenges = () => {
           {subscribedChallenges.challenges.map(c => (
             // Todo : sélectionnez qur ceux ayant une inscription en cours
               //{c.id} : {c.name} {' '}
-              <Grid key={c.id} item sm={3}>  
-                  <div className={classes.cardParent}>            
-                    <ChallengeCard challenge={c} />      
+              <Grid key={c.id} item sm={3}>
+                  <div className={classes.cardParent}>
+                    <ChallengeCard challenge={c} />
 
                     <Grid className={classes.cardBouton} container direction="row">
                       <Grid item lg={6}>
-                        <Button onClick={() => history.push(`/viewsubscibedchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Voir</Button> 
+                        <Button onClick={() => history.push(`/viewsubscibedchallenge/${c.id}`)} size="small" variant="contained" color="primary" style={{backgroundColor: "#1976D2"}}>Voir</Button>
                       </Grid>
                       <Grid item lg={6}>
                         <Button onClick={() => unsubscribeChallenge.mutate(c.id)} size="small" variant="contained" color="primary" style={{backgroundColor: "#CB4335"}}>Se désinscrire</Button>
@@ -100,7 +102,7 @@ const FinishChallenges = () => {
       <Table className={classes.table} aria-label="simple table">
         <TableHead >
 
-       
+
           <TableRow>
             <TableCell className={classes.tableLeft}>Nom</TableCell>
             <TableCell className={classes.tableDescr}>Description</TableCell>
@@ -112,7 +114,7 @@ const FinishChallenges = () => {
         </TableHead>
         <TableBody>
         {subscribedChallenges.challenges.map(c => (
-          
+
           // que ceux fini manque des champs
             <TableRow key={c.id}>
               <TableCell className={classes.tableLeft}>
