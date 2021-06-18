@@ -1,9 +1,6 @@
 import { useAuth } from '../authentication/auth';
 import challengePub from './challengePub.png';
-import Breadcrumbs from '@material-ui/core/Breadcrumbs';
-import Link from '@material-ui/core/Link';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Typography from '@material-ui/core/Typography';
+import { useStyles } from '../CustomCSS';
 
 const HomePage = () => {
   let { user } = useAuth();
