@@ -313,11 +313,9 @@ function CarteContent(props) {
                                         markerMid={element.marker ? "url(#m1)" : ""}
                                         markerEnd="url(#m2)"
                                         onPress={() => {
-                                            
                                             showAlert({
-                                                alertType: 'warning',
+                                                alertType: 'custom',
                                                 title: 'test',
-                                                message:'aaaaa'
                                                 customAlert: 
                                                     <ElementModal 
                                                         Title={element.segmentName 
@@ -326,7 +324,6 @@ function CarteContent(props) {
                                                         ObstaclesNumber={element.obstaclesNbr}
                                                         Length={`${element.segmentLength.distance} ${element.segmentLength.unitee}`}
                                                     />
-                                                
                                             });
                                         }}
                                     />
