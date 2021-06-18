@@ -9,6 +9,8 @@ import { ChallengesProvider } from 'store/challenges/Challenges.store.js';
 import MainStack from 'navigation/MainStack.jsx';
 import { AlertHelper } from 'helpers/AlertHelper';
 import { LogBox } from 'react-native';
+import CustomisableAlert from "react-native-customisable-alert";
+
 LogBox.ignoreAllLogs()
 
 function App() {
@@ -24,6 +26,13 @@ function App() {
             />
         </UserProvider>
       </ChallengesProvider>
+      <CustomisableAlert
+          titleStyle={{
+              fontSize: 18,
+              fontWeight: "bold"
+          }}
+      />
+
     </RunProvider>
   )
 }
