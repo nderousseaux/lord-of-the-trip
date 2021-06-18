@@ -44,7 +44,7 @@ const ViewNotSubscribedChallenge = () => {
         </Grid>
         <Grid item lg={8}>
           <div className={classes.margin5left}>
-            <ChallengeMap challenge={challenge} isAdmin={true} />
+            <ChallengeMap challenge={challenge} isAdmin={false} />
           </div>
         </Grid>
       </Grid>
