@@ -27,7 +27,7 @@ const getIconMove =(move_type) => {
       return < MdDirectionsRun />;
       // difficulty = "Facile";
       // break;
-    case 0:
+    case 2:
       return < MdDirectionsBike />;
     default:
       return '';
