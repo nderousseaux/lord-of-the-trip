@@ -342,7 +342,7 @@ function CarteContent(props) {
 
                                 return <Path
                                     key={"obstacle" + j}
-                                    // x={obstacle.position_x * props.CanvasSize.x} //TODO: Erreur
+                                    // x={obstacle.position_x * props.CanvasSize.x} //TODO: remettre
                                     // y={obstacle.position_y * props.CanvasSize.y}
                                     fill={colors.mapObstacle}
                                     stroke="black"

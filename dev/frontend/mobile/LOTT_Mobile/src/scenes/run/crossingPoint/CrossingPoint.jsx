@@ -109,11 +109,26 @@ export default function CrossingPoint(props){
   return(
       <View style={styles.mainContainer}>
           <View style={styles.cardContainer}>
+            { segments.length != 0
+            ? <Carte
+              UserProgress={{
+                segment: segments[0].id,
+                progress: 0
+              }}
+              FocusedSegments={[segmentSelected.id]}
+              PathSegments={[]}
+              Challenge={challengeSelected}
+            />
+            :
             <Carte
               FocusedSegments={[segmentSelected.id]}
               PathSegments={[]}
               Challenge={challengeSelected}
             />
+
+
+            }
+            
           </View>
           <View style={styles.bottomContainer}>
             <ScrollView horizontal={true} contentContainerStyle={{ flexGrow: 1 }} style={{flex:1}}
