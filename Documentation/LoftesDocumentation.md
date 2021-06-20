@@ -20,13 +20,22 @@ Le but du présent document est de présenter  l'architecture et les choix techn
 
 Vous trouverez ci-dessous le liens vers les différentes documentation de l'application
  - [API](DocumentationTechnique/API%20Documentation.md)
- - [WEB](DocumentationTechnique/MOBILE%20Documentation.md)
- - [MOBILES](DocumentationTechnique/API%20Documentation.md)
+ - [WEB](DocumentationTechnique/WEB%20Documentation.md)
+ - [MOBILE](DocumentationTechnique/MOBILE%20Documentation.md)
 
 ## Tutoriaux
 
 Vous trouverez ci-dessous le liens vers les différentes documentation nécessaire à la mise en place de l'application
 
- - [Déploiement de l'environement de dévellopement](Tutoriaux/DeploiementDeveloppement.md)
- - [Déploiement du server API et du site web](Tutoriaux/DeploiementServer&SiteWeb.md)
- - [Déploiement de l'application mobile](Tutoriaux/DeploiementApplicationMobile.md)
+### Déploiement des environnements de développements
+
+ - [Déploiement de l'environement de dévellopement de l'API](Tutoriaux/DeploiementDeveloppementAPI.md).
+ - [Déploiement de l'environement de dévellopement Web](Tutoriaux/DeploiementDeveloppementWeb.md)
+ - [Déploiement de l'environement de dévellopement mobile](Tutoriaux/DeploiementDeveloppementMobile.md)
+
+### Mise en produtcion
+
+ - [Déploiement du server API](Tutoriaux/DeploiementDeveloppementAPI.md)
+  - D[éploiement de l'application Mobile](Tutoriaux/MiseEnProductionApplicationWeb.md)
+ - [Déploiement du site Web](Tutoriaux/MiseEnProductionApplicationMobile.md)
+
