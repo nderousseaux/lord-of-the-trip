@@ -10,8 +10,8 @@ let icon = require('assets/icon.png')
 
 export default function Signin(props){
 
-  const [login, setLogin] = useState('Test@test.test');
-  const [password, setPassword] = useState('testtest');
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
 
   // const [login, setLogin] = useState('potter@hotmail.com');
   // const [password, setPassword] = useState('hogwarts');
