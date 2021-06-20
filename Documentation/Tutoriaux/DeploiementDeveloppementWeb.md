@@ -16,7 +16,7 @@ Vous devez avoir sur votre poste :
 
 #### Pour le serveur
 
-* Pour que le client fonctionne, il faut avoir un serveur pour utilisé l'API :
+* Pour que le client fonctionne, il faut avoir un serveur pour utiliser l'API :
 Voir : [API en developpement](https://git.unistra.fr/acrobatt-1/lord-of-the-trips/-/blob/master/Documentation/Tutoriaux/DeploiementDeveloppementAPI.md) ou [API en production](https://git.unistra.fr/acrobatt-1/lord-of-the-trips/-/blob/master/Documentation/Tutoriaux/MiseEnProductionAPI.md)
 
 

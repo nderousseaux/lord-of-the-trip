@@ -29,13 +29,37 @@ Pour les différents éléments de code, les règles de nommage sont les suivant
 
 La langue utilisé dans le code pour les fichiers/commentaires/variables/... est l'anglais, mais tout ce qui est affiché à l'utilisateur est en français. L'application est prévue pour des utilisateurs français.
 
-### Architecture des fichiers
+### Architecture des fichiers et des composants
 
-## Règles de gestion
+L'ensemble des fichiers et répertoires du client web se trouve dans `/dev/frontend/web/lord-of-the-trips`
 
-## Le code plus en détail
+Dans le répertoire src :
+- A la racine de src :
+  - App.js : Point d'entrée de l'application, configuration de react query et de react router, le rendu est le header et le fichier routes
+  - CustomCSS.js (et Custom.css) Fichiers contenants le CSS qui est utilisé par toute l'application (Certains CSS spécifiques se trouvent directement dans les fichiers qui l'utilisent)
+- Dossier Home :
+  - Header.js : Contient le header de l'application
+  - Routes.js : Contient les routes. Le fichier affiche un composant selon la route dans le navigateur
+  - Home.js : Page d'accueil du site
+- Dossier Authentication : Tout ce qui concerne la connection utilisateur
+  - LoginDrawer.js : Popup pour se connecter
+  - SignupDrawer.js : Popup pour s'inscrire
+  - auth.js : Contient la logique de connexion : utilise un contexte pour que les données de l'utilisateur connecté soit accessible partout dans l'application
+- Dossier Api : Contient les requêtes à l'API
+  - Les requêtes sont séparées dans différentes fichiers (challenges, segments, ...)
+  - Le fichier fetchUtils.js contient des fonctions utilitaires pour les requêtes. **Il contient le préfix utilisé pour toutes les requêtes, à changer selon l'url du serveur**
+- Dossier User : La partie utilisateur de l'application
+  - Dashboard.js : Point d'entrée de la partie utilisateur de l'application, affiche les challenges où l'utilisateur est inscrit (SubscribedChallenge) et les challenges finis (FinishedChallenges). On peut accéder aux challenges disponibles pour s'inscrire (ChallengesAvailable). Pour chaque challenge, on peut accéder à une page de détails selon l'état de l'utilisateur sur le challenge (ie : ViewNotSubscribed, ViewSubscribed, ViewFinished)
+  - ChallengesAvailable : Liste des challenges disponibles pour s'inscrire
+  - ViewNotSubscribed : Affiche les données d'un challenge et sa carte
+  - ViewSubscribed : Données d'un challenge, carte et actions de l'utilisateur
+  - ViewFinished : Données d'un challenge, carte, actions de l'utilisateur et statistiques
+- Dossier Admin : La partie administrateur de l'application
+  - Dashboard.js : Point d'entrée de la partie administrateur de l'application, permet de switcher entre le dashboard et la validation manuel d'obstacles. Le dashboard affiche la liste des challenges en cours de création et la liste des challenges publiées. On peut aussi créer un nouveau challenge.
+  - ValidateObstacle.js : Page permettant de valider manuellement les obstacles soumis par les utilisateurs sur les challenges publiés par l'administrateur connecté.
+  - EditChallenge.js : Page pour éditer les informations du challenge et uploader la carte. c'est sur cette page qu'on peut publier le challenge
+  - EditMap.js : Page pour modifier le parcours du challenge. On peut placer les points de passages, les segments, les obstacles et le départ et l'arrivé. On peut notamment édité les obstacles dans des fenêtres modals. Un bouton permet de vérifier que le graphe du parcours est valide.
+  - ViewChallenge.js : Affiche les informations et la carte d'un challenge publié à l'administrateur, il peut voir la liste des utilisateurs inscrits à son challenge.
 
-### Titre 1
-
-### Titre 2
+![HierarchieComposantsWeb](image/HierarchieComposantsWeb.png)
 

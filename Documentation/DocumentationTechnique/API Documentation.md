@@ -123,3 +123,12 @@ Dans le diagramme ci-dessous, vous pouvez voir l'ordre des différents évèneme
 ## Schéma de la base de données
 
 ![Schéma de la base de données](image/TheLordofTrip_DBDiagram.drawioV3.jpg)
+
+## Quelques outils pour le développement
+
+ 1. Ajout d'un table en base de données 
+	  - Création de la classe de description de la table dans le répertoire models
+	  - Lancement de l'initialisation de la base de données
+ 2. Ajout d'une route dans l'API
+	- Création de la route avec Cornice dans le fichier correspond à la route qui se trouve dans le répertoire views, pour ex un route agissant sur les challenges sera dans le fichier ChallengeView.py
+	- Si nécessaire, création de la structure du fichier JSON correspondant à la route dans le répertoire marshmallow_schema

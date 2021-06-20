@@ -16,6 +16,10 @@ Cette application sera déclinée sur 2 médias :
 
 Le but du présent document est de présenter  l'architecture et les choix techniques faits pour l'application, ainsi que les documents qui vont permettront de prendre en main l'application et sa maintenance.
 
+## Architecture matérielle et logicielle
+
+Vous trouverez [ici](ArchitectureMaterielle&Logicielle.md) un shéma des différentes entités intervanant dans k'application et leurs rôles, ainsi qu'une présentation des technologies de l'application et des principales librairies utilisées.
+
 ## Documentation de développements
 
 Vous trouverez ci-dessous le liens vers les différentes documentation de l'application
@@ -36,6 +40,6 @@ Vous trouverez ci-dessous le liens vers les différentes documentation nécessai
 ### Mise en produtcion
 
  - [Déploiement du server API](Tutoriaux/DeploiementDeveloppementAPI.md)
-  - D[éploiement de l'application Mobile](Tutoriaux/MiseEnProductionApplicationWeb.md)
- - [Déploiement du site Web](Tutoriaux/MiseEnProductionApplicationMobile.md)
+ - D[éploiement de l'application Mobile](Tutoriaux/MiseEnProductionApplicationMobile.md)
+ - [Déploiement du site Web](Tutoriaux/MiseEnProductionApplicationWeb.md)
 
