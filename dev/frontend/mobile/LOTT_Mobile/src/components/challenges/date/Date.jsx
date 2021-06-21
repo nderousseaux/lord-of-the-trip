@@ -10,8 +10,8 @@ export default function Date(props) {
     <View style={styles.container}>
       <Text style={styles.text}>
         {
-          props == undefined
-          ? "Pas de date"
+          props == undefined || props.startDate == null || props.endDate == null
+          ? "Durée illimitée"
           : utcToString(props.startDate) + ' - ' + utcToString(props.endDate)
         }
       </Text>

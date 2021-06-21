@@ -1,8 +1,8 @@
 import ChallengesService from "services/challenges/Challenges.service.js";
 import { AlertHelper } from "helpers/AlertHelper.js";
+import { getNextAction } from 'helpers/RunHelper';
 
-
-export function getChallenges(dispatchChallenges) {
+export function getChallenges(dispatchChallenges, idChallengeSelected) {
     dispatchChallenges({
         type: 'START_LOADING'
     }) 
@@ -21,6 +21,12 @@ export function getChallenges(dispatchChallenges) {
         dispatchChallenges({
             type: 'UPDATE_CHALLENGE_SELECTED',
         });
+
+        //Si un challenge est sélectionné, on update son prochain état
+        if (idChallengeSelected != undefined){
+            getNextAction(idChallengeSelected, dispatchChallenges)
+        }
+
     })
     .catch((err) => {
         console.log(err)
@@ -32,7 +38,7 @@ export function getChallenges(dispatchChallenges) {
                     msg = "Vous n'avez pas l'autorisation d'afficher les challenges"
                     break;
                 default:
-                    msg = "Une erreur inconne c'est produite.";
+                    msg = "Une erreur inconne s'est produite.";
             }
         }
         else{
@@ -48,4 +54,20 @@ export function getChallenges(dispatchChallenges) {
             type: 'STOP_LOADING'
         })
     })    
+}
+
+export function distanceFormat(distance){
+
+    let distanceFormat, unitee;
+
+    if (Math.round(distance).toString().length > 2 ){
+        distanceFormat = Math.round(Math.round(distance)/100)/10
+        unitee = 'km'
+      }
+      else {
+        distanceFormat = Math.round(distance)
+        unitee = 'm'
+      }
+
+    return {distance: distanceFormat, unitee}
 }

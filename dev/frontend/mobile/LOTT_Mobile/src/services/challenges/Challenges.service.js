@@ -11,6 +11,14 @@ let challengesService = {
 
     subscribeChallenge(id){
         return api.post('/challenges/'+ id +'/subscribe')
+    },
+
+    unSubscribeChallenge(id){
+        return api.post('/challenges/'+ id +'/unsubscribe')
+    },
+
+    getStatistiques(id){
+        return api.get('/user/challenges/' + id + '/statistics')
     }
 }
 

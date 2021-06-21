@@ -6,6 +6,8 @@ import Date from 'components/challenges/date/Date.jsx'
 import Button from 'components/basics/button/ButtonComponent.jsx'
 import Participants from 'components/challenges/participants/Participants.jsx';
 import { ChallengesConsumerHook } from 'store/challenges/Challenges.store.js';
+import Description from 'components/challenges/description/Description.jsx';
+import { getNextAction } from 'helpers/RunHelper';
 
 export default function ChallengeCard({item, type, navigation}) {
   
@@ -14,13 +16,13 @@ export default function ChallengeCard({item, type, navigation}) {
   let difficulty;
 
   switch(item.level){
-    case "1":
+    case 1:
       difficulty = "Facile";
       break;
-    case "2":
+    case 2:
       difficulty = "Moyenne";
       break;
-    case "3":
+    case 3:
       difficulty = "Difficile";
       break;
     default:
@@ -33,6 +35,7 @@ export default function ChallengeCard({item, type, navigation}) {
       type: 'SET_CHALLENGE_SELECTED',
       idChallengeSelected: item.id
     });
+    getNextAction(item.id, dispatchChallenges)
     navigation.navigate('Challenge', {type: type})
     
   }
@@ -58,14 +61,9 @@ export default function ChallengeCard({item, type, navigation}) {
       </View>
 
       <View style={styles.main}>
-        <View style={styles.descriptionView}>
-          <Text 
-            style={styles.descriptionText}
-            numberOfLines={10}
-          >
-            {item.description}
-          </Text>
-        </View>
+        <Description
+          text={item.description}
+        />
         <View style={styles.buttonView}>
           { type == 'subscribing'
             ? <Button 

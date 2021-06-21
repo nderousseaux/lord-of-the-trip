@@ -9,10 +9,10 @@ import styles from './ChallengesList.style';
 
 export default function ChallengesList(props){
 
-  const [{challengesSubscribed, challengesNoSubscribed, loading}, dispatchChallenge] = ChallengesConsumerHook();
+  const [{challengesSubscribed, challengesNoSubscribed, loading, challengeSelected}, dispatchChallenge] = ChallengesConsumerHook();
 
   let onRefresh = () => {
-    getChallenges(dispatchChallenge)
+    getChallenges(dispatchChallenge, challengeSelected.id)
   }
 
   return(    

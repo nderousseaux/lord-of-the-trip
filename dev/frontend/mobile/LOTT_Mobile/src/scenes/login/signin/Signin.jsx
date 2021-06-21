@@ -4,14 +4,17 @@ import { View, Image } from "react-native";
 import Button from "components/basics/button/ButtonComponent.jsx";
 import Input from "components/basics/input/InputComponent.jsx";
 import styles from "./Signin.style.js";
-import SigninButton from "../../../components/login/signinButton/SigninButton.jsx";
+import SigninButton from "components/login/signinButton/SigninButton.jsx";
 let icon = require('assets/icon.png')
 
 
 export default function Signin(props){
 
-  const [login, setLogin] = useState('potter@hotmail.com');
-  const [password, setPassword] = useState('hogwarts');
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+
+  // const [login, setLogin] = useState('potter@hotmail.com');
+  // const [password, setPassword] = useState('hogwarts');
 
   let pressSignup = () => {
     props.navigation.navigate('Signup');
