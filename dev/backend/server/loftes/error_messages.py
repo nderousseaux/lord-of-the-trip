@@ -34,7 +34,7 @@ DUPLICATION_CHALLENGE_NOT_TERMINATED = (
 )
 DUPLICATION_CHALLENGE_PERMANENT = "You do not have permission to duplicate a permanent challenge."
 DUPLICATION_CHALLENGE_NOT_PUBLISHED = "You do not have permission to duplicate an unpublished challenge."
-DUPLICATION_CHALLENGE_NOT_OWNER = "You cannot duplicate a challenge that you did not create."
+DUPLICATION_CHALLENGE_NOT_OWNER = "You do not have permission to duplicate a challenge that you did not create."
 # challenge publication
 PUBLISH_CHALLENGE_START_DATE_HAS_PASSED = (
     "You do not have permission to publish a challenge whose start date has already passed."

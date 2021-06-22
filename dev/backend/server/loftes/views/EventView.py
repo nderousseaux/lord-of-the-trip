@@ -29,6 +29,102 @@ import base64
 
 events = Service(name="events", path="/challenges/{challenge_id:\d+}/events", cors_policy=cors_policy)
 
+"""
+  @api {get} /challenges/:challenge_id/events Request events informations of challenge's id.
+  @apiParam challenge_id Challenge's unique ID.
+  @apiVersion 0.3.0
+  @apiName GetEvents
+  @apiGroup Event
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
+
+  @apiSuccess (OK 200) {Array} Events All events created of challenge's id.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+
+  {
+    "events": [
+        {
+        "id": 1013,
+        "segment_id": 195,
+        "duration": 11864,
+        "move_type": 1,
+        "event_type_id": 3,
+        "event_type_info": {
+            "id": 3,
+            "code": "MOVE",
+            "label": "Déplacement"
+        },
+        "event_date": "2021-06-18T18:58:11",
+        "distance": 8,
+        "footstep": null,
+        "obstacle_id": null,
+        "response": null
+        },
+        {
+        "id": 1010,
+        "segment_id": 195,
+        "duration": 1234748,
+        "move_type": 1,
+        "event_type_id": 3,
+        "event_type_info": {
+            "id": 3,
+            "code": "MOVE",
+            "label": "Déplacement"
+        },
+        "event_date": "2021-06-18T15:46:36",
+        "distance": 6154,
+        "footstep": null,
+        "obstacle_id": null,
+        "response": null
+        },
+        {
+        "id": 981,
+        "segment_id": 195,
+        "duration": null,
+        "move_type": null,
+        "event_type_id": 1,
+        "event_type_info": {
+            "id": 1,
+            "code": "START",
+            "label": "Départ du parcours"
+        },
+        "event_date": "2021-06-18T15:25:59",
+        "distance": null,
+        "footstep": null,
+        "obstacle_id": null,
+        "response": null
+        }
+    ]
+  }
+
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound No events were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+"""
+
 
 @events.get()
 def get_events(request):
@@ -64,46 +160,63 @@ def get_events(request):
     return response
 
 
-event_id = Service(
-    name="event_id",
-    path="/events/{id:\d+}",
-    cors_policy=cors_policy,
-)
+"""
+  @api {get} /challenges/:challenge_id/events/last Request last event that user cretaed of challenge's id.
+  @apiParam challenge_id Challenge's unique ID.
+  @apiVersion 0.3.0
+  @apiName GetLastEvent
+  @apiGroup Event
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
+  @apiSuccess (OK 200) {Object} Event Last event created by user.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
 
-@event_id.get()
-def get_event_by_id(request):
+  {
+    "id": 1013,
+    "segment_id": 195,
+    "duration": 11864,
+    "move_type": 1,
+    "event_type_id": 3,
+    "event_type_info": {
+        "id": 3,
+        "code": "MOVE",
+        "label": "Déplacement"
+    },
+    "event_date": "2021-06-18T18:58:11",
+    "distance": 8,
+    "footstep": null,
+    "obstacle_id": null,
+    "response": null
+   }
 
-    service_informations = ServiceInformations()
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
 
-    user = UserManager.check_user_connection(request)
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
 
-    # check if user is authenticated
-    if user != None:
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
 
-        event = DBSession.query(Event).get(request.matchdict["id"])
+  @apiError (Error 404) {Object} RessourceNotFound No events were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-        # check if event is found
-        if event != None:
-
-            challenge = event.segment.challenge
-
-            if challenge != None:
-
-                response = service_informations.build_response(exception.HTTPOk, EventSchema().dump(event))
-
-            else:
-                response = service_informations.build_response(
-                    exception.HTTPUnprocessableEntity, None, error_messages.CHALLENGE_IS_MISSING
-                )
-        else:
-            response = service_informations.build_response(exception.HTTPNotFound())
-    else:
-        response = service_informations.build_response(exception.HTTPUnauthorized)
-
-    return response
-
-
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+"""
 last_event = Service(
     name="last_event",
     path="/challenges/{challenge_id:\d+}/events/last",
@@ -140,6 +253,46 @@ def get_last_event(request):
     return response
 
 
+"""
+  @api {get} /challenges/:challenge_id/events/distance Request sum of distance events for challenge's id.
+  @apiParam challenge_id Challenge's unique ID.
+  @apiVersion 0.3.0
+  @apiName GetDistanceEventChallenge
+  @apiGroup Event
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
+
+  @apiSuccess (OK 200) {Number} Distance Sum of distance events.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+
+  {
+    "distance": 6162
+  }
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound No events were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+"""
 event_distance_challenge = Service(
     name="event_distance",
     path="/challenges/{challenge_id:\d+}/events/distance",
@@ -173,6 +326,46 @@ def get_event_distance_challenge(request):
     return response
 
 
+"""
+  @api {get} /segments/:challenge_id/events/distance Request sum of distance events for segments's id.
+  @apiParam challenge_id Challenge's unique ID.
+  @apiVersion 0.3.0
+  @apiName GetDistanceEventSegment
+  @apiGroup Event
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
+
+  @apiSuccess (OK 200) {Number} Distance Sum of distance events.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+
+  {
+    "distance": 483
+  }
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound No events were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+"""
 event_distance_segment = Service(
     name="event_distance_segment",
     path="/segments/{segment_id:\d+}/events/distance",
@@ -206,6 +399,59 @@ def get_event_distance_segment(request):
     return response
 
 
+"""
+  @api {post} /challenges/:challenge_id/segments/:segment_id/events Create a new event for segment id.
+  @apiParam challenge_id Challenge's unique ID.
+  @apiParam segment_id Segment's unique ID.
+  @apiVersion 0.3.0
+  @apiName PostEvents
+  @apiGroup Event
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
+
+  @apiSuccess (OK 200) {Object} Created event.
+  @apiSuccess (Body parameters) {Number} event_type_id Event type's id
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 201 Created
+
+  {
+    "event_type_id":4
+  }
+
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
+
+  {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "{'event_type_id': ['Field must not be null.']}"
+    }
+  }
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound No events were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+"""
 event_create = Service(
     name="event_create",
     path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events",
@@ -295,139 +541,54 @@ def event_add(request):
     return response
 
 
-event_question = Service(
-    name="event_question",
-    path="/challenges/{challenge_id:\d+}/segments/{segment_id:\d+}/events/checkresponse",
-    cors_policy=cors_policy,
-)
+"""
+  @api {post} /events/:id/manage-response Manage response sent by user.
+  @apiParam id Event's unique ID.
+  @apiVersion 0.3.0
+  @apiName ManageResponse
+  @apiGroup Event
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
+  @apiSuccess (Body parameters) {Bool} validate A true or false to validate the response sent by user
 
-@event_question.post()
-def event_check_response(request):
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content.
 
-    service_informations = ServiceInformations()
+  @apiError (Error 400) {Object} BadRequest Malformed request syntax.
+  @apiErrorExample {json} Error 400 response:
+  HTTP/1.1 400 Bad Request
 
-    user = UserManager.check_user_connection(request)
-    if user != None:
+  {
+    "error": {
+        "status": "BAD REQUEST",
+        "message": "Field 'validate' is a mandatory field."
+    }
+  }
 
-        checkchallenge = EventResources().check_challenge_for_event(request.matchdict["challenge_id"], user.id)
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
 
-        if checkchallenge == "":
-            segment_id = request.matchdict["segment_id"]
-            segment = DBSession.query(Segment).get(segment_id)
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
 
-            if segment != None:
+  @apiError (Error 404) {Object} RessourceNotFound No events were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
 
-                try:
-                    event_schema = EventSchema()
-                    eventdata = event_schema.load(request.json)
-                    now = datetime.datetime.now()
-                    eventdata.segment_id = segment_id
-                    eventdata.user_id = user.id
-                    eventdata.event_date = now
-
-                    if eventdata.event_type_id == 5:
-
-                        eventrulescheck = EventResources().check_event_type_rule(
-                            eventdata.event_type_id,
-                            user.id,
-                            request.matchdict["challenge_id"],
-                            segment_id,
-                        )
-                        if eventrulescheck == None:
-
-                            obstacle = DBSession.query(Obstacle).get(eventdata.obstacle_id)
-
-                            if obstacle != None:
-
-                                if obstacle.question_type == 0:
-                                    # set response proceeded by system for automatique
-                                    eventdata.proceeded = True
-
-                                DBSession.add(eventdata)
-                                DBSession.flush()
-
-                                # Check response
-
-                                if obstacle.question_type == 0:
-                                    # faut optimiser les réponses
-                                    if (
-                                        service_informations.replace_accents(
-                                            service_informations.replace_specials(eventdata.response)
-                                        ).upper()
-                                        == service_informations.replace_accents(
-                                            service_informations.replace_specials(obstacle.result)
-                                        ).upper()
-                                    ):
-                                        event_type = 6
-                                    else:
-                                        event_type = 7
-
-                                    now = datetime.datetime.now()
-                                    eventresponse = Event(
-                                        user_id=user.id,
-                                        segment_id=eventdata.segment_id,
-                                        event_date=now,
-                                        event_type_id=event_type,
-                                    )
-
-                                    DBSession.add(eventresponse)
-                                    DBSession.flush()
-
-                                    response = service_informations.build_response(
-                                        exception.HTTPOk,
-                                        event_schema.dump(eventresponse),
-                                    )
-
-                                else:
-                                    response = service_informations.build_response(
-                                        exception.HTTPOk, event_schema.dump(eventdata)
-                                    )
-                            else:
-                                response = service_informations.build_response(
-                                    exception.HTTPNotFound(),
-                                )
-                        else:
-                            response = service_informations.build_response(
-                                exception.HTTPNotFound(),
-                                None,
-                                eventrulescheck,
-                            )
-                    else:
-                        response = service_informations.build_response(
-                            exception.HTTPNotFound(),
-                        )
-
-                except ValidationError as validation_error:
-                    response = service_informations.build_response(
-                        exception.HTTPBadRequest, None, str(validation_error)
-                    )
-
-                except ValueError as value_error:
-                    response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-
-                except PermissionError as pe:
-                    response = service_informations.build_response(exception.HTTPUnauthorized)
-
-                except Exception as e:
-                    response = service_informations.build_response(exception.HTTPInternalServerError)
-                    logging.getLogger(__name__).warn("Returning: %s", str(e))
-            else:
-                response = service_informations.build_response(
-                    exception.HTTPNotFound(),
-                )
-        else:
-            response = service_informations.build_response(
-                exception.HTTPNotFound(),
-                None,
-                checkchallenge,
-            )
-    else:
-        response = service_informations.build_response(exception.HTTPUnauthorized)
-
-    return response
-
-
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+"""
 event_manage_response = Service(
     name="event_manage_response",
     path="/events/{id:\d+}/manage-response",
@@ -538,6 +699,71 @@ def manage_response(request):
     return response
 
 
+"""
+  @api {get} /admin/verified-responses All responses sent by users to be verified by user.
+  @apiVersion 0.3.0
+  @apiName GetEvents
+  @apiGroup Event
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
+
+  @apiSuccess (OK 200) {Array} Events All events to be verified.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+
+  {
+    "events": [
+      {
+        "id": 44,
+        "response": null,
+        "challenge": {
+        "id": 13,
+        "name": "Narnia"
+      },
+      "obstacle": {
+        "label": "Photo",
+        "description": "Une photo"
+      }
+    ]
+  }
+
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} UserNotAdmin User is not admin
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to view this resource using the credentials that you supplied."
+    }
+  }
+
+  @apiError (Error 404) {Object} RessourceNotFound No events were found.
+  @apiErrorExample {json} Error 404 response:
+  HTTP/1.1 404 Not Found
+
+  {
+    "error": {
+      "status": "NOT FOUND",
+      "message": "Requested resource is not found."
+    }
+  }
+"""
 responses_to_verify = Service(
     name="responses_to_verify",
     path="/admin/verified-responses",

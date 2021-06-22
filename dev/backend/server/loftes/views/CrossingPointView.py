@@ -31,6 +31,7 @@ crossing_point = Service(
   @apiGroup CrossingPoint
   @apiSampleRequest off
   @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
   @apiSuccess (OK 200) {Array} CrossingPoints All crossing points created of challenge's id.
   @apiSuccessExample {json} Success response:
@@ -98,14 +99,28 @@ crossing_point = Service(
     ]
   }
 
-  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 204 No Content
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
 
   {
     "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource 'Challenge' is not found."
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} PermissionDenied User is not challenge's admin or challenge's is not published yet
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to view this resource using the credentials that you supplied."
     }
   }
 
@@ -177,6 +192,7 @@ def get_crossing_points(request):
   @apiGroup CrossingPoint
   @apiSampleRequest off
   @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
   @apiSuccess (Body parameters) {String} name Crossing point's name
   @apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
@@ -230,6 +246,39 @@ def get_crossing_points(request):
     "error": {
       "status": "BAD REQUEST",
       "message": "The given value 'La passe du faune' is already used as a crossing point name for this challenge."
+    }
+  }
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} PublishedChallenge Modification of a published challenge
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to modify a published challenge."
+    }
+  }
+
+  @apiError (Error 403) {Object} UserNotAdmin User is not administrator
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to perform this action using the credentials that you supplied."
     }
   }
 
@@ -329,12 +378,13 @@ crossing_point_id = Service(
 """
   @api {get} /challenges/:challenge_id/crossing-points/:id Request a crossing-point informations of challenge's id
   @apiParam challenge_id Challenge's unique ID.
-  @apiParam id Crossing point's unique ID.
+  @apiParam {Number} id Crossing point's unique ID.
   @apiVersion 0.1.0
   @apiName GetCrossingPoint
   @apiGroup CrossingPoint
   @apiSampleRequest off
   @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
   @apiSuccess (OK 200) {Number} id Crossing point's ID
   @apiSuccess (OK 200) {String} name Crossing point's name
@@ -349,6 +399,17 @@ crossing_point_id = Service(
     "name": "La passe du faune",
     "position_x": 0.1,
     "position_y": 0.1
+  }
+
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
+
+  {
+    "error": {
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
   }
 
   @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
@@ -425,12 +486,13 @@ def get_crossing_point(request):
 """
   @api {put} /challenges/:challenge_id/crossing-points/:id Update a crossing point
   @apiParam challenge_id Challenge's unique ID.
-  @apiParam id Crossing point's unique ID.
+  @apiParam {Number} id Crossing point's unique ID.
   @apiVersion 0.1.0
   @apiName PutCrossingPoint
   @apiGroup CrossingPoint
   @apiSampleRequest off
   @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
   @apiSuccess (Body parameters) {String} name Crossing point's name
   @apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
@@ -469,14 +531,25 @@ def get_crossing_point(request):
     }
   }
 
-  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
 
   {
     "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource 'Challenge' is not found."
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} UserNotAdmin User is not administrator
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to perform this action using the credentials that you supplied."
     }
   }
 
@@ -574,12 +647,13 @@ def update_crossing_point(request):
 """
   @api {patch} /challenges/:challenge_id/crossing-points/:id Partially modify a crossing point
   @apiParam challenge_id Challenge's unique ID.
-  @apiParam id Crossing point's unique ID.
+  @apiParam {Number} id Crossing point's unique ID.
   @apiVersion 0.1.0
   @apiName PatchCrossingPoint
   @apiGroup CrossingPoint
   @apiSampleRequest off
   @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
   @apiSuccess (Body parameters) {String} name Crossing point's name
   @apiSuccess (Body parameters) {Float} position_x Crossing point's position x on map
@@ -616,14 +690,25 @@ def update_crossing_point(request):
     }
   }
 
-  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
 
   {
     "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource 'Challenge' is not found."
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} UserNotAdmin User is not administrator
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to perform this action using the credentials that you supplied."
     }
   }
 
@@ -721,24 +806,36 @@ def modify_crossing_point(request):
 """
   @api {delete} /challenges/:challenge_id/crossing-points/:id Delete a crossing point
   @apiParam challenge_id Challenge's unique ID.
-  @apiParam id Crossing point's unique ID.
+  @apiParam {Number} id Crossing point's unique ID.
   @apiVersion 0.1.0
   @apiName DeleteCrossingPoint
   @apiGroup CrossingPoint
   @apiSampleRequest off
   @apiHeader {String} Bearer-Token User's login token.
+  @apiPermission admin
 
   @apiSuccessExample Success response:
   HTTP/1.1 204 No Content
 
-  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
+  @apiError (Error 401) {Object} Unauthorized Bad credentials.
+  @apiErrorExample {json} Error 401 response:
+  HTTP/1.1 401 Unauthorized
 
   {
     "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource 'Challenge' is not found."
+      "status": "UNAUTHORIZED",
+      "message": "Bad credentials."
+    }
+  }
+
+  @apiError (Error 403) {Object} UserNotAdmin User is not administrator
+  @apiErrorExample {json} Error 403 response:
+  HTTP/1.1 403 Forbidden
+
+  {
+    "error": {
+      "status": "FORBIDDEN",
+      "message": "You do not have permission to perform this action using the credentials that you supplied."
     }
   }
 

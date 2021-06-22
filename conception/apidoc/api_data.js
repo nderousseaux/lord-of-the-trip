@@ -28,7 +28,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n\"email\":\"lemaitre@gmail.com\",\n\"password\":\"Conquérantdelunivers\"\n}",
+          "content": "\n{\n  \"email\":\"lemaitre@gmail.com\",\n  \"password\":\"Conquérantdelunivers\"\n}",
           "type": "json"
         },
         {
@@ -111,7 +111,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n\"first_name\":\"Missy\",\n\"last_name\":\"Of Gallifrey\",\n\"pseudo\":\"LeMaitre\",\n\"email\":\"lemaitre@gmail.com\",\n\"password\":\"Conquérantdelunivers\"\n}",
+          "content": "\n{\n  \"first_name\":\"Missy\",\n  \"last_name\":\"Of Gallifrey\",\n  \"pseudo\":\"LeMaitre\",\n  \"email\":\"lemaitre@gmail.com\",\n  \"password\":\"Conquérantdelunivers\"\n}",
           "type": "json"
         },
         {
@@ -251,6 +251,95 @@ define({ "api": [
     "groupTitle": "Authentication"
   },
   {
+    "type": "get",
+    "url": "/admin/challenges",
+    "title": "Request all challenges that were created by user",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Bool",
+            "optional": true,
+            "field": "draft",
+            "defaultValue": "true",
+            "description": "<p>Status of the challenge</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "AdminChallenges",
+    "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Challenges",
+            "description": "<p>All challenges created by user</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2021-03-18T12:00:00\",\n      \"level\": \"1\",\n      \"scalling\": 2,\n      \"step_length\": 0.7,\n      \"draft\": true,\n      \"start_crossing_point_id\": 1,\n      \"end_crossing_point_id\": 1,\n      \"nb_subscribers\": 12\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2022-03-18T18:30:00\",\n      \"level\": \"2\",\n      \"scalling\": 4200,\n      \"step_length\": 0.8,\n      \"draft\": true,\n      \"start_crossing_point_id\": 4,\n      \"end_crossing_point_id\": 5,\n      \"nb_subscribers\": 12\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ChallengeView.py",
+    "groupTitle": "Challenge"
+  },
+  {
     "type": "delete",
     "url": "/challenges/:id",
     "title": "Delete a challenge",
@@ -259,6 +348,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -298,15 +388,6 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "Error 401": [
-          {
-            "group": "Error 401",
-            "type": "Object",
-            "optional": false,
-            "field": "Unauthorized",
-            "description": "<p>Bad credentials.</p>"
-          }
-        ],
         "Error 403": [
           {
             "group": "Error 403",
@@ -327,11 +408,6 @@ define({ "api": [
         ]
       },
       "examples": [
-        {
-          "title": "Error 401 response:",
-          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
-          "type": "json"
-        },
         {
           "title": "Error 403 response:",
           "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
@@ -356,6 +432,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -380,48 +457,16 @@ define({ "api": [
       }
     },
     "success": {
-      "fields": {
-        "Body parameters": [
-          {
-            "group": "Body parameters",
-            "type": "Date",
-            "optional": false,
-            "field": "start_date",
-            "description": "<p>Challenge's start date in format &quot;YYYY-MM-DD&quot;</p>"
-          },
-          {
-            "group": "Body parameters",
-            "type": "Date",
-            "optional": false,
-            "field": "end_date",
-            "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
-          }
-        ]
-      },
       "examples": [
         {
-          "title": "Body:",
-          "content": "\n{\n\"start_date\":\"2021-08-22\",\n\"end_date\":\"2021-09-01\"\n}",
-          "type": "json"
-        },
-        {
           "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n{\n  \"id\": 47,\n  \"name\": \"Oops, on a perdu Han Solo *3\",\n  \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n  \"start_date\": \"2021-08-22T00:00:00\",\n  \"end_date\": \"2021-09-01T00:00:00\",\n  \"alone_only\": null,\n  \"level\": \"2\",\n  \"scalling\": 4200,\n  \"step_length\": 0.8,\n  \"draft\": false,\n  \"start_crossing_point\": {\n    \"id\": 364,\n    \"name\": \"La passe du faune\",\n    \"position_x\": 0.524667,\n    \"position_y\": 0.335221\n  },\n  \"end_crossing_point\": {\n    \"id\": 365,\n    \"name\": \"Le pont des centaures\",\n    \"position_x\": 0.508841,\n    \"position_y\": 0.485851\n  },\n  \"segments\": [],\n  \"admin\": {\n    \"first_name\": \"Missy\",\n    \"last_name\": \"Of Gallifrey\",\n    \"pseudo\": \"LeMaitre\",\n    \"email\": \"lemaitre@gmail.com\",\n    \"is_admin\": false\n  }\n}",
+          "content": "HTTP/1.1 201 Created\n{\n  \"id\": 47,\n  \"name\": \"A la recherche d'Aslan *2\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-05-27T10:12:52\",\n  \"end_date\": \"2021-03-18T12:00:00\",\n  \"level\": \"1\",\n  \"scalling\": 2,\n  \"step_length\": 0.7,\n  \"draft\": true,\n  \"start_crossing_point_id\": 364,\n  \"end_crossing_point_id\": 365\n}",
           "type": "json"
         }
       ]
     },
     "error": {
       "fields": {
-        "Error 400": [
-          {
-            "group": "Error 400",
-            "type": "Object",
-            "optional": false,
-            "field": "BadRequest",
-            "description": "<p>Malformed request syntax.</p>"
-          }
-        ],
         "Error 401": [
           {
             "group": "Error 401",
@@ -475,33 +520,23 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's start date must be greater of today's date (16-05-2021, 14:49)\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Challenge's end date must be greater of today's date (16-05-2021, 14:49)\"\n  }\n}",
-          "type": "json"
-        },
-        {
           "title": "Error 401 response:",
           "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
           "type": "json"
         },
         {
           "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot duplicate a challenge that you did not create.\"\n  }\n}",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to duplicate a challenge that you did not create.\"\n  }\n}",
           "type": "json"
         },
         {
           "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot duplicate a permanent challenge.\"\n  }\n}",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to duplicate a permanent challenge.\"\n  }\n}",
           "type": "json"
         },
         {
           "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot duplicate a challenge that hasn't been terminated yet.\"\n  }\n}",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to duplicate a challenge that hasn't been terminated yet.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -533,6 +568,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -601,13 +637,6 @@ define({ "api": [
           },
           {
             "group": "OK 200",
-            "type": "Bool",
-            "optional": false,
-            "field": "alone_only",
-            "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
-          },
-          {
-            "group": "OK 200",
             "type": "Number",
             "optional": false,
             "field": "level",
@@ -647,13 +676,25 @@ define({ "api": [
             "optional": false,
             "field": "end_crossing_point_id",
             "description": "<p>ID of crossing point choosed as start of a challenge</p>"
+          },
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "nb_subscribers",
+            "description": "<p>Number of users subscribed to a challenge</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-12-18T03:16:00\",\n  \"end_date\": \"2022-10-18T03:16:00\",\n  \"alone_only\": 0,\n  \"level\":3,\n  \"scalling\": 1000,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"start_crossing_point_id\": null,\n  \"end_crossing_point_id\": null\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-12-18T03:16:00\",\n  \"end_date\": \"2022-10-18T03:16:00\",\n  \"level\":3,\n  \"scalling\": 1000,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"start_crossing_point_id\": null,\n  \"end_crossing_point_id\": null,\n  \"nb_subscribers\": 12\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
           "type": "json"
         }
       ]
@@ -677,15 +718,6 @@ define({ "api": [
             "field": "PermissionDenied",
             "description": "<p>User is not challenge's admin or challenge's is not published yet</p>"
           }
-        ],
-        "Error 404": [
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
-            "field": "RessourceNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          }
         ]
       },
       "examples": [
@@ -697,11 +729,6 @@ define({ "api": [
         {
           "title": "Error 403 response:",
           "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
           "type": "json"
         }
       ]
@@ -718,6 +745,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -741,6 +769,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "OK 200": [
@@ -752,10 +785,35 @@ define({ "api": [
             "description": "<p>Challenge's map in jpeg/png format.</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
     },
     "error": {
       "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not super admin</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -763,20 +821,18 @@ define({ "api": [
             "optional": false,
             "field": "RessourceNotFound",
             "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
-            "field": "ImageNotFound",
-            "description": "<p>Challenge's map is not found.</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -843,7 +899,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2021-03-18T12:00:00\",\n      \"alone_only\": null,\n      \"level\": \"1\",\n      \"scalling\": 2,\n      \"step_length\": 0.7,\n      \"draft\": true,\n      \"start_crossing_point_id\": 1,\n      \"end_crossing_point_id\": 1\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2022-03-18T18:30:00\",\n      \"alone_only\": null,\n      \"level\": \"2\",\n      \"scalling\": 4200,\n      \"step_length\": 0.8,\n      \"draft\": true,\n      \"start_crossing_point_id\": 4,\n      \"end_crossing_point_id\": 5\n    }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2021-03-18T12:00:00\",\n      \"level\": \"1\",\n      \"scalling\": 2,\n      \"step_length\": 0.7,\n      \"draft\": true,\n      \"start_crossing_point_id\": 1,\n      \"end_crossing_point_id\": 1,\n      \"nb_subscribers\": 12\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2022-03-18T18:30:00\",\n      \"level\": \"2\",\n      \"scalling\": 4200,\n      \"step_length\": 0.8,\n      \"draft\": true,\n      \"start_crossing_point_id\": 4,\n      \"end_crossing_point_id\": 5,\n      \"nb_subscribers\": 12\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
           "type": "json"
         }
       ]
@@ -867,6 +928,101 @@ define({ "api": [
             "field": "UserNotAdmin",
             "description": "<p>User is not super administrator</p>"
           }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ChallengeView.py",
+    "groupTitle": "Challenge"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:id/image-mobile",
+    "title": "Request a challenge's map for mobile client",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.2.0",
+    "name": "ImageMobile",
+    "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Base64",
+            "optional": false,
+            "field": "Image",
+            "description": "<p>Challenge's jpeg/png map in base64 format.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not super admin</p>"
+          }
         ],
         "Error 404": [
           {
@@ -874,7 +1030,7 @@ define({ "api": [
             "type": "Object",
             "optional": false,
             "field": "RessourceNotFound",
-            "description": "<p>No challenges were found.</p>"
+            "description": "<p>The id of the Challenge was not found.</p>"
           }
         ]
       },
@@ -908,6 +1064,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -966,13 +1123,6 @@ define({ "api": [
             "optional": true,
             "field": "end_date",
             "description": "<p>Challenge's end date in format &quot;YYYY-MM-DD&quot;</p>"
-          },
-          {
-            "group": "Body parameters",
-            "type": "Bool",
-            "optional": true,
-            "field": "alone_only",
-            "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
           },
           {
             "group": "Body parameters",
@@ -1056,13 +1206,6 @@ define({ "api": [
             "group": "Error 403",
             "type": "Object",
             "optional": false,
-            "field": "PublishedChallenge",
-            "description": "<p>Modification of a published challenge</p>"
-          },
-          {
-            "group": "Error 403",
-            "type": "Object",
-            "optional": false,
             "field": "DraftField",
             "description": "<p>Draft field in JSON body</p>"
           }
@@ -1129,6 +1272,21 @@ define({ "api": [
           "type": "json"
         },
         {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Nothing to update.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The field level must contain value 1, 2 or 3\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The value (0.2) is not valid for step length.\"\n  }\n}",
+          "type": "json"
+        },
+        {
           "title": "Error 401 response:",
           "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
           "type": "json"
@@ -1136,11 +1294,6 @@ define({ "api": [
         {
           "title": "Error 403 response:",
           "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to modify a published challenge.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1216,13 +1369,6 @@ define({ "api": [
           },
           {
             "group": "Body parameters",
-            "type": "Bool",
-            "optional": true,
-            "field": "alone_only",
-            "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
-          },
-          {
-            "group": "Body parameters",
             "type": "Number",
             "optional": true,
             "field": "level",
@@ -1247,12 +1393,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n\"name\":\"A la recherche d'Aslan\",\n\"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\":\"2021-12-18\",\n\"end_date\":\"2022-10-18\",\n\"alone_only\":\"0\",\n\"level\":3,\n\"scalling\":10000,\n  \"step_length\": 0.7\n}",
+          "content": "\n{\n  \"name\":\"A la recherche d'Aslan\",\n  \"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\":\"2021-12-18\",\n  \"end_date\":\"2022-10-18\",\n  \"level\":3,\n  \"scalling\":10000,\n  \"step_length\": 0.7\n}",
           "type": "json"
         },
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-12-18T03:16:00\",\n  \"end_date\": \"2022-10-18T03:16:00\",\n  \"alone_only\": 0,\n  \"level\":3,\n  \"scalling\": 1000,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"start_crossing_point_id\": null,\n  \"end_crossing_point_id\": null\n}",
+          "content": "HTTP/1.1 201 Created\n\n{\n  \"id\": 1,\n  \"name\": \"A la recherche d'Aslan\",\n  \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\": \"2021-12-18T03:16:00\",\n  \"end_date\": \"2022-10-18T03:16:00\",\n  \"level\":3,\n  \"scalling\": 1000,\n  \"step_length\": 0.7,\n  \"draft\": false,\n  \"start_crossing_point_id\": null,\n  \"end_crossing_point_id\": null\n}",
           "type": "json"
         }
       ]
@@ -1336,6 +1482,16 @@ define({ "api": [
           "type": "json"
         },
         {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The field level must contain value 1, 2 or 3\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The value (0.2) is not valid for step length.\"\n  }\n}",
+          "type": "json"
+        },
+        {
           "title": "Error 401 response:",
           "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
           "type": "json"
@@ -1364,6 +1520,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -1387,6 +1544,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "Body parameter": [
@@ -1416,6 +1578,31 @@ define({ "api": [
             "optional": false,
             "field": "BadRequest",
             "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PublishedChallenge",
+            "description": "<p>Modification of a published challenge</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
           }
         ],
         "Error 404": [
@@ -1449,8 +1636,28 @@ define({ "api": [
           "type": "json"
         },
         {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The file's type is not supported on this server.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to modify a published challenge.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -1472,6 +1679,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -1539,6 +1747,13 @@ define({ "api": [
             "group": "Error 403",
             "type": "Object",
             "optional": false,
+            "field": "ChallengeHasNoDescription",
+            "description": "<p>Publication of a challenge with no description.</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
             "field": "ChallengeAlreadyPublished",
             "description": "<p>Publication of a challenge that has already been challenged.</p>"
           }
@@ -1571,6 +1786,11 @@ define({ "api": [
         },
         {
           "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to publish a challenge that has no description.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
           "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to publish the challenge that has already been published.\"\n  }\n}",
           "type": "json"
         },
@@ -1593,6 +1813,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -1654,13 +1875,6 @@ define({ "api": [
           },
           {
             "group": "Body parameters",
-            "type": "Bool",
-            "optional": true,
-            "field": "alone_only",
-            "description": "<p>If true user is the only person to participate in challenge, if false it is a team</p>"
-          },
-          {
-            "group": "Body parameters",
             "type": "Number",
             "optional": true,
             "field": "level",
@@ -1699,7 +1913,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n\"name\":\"A la recherche d'Aslan\",\n\"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\":\"2021-12-18\",\n\"end_date\":\"2022-10-18\",\n\"alone_only\":\"0\",\n\"level\":3,\n\"scalling\":10000,\n  \"step_length\": 0.7\n}",
+          "content": "\n{\n  \"name\":\"A la recherche d'Aslan\",\n  \"description\":\"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n  \"start_date\":\"2021-12-18\",\n  \"end_date\":\"2022-10-18\",\n  \"level\":3,\n  \"scalling\":10000,\n  \"step_length\": 0.7\n}",
           "type": "json"
         },
         {
@@ -1814,6 +2028,21 @@ define({ "api": [
           "type": "json"
         },
         {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Nothing to update.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The field level must contain value 1, 2 or 3\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"The value (0.2) is not valid for step length.\"\n  }\n}",
+          "type": "json"
+        },
+        {
           "title": "Error 401 response:",
           "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
           "type": "json"
@@ -1852,6 +2081,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -1875,6 +2105,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "examples": [
         {
@@ -1980,6 +2215,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -2003,6 +2239,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "examples": [
         {
@@ -2065,13 +2306,14 @@ define({ "api": [
   },
   {
     "type": "patch",
-    "url": "/challenges/:id/unpublish",
-    "title": "Unpublish one challenge",
+    "url": "/challenges/:id/revoke",
+    "title": "Revoke one challenge",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -2173,6 +2415,95 @@ define({ "api": [
     "groupTitle": "Challenge"
   },
   {
+    "type": "get",
+    "url": "/user/challenges",
+    "title": "Request all challenges where user is subscribed or not subscribed to",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Challenge's unique ID.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Bool",
+            "optional": true,
+            "field": "subscribed",
+            "defaultValue": "true",
+            "description": "<p>Status of the challenge</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "UserChallenges",
+    "group": "Challenge",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Challenges",
+            "description": "<p>All challenges where user is subscribed to</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"challenges\": [\n    {\n      \"id\": 1,\n      \"name\": \"A la recherche d'Aslan\",\n      \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2021-03-18T12:00:00\",\n      \"level\": \"1\",\n      \"scalling\": 2,\n      \"step_length\": 0.7,\n      \"draft\": true,\n      \"start_crossing_point_id\": 1,\n      \"end_crossing_point_id\": 1,\n      \"nb_subscribers\": 12\n    },\n    {\n      \"id\": 2,\n      \"name\": \"Oops, on a perdu Han Solo\",\n      \"description\": \"Leia Organa, Lando Calrissian et le reste de l'équipe ont merdé et ont été capturé par Jabba le Hutt. Les services secrets de la résistance ont trouvé le lieu ou ils sont tenus captifs. Il te faut donc jeune padawan allait sauver tout ce beau monde, et fissa car la lutte n'attends pas\",\n      \"start_date\": \"2021-05-27T10:12:52\",\n      \"end_date\": \"2022-03-18T18:30:00\",\n      \"level\": \"2\",\n      \"scalling\": 4200,\n      \"step_length\": 0.8,\n      \"draft\": true,\n      \"start_crossing_point_id\": 4,\n      \"end_crossing_point_id\": 5,\n      \"nb_subscribers\": 12\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ChallengeView.py",
+    "groupTitle": "Challenge"
+  },
+  {
     "type": "post",
     "url": "/challenges/:id/verify",
     "title": "Verification of graph integrity",
@@ -2181,6 +2512,7 @@ define({ "api": [
         "Parameter": [
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Challenge's unique ID.</p>"
@@ -2204,13 +2536,13 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "examples": [
-        {
-          "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"loop\": [\n      [\n          {\n              \"id\": 1,\n              \"name\": \"L'armoire\",\n              \"position_x\": 0.142,\n              \"position_y\": 0.324511\n          },\n          {\n              \"id\": 2,\n              \"name\": \"La passe du faune\",\n              \"position_x\": 0.524667,\n              \"position_y\": 0.335221\n          },\n          {\n              \"id\": 14,\n              \"name\": \"Crossing point\",\n              \"position_x\": 0.586207,\n              \"position_y\": 0.0824353\n          }\n      ]\n  ],\n  \"deadend\": [\n      {\n          \"id\": 14,\n          \"name\": \"Crossing point\",\n          \"position_x\": 0.586207,\n          \"position_y\": 0.0824353\n      }\n  ],\n  \"orphans\": [\n      {\n          \"id\": 14,\n          \"name\": \"Crossing point\",\n          \"position_x\": 0.586207,\n          \"position_y\": 0.0824353\n      }\n  ]\n}",
-          "type": "json"
-        },
         {
           "title": "Success response:",
           "content": "HTTP/1.1 200 No Content",
@@ -2220,6 +2552,15 @@ define({ "api": [
     },
     "error": {
       "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Start crossing point is missing.</p>"
+          }
+        ],
         "Error 401": [
           {
             "group": "Error 401",
@@ -2234,8 +2575,15 @@ define({ "api": [
             "group": "Error 403",
             "type": "Object",
             "optional": false,
-            "field": "NotSubscribedChallenge",
-            "description": "<p>User's unsubscription from a challenge that he is not subscribed to.</p>"
+            "field": "ModifyPublishedChallenge",
+            "description": "<p>Verification of graph if challenge is already published</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PublishedChallenge",
+            "description": "<p>Modification of a published challenge</p>"
           }
         ],
         "Error 404": [
@@ -2250,13 +2598,33 @@ define({ "api": [
       },
       "examples": [
         {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Start crossing point is missing.\",\n    \"details\": {\n      \"start_crossing_point_id\": null\n    }\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"End crossing point is missing.\",\n    \"details\": {\n      \"end_crossing_point_id\": null\n    }\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"Errors in challenge routing.\",\n    \"details\": {\n      \"loop\": [\n          [\n              {\n                  \"id\": 1,\n                  \"name\": \"L'armoire\",\n                  \"position_x\": 0.142,\n                  \"position_y\": 0.324511\n              },\n              {\n                  \"id\": 2,\n                  \"name\": \"La passe du faune\",\n                  \"position_x\": 0.524667,\n                  \"position_y\": 0.335221\n              },\n              {\n                  \"id\": 14,\n                  \"name\": \"Crossing point\",\n                  \"position_x\": 0.586207,\n                  \"position_y\": 0.0824353\n              }\n          ]\n      ],\n      \"deadend\": [\n          {\n              \"id\": 14,\n              \"name\": \"Crossing point\",\n              \"position_x\": 0.586207,\n              \"position_y\": 0.0824353\n          }\n      ],\n      \"orphans\": [\n          {\n              \"id\": 14,\n              \"name\": \"Crossing point\",\n              \"position_x\": 0.586207,\n              \"position_y\": 0.0824353\n          }\n      ]\n    }\n  }\n}",
+          "type": "json"
+        },
+        {
           "title": "Error 401 response:",
           "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
           "type": "json"
         },
         {
           "title": "Error 403 response:",
-          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You cannot unsubscribe from a challenge that you are not subscribed to.\"\n  }\n}",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to unsubscribe from a challenge that you are not subscribed to.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to modify a published challenge.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -2284,6 +2652,7 @@ define({ "api": [
           },
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Crossing point's unique ID.</p>"
@@ -2307,6 +2676,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "examples": [
         {
@@ -2318,14 +2692,25 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "Error 404": [
+        "Error 401": [
           {
-            "group": "Error 404",
+            "group": "Error 401",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
+        "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
@@ -2337,8 +2722,13 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -2366,6 +2756,7 @@ define({ "api": [
           },
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Crossing point's unique ID.</p>"
@@ -2389,6 +2780,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "OK 200": [
@@ -2432,6 +2828,15 @@ define({ "api": [
     },
     "error": {
       "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -2450,6 +2855,11 @@ define({ "api": [
         ]
       },
       "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
         {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
@@ -2497,6 +2907,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "OK 200": [
@@ -2514,19 +2929,35 @@ define({ "api": [
           "title": "Success response:",
           "content": "HTTP/1.1 200 OK\n\n{\n  \"crossing_points\": [\n    {\n      \"id\": 1,\n      \"name\": \"L'armoire\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    {\n      \"id\": 2,\n      \"name\": \"La passe du faune\",\n      \"position_x\": 0.1,\n      \"position_y\": 0.1\n    },\n    {\n      \"id\": 3,id\n    },\n    {\n      \"id\": 4,\n      \"name\": \"Le carrousel des ours\",\n      \"position_x\": 0.3,\n      \"position_y\": 0.4\n    },\n    {\n      \"id\": 5,\n      \"name\": \"Le pont des centaures\",\n      \"position_x\": 0.3,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 6,\n      \"name\": \"Le pont de la sorcière\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 7,\n      \"name\": \"Le nid des griffons\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 8,\n      \"name\": \"La table de pierre\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 9,\n      \"name\": \"Cair Paravel\",\n      \"position_x\": 0.2,\n      \"position_y\": 0.5\n    },\n    {\n      \"id\": 10,\n      \"name\": \"Test4\",\n      \"position_x\": 13.0099,\n      \"position_y\": 87.1313\n    }\n  ]\n}",
           "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
         }
       ]
     },
     "error": {
       "fields": {
-        "Error 404": [
+        "Error 401": [
           {
-            "group": "Error 404",
+            "group": "Error 401",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PermissionDenied",
+            "description": "<p>User is not challenge's admin or challenge's is not published yet</p>"
+          }
+        ],
+        "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
@@ -2538,8 +2969,13 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -2567,6 +3003,7 @@ define({ "api": [
           },
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Crossing point's unique ID.</p>"
@@ -2590,6 +3027,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "Body parameters": [
@@ -2640,14 +3082,25 @@ define({ "api": [
             "description": "<p>Malformed request syntax.</p>"
           }
         ],
-        "Error 404": [
+        "Error 401": [
           {
-            "group": "Error 404",
+            "group": "Error 401",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
+        "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
@@ -2669,8 +3122,13 @@ define({ "api": [
           "type": "json"
         },
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -2715,6 +3173,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "Body parameters": [
@@ -2765,6 +3228,31 @@ define({ "api": [
             "description": "<p>Malformed request syntax.</p>"
           }
         ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PublishedChallenge",
+            "description": "<p>Modification of a published challenge</p>"
+          },
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
@@ -2792,6 +3280,21 @@ define({ "api": [
           "type": "json"
         },
         {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to modify a published challenge.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
           "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
           "type": "json"
@@ -2816,6 +3319,7 @@ define({ "api": [
           },
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Crossing point's unique ID.</p>"
@@ -2839,6 +3343,11 @@ define({ "api": [
         ]
       }
     },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
     "success": {
       "fields": {
         "Body parameters": [
@@ -2889,14 +3398,25 @@ define({ "api": [
             "description": "<p>Malformed request syntax.</p>"
           }
         ],
-        "Error 404": [
+        "Error 401": [
           {
-            "group": "Error 404",
+            "group": "Error 401",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
+        "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
@@ -2918,8 +3438,13 @@ define({ "api": [
           "type": "json"
         },
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -2933,20 +3458,1080 @@ define({ "api": [
     "groupTitle": "CrossingPoint"
   },
   {
-    "type": "delete",
-    "url": "/segments/:segment_id/obstacles/:id",
-    "title": "Delete an obstacle",
+    "type": "get",
+    "url": "/challenges/:challenge_id/events/distance",
+    "title": "Request sum of distance events for challenge's id.",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
             "optional": false,
-            "field": "segment_id",
-            "description": "<p>Segment's unique ID.</p>"
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "GetDistanceEventChallenge",
+    "group": "Event",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "Distance",
+            "description": "<p>Sum of distance events.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"distance\": 6162\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "get",
+    "url": "/segments/:challenge_id/events/distance",
+    "title": "Request sum of distance events for segments's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "GetDistanceEventSegment",
+    "group": "Event",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Number",
+            "optional": false,
+            "field": "Distance",
+            "description": "<p>Sum of distance events.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"distance\": 483\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:challenge_id/events",
+    "title": "Request events informations of challenge's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "GetEvents",
+    "group": "Event",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Events",
+            "description": "<p>All events created of challenge's id.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"events\": [\n      {\n      \"id\": 1013,\n      \"segment_id\": 195,\n      \"duration\": 11864,\n      \"move_type\": 1,\n      \"event_type_id\": 3,\n      \"event_type_info\": {\n          \"id\": 3,\n          \"code\": \"MOVE\",\n          \"label\": \"Déplacement\"\n      },\n      \"event_date\": \"2021-06-18T18:58:11\",\n      \"distance\": 8,\n      \"footstep\": null,\n      \"obstacle_id\": null,\n      \"response\": null\n      },\n      {\n      \"id\": 1010,\n      \"segment_id\": 195,\n      \"duration\": 1234748,\n      \"move_type\": 1,\n      \"event_type_id\": 3,\n      \"event_type_info\": {\n          \"id\": 3,\n          \"code\": \"MOVE\",\n          \"label\": \"Déplacement\"\n      },\n      \"event_date\": \"2021-06-18T15:46:36\",\n      \"distance\": 6154,\n      \"footstep\": null,\n      \"obstacle_id\": null,\n      \"response\": null\n      },\n      {\n      \"id\": 981,\n      \"segment_id\": 195,\n      \"duration\": null,\n      \"move_type\": null,\n      \"event_type_id\": 1,\n      \"event_type_info\": {\n          \"id\": 1,\n          \"code\": \"START\",\n          \"label\": \"Départ du parcours\"\n      },\n      \"event_date\": \"2021-06-18T15:25:59\",\n      \"distance\": null,\n      \"footstep\": null,\n      \"obstacle_id\": null,\n      \"response\": null\n      }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "get",
+    "url": "/admin/verified-responses",
+    "title": "All responses sent by users to be verified by user.",
+    "version": "0.3.0",
+    "name": "GetEvents",
+    "group": "Event",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Events",
+            "description": "<p>All events to be verified.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"events\": [\n    {\n      \"id\": 44,\n      \"response\": null,\n      \"challenge\": {\n      \"id\": 13,\n      \"name\": \"Narnia\"\n    },\n    \"obstacle\": {\n      \"label\": \"Photo\",\n      \"description\": \"Une photo\"\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not admin</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:challenge_id/events/last",
+    "title": "Request last event that user cretaed of challenge's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "GetLastEvent",
+    "group": "Event",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "Event",
+            "description": "<p>Last event created by user.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1013,\n  \"segment_id\": 195,\n  \"duration\": 11864,\n  \"move_type\": 1,\n  \"event_type_id\": 3,\n  \"event_type_info\": {\n      \"id\": 3,\n      \"code\": \"MOVE\",\n      \"label\": \"Déplacement\"\n  },\n  \"event_date\": \"2021-06-18T18:58:11\",\n  \"distance\": 8,\n  \"footstep\": null,\n  \"obstacle_id\": null,\n  \"response\": null\n }",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "post",
+    "url": "/events/:id/manage-response",
+    "title": "Manage response sent by user.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Event's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "ManageResponse",
+    "group": "Event",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "Bool",
+            "optional": false,
+            "field": "validate",
+            "description": "<p>A true or false to validate the response sent by user</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content.",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n      \"status\": \"BAD REQUEST\",\n      \"message\": \"Field 'validate' is a mandatory field.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "post",
+    "url": "/challenges/:challenge_id/segments/:segment_id/events",
+    "title": "Create a new event for segment id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "challenge_id",
+            "description": "<p>Challenge's unique ID.</p>"
           },
           {
             "group": "Parameter",
+            "optional": false,
+            "field": "segment_id",
+            "description": "<p>Segment's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "PostEvents",
+    "group": "Event",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "Created",
+            "description": "<p>event.</p>"
+          }
+        ],
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "event_type_id",
+            "description": "<p>Event type's id</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 201 Created\n\n{\n  \"event_type_id\":4\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n      \"status\": \"BAD REQUEST\",\n      \"message\": \"{'event_type_id': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventView.py",
+    "groupTitle": "Event"
+  },
+  {
+    "type": "get",
+    "url": "/event-types/:id",
+    "title": "Request all event types",
+    "version": "0.3.0",
+    "name": "GetEventType",
+    "group": "EventTypes",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "EventTypes",
+            "description": "<p>All event types created.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "  HTTP/1.1 200 OK\n\n{\n  \"event-types\": [\n    {\n      \"id\": 1,\n      \"code\": \"START\",\n      \"label\": \"Départ du parcours\"\n    },\n    {\n      \"id\": 2,\n      \"code\": \"ARRIVAL\",\n      \"label\": \"Arrivée à la fin du parcours\"\n    },\n    {\n      \"id\": 3,\n      \"code\": \"MOVE\",\n      \"label\": \"Déplacement\"\n    },\n    {\n      \"id\": 4,\n      \"code\": \"OBSTACLE_ARR\",\n      \"label\": \"Arrivée sur un obstacle\"\n    },\n    {\n      \"id\": 5,\n      \"code\": \"OBSTACLE_REP\",\n      \"label\": \"Réponse à un obstacle\"\n    },\n    {\n      \"id\": 6,\n      \"code\": \"OBSTACLE_REP_OK\",\n      \"label\": \"Réponse validée\"\n    },\n    {\n      \"id\": 7,\n      \"code\": \"OBSTACLE_REP_KO\",\n      \"label\": \"Refus de la réponse par un administrateur ou par le système\"\n    },\n    {\n      \"id\": 8,\n      \"code\": \"CROSS_PT_ARRIVAL\",\n      \"label\": \"Arrivée à un point de passage\"\n    },\n    {\n      \"id\": 9,\n      \"code\": \"CHOOSE_SEGMENT\",\n      \"label\": \"Choix d'un segment\"\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventTypeView.py",
+    "groupTitle": "EventTypes"
+  },
+  {
+    "type": "get",
+    "url": "/event-types",
+    "title": "Request all event types",
+    "version": "0.3.0",
+    "name": "GetEventTypes",
+    "group": "EventTypes",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "EventTypes",
+            "description": "<p>All event types created.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "  HTTP/1.1 200 OK\n\n{\n  \"event-types\": [\n    {\n      \"id\": 1,\n      \"code\": \"START\",\n      \"label\": \"Départ du parcours\"\n    },\n    {\n      \"id\": 2,\n      \"code\": \"ARRIVAL\",\n      \"label\": \"Arrivée à la fin du parcours\"\n    },\n    {\n      \"id\": 3,\n      \"code\": \"MOVE\",\n      \"label\": \"Déplacement\"\n    },\n    {\n      \"id\": 4,\n      \"code\": \"OBSTACLE_ARR\",\n      \"label\": \"Arrivée sur un obstacle\"\n    },\n    {\n      \"id\": 5,\n      \"code\": \"OBSTACLE_REP\",\n      \"label\": \"Réponse à un obstacle\"\n    },\n    {\n      \"id\": 6,\n      \"code\": \"OBSTACLE_REP_OK\",\n      \"label\": \"Réponse validée\"\n    },\n    {\n      \"id\": 7,\n      \"code\": \"OBSTACLE_REP_KO\",\n      \"label\": \"Refus de la réponse par un administrateur ou par le système\"\n    },\n    {\n      \"id\": 8,\n      \"code\": \"CROSS_PT_ARRIVAL\",\n      \"label\": \"Arrivée à un point de passage\"\n    },\n    {\n      \"id\": 9,\n      \"code\": \"CHOOSE_SEGMENT\",\n      \"label\": \"Choix d'un segment\"\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventTypeView.py",
+    "groupTitle": "EventTypes"
+  },
+  {
+    "type": "post",
+    "url": "/event-types",
+    "title": "Create a new event type",
+    "version": "0.3.0",
+    "name": "PostEventTypes",
+    "group": "EventTypes",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Body parameters": [
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>Event type's code</p>"
+          },
+          {
+            "group": "Body parameters",
+            "type": "String",
+            "optional": false,
+            "field": "label",
+            "description": "<p>Event type's label</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Body:",
+          "content": "\n{\n  \"code\": \"ARRIVAL\",\n  \"label\": \"Arrivée à la fin du parcours\"\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 201 Created\n\n{\n  \"id\": 1,\n  \"code\": \"ARRIVAL\",\n  \"label\": \"Arrivée à la fin du parcours\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "type": "Object",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Malformed request syntax.</p>"
+          }
+        ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'code': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'code': ['Invalid value']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'label': ['Field must not be null.']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 400 response:",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'label': ['Invalid value']}\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/EventTypeView.py",
+    "groupTitle": "EventTypes"
+  },
+  {
+    "type": "post",
+    "url": "/obstacles/:id/answer",
+    "title": "Answer to a question or send photo for obstacle id",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Obstacle's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "AnswerObstacle",
+    "group": "Obstacle",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No segments were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/ObstacleView.py",
+    "groupTitle": "Obstacle"
+  },
+  {
+    "type": "delete",
+    "url": "/obstacles/:id",
+    "title": "Delete an obstacle",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Obstacle's unique ID.</p>"
@@ -2981,14 +4566,25 @@ define({ "api": [
     },
     "error": {
       "fields": {
-        "Error 404": [
+        "Error 401": [
           {
-            "group": "Error 404",
+            "group": "Error 401",
             "type": "Object",
             "optional": false,
-            "field": "SegmentNotFound",
-            "description": "<p>The id of the Segment was not found.</p>"
-          },
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
+        "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
@@ -3000,8 +4596,13 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n  }\n}",
           "type": "json"
         },
         {
@@ -3016,19 +4617,14 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/segments/:segment_id/obstacles/:id",
+    "url": "/obstacles/:id",
     "title": "Request a obstacle informations of obstacle's id",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "optional": false,
-            "field": "segment_id",
-            "description": "<p>Segment's unique ID.</p>"
-          },
-          {
-            "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Obstacle's unique ID.</p>"
@@ -3085,10 +4681,10 @@ define({ "api": [
           },
           {
             "group": "OK 200",
-            "type": "Number",
+            "type": "String",
             "optional": false,
-            "field": "nb_points",
-            "description": "<p>Obstacle's number of points</p>"
+            "field": "result",
+            "description": "<p>Obstacle's result</p>"
           },
           {
             "group": "OK 200",
@@ -3102,21 +4698,32 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"id\": 1,\n  \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n  \"progress\": 50.0,\n  \"description\": null,\n  \"question_type\": 0,\n  \"nb_points\": 25,\n  \"result\": \"Jadis\",\n  \"segment_id\": 1\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n    \"id\": 1,\n    \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n    \"progress\": 50.0,\n    \"description\": null,\n    \"question_type\": 0,\n    \"nb_points\": 25,\n    \"result\": \"Jadis\",\n    \"segment_id\": 1\n}",
           "type": "json"
         }
       ]
     },
     "error": {
       "fields": {
-        "Error 404": [
+        "Error 401": [
           {
-            "group": "Error 404",
+            "group": "Error 401",
             "type": "Object",
             "optional": false,
-            "field": "SegmentNotFound",
-            "description": "<p>The id of the Segment was not found.</p>"
-          },
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not super administrator</p>"
+          }
+        ],
+        "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
@@ -3128,13 +4735,18 @@ define({ "api": [
       },
       "examples": [
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n    \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n    \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n    \"error\": {\n        \"status\": \"NOT FOUND\",\n        \"message\": \"Requested resource is not found.\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -3189,39 +4801,60 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"obstacles\": [\n    {\n      \"id\": 1,\n      \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n      \"progress\": 50.0,\n      \"description\": null,\n      \"question_type\": 0,\n      \"nb_points\": 25,\n      \"result\": \"Jadis\",\n      \"segment_id\": 1\n    },\n    {\n      \"id\": 2,\n      \"label\": \"Qui est le père d'Aslan ?\",\n      \"progress\": 50.0,\n      \"description\": null,\n      \"question_type\": 0,\n      \"nb_points\": 25,\n      \"result\": \"L'empereur d'au-delà des Mers\",\n      \"segment_id\": 2\n    },\n    {\n      \"id\": 3,\n      \"label\": \"Télécharger une photo\",\n      \"progress\": 50.0,\n      \"description\": null,\n      \"question_type\": 1,\n      \"nb_points\": 30,\n      \"result\": null,\n      \"segment_id\": 3\n    }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n\"obstacles\": [\n    {\n        \"id\": 1,\n        \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n        \"progress\": 50.0,\n        \"description\": null,\n        \"question_type\": 0,\n        \"result\": \"Jadis\",\n        \"segment_id\": 1\n    },\n    {\n        \"id\": 2,\n        \"label\": \"Qui est le père d'Aslan ?\",\n        \"progress\": 50.0,\n        \"description\": null,\n        \"question_type\": 0,\n        \"result\": \"L'empereur d'au-delà des Mers\",\n        \"segment_id\": 2\n    },\n    {\n        \"id\": 3,\n        \"label\": \"Télécharger une photo\",\n        \"progress\": 50.0,\n        \"description\": null,\n        \"question_type\": 1,\n        \"result\": null,\n        \"segment_id\": 3\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content.",
           "type": "json"
         }
       ]
     },
     "error": {
       "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not admin</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "RessourceNotFound",
-            "description": "<p>No obstacles were found.</p>"
+            "description": "<p>No events were found.</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n    \"error\": {\n        \"status\": \"UNAUTHORIZED\",\n        \"message\": \"Bad credentials.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n    \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n    \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -3276,39 +4909,60 @@ define({ "api": [
       "examples": [
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 200 OK\n\n{\n  \"obstacles\": [\n    {\n      \"id\": 1,\n      \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n      \"progress\": 50.0,\n      \"description\": null,\n      \"question_type\": 0,\n      \"nb_points\": 25,\n      \"result\": \"Jadis\",\n      \"segment_id\": 1\n    }\n  ]\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n\"obstacles\": [\n    {\n    \"id\": 1,\n    \"label\": \"Quelle est le vrai nom de la sorcière blanche ?\",\n    \"progress\": 50.0,\n    \"description\": null,\n    \"question_type\": 0,\n    \"result\": \"Jadis\",\n    \"segment_id\": 1\n    }\n]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content.",
           "type": "json"
         }
       ]
     },
     "error": {
       "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not admin</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "SegmentNotFound",
-            "description": "<p>The id of the Segment was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "RessourceNotFound",
-            "description": "<p>No obstacles were found.</p>"
+            "description": "<p>No events were found.</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n    \"error\": {\n        \"status\": \"UNAUTHORIZED\",\n        \"message\": \"Bad credentials.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n    \"error\": {\n        \"status\": \"FORBIDDEN\",\n        \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n    \"error\": {\n        \"status\": \"NOT FOUND\",\n        \"message\": \"Requested resource is not found.\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -3318,19 +4972,14 @@ define({ "api": [
   },
   {
     "type": "patch",
-    "url": "/segments/:segment_id/obstacles/:id",
+    "url": "/obstacles/:id",
     "title": "Partially modify an obstacle",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "optional": false,
-            "field": "segment_id",
-            "description": "<p>Segment's unique ID.</p>"
-          },
-          {
-            "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Obstacle's unique ID.</p>"
@@ -3387,10 +5036,10 @@ define({ "api": [
           },
           {
             "group": "Body parameters",
-            "type": "Number",
+            "type": "String",
             "optional": false,
-            "field": "nb_points",
-            "description": "<p>Obstacle's number of points</p>"
+            "field": "result",
+            "description": "<p>Obstacle's result</p>"
           },
           {
             "group": "Body parameters",
@@ -3404,7 +5053,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n    \"nb_points\": 25\n}",
+          "content": "\n{\n    \"result\": \"Jadis\"\n}",
           "type": "json"
         },
         {
@@ -3425,14 +5074,25 @@ define({ "api": [
             "description": "<p>Malformed request syntax.</p>"
           }
         ],
-        "Error 404": [
+        "Error 401": [
           {
-            "group": "Error 404",
+            "group": "Error 401",
             "type": "Object",
             "optional": false,
-            "field": "SegmentNotFound",
-            "description": "<p>The id of the Segment was not found.</p>"
-          },
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
+        "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
@@ -3445,27 +5105,32 @@ define({ "api": [
       "examples": [
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'label': ['Field must not be null.']}\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n    \"error\": {\n        \"status\": \"BAD REQUEST\",\n        \"message\": \"{'label': ['Field must not be null.']}\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'progress': ['Field must not be null.']}\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n    \"error\": {\n        \"status\": \"BAD REQUEST\",\n        \"message\": \"{'progress': ['Field must not be null.']}\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'question_type': ['Field must not be null.']}\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n    \"error\": {\n        \"status\": \"BAD REQUEST\",\n        \"message\": \"{'question_type': ['Field must not be null.']}\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n    \"error\": {\n        \"status\": \"UNAUTHORIZED\",\n        \"message\": \"Bad credentials.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n    \"error\": {\n        \"status\": \"FORBIDDEN\",\n        \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n    \"error\": {\n        \"status\": \"NOT FOUND\",\n        \"message\": \"Requested resource is not found.\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -3520,12 +5185,12 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n  \"progress\":14.6\n}",
+          "content": "\n{\n    \"progress\":14.6\n}",
           "type": "json"
         },
         {
           "title": "Success response:",
-          "content": "HTTP/1.1 201 Created\n\n{\n  \"id\": 4,\n  \"label\": null,\n  \"progress\": 14.6,\n  \"description\": null,\n  \"question_type\": null,\n  \"nb_points\": null,\n  \"result\": null,\n  \"segment_id\": 5\n}",
+          "content": "HTTP/1.1 201 Created\n\n{\n    \"id\": 4,\n    \"label\": null,\n    \"progress\": 14.6,\n    \"description\": null,\n    \"question_type\": null,\n    \"result\": null,\n    \"segment_id\": 5\n}",
           "type": "json"
         }
       ]
@@ -3541,30 +5206,58 @@ define({ "api": [
             "description": "<p>Malformed request syntax.</p>"
           }
         ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PublishedChallenge",
+            "description": "<p>Modification of a published challenge</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "SegmentNotFound",
-            "description": "<p>The id of the Segment was not found.</p>"
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'progress': ['This field is mandatory.']}\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n    \"error\": {\n        \"status\": \"BAD REQUEST\",\n        \"message\": \"{'progress': ['This field is mandatory.']}\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'progress': ['Field must not be null.']}\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n    \"error\": {\n        \"status\": \"BAD REQUEST\",\n        \"message\": \"{'progress': ['Field must not be null.']}\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n    \"error\": {\n        \"status\": \"UNAUTHORIZED\",\n        \"message\": \"Bad credentials.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n    \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to modify a published challenge.\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested ressource 'Segment' is not found.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n    \"error\": {\n        \"status\": \"NOT FOUND\",\n        \"message\": \"Requested resource is not found.\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -3574,19 +5267,14 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/segments/:segment_id/obstacles/:id",
+    "url": "/obstacles/:id",
     "title": "Update an obstacle",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "optional": false,
-            "field": "segment_id",
-            "description": "<p>Segment's unique ID.</p>"
-          },
-          {
-            "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Obstacle's unique ID.</p>"
@@ -3643,10 +5331,10 @@ define({ "api": [
           },
           {
             "group": "Body parameters",
-            "type": "Number",
+            "type": "String",
             "optional": false,
-            "field": "nb_points",
-            "description": "<p>Obstacle's number of points</p>"
+            "field": "result",
+            "description": "<p>Obstacle's result</p>"
           },
           {
             "group": "Body parameters",
@@ -3660,7 +5348,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n    \"label\": \"Qui offre des armes aux enfants Pevensie ?\",\n    \"progress\": 70,\n    \"description\": \"\",\n    \"question_type\": 0,\n    \"nb_points\": 25,\n    \"result\": \"Le père Noel\"\n}",
+          "content": "\n{\n    \"label\": \"Qui offre des armes aux enfants Pevensie ?\",\n    \"progress\": 70,\n    \"description\": \"\",\n    \"question_type\": 0,\n    \"result\": \"Le père Noel\"\n}",
           "type": "json"
         },
         {
@@ -3681,14 +5369,25 @@ define({ "api": [
             "description": "<p>Malformed request syntax.</p>"
           }
         ],
-        "Error 404": [
+        "Error 401": [
           {
-            "group": "Error 404",
+            "group": "Error 401",
             "type": "Object",
             "optional": false,
-            "field": "SegmentNotFound",
-            "description": "<p>The id of the Segment was not found.</p>"
-          },
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not administrator</p>"
+          }
+        ],
+        "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
@@ -3701,27 +5400,32 @@ define({ "api": [
       "examples": [
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'label': ['Field must not be null.']}\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n    \"error\": {\n        \"status\": \"BAD REQUEST\",\n        \"message\": \"{'label': ['Field must not be null.']}\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'progress': ['Field must not be null.']}\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n    \"error\": {\n        \"status\": \"BAD REQUEST\",\n        \"message\": \"{'progress': ['Field must not be null.']}\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 400 response:",
-          "content": "HTTP/1.1 400 Bad Request\n\n{\n  \"error\": {\n    \"status\": \"BAD REQUEST\",\n    \"message\": \"{'question_type': ['Field must not be null.']}\"\n  }\n}",
+          "content": "HTTP/1.1 400 Bad Request\n\n{\n    \"error\": {\n        \"status\": \"BAD REQUEST\",\n        \"message\": \"{'question_type': ['Field must not be null.']}\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n    \"error\": {\n        \"status\": \"UNAUTHORIZED\",\n        \"message\": \"Bad credentials.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n    \"error\": {\n        \"status\": \"FORBIDDEN\",\n        \"message\": \"You do not have permission to perform this action using the credentials that you supplied.\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Segment' is not found.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n    \"error\": {\n        \"status\": \"NOT FOUND\",\n        \"message\": \"Requested resource is not found.\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -3731,7 +5435,7 @@ define({ "api": [
   },
   {
     "type": "delete",
-    "url": "/challenges/:challenge_id/segments/:id",
+    "url": "/segments/:id",
     "title": "Delete a segment",
     "parameter": {
       "fields": {
@@ -3744,6 +5448,7 @@ define({ "api": [
           },
           {
             "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Segment's unique ID.</p>"
@@ -3813,19 +5518,14 @@ define({ "api": [
   },
   {
     "type": "get",
-    "url": "/challenges/:challenge_id/segments/:id",
+    "url": "/segments/:id",
     "title": "Request a segment informations of segment's id",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
-          {
-            "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Segment's unique ID.</p>"
@@ -3986,32 +5686,151 @@ define({ "api": [
     },
     "error": {
       "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not admin</p>"
+          }
+        ],
         "Error 404": [
           {
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "RessourceNotFound",
-            "description": "<p>No segments were found.</p>"
+            "description": "<p>No events were found.</p>"
           }
         ]
       },
       "examples": [
         {
-          "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n    \"error\": {\n        \"status\": \"UNAUTHORIZED\",\n        \"message\": \"Bad credentials.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n    \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n    }\n}",
           "type": "json"
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n    \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n    }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/SegmentView.py",
+    "groupTitle": "Segment"
+  },
+  {
+    "type": "get",
+    "url": "/crossing-points/:crossing-point_id/segments",
+    "title": "Request all segments informations of start crossing point's id.",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "optional": false,
+            "field": "crossing-point_id",
+            "description": "<p>Crossing point's unique ID.</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.3.0",
+    "name": "GetSegmentsByStartCrossingPoint",
+    "group": "Segment",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Array",
+            "optional": false,
+            "field": "Segments",
+            "description": "<p>All segments created for start crossing point.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"segments\": [\n    {\n      \"id\": 1,\n      \"name\": \"A travers le bois d'entre les mondes\",\n      \"start_crossing_point\": {\n        \"id\": 1,\n        \"name\": \"L'armoire\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"end_crossing_point\": {\n        \"id\": 2,\n        \"name\": \"La passe du faune\",\n        \"position_x\": 0.1,\n        \"position_y\": 0.1\n      },\n      \"coordinates\": [],\n      \"challenge\": {\n        \"id\": 1,\n        \"name\": \"A la recherche d'Aslan\",\n        \"description\": \"Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous\",\n        \"end_date\": \"2020-03-18T00:00:00\",\n        \"alone_only\": null,\n        \"level\": \"1\",\n        \"scalling\": 4,\n        \"draft\": false,\n        \"start_crossing_point\": {\n          \"id\": 10,\n          \"name\": \"cr 1\",\n          \"position_x\": 0.417391,\n          \"position_y\": 0.207442\n        },\n        \"end_crossing_point\": {\n          \"id\": 12,\n          \"name\": \"cr 3\",\n          \"position_x\": 0.573043,\n          \"position_y\": 0.492283\n        },\n        \"admin\": {\n          \"id\": 1,\n          \"first_name\": \"Missy\",\n          \"last_name\": \"Of Gallifrey\",\n          \"pseudo\": \"Le maitre\",\n          \"email\": \"lemaitre@gmail.com\"\n        }\n      }\n    }\n  ]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "UserNotAdmin",
+            "description": "<p>User is not admin</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No events were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n    \"error\": {\n        \"status\": \"UNAUTHORIZED\",\n        \"message\": \"Bad credentials.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n    \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n    }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n    \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n    }\n}",
           "type": "json"
         }
       ]
@@ -4021,19 +5840,14 @@ define({ "api": [
   },
   {
     "type": "patch",
-    "url": "/challenges/:challenge_id/segments/:id",
+    "url": "/segments/:id",
     "title": "Partially modify a segment",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
-          {
-            "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Segment's unique ID.</p>"
@@ -4235,7 +6049,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n  \"name\": \"A travers le bois d'entre les mondes\",\n  \"start_crossing_point_id\":5,\n\"end_crossing_point_id\":6,\n  \"coordinates\":[\n    {\n      \"position_x\": 355,\n      \"position_y\": 365.125\n    },\n    {\n      \"position_x\": 300,\n      \"position_y\": 347.125\n    }\n  ]\n}",
+          "content": "\n{\n  \"name\": \"A travers le bois d'entre les mondes\",\n  \"start_crossing_point_id\":5,\n  \"end_crossing_point_id\":6,\n  \"coordinates\":[\n    {\n      \"position_x\": 355,\n      \"position_y\": 365.125\n    },\n    {\n      \"position_x\": 300,\n      \"position_y\": 347.125\n    }\n  ]\n}",
           "type": "json"
         },
         {
@@ -4261,13 +6075,6 @@ define({ "api": [
             "group": "Error 404",
             "type": "Object",
             "optional": false,
-            "field": "ChallengeNotFound",
-            "description": "<p>The id of the Challenge was not found.</p>"
-          },
-          {
-            "group": "Error 404",
-            "type": "Object",
-            "optional": false,
             "field": "RessourceNotFound",
             "description": "<p>No segments were found.</p>"
           }
@@ -4286,11 +6093,6 @@ define({ "api": [
         },
         {
           "title": "Error 404 response:",
-          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource 'Challenge' is not found.\"\n  }\n}",
-          "type": "json"
-        },
-        {
-          "title": "Error 404 response:",
           "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
           "type": "json"
         }
@@ -4301,19 +6103,14 @@ define({ "api": [
   },
   {
     "type": "put",
-    "url": "/challenges/:challenge_id/segments/:id",
+    "url": "/segments/:id",
     "title": "Update a segment",
     "parameter": {
       "fields": {
         "Parameter": [
           {
             "group": "Parameter",
-            "optional": false,
-            "field": "challenge_id",
-            "description": "<p>Challenge's unique ID.</p>"
-          },
-          {
-            "group": "Parameter",
+            "type": "Number",
             "optional": false,
             "field": "id",
             "description": "<p>Segment's unique ID.</p>"
@@ -4373,7 +6170,7 @@ define({ "api": [
       "examples": [
         {
           "title": "Body:",
-          "content": "\n{\n  \"name\": \"A travers le bois d'entre les mondes\",\n  \"start_crossing_point_id\":5,\n\"end_crossing_point_id\":6,\n  \"coordinates\":[\n    {\n      \"position_x\": 355,\n      \"position_y\": 365.125\n    },\n    {\n      \"position_x\": 300,\n      \"position_y\": 347.125\n    }\n  ]\n}",
+          "content": "\n{\n  \"name\": \"A travers le bois d'entre les mondes\",\n  \"start_crossing_point_id\":5,\n  \"end_crossing_point_id\":6,\n  \"coordinates\":[\n    {\n      \"position_x\": 355,\n      \"position_y\": 365.125\n    },\n    {\n      \"position_x\": 300,\n      \"position_y\": 347.125\n    }\n  ]\n}",
           "type": "json"
         },
         {
@@ -4449,6 +6246,335 @@ define({ "api": [
   },
   {
     "type": "get",
+    "url": "/user/challenges/:id/statistics",
+    "title": "Request statistics for challenge id where user is subsribed to.",
+    "version": "0.3.0",
+    "name": "StatisticsChallengeId",
+    "group": "Statistic",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Bool",
+            "optional": true,
+            "field": "date",
+            "description": "<p>Date</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "Statistic",
+            "description": "<p>Challenge's statistics</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"statistics\": {\n    \"distance\": 6162,\n    \"time\": 371582.691999,\n    \"average_move_type\": 1,\n    \"results\": {\n      \"1\": {\n        \"distance\": 6162,\n        \"time\": 1246612\n      }\n    },\n    \"subscribe_date\": \"18/06/2021\",\n    \"date_finished_challenge\": null\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PermissionDenied",
+            "description": "<p>User is not challenge's admin</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No challenges were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/UserView.py",
+    "groupTitle": "Statistic"
+  },
+  {
+    "type": "get",
+    "url": "/user/challenges/statistics",
+    "title": "Request statistics for all challenges where user is subsribed to.",
+    "version": "0.3.0",
+    "name": "StatisticsChallenges",
+    "group": "Statistic",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Bool",
+            "optional": true,
+            "field": "date",
+            "description": "<p>Date</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "Statistic",
+            "description": "<p>All Challenge's statistics</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n{\n  \"statistics\": {\n    \"distance\": 7211,\n    \"time\": 1119480.90958,\n    \"average_move_type\": 1\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PermissionDenied",
+            "description": "<p>User is not challenge's admin</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No challenges were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/UserView.py",
+    "groupTitle": "Statistic"
+  },
+  {
+    "type": "get",
+    "url": "/challenges/:id/admin",
+    "title": "Request admin informations for a challenge_id",
+    "version": "0.3.0",
+    "name": "GetChallengeAdmin",
+    "group": "User",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "String",
+            "optional": false,
+            "field": "Bearer-Token",
+            "description": "<p>User's login token.</p>"
+          }
+        ]
+      }
+    },
+    "permission": [
+      {
+        "name": "admin"
+      }
+    ],
+    "success": {
+      "fields": {
+        "OK 200": [
+          {
+            "group": "OK 200",
+            "type": "Object",
+            "optional": false,
+            "field": "User",
+            "description": "<p>Challenge's admin</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 200 OK\n\n    {\n        \"first_name\": \"Bilbo\",\n        \"last_name\": \"Baggins\",\n        \"pseudo\": \"ring_bearer\",\n        \"email\": \"littlehobbit@yahoo.com\",\n        \"is_admin\": false\n    }",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "type": "Object",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>Bad credentials.</p>"
+          }
+        ],
+        "Error 403": [
+          {
+            "group": "Error 403",
+            "type": "Object",
+            "optional": false,
+            "field": "PermissionDenied",
+            "description": "<p>User is not challenge's admin</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "type": "Object",
+            "optional": false,
+            "field": "RessourceNotFound",
+            "description": "<p>No challenges were found.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error 401 response:",
+          "content": "HTTP/1.1 401 Unauthorized\n\n{\n  \"error\": {\n    \"status\": \"UNAUTHORIZED\",\n    \"message\": \"Bad credentials.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 403 response:",
+          "content": "HTTP/1.1 403 Forbidden\n\n{\n  \"error\": {\n    \"status\": \"FORBIDDEN\",\n    \"message\": \"You do not have permission to view this resource using the credentials that you supplied.\"\n  }\n}",
+          "type": "json"
+        },
+        {
+          "title": "Error 404 response:",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"error\": {\n    \"status\": \"NOT FOUND\",\n    \"message\": \"Requested resource is not found.\"\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/Users/alabicn/Projects/lord-of-the-trips/dev/backend/server/loftes/views/UserView.py",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
     "url": "/challenges/:id/subscribers",
     "title": "Request all subscribers of a challenge",
     "version": "0.3.0",
@@ -4488,6 +6614,11 @@ define({ "api": [
         {
           "title": "Success response:",
           "content": "HTTP/1.1 200 OK\n\n{\n  \"subscribers\": [\n    {\n      \"first_name\": \"Bilbo\",\n      \"last_name\": \"Baggins\",\n      \"pseudo\": \"ring_bearer\",\n      \"email\": \"littlehobbit@yahoo.com\",\n      \"is_admin\": false\n    },\n    {\n      \"first_name\": \"Daenerys\",\n      \"last_name\": \"Targaryen\",\n      \"pseudo\": \"motherOfDragons\",\n      \"email\": \"d.targaryen@gmail.com\",\n      \"is_admin\": true\n    }\n  ]\n}",
+          "type": "json"
+        },
+        {
+          "title": "Success response:",
+          "content": "HTTP/1.1 204 No Content",
           "type": "json"
         }
       ]
