@@ -90,27 +90,39 @@ segment = Service(
   }
 
 
-  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
+    @apiError (Error 401) {Object} Unauthorized Bad credentials.
+    @apiErrorExample {json} Error 401 response:
+    HTTP/1.1 401 Unauthorized
 
-  {
-    "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource 'Challenge' is not found."
+    {
+        "error": {
+            "status": "UNAUTHORIZED",
+            "message": "Bad credentials."
+        }
     }
-  }
 
-  @apiError (Error 404) {Object} RessourceNotFound No segments were found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
+    @apiError (Error 403) {Object} UserNotAdmin User is not admin
+    @apiErrorExample {json} Error 403 response:
+    HTTP/1.1 403 Forbidden
 
-  {
-    "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource is not found."
+    {
+        "error": {
+        "status": "FORBIDDEN",
+        "message": "You do not have permission to view this resource using the credentials that you supplied."
+        }
     }
-  }
+
+    @apiError (Error 404) {Object} RessourceNotFound No events were found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
+
+    {
+        "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource is not found."
+        }
+    }
+
 """
 
 
@@ -158,7 +170,105 @@ def get_segments(request):
 
     return response
 
+"""
+  @api {get} /crossing-points/:crossing-point_id/segments Request all segments informations of start crossing point's id.
+  @apiParam crossing-point_id Crossing point's unique ID.
+  @apiVersion 0.3.0
+  @apiName GetSegmentsByStartCrossingPoint
+  @apiGroup Segment
+  @apiSampleRequest off
+  @apiHeader {String} Bearer-Token User's login token.
 
+  @apiSuccess (OK 200) {Array} Segments All segments created for start crossing point.
+  @apiSuccessExample {json} Success response:
+  HTTP/1.1 200 OK
+
+  {
+    "segments": [
+      {
+        "id": 1,
+        "name": "A travers le bois d'entre les mondes",
+        "start_crossing_point": {
+          "id": 1,
+          "name": "L'armoire",
+          "position_x": 0.1,
+          "position_y": 0.1
+        },
+        "end_crossing_point": {
+          "id": 2,
+          "name": "La passe du faune",
+          "position_x": 0.1,
+          "position_y": 0.1
+        },
+        "coordinates": [],
+        "challenge": {
+          "id": 1,
+          "name": "A la recherche d'Aslan",
+          "description": "Fille d'Eve et Fils d'Adam, vous voila revenu à Narnia. Aslan, notre brave Aslan a disparu. Vous devez le retrouver pour le bien de tous",
+          "end_date": "2020-03-18T00:00:00",
+          "alone_only": null,
+          "level": "1",
+          "scalling": 4,
+          "draft": false,
+          "start_crossing_point": {
+            "id": 10,
+            "name": "cr 1",
+            "position_x": 0.417391,
+            "position_y": 0.207442
+          },
+          "end_crossing_point": {
+            "id": 12,
+            "name": "cr 3",
+            "position_x": 0.573043,
+            "position_y": 0.492283
+          },
+          "admin": {
+            "id": 1,
+            "first_name": "Missy",
+            "last_name": "Of Gallifrey",
+            "pseudo": "Le maitre",
+            "email": "lemaitre@gmail.com"
+          }
+        }
+      }
+    ]
+  }
+
+
+    @apiError (Error 401) {Object} Unauthorized Bad credentials.
+    @apiErrorExample {json} Error 401 response:
+    HTTP/1.1 401 Unauthorized
+
+    {
+        "error": {
+            "status": "UNAUTHORIZED",
+            "message": "Bad credentials."
+        }
+    }
+
+    @apiError (Error 403) {Object} UserNotAdmin User is not admin
+    @apiErrorExample {json} Error 403 response:
+    HTTP/1.1 403 Forbidden
+
+    {
+        "error": {
+        "status": "FORBIDDEN",
+        "message": "You do not have permission to view this resource using the credentials that you supplied."
+        }
+    }
+
+    @apiError (Error 404) {Object} RessourceNotFound No events were found.
+    @apiErrorExample {json} Error 404 response:
+    HTTP/1.1 404 Not Found
+
+    {
+        "error": {
+        "status": "NOT FOUND",
+        "message": "Requested resource is not found."
+        }
+    }
+
+"""
 crossing_point_segments = Service(
     name="crossingpoint_segments",
     path="/crossing-points/{id:\d+}/segments",
@@ -350,17 +460,6 @@ def get_crossing_point_segments(request):
     }
   }
 
-  @apiError (Error 404) {Object} ChallengeNotFound The id of the Challenge was not found.
-  @apiErrorExample {json} Error 404 response:
-  HTTP/1.1 404 Not Found
-
-  {
-    "error": {
-      "status": "NOT FOUND",
-      "message": "Requested resource 'Challenge' is not found."
-    }
-  }
-
   @apiError (Error 404) {Object} RessourceNotFound No segments were found.
   @apiErrorExample {json} Error 404 response:
   HTTP/1.1 404 Not Found
@@ -458,9 +557,8 @@ segment_id = Service(
 )
 
 """
-  @api {get} /challenges/:challenge_id/segments/:id Request a segment informations of segment's id
-  @apiParam challenge_id Challenge's unique ID.
-  @apiParam id Segment's unique ID.
+  @api {get} /segments/:id Request a segment informations of segment's id
+  @apiParam {Number} id Segment's unique ID.
   @apiVersion 0.1.0
   @apiName GetSegment
   @apiGroup Segment
@@ -593,9 +691,8 @@ def get_segment_by_id(request):
 
 
 """
-  @api {put} /challenges/:challenge_id/segments/:id Update a segment
-  @apiParam challenge_id Challenge's unique ID.
-  @apiParam id Segment's unique ID.
+  @api {put} /segments/:id Update a segment
+  @apiParam {Number} id Segment's unique ID.
   @apiVersion 0.1.0
   @apiName PutSegment
   @apiGroup Segment
@@ -772,9 +869,8 @@ def update_segment(request):
 
 
 """
-  @api {patch} /challenges/:challenge_id/segments/:id Partially modify a segment
-  @apiParam challenge_id Challenge's unique ID.
-  @apiParam id Segment's unique ID.
+  @api {patch} /segments/:id Partially modify a segment
+  @apiParam {Number} id Segment's unique ID.
   @apiVersion 0.1.0
   @apiName PatchSegment
   @apiGroup Segment
@@ -948,9 +1044,9 @@ def modify_segment(request):
 
 
 """
-  @api {delete} /challenges/:challenge_id/segments/:id Delete a segment
+  @api {delete} /segments/:id Delete a segment
   @apiParam challenge_id Challenge's unique ID.
-  @apiParam id Segment's unique ID.
+  @apiParam {Number} id Segment's unique ID.
   @apiVersion 0.1.0
   @apiName DeleteSegment
   @apiGroup Segment

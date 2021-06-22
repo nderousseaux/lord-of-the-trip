@@ -58,6 +58,9 @@ HTTP/1.1 200 OK
   ]
 }
 
+@apiSuccessExample {json} Success response:
+HTTP/1.1 204 No Content
+
 @apiError (Error 401) {Object} Unauthorized Bad credentials.
 @apiErrorExample {json} Error 401 response:
 HTTP/1.1 401 Unauthorized
@@ -133,82 +136,63 @@ def get_all_subscribers(request):
 
     return response
 
+"""
+@api {get} /challenges/:id/admin Request admin informations for a challenge_id
+@apiVersion 0.3.0
+@apiName GetChallengeAdmin
+@apiGroup User
+@apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
-user_update = Service(name="user_update", path="/user/update", cors_policy=cors_policy)
+@apiSuccess (OK 200) {Object} User Challenge's admin
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
 
+    {
+        "first_name": "Bilbo",
+        "last_name": "Baggins",
+        "pseudo": "ring_bearer",
+        "email": "littlehobbit@yahoo.com",
+        "is_admin": false
+    }
 
-@user_update.put()
-def update_user(request):
+@apiSuccessExample {json} Success response:
+HTTP/1.1 204 No Content
 
-    service_informations = ServiceInformations()
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
 
-    # check if user is authenticated
-    if user != None:
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
 
-        query = DBSession.query(User).filter(User.id == user.id)
-        try:
+@apiError (Error 403) {Object} PermissionDenied User is not challenge's admin
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
 
-            query.update(UserSchema().check_json(request.json))
-            DBSession.flush()
-            response = service_informations.build_response(exception.HTTPNoContent)
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to view this resource using the credentials that you supplied."
+  }
+}
 
-        except ValidationError as validation_error:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
+@apiError (Error 404) {Object} RessourceNotFound No challenges were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
 
-        except ValueError as value_error:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-
-        except PermissionError as pe:
-            response = service_informations.build_response(exception.HTTPUnauthorized)
-
-        except Exception as e:
-            response = service_informations.build_response(exception.HTTPInternalServerError)
-            logging.getLogger(__name__).warn("Returning: %s", str(e))
-    else:
-        response = service_informations.build_response(exception.HTTPUnauthorized)
-
-    return response
-
-
-user_patch = Service(name="user_patch", path="/user/modify", cors_policy=cors_policy)
-
-
-@user_patch.patch()
-def modify_user(request):
-
-    service_informations = ServiceInformations()
-
-    user = DBSession.query(User).filter(User.email == request.authenticated_userid).first()
-
-    # check if user is authenticated
-    if user != None:
-
-        query = DBSession.query(User).filter(User.id == user.id)
-        try:
-
-            query.update(UserSchema().check_json(request.json))
-            DBSession.flush()
-            response = service_informations.build_response(exception.HTTPNoContent)
-
-        except ValidationError as validation_error:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, str(validation_error))
-
-        except ValueError as value_error:
-            response = service_informations.build_response(exception.HTTPBadRequest, None, str(value_error))
-
-        except PermissionError as pe:
-            response = service_informations.build_response(exception.HTTPUnauthorized)
-
-        except Exception as e:
-            response = service_informations.build_response(exception.HTTPInternalServerError)
-            logging.getLogger(__name__).warn("Returning: %s", str(e))
-    else:
-        response = service_informations.build_response(exception.HTTPUnauthorized)
-
-    return response
-
-
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
 admin_challenge = Service(name="admin_challenge", path="/challenges/{id:\d+}/admin", cors_policy=cors_policy)
 
 
@@ -242,7 +226,73 @@ def get_challenge_admin(request):
 
     return response
 
+"""
+@api {get} /user/challenges/:id/statistics Request statistics for challenge id where user is subsribed to.
+@apiVersion 0.3.0
+@apiName StatisticsChallengeId
+@apiGroup Statistic
+@apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
+@apiParam {Bool} [date] Date
+
+@apiSuccess (OK 200) {Object} Statistic Challenge's statistics
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
+
+{
+  "statistics": {
+    "distance": 6162,
+    "time": 371582.691999,
+    "average_move_type": 1,
+    "results": {
+      "1": {
+        "distance": 6162,
+        "time": 1246612
+      }
+    },
+    "subscribe_date": "18/06/2021",
+    "date_finished_challenge": null
+  }
+}
+
+@apiSuccessExample {json} Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} PermissionDenied User is not challenge's admin
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to view this resource using the credentials that you supplied."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound No challenges were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
 challenge_statistics = Service(
     name="challenge_statistics",
     path="/user/challenges/{id:\d+}/statistics",
@@ -337,7 +387,65 @@ def get_statistics_for_challenge_by_id(request):
 
     return response
 
+"""
+@api {get} /user/challenges/statistics Request statistics for all challenges where user is subsribed to.
+@apiVersion 0.3.0
+@apiName StatisticsChallenges
+@apiGroup Statistic
+@apiSampleRequest off
+@apiHeader {String} Bearer-Token User's login token.
+@apiPermission admin
 
+@apiParam {Bool} [date] Date
+
+@apiSuccess (OK 200) {Object} Statistic All Challenge's statistics
+@apiSuccessExample {json} Success response:
+HTTP/1.1 200 OK
+
+{
+  "statistics": {
+    "distance": 7211,
+    "time": 1119480.90958,
+    "average_move_type": 1
+  }
+}
+
+@apiSuccessExample {json} Success response:
+HTTP/1.1 204 No Content
+
+@apiError (Error 401) {Object} Unauthorized Bad credentials.
+@apiErrorExample {json} Error 401 response:
+HTTP/1.1 401 Unauthorized
+
+{
+  "error": {
+    "status": "UNAUTHORIZED",
+    "message": "Bad credentials."
+  }
+}
+
+@apiError (Error 403) {Object} PermissionDenied User is not challenge's admin
+@apiErrorExample {json} Error 403 response:
+HTTP/1.1 403 Forbidden
+
+{
+  "error": {
+    "status": "FORBIDDEN",
+    "message": "You do not have permission to view this resource using the credentials that you supplied."
+  }
+}
+
+@apiError (Error 404) {Object} RessourceNotFound No challenges were found.
+@apiErrorExample {json} Error 404 response:
+HTTP/1.1 404 Not Found
+
+{
+  "error": {
+    "status": "NOT FOUND",
+    "message": "Requested resource is not found."
+  }
+}
+"""
 challenges_statistics = Service(
     name="challenges_statistics",
     path="/user/challenges/statistics",
