@@ -484,7 +484,7 @@ def get_crossing_point(request):
 
 
 """
-  @api {put} /challenges/:challenge_id/crossing-points/:id Update a crossing point
+  @api {put} /crossing-points/:id Update a crossing point
   @apiParam challenge_id Challenge's unique ID.
   @apiParam {Number} id Crossing point's unique ID.
   @apiVersion 0.1.0
@@ -645,7 +645,7 @@ def update_crossing_point(request):
 
 
 """
-  @api {patch} /challenges/:challenge_id/crossing-points/:id Partially modify a crossing point
+  @api {patch} /crossing-points/:id Partially modify a crossing point
   @apiParam challenge_id Challenge's unique ID.
   @apiParam {Number} id Crossing point's unique ID.
   @apiVersion 0.1.0
@@ -804,7 +804,7 @@ def modify_crossing_point(request):
 
 
 """
-  @api {delete} /challenges/:challenge_id/crossing-points/:id Delete a crossing point
+  @api {delete} /crossing-points/:id Delete a crossing point
   @apiParam challenge_id Challenge's unique ID.
   @apiParam {Number} id Crossing point's unique ID.
   @apiVersion 0.1.0

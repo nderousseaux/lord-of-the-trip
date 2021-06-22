@@ -2639,7 +2639,7 @@
   },
   {
     "type": "delete",
-    "url": "/challenges/:challenge_id/crossing-points/:id",
+    "url": "/crossing-points/:id",
     "title": "Delete a crossing point",
     "parameter": {
       "fields": {
@@ -2990,7 +2990,7 @@
   },
   {
     "type": "patch",
-    "url": "/challenges/:challenge_id/crossing-points/:id",
+    "url": "/crossing-points/:id",
     "title": "Partially modify a crossing point",
     "parameter": {
       "fields": {
@@ -3306,7 +3306,7 @@
   },
   {
     "type": "put",
-    "url": "/challenges/:challenge_id/crossing-points/:id",
+    "url": "/crossing-points/:id",
     "title": "Update a crossing point",
     "parameter": {
       "fields": {
